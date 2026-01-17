@@ -1,0 +1,6002 @@
+[
+  {
+    "word": "The",
+    "meaning": "El / La",
+    "s": "The sun is very bright today.",
+    "t": "El sol está muy brillante hoy."
+  },
+  {
+    "word": "Be",
+    "meaning": "Ser / Estar",
+    "s": "I want to be a doctor one day.",
+    "t": "Quiero ser médico algún día."
+  },
+  {
+    "word": "To",
+    "meaning": "A / Para",
+    "s": "We are going to the park.",
+    "t": "Vamos al parque."
+  },
+  {
+    "word": "Of",
+    "meaning": "De",
+    "s": "He is a friend of mine.",
+    "t": "Él es un amigo mío."
+  },
+  {
+    "word": "And",
+    "meaning": "Y",
+    "s": "I like bread and butter.",
+    "t": "Me gusta el pan y la mantequilla."
+  },
+  {
+    "word": "A",
+    "meaning": "Un / Una",
+    "s": "I saw a bird in the garden.",
+    "t": "Vi un pájaro en el jardín."
+  },
+  {
+    "word": "In",
+    "meaning": "En",
+    "s": "The keys are in the box.",
+    "t": "Las llaves están en la caja."
+  },
+  {
+    "word": "That",
+    "meaning": "Ese / Que",
+    "s": "I believe that you are right.",
+    "t": "Creo que tienes razón."
+  },
+  {
+    "word": "Have",
+    "meaning": "Tener",
+    "s": "I have two sisters.",
+    "t": "Tengo dos hermanas."
+  },
+  {
+    "word": "I",
+    "meaning": "Yo",
+    "s": "I am learning English.",
+    "t": "Yo estoy aprendiendo inglés."
+  },
+  {
+    "word": "It",
+    "meaning": "Eso / Lo",
+    "s": "It is a very nice day.",
+    "t": "Es un día muy agradable."
+  },
+  {
+    "word": "For",
+    "meaning": "Para",
+    "s": "This gift is for you.",
+    "t": "Este regalo es para ti."
+  },
+  {
+    "word": "Not",
+    "meaning": "No",
+    "s": "I am not tired yet.",
+    "t": "Aún no estoy cansado."
+  },
+  {
+    "word": "On",
+    "meaning": "En / Sobre",
+    "s": "The book is on the table.",
+    "t": "El libro está sobre la mesa."
+  },
+  {
+    "word": "With",
+    "meaning": "Con",
+    "s": "I want to go with you.",
+    "t": "Quiero ir contigo."
+  },
+  {
+    "word": "He",
+    "meaning": "Él",
+    "s": "He works at a bank.",
+    "t": "Él trabaja en un banco."
+  },
+  {
+    "word": "As",
+    "meaning": "Como",
+    "s": "She is as tall as her brother.",
+    "t": "Ella es tan alta como su hermano."
+  },
+  {
+    "word": "You",
+    "meaning": "Tú / Usted",
+    "s": "You are my best friend.",
+    "t": "Tú eres mi mejor amigo."
+  },
+  {
+    "word": "Do",
+    "meaning": "Hacer",
+    "s": "What do you do for fun?",
+    "t": "¿Qué haces para divertirte?"
+  },
+  {
+    "word": "At",
+    "meaning": "En / A",
+    "s": "I will meet you at the station.",
+    "t": "Te veré en la estación."
+  },
+  {
+    "word": "Word",
+    "meaning": "Palabra",
+    "s": "What does this word mean?",
+    "t": "¿Qué significa esta palabra?"
+  },
+  {
+    "word": "But",
+    "meaning": "Pero",
+    "s": "I am tired, but I am happy.",
+    "t": "Estoy cansado, pero estoy feliz."
+  },
+  {
+    "word": "From",
+    "meaning": "De / Desde",
+    "s": "I am from Spain.",
+    "t": "Soy de España."
+  },
+  {
+    "word": "They",
+    "meaning": "Ellos / Ellas",
+    "s": "They are playing football.",
+    "t": "Ellos están jugando al fútbol."
+  },
+  {
+    "word": "Say",
+    "meaning": "Decir",
+    "s": "What did you say?",
+    "t": "¿Qué dijiste?"
+  },
+  {
+    "word": "Go",
+    "meaning": "Ir",
+    "s": "Let's go to the beach.",
+    "t": "Vamos a la playa."
+  },
+  {
+    "word": "Can",
+    "meaning": "Poder",
+    "s": "Can you help me, please?",
+    "t": "¿Puedes ayudarme, por favor?"
+  },
+  {
+    "word": "Who",
+    "meaning": "Quién",
+    "s": "Who is that man?",
+    "t": "¿Quién es ese hombre?"
+  },
+  {
+    "word": "Get",
+    "meaning": "Obtener",
+    "s": "I need to get some milk.",
+    "t": "Necesito conseguir algo de leche."
+  },
+  {
+    "word": "If",
+    "meaning": "Si",
+    "s": "If it rains, we will stay home.",
+    "t": "Si llueve, nos quedaremos en casa."
+  },
+  {
+    "word": "About",
+    "meaning": "Sobre / Alrededor de",
+    "s": "Tell me about your day.",
+    "t": "Cuéntame sobre tu día."
+  },
+  {
+    "word": "All",
+    "meaning": "Todo / Todos",
+    "s": "All the students are here.",
+    "t": "Todos los estudiantes están aquí."
+  },
+  {
+    "word": "Also",
+    "meaning": "También",
+    "s": "He is a teacher and also a writer.",
+    "t": "Él es profesor y también escritor."
+  },
+  {
+    "word": "Any",
+    "meaning": "Cualquier / Alguno",
+    "s": "Do you have any questions?",
+    "t": "¿Tienes alguna pregunta?"
+  },
+  {
+    "word": "Because",
+    "meaning": "Porque",
+    "s": "I am happy because I am with you.",
+    "t": "Soy feliz porque estoy contigo."
+  },
+  {
+    "word": "Come",
+    "meaning": "Venir",
+    "s": "Can you come to my house?",
+    "t": "¿Puedes venir a mi casa?"
+  },
+  {
+    "word": "Day",
+    "meaning": "Día",
+    "s": "Have a great day!",
+    "t": "¡Que tengas un gran día!"
+  },
+  {
+    "word": "Even",
+    "meaning": "Incluso",
+    "s": "Even a child can do it.",
+    "t": "Incluso un niño puede hacerlo."
+  },
+  {
+    "word": "Find",
+    "meaning": "Encontrar",
+    "s": "I need to find my keys.",
+    "t": "Necesito encontrar mis llaves."
+  },
+  {
+    "word": "First",
+    "meaning": "Primero",
+    "s": "He was the first in line.",
+    "t": "Él fue el primero en la fila."
+  },
+  {
+    "word": "Give",
+    "meaning": "Dar",
+    "s": "Please give me the book.",
+    "t": "Por favor dame el libro."
+  },
+  {
+    "word": "Good",
+    "meaning": "Bueno / Buen",
+    "s": "This is a very good movie.",
+    "t": "Esta es una película muy buena."
+  },
+  {
+    "word": "Her",
+    "meaning": "Su (de ella) / Ella",
+    "s": "I like her new car.",
+    "t": "Me gusta su auto nuevo."
+  },
+  {
+    "word": "Here",
+    "meaning": "Aquí",
+    "s": "Put the box here.",
+    "t": "Pon la caja aquí."
+  },
+  {
+    "word": "How",
+    "meaning": "Cómo",
+    "s": "How are you today?",
+    "t": "¿Cómo estás hoy?"
+  },
+  {
+    "word": "Into",
+    "meaning": "En / Hacia adentro",
+    "s": "He walked into the room.",
+    "t": "Él entró en la habitación."
+  },
+  {
+    "word": "Its",
+    "meaning": "Su (de algo)",
+    "s": "The cat licked its paws.",
+    "t": "El gato se lamió las patas."
+  },
+  {
+    "word": "Just",
+    "meaning": "Justo / Solo",
+    "s": "I am just looking.",
+    "t": "Solo estoy mirando."
+  },
+  {
+    "word": "Know",
+    "meaning": "Saber / Conocer",
+    "s": "I know the answer.",
+    "t": "Sé la respuesta."
+  },
+  {
+    "word": "Like",
+    "meaning": "Gustar / Como",
+    "s": "I like chocolate cake.",
+    "t": "Me gusta el pastel de chocolate."
+  },
+  {
+    "word": "Look",
+    "meaning": "Mirar",
+    "s": "Look at that bird!",
+    "t": "¡Mira ese pájaro!"
+  },
+  {
+    "word": "Make",
+    "meaning": "Hacer",
+    "s": "Can you make coffee?",
+    "t": "¿Puedes hacer café?"
+  },
+  {
+    "word": "Man",
+    "meaning": "Hombre",
+    "s": "He is a very kind man.",
+    "t": "Él es un hombre muy amable."
+  },
+  {
+    "word": "Many",
+    "meaning": "Muchos",
+    "s": "There are many people here.",
+    "t": "Hay mucha gente aquí."
+  },
+  {
+    "word": "Me",
+    "meaning": "Me / Mí",
+    "s": "Can you help me?",
+    "t": "¿Puedes ayudarme?"
+  },
+  {
+    "word": "More",
+    "meaning": "Más",
+    "s": "I want more water.",
+    "t": "Quiero más agua."
+  },
+  {
+    "word": "My",
+    "meaning": "Mi",
+    "s": "My name is Alex.",
+    "t": "Mi nombre es Alex."
+  },
+  {
+    "word": "New",
+    "meaning": "Nuevo",
+    "s": "This is my new phone.",
+    "t": "Este es mi teléfono nuevo."
+  },
+  {
+    "word": "No",
+    "meaning": "No",
+    "s": "No, I don't want it.",
+    "t": "No, no lo quiero."
+  },
+  {
+    "word": "Now",
+    "meaning": "Ahora",
+    "s": "We should leave now.",
+    "t": "Deberíamos irnos ahora."
+  },
+  {
+    "word": "One",
+    "meaning": "Uno / Una",
+    "s": "One plus one is two.",
+    "t": "Uno más uno es dos."
+  },
+  {
+    "word": "Only",
+    "meaning": "Solo / Solamente",
+    "s": "I only want a coffee.",
+    "t": "Solo quiero un café."
+  },
+  {
+    "word": "Or",
+    "meaning": "O",
+    "s": "Do you want tea or coffee?",
+    "t": "¿Quieres té o café?"
+  },
+  {
+    "word": "Other",
+    "meaning": "Otro / Otra",
+    "s": "I have other things to do.",
+    "t": "Tengo otras cosas que hacer."
+  },
+  {
+    "word": "Our",
+    "meaning": "Nuestro / Nuestra",
+    "s": "This is our house.",
+    "t": "Esta es nuestra casa."
+  },
+  {
+    "word": "Out",
+    "meaning": "Fuera / Afuera",
+    "s": "The cat is out.",
+    "t": "El gato está afuera."
+  },
+  {
+    "word": "Over",
+    "meaning": "Sobre / Encima de",
+    "s": "He jumped over the wall.",
+    "t": "Él saltó sobre el muro."
+  },
+  {
+    "word": "People",
+    "meaning": "Gente / Personas",
+    "s": "Many people are waiting.",
+    "t": "Muchas personas están esperando."
+  },
+  {
+    "word": "See",
+    "meaning": "Ver",
+    "s": "I can see the sea.",
+    "t": "Puedo ver el mar."
+  },
+  {
+    "word": "She",
+    "meaning": "Ella",
+    "s": "She is very smart.",
+    "t": "Ella es muy inteligente."
+  },
+  {
+    "word": "So",
+    "meaning": "Tan / Así / Entonces",
+    "s": "It is so cold today.",
+    "t": "Hace tanto frío hoy."
+  },
+  {
+    "word": "Some",
+    "meaning": "Algunos / Un poco de",
+    "s": "I need some help.",
+    "t": "Necesito un poco de ayuda."
+  },
+  {
+    "word": "Take",
+    "meaning": "Tomar / Llevar",
+    "s": "Take your umbrella.",
+    "t": "Toma tu paraguas."
+  },
+  {
+    "word": "Tell",
+    "meaning": "Decir / Contar",
+    "s": "Tell me a story.",
+    "t": "Cuéntame una historia."
+  },
+  {
+    "word": "Than",
+    "meaning": "Que (comparativo)",
+    "s": "He is taller than me.",
+    "t": "Él es más alto que yo."
+  },
+  {
+    "word": "Their",
+    "meaning": "Su (de ellos/as)",
+    "s": "Their car is red.",
+    "t": "Su coche es rojo."
+  },
+  {
+    "word": "Them",
+    "meaning": "Los / Las / Ellos / Ellas",
+    "s": "I saw them yesterday.",
+    "t": "Los vi ayer."
+  },
+  {
+    "word": "Then",
+    "meaning": "Entonces / Luego",
+    "s": "Then, we went home.",
+    "t": "Entonces, fuimos a casa."
+  },
+  {
+    "word": "There",
+    "meaning": "Allí / Allá",
+    "s": "There is a bank nearby.",
+    "t": "Hay un banco cerca."
+  },
+  {
+    "word": "These",
+    "meaning": "Estos / Estas",
+    "s": "These shoes are new.",
+    "t": "Estos zapatos son nuevos."
+  },
+  {
+    "word": "Thing",
+    "meaning": "Cosa",
+    "s": "It is a good thing.",
+    "t": "Es una buena cosa."
+  },
+  {
+    "word": "Think",
+    "meaning": "Pensar",
+    "s": "I think you are right.",
+    "t": "Pienso que tienes razón."
+  },
+  {
+    "word": "This",
+    "meaning": "Este / Esta / Esto",
+    "s": "This is my brother.",
+    "t": "Este es mi hermano."
+  },
+  {
+    "word": "Those",
+    "meaning": "Esos / Esas",
+    "s": "Those are my keys.",
+    "t": "Esas son mis llaves."
+  },
+  {
+    "word": "Time",
+    "meaning": "Tiempo / Vez / Hora",
+    "s": "It is time to go.",
+    "t": "Es hora de irse."
+  },
+  {
+    "word": "Up",
+    "meaning": "Arriba",
+    "s": "Look up at the sky.",
+    "t": "Mira arriba al cielo."
+  },
+  {
+    "word": "Use",
+    "meaning": "Usar / Utilizar",
+    "s": "Can I use your pen?",
+    "t": "¿Puedo usar tu bolígrafo?"
+  },
+  {
+    "word": "Very",
+    "meaning": "Muy",
+    "s": "It is very hot.",
+    "t": "Hace mucho calor."
+  },
+  {
+    "word": "Want",
+    "meaning": "Querer",
+    "s": "I want to sleep.",
+    "t": "Quero dormir."
+  },
+  {
+    "word": "Way",
+    "meaning": "Camino / Manera",
+    "s": "I like the way you talk.",
+    "t": "Me gusta la manera en que hablas."
+  },
+  {
+    "word": "We",
+    "meaning": "Nosotros / Nosotras",
+    "s": "We are a team.",
+    "t": "Somos un equipo."
+  },
+  {
+    "word": "Well",
+    "meaning": "Bien",
+    "s": "I hope you are well.",
+    "t": "Espero que estés bien."
+  },
+  {
+    "word": "What",
+    "meaning": "Qué / Cuál",
+    "s": "What is your name?",
+    "t": "¿Cuál es tu nombre?"
+  },
+  {
+    "word": "When",
+    "meaning": "Cuando",
+    "s": "When is the meeting?",
+    "t": "¿Cuándo es la reunión?"
+  },
+  {
+    "word": "Which",
+    "meaning": "Cuál / El cual",
+    "s": "Which one do you prefer?",
+    "t": "¿Cuál prefieres?"
+  },
+  {
+    "word": "Who",
+    "meaning": "Quién",
+    "s": "Who is calling?",
+    "t": "¿Quién está llamando?"
+  },
+  {
+    "word": "Will",
+    "meaning": "Voluntad / (Futuro)",
+    "s": "I will help you.",
+    "t": "Te ayudaré."
+  },
+  {
+    "word": "Work",
+    "meaning": "Trabajo / Trabajar",
+    "s": "I start work at nine.",
+    "t": "Empiezo a trabajar a las nueve."
+  },
+  {
+    "word": "Would",
+    "meaning": "(Condicional) / Haría",
+    "s": "I would like a tea.",
+    "t": "Me gustaría un té."
+  },
+  {
+    "word": "Year",
+    "meaning": "Año",
+    "s": "Happy New Year!",
+    "t": "¡Feliz Año Nuevo!"
+  },
+  {
+    "word": "After",
+    "meaning": "Después / Después de",
+    "s": "We can go after lunch.",
+    "t": "Podemos ir después del almuerzo."
+  },
+  {
+    "word": "Again",
+    "meaning": "Otra vez / De nuevo",
+    "s": "Can you say that again?",
+    "t": "¿Puedes decir eso de nuevo?"
+  },
+  {
+    "word": "Air",
+    "meaning": "Aire",
+    "s": "I need some fresh air.",
+    "t": "Necesito un poco de aire fresco."
+  },
+  {
+    "word": "Animal",
+    "meaning": "Animal",
+    "s": "A lion is a wild animal.",
+    "t": "Un león es un animal salvaje."
+  },
+  {
+    "word": "Another",
+    "meaning": "Otro / Otra",
+    "s": "Would you like another cup of tea?",
+    "t": "¿Te gustaría otra taza de té?"
+  },
+  {
+    "word": "Answer",
+    "meaning": "Respuesta / Responder",
+    "s": "I don't know the answer.",
+    "t": "No sé la respuesta."
+  },
+  {
+    "word": "Any",
+    "meaning": "Cualquier / Alguno",
+    "s": "Do you have any ideas?",
+    "t": "¿Tienes alguna idea?"
+  },
+  {
+    "word": "Ask",
+    "meaning": "Preguntar / Pedir",
+    "s": "Ask your teacher for help.",
+    "t": "Pídele ayuda a tu profesor."
+  },
+  {
+    "word": "Away",
+    "meaning": "Lejos / Fuera",
+    "s": "Go away, I'm busy.",
+    "t": "Vete, estoy ocupado."
+  },
+  {
+    "word": "Back",
+    "meaning": "Atrás / Espalda",
+    "s": "Please come back soon.",
+    "t": "Por favor, vuelve pronto."
+  },
+  {
+    "word": "Big",
+    "meaning": "Grande",
+    "s": "That is a very big house.",
+    "t": "Esa es una casa muy grande."
+  },
+  {
+    "word": "Boy",
+    "meaning": "Niño / Chico",
+    "s": "He is a very good boy.",
+    "t": "Él es un muy buen chico."
+  },
+  {
+    "word": "Call",
+    "meaning": "Llamar / Llamada",
+    "s": "Give me a call later.",
+    "t": "Dame una llamada más tarde."
+  },
+  {
+    "word": "Came",
+    "meaning": "Vino (pasado de come)",
+    "s": "She came to the party yesterday.",
+    "t": "Ella vino a la fiesta ayer."
+  },
+  {
+    "word": "Change",
+    "meaning": "Cambiar / Cambio",
+    "s": "You need to change your clothes.",
+    "t": "Necesitas cambiarte de ropa."
+  },
+  {
+    "word": "City",
+    "meaning": "Ciudad",
+    "s": "Madrid is a beautiful city.",
+    "t": "Madrid es una ciudad hermosa."
+  },
+  {
+    "word": "Close",
+    "meaning": "Cerrar / Cerca",
+    "s": "Please close the door.",
+    "t": "Por favor, cierra la puerta."
+  },
+  {
+    "word": "Country",
+    "meaning": "País / Campo",
+    "s": "Which country are you from?",
+    "t": "¿De qué país eres?"
+  },
+  {
+    "word": "Different",
+    "meaning": "Diferente",
+    "s": "They are very different.",
+    "t": "Ellos son muy diferentes."
+  },
+  {
+    "word": "Earth",
+    "meaning": "Tierra / Planeta",
+    "s": "The Earth is round.",
+    "t": "La Tierra es redonda."
+  },
+  {
+    "word": "End",
+    "meaning": "Fin / Finalizar",
+    "s": "Wait until the end of the movie.",
+    "t": "Espera hasta el final de la película."
+  },
+  {
+    "word": "Every",
+    "meaning": "Cada / Todos",
+    "s": "I exercise every day.",
+    "t": "Hago ejercicio todos los días."
+  },
+  {
+    "word": "Eye",
+    "meaning": "Ojo",
+    "s": "She has blue eyes.",
+    "t": "Ella tiene ojos azules."
+  },
+  {
+    "word": "Face",
+    "meaning": "Cara / Rostro",
+    "s": "He has a happy face.",
+    "t": "Él tiene una cara feliz."
+  },
+  {
+    "word": "Father",
+    "meaning": "Padre",
+    "s": "My father is a doctor.",
+    "t": "Mi padre es médico."
+  },
+  {
+    "word": "Few",
+    "meaning": "Pocos / Unos pocos",
+    "s": "I have a few friends.",
+    "t": "Tengo unos pocos amigos."
+  },
+  {
+    "word": "Food",
+    "meaning": "Comida",
+    "s": "I love Italian food.",
+    "t": "Me encanta la comida italiana."
+  },
+  {
+    "word": "Form",
+    "meaning": "Forma / Formulario",
+    "s": "Please fill out this form.",
+    "t": "Por favor, complete este formulario."
+  },
+  {
+    "word": "Found",
+    "meaning": "Encontrado / Encontró",
+    "s": "I found my lost dog.",
+    "t": "Encontré a mi perro perdido."
+  },
+  {
+    "word": "Great",
+    "meaning": "Gran / Genial",
+    "s": "You did a great job.",
+    "t": "Hiciste un gran trabajo."
+  },
+  {
+    "word": "Hand",
+    "meaning": "Mano",
+    "s": "Wash your hands.",
+    "t": "Lávate las manos."
+  },
+  {
+    "word": "Help",
+    "meaning": "Ayuda / Ayudar",
+    "s": "Can you help me?",
+    "t": "¿Puedes ayudarme?"
+  },
+  {
+    "word": "High",
+    "meaning": "Alto",
+    "s": "The mountain is very high.",
+    "t": "La montaña es muy alta."
+  },
+  {
+    "word": "Home",
+    "meaning": "Hogar / Casa",
+    "s": "I'm going home.",
+    "t": "Me voy a casa."
+  },
+  {
+    "word": "House",
+    "meaning": "Casa",
+    "s": "They live in a big house.",
+    "t": "Viven en una casa grande."
+  },
+  {
+    "word": "Kind",
+    "meaning": "Amable / Tipo",
+    "s": "What kind of music do you like?",
+    "t": "¿Qué tipo de música te gusta?"
+  },
+  {
+    "word": "Land",
+    "meaning": "Tierra / Suelo",
+    "s": "The plane landed safely.",
+    "t": "El avión aterrizó a salvo."
+  },
+  {
+    "word": "Large",
+    "meaning": "Grande / Extenso",
+    "s": "A large crowd gathered.",
+    "t": "Una gran multitud se reunió."
+  },
+  {
+    "word": "Learn",
+    "meaning": "Aprender",
+    "s": "I want to learn Spanish.",
+    "t": "Quiero aprender español."
+  },
+  {
+    "word": "Letter",
+    "meaning": "Carta / Letra",
+    "s": "I wrote a letter to my mom.",
+    "t": "Escribí una carta a mi mamá."
+  },
+  {
+    "word": "Line",
+    "meaning": "Línea / Fila",
+    "s": "Draw a straight line.",
+    "t": "Dibuja una línea recta."
+  },
+  {
+    "word": "Little",
+    "meaning": "Pequeño / Poco",
+    "s": "She has a little sister.",
+    "t": "Ella tiene una hermana pequeña."
+  },
+  {
+    "word": "Live",
+    "meaning": "Vivir",
+    "s": "Where do you live?",
+    "t": "¿Dónde vives?"
+  },
+  {
+    "word": "Low",
+    "meaning": "Bajo",
+    "s": "The water level is low.",
+    "t": "El nivel del agua está bajo."
+  },
+  {
+    "word": "Men",
+    "meaning": "Hombres",
+    "s": "Those men are workers.",
+    "t": "Esos hombres son trabajadores."
+  },
+  {
+    "word": "Most",
+    "meaning": "La mayoría / El más",
+    "s": "Most people like pizza.",
+    "t": "A la mayoría de la gente le gusta la pizza."
+  },
+  {
+    "word": "Mother",
+    "meaning": "Madre",
+    "s": "My mother is beautiful.",
+    "t": "Mi madre es hermosa."
+  },
+  {
+    "word": "Mountain",
+    "meaning": "Montaña",
+    "s": "The mountain top is white.",
+    "t": "La cima de la montaña es blanca."
+  },
+  {
+    "word": "Move",
+    "meaning": "Mover / Mudarse",
+    "s": "Don't move!",
+    "t": "¡No te muevas!"
+  },
+  {
+    "word": "Much",
+    "meaning": "Mucho",
+    "s": "Thank you very much.",
+    "t": "Muchas gracias."
+  },
+  {
+    "word": "Name",
+    "meaning": "Nombre",
+    "s": "My name is Carlos.",
+    "t": "Mi nombre es Carlos."
+  },
+  {
+    "word": "Near",
+    "meaning": "Cerca / Cerca de",
+    "s": "I live near the school.",
+    "t": "Vivo cerca de la escuela."
+  },
+  {
+    "word": "Night",
+    "meaning": "Noche",
+    "s": "Good night, see you tomorrow.",
+    "t": "Buenas noches, nos vemos mañana."
+  },
+  {
+    "word": "Number",
+    "meaning": "Número",
+    "s": "What is your phone number?",
+    "t": "¿Cuál es tu número de teléfono?"
+  },
+  {
+    "word": "Part",
+    "meaning": "Parte / Pieza",
+    "s": "This is a part of the engine.",
+    "t": "Esta es una parte del motor."
+  },
+  {
+    "word": "Place",
+    "meaning": "Lugar / Sitio",
+    "s": "This is a quiet place.",
+    "t": "Este es un lugar tranquilo."
+  },
+  {
+    "word": "Point",
+    "meaning": "Punto",
+    "s": "What is the point of this?",
+    "t": "¿Cuál es el punto de esto?"
+  },
+  {
+    "word": "Read",
+    "meaning": "Leer",
+    "s": "I like to read books.",
+    "t": "Me gusta leer libros."
+  },
+  {
+    "word": "Right",
+    "meaning": "Derecha / Correcto",
+    "s": "Turn right at the corner.",
+    "t": "Gira a la derecha en la esquina."
+  },
+  {
+    "word": "Same",
+    "meaning": "Mismo / Igual",
+    "s": "We have the same car.",
+    "t": "Tenemos el mismo coche."
+  },
+  {
+    "word": "School",
+    "meaning": "Escuela / Colegio",
+    "s": "I go to school every morning.",
+    "t": "Voy a la escuela cada mañana."
+  },
+  {
+    "word": "Sentence",
+    "meaning": "Sentencia / Oración",
+    "s": "Write a sentence on the board.",
+    "t": "Escribe una oración en la pizarra."
+  },
+  {
+    "word": "Set",
+    "meaning": "Conjunto / Poner",
+    "s": "Please set the table.",
+    "t": "Por favor, pon la mesa."
+  },
+  {
+    "word": "Small",
+    "meaning": "Pequeño",
+    "s": "The cat is very small.",
+    "t": "El gato es muy pequeño."
+  },
+  {
+    "word": "Sound",
+    "meaning": "Sonido",
+    "s": "I heard a strange sound.",
+    "t": "Escuché un sonido extraño."
+  },
+  {
+    "word": "Spell",
+    "meaning": "Deletrear",
+    "s": "How do you spell your name?",
+    "t": "¿Cómo se deletrea tu nombre?"
+  },
+  {
+    "word": "Study",
+    "meaning": "Estudiar / Estudio",
+    "s": "I need to study for the test.",
+    "t": "Necesito estudiar para el examen."
+  },
+  {
+    "word": "Such",
+    "meaning": "Tal / Tan",
+    "s": "It is such a beautiful day.",
+    "t": "Es un día tan hermoso."
+  },
+  {
+    "word": "Through",
+    "meaning": "A través de / Por",
+    "s": "We walked through the park.",
+    "t": "Caminamos por el parque."
+  },
+  {
+    "word": "Together",
+    "meaning": "Juntos",
+    "s": "Let's study together.",
+    "t": "Estudiemos juntos."
+  },
+  {
+    "word": "Turn",
+    "meaning": "Giro / Girar / Turno",
+    "s": "It's your turn to speak.",
+    "t": "Es tu turno de hablar."
+  },
+  {
+    "word": "Under",
+    "meaning": "Debajo / Bajo",
+    "s": "The dog is under the bed.",
+    "t": "El perro está debajo de la cama."
+  },
+  {
+    "word": "Us",
+    "meaning": "Nos / Nosotros",
+    "s": "She is coming with us.",
+    "t": "Ella viene con nosotros."
+  },
+  {
+    "word": "Water",
+    "meaning": "Agua",
+    "s": "I drink a lot of water.",
+    "t": "Bebo mucha agua."
+  },
+  {
+    "word": "Where",
+    "meaning": "Dónde",
+    "s": "Where are my keys?",
+    "t": "¿Dónde están mis llaves?"
+  },
+  {
+    "word": "Went",
+    "meaning": "Fui / Fue (pasado de go)",
+    "s": "They went to the cinema.",
+    "t": "Ellos fueron al cine."
+  },
+  {
+    "word": "Write",
+    "meaning": "Escribir",
+    "s": "I will write an email.",
+    "t": "Escribiré un correo electrónico."
+  },
+  {
+    "word": "Between",
+    "meaning": "Entre",
+    "s": "The bank is between the store and the cafe.",
+    "t": "El banco está entre la tienda y la cafetería."
+  },
+  {
+    "word": "Below",
+    "meaning": "Abajo / Debajo de",
+    "s": "Write your name below the line.",
+    "t": "Escribe tu nombre debajo de la línea."
+  },
+  {
+    "word": "Book",
+    "meaning": "Libro",
+    "s": "I'm reading a new book.",
+    "t": "Estoy leyendo un libro nuevo."
+  },
+  {
+    "word": "Carry",
+    "meaning": "Llevar / Cargar",
+    "s": "Can you carry this bag?",
+    "t": "¿Puedes cargar esta bolsa?"
+  },
+  {
+    "word": "Clean",
+    "meaning": "Limpio / Limpiar",
+    "s": "Keep your room clean.",
+    "t": "Mantén tu habitación limpia."
+  },
+  {
+    "word": "Country",
+    "meaning": "País / Campo",
+    "s": "Spain is a sunny country.",
+    "t": "España es un país soleado."
+  },
+  {
+    "word": "Cut",
+    "meaning": "Cortar",
+    "s": "Please cut the bread.",
+    "t": "Por favor, corta el pan."
+  },
+  {
+    "word": "Eat",
+    "meaning": "Comer",
+    "s": "What do you want to eat?",
+    "t": "¿Qué quieres comer?"
+  },
+  {
+    "word": "Enough",
+    "meaning": "Suficiente",
+    "s": "I have had enough to eat.",
+    "t": "He tenido suficiente para comer."
+  },
+  {
+    "word": "Feet",
+    "meaning": "Pies",
+    "s": "My feet are tired.",
+    "t": "Mis pies están cansados."
+  },
+  {
+    "word": "Girl",
+    "meaning": "Niña / Chica",
+    "s": "She is a smart girl.",
+    "t": "Ella es una chica inteligente."
+  },
+  {
+    "word": "Got",
+    "meaning": "Obtuve / Conseguí (pasado de get)",
+    "s": "I got a new job.",
+    "t": "Conseguí un nuevo trabajo."
+  },
+  {
+    "word": "Group",
+    "meaning": "Grupo",
+    "s": "Join the study group.",
+    "t": "Únete al grupo de estudio."
+  },
+  {
+    "word": "Head",
+    "meaning": "Cabeza / Jefe",
+    "s": "My head hurts.",
+    "t": "Me duele la cabeza."
+  },
+  {
+    "word": "Hear",
+    "meaning": "Oír / Escuchar",
+    "s": "I can hear the music.",
+    "t": "Puedo oír la música."
+  },
+  {
+    "word": "Idea",
+    "meaning": "Idea",
+    "s": "That is a great idea!",
+    "t": "¡Esa es una gran idea!"
+  },
+  {
+    "word": "Important",
+    "meaning": "Importante",
+    "s": "This is an important meeting.",
+    "t": "Esta es una reunión importante."
+  },
+  {
+    "word": "Keep",
+    "meaning": "Mantener / Guardar",
+    "s": "Keep the secret.",
+    "t": "Guarda el secreto."
+  },
+  {
+    "word": "Let",
+    "meaning": "Dejar / Permitir",
+    "s": "Let me help you.",
+    "t": "Déjame ayudarte."
+  },
+  {
+    "word": "Life",
+    "meaning": "Vida",
+    "s": "Life is beautiful.",
+    "t": "La vida es bella."
+  },
+  {
+    "word": "List",
+    "meaning": "Lista",
+    "s": "I made a shopping list.",
+    "t": "Hice una lista de compras."
+  },
+  {
+    "word": "Might",
+    "meaning": "Podría",
+    "s": "It might rain today.",
+    "t": "Podría llover hoy."
+  },
+  {
+    "word": "Mile",
+    "meaning": "Milla",
+    "s": "We walked a mile.",
+    "t": "Caminamos una milla."
+  },
+  {
+    "word": "Miss",
+    "meaning": "Extrañar / Perder",
+    "s": "I miss my family.",
+    "t": "Extraño a mi familia."
+  },
+  {
+    "word": "Music",
+    "meaning": "Música",
+    "s": "I love listening to music.",
+    "t": "Me encanta escuchar música."
+  },
+  {
+    "word": "Next",
+    "meaning": "Siguiente / Próximo",
+    "s": "Who is next in line?",
+    "t": "¿Quién es el siguiente en la fila?"
+  },
+  {
+    "word": "Often",
+    "meaning": "A menudo",
+    "s": "I often go to the gym.",
+    "t": "A menudo voy al gimnasio."
+  },
+  {
+    "word": "Paper",
+    "meaning": "Papel",
+    "s": "Can I have a sheet of paper?",
+    "t": "¿Puedo tener una hoja de papel?"
+  },
+  {
+    "word": "Plant",
+    "meaning": "Planta / Plantar",
+    "s": "This plant needs water.",
+    "t": "Esta planta necesita agua."
+  },
+  {
+    "word": "Real",
+    "meaning": "Real / Verdadero",
+    "s": "Is this a real diamond?",
+    "t": "¿Es este un diamante real?"
+  },
+  {
+    "word": "River",
+    "meaning": "Río",
+    "s": "The river is very deep.",
+    "t": "El río es muy profundo."
+  },
+  {
+    "word": "Run",
+    "meaning": "Correr",
+    "s": "I like to run in the morning.",
+    "t": "Me gusta correr por la mañana."
+  },
+  {
+    "word": "Saw",
+    "meaning": "Vi / Vio (pasado de see)",
+    "s": "I saw a movie last night.",
+    "t": "Vi una película anoche."
+  },
+  {
+    "word": "Second",
+    "meaning": "Segundo",
+    "s": "Wait a second, please.",
+    "t": "Espera un segundo, por favor."
+  },
+  {
+    "word": "Side",
+    "meaning": "Lado",
+    "s": "The other side of the street.",
+    "t": "El otro lado de la calle."
+  },
+  {
+    "word": "Song",
+    "meaning": "Canción",
+    "s": "This is my favorite song.",
+    "t": "Esta es mi canción favorita."
+  },
+  {
+    "word": "Start",
+    "meaning": "Empezar / Comenzar",
+    "s": "When does the class start?",
+    "t": "¿Cuándo empieza la clase?"
+  },
+  {
+    "word": "State",
+    "meaning": "Estado",
+    "s": "Florida is a sunny state.",
+    "t": "Florida es un estado soleado."
+  },
+  {
+    "word": "Stop",
+    "meaning": "Parar / Detenerse",
+    "s": "Stop the car!",
+    "t": "¡Para el coche!"
+  },
+  {
+    "word": "Story",
+    "meaning": "Historia / Cuento",
+    "s": "Tell me a bedtime story.",
+    "t": "Cuéntame un cuento antes de dormir."
+  },
+  {
+    "word": "Talk",
+    "meaning": "Hablar",
+    "s": "We need to talk.",
+    "t": "Necesitamos hablar."
+  },
+  {
+    "word": "Thought",
+    "meaning": "Pensamiento / Pensó",
+    "s": "I thought you were at work.",
+    "t": "Pensé que estabas en el trabajo."
+  },
+  {
+    "word": "Tree",
+    "meaning": "Árbol",
+    "s": "The bird is in the tree.",
+    "t": "El pájaro está en el árbol."
+  },
+  {
+    "word": "Watch",
+    "meaning": "Reloj / Mirar",
+    "s": "I watch TV in the evening.",
+    "t": "Veo la televisión por la noche."
+  },
+  {
+    "word": "While",
+    "meaning": "Mientras",
+    "s": "Listen while I speak.",
+    "t": "Escucha mientras hablo."
+  },
+  {
+    "word": "White",
+    "meaning": "Blanco",
+    "s": "The walls are white.",
+    "t": "Las paredes son blancas."
+  },
+  {
+    "word": "Wood",
+    "meaning": "Madera",
+    "s": "The table is made of wood.",
+    "t": "La mesa está hecha de madera."
+  },
+  {
+    "word": "Young",
+    "meaning": "Joven",
+    "s": "She is a young girl.",
+    "t": "Ella es una chica joven."
+  },
+  {
+    "word": "Always",
+    "meaning": "Siempre",
+    "s": "I always drink coffee.",
+    "t": "Siempre bebo café."
+  },
+  {
+    "word": "Both",
+    "meaning": "Ambos / Los dos",
+    "s": "Both of them are happy.",
+    "t": "Ambos están felices."
+  },
+  {
+    "word": "Draw",
+    "meaning": "Dibujar",
+    "s": "I can draw a house.",
+    "t": "Puedo dibujar una casa."
+  },
+  {
+    "word": "Everything",
+    "meaning": "Todo",
+    "s": "Everything is going to be okay.",
+    "t": "Todo va a estar bien."
+  },
+  {
+    "word": "Example",
+    "meaning": "Ejemplo",
+    "s": "This is a good example.",
+    "t": "Este es un buen ejemplo."
+  },
+  {
+    "word": "Eye",
+    "meaning": "Ojo",
+    "s": "He has brown eyes.",
+    "t": "Él tiene ojos marrones."
+  },
+  {
+    "word": "Father",
+    "meaning": "Padre",
+    "s": "My father is very kind.",
+    "t": "Mi padre es muy amable."
+  },
+  {
+    "word": "Fire",
+    "meaning": "Fuego",
+    "s": "The fire is warm.",
+    "t": "El fuego está caliente."
+  },
+  {
+    "word": "Hard",
+    "meaning": "Duro / Difícil",
+    "s": "The test was very hard.",
+    "t": "El examen fue muy difícil."
+  },
+  {
+    "word": "Keep",
+    "meaning": "Mantener / Guardar",
+    "s": "Keep your room clean.",
+    "t": "Mantén tu habitación limpia."
+  },
+  {
+    "word": "Left",
+    "meaning": "Izquierda / Dejó",
+    "s": "Turn left at the light.",
+    "t": "Gira a la izquierda en el semáforo."
+  },
+  {
+    "word": "Listen",
+    "meaning": "Escuchar",
+    "s": "Listen to me.",
+    "t": "Escúchame."
+  },
+  {
+    "word": "Mile",
+    "meaning": "Milla",
+    "s": "A mile is quite long.",
+    "t": "Una milla es bastante larga."
+  },
+  {
+    "word": "Money",
+    "meaning": "Dinero",
+    "s": "I need some money.",
+    "t": "Necesito algo de dinero."
+  },
+  {
+    "word": "Open",
+    "meaning": "Abrir / Abierto",
+    "s": "Please open the window.",
+    "t": "Por favor abre la ventana."
+  },
+  {
+    "word": "Own",
+    "meaning": "Propio / Poseer",
+    "s": "I have my own car.",
+    "t": "Tengo mi propio coche."
+  },
+  {
+    "word": "Person",
+    "meaning": "Persona",
+    "s": "She is a nice person.",
+    "t": "Ella es una buena persona."
+  },
+  {
+    "word": "Question",
+    "meaning": "Pregunta / Interrogar",
+    "s": "Can I ask a question?",
+    "t": "¿Puedo hacer una pregunta?"
+  },
+  {
+    "word": "Ship",
+    "meaning": "Barco / Buque",
+    "s": "The ship is huge.",
+    "t": "El barco es enorme."
+  },
+  {
+    "word": "Short",
+    "meaning": "Corto / Bajo",
+    "s": "The movie was very short.",
+    "t": "La película fue muy corta."
+  },
+  {
+    "word": "Space",
+    "meaning": "Espacio",
+    "s": "There is no space here.",
+    "t": "No hay espacio aquí."
+  },
+  {
+    "word": "Table",
+    "meaning": "Mesa",
+    "s": "The food is on the table.",
+    "t": "La comida está en la mesa."
+  },
+  {
+    "word": "Top",
+    "meaning": "Cima / Parte superior",
+    "s": "I am at the top of the hill.",
+    "t": "Estoy en la cima de la colina."
+  },
+  {
+    "word": "True",
+    "meaning": "Verdadero / Cierto",
+    "s": "That is a true story.",
+    "t": "Esa es una historia verdadera."
+  },
+  {
+    "word": "Usually",
+    "meaning": "Usualmente / Normalmente",
+    "s": "I usually get up at 7.",
+    "t": "Normalmente me levanto a las 7."
+  },
+  {
+    "word": "Voice",
+    "meaning": "Voz",
+    "s": "She has a beautiful singing voice.",
+    "t": "Ella tiene una hermosa voz para cantar."
+  },
+  {
+    "word": "Walk",
+    "meaning": "Caminar / Paseo",
+    "s": "I walk to work every day.",
+    "t": "Camino al trabajo todos los días."
+  },
+  {
+    "word": "War",
+    "meaning": "Guerra",
+    "s": "Nobody wants a war.",
+    "t": "Nadie quiere una guerra."
+  },
+  {
+    "word": "Wind",
+    "meaning": "Viento",
+    "s": "The wind is blowing hard.",
+    "t": "El viento está soplando fuerte."
+  },
+  {
+    "word": "Winter",
+    "meaning": "Invierno",
+    "s": "It snows a lot here in winter.",
+    "t": "Nieva mucho aquí en invierno."
+  },
+  {
+    "word": "World",
+    "meaning": "Mundo",
+    "s": "I want to travel around the world.",
+    "t": "Quiero viajar por todo el mundo."
+  },
+  {
+    "word": "Above",
+    "meaning": "Encima / Arriba de",
+    "s": "The plane is flying above the clouds.",
+    "t": "El avión está volando sobre las nubes."
+  },
+  {
+    "word": "Add",
+    "meaning": "Añadir / Sumar",
+    "s": "Add some salt to the soup.",
+    "t": "Añade un poco de sal a la sopa."
+  },
+  {
+    "word": "Afternoon",
+    "meaning": "Tarde",
+    "s": "See you this afternoon.",
+    "t": "Nos vemos esta tarde."
+  },
+  {
+    "word": "Already",
+    "meaning": "Ya",
+    "s": "I have already finished my homework.",
+    "t": "Ya he terminado mi tarea."
+  },
+  {
+    "word": "Although",
+    "meaning": "Aunque",
+    "s": "Although it was cold, we went out.",
+    "t": "Aunque hacía frío, salimos."
+  },
+  {
+    "word": "Area",
+    "meaning": "Área / Zona",
+    "s": "This is a very quiet area.",
+    "t": "Esta es una zona muy tranquila."
+  },
+  {
+    "word": "Become",
+    "meaning": "Llegar a ser / Convertirse",
+    "s": "He wants to become a pilot.",
+    "t": "Él quiere convertirse en piloto."
+  },
+  {
+    "word": "Body",
+    "meaning": "Cuerpo",
+    "s": "Keep your body healthy.",
+    "t": "Mantén tu cuerpo sano."
+  },
+  {
+    "word": "Best",
+    "meaning": "Mejor / El mejor",
+    "s": "You are my best friend.",
+    "t": "Eres mi mejor amigo."
+  },
+  {
+    "word": "Black",
+    "meaning": "Negro",
+    "s": "She is wearing a black dress.",
+    "t": "Ella lleva un vestido negro."
+  },
+  {
+    "word": "Bring",
+    "meaning": "Traer",
+    "s": "Can you bring me some water?",
+    "t": "¿Puedes traerme algo de agua?"
+  },
+  {
+    "word": "Business",
+    "meaning": "Negocio / Empresa",
+    "s": "He owns a small business.",
+    "t": "Él es dueño de un pequeño negocio."
+  },
+  {
+    "word": "Buy",
+    "meaning": "Comprar",
+    "s": "I need to buy a new car.",
+    "t": "Necesito comprar un coche nuevo."
+  },
+  {
+    "word": "Color",
+    "meaning": "Color",
+    "s": "What is your favorite color?",
+    "t": "¿Cuál es tu color favorito?"
+  },
+  {
+    "word": "Complete",
+    "meaning": "Completo / Completar",
+    "s": "The set is finally complete.",
+    "t": "El conjunto está finalmente completo."
+  },
+  {
+    "word": "Create",
+    "meaning": "Crear",
+    "s": "Artists create beautiful things.",
+    "t": "Los artistas crean cosas hermosas."
+  },
+  {
+    "word": "Dark",
+    "meaning": "Oscuro",
+    "s": "It is getting dark outside.",
+    "t": "Se está haciendo oscuro afuera."
+  },
+  {
+    "word": "Door",
+    "meaning": "Puerta",
+    "s": "Please open the door.",
+    "t": "Por favor abre la puerta."
+  },
+  {
+    "word": "During",
+    "meaning": "Durante",
+    "s": "I fell asleep during the movie.",
+    "t": "Me quedé dormido durante la película."
+  },
+  {
+    "word": "Early",
+    "meaning": "Temprano",
+    "s": "I wake up early every day.",
+    "t": "Me despierto temprano todos los días."
+  },
+  {
+    "word": "Easy",
+    "meaning": "Fácil",
+    "s": "The exam was very easy.",
+    "t": "El examen fue muy fácil."
+  },
+  {
+    "word": "Ever",
+    "meaning": "Alguna vez / Siempre",
+    "s": "Have you ever been to Paris?",
+    "t": "¿Has estado alguna vez en París?"
+  },
+  {
+    "word": "Fall",
+    "meaning": "Caer / Otoño",
+    "s": "Be careful, don't fall.",
+    "t": "Ten cuidado, no te caigas."
+  },
+  {
+    "word": "Farm",
+    "meaning": "Granja",
+    "s": "My uncle lives on a farm.",
+    "t": "Mi tío vive en una granja."
+  },
+  {
+    "word": "Fast",
+    "meaning": "Rápido",
+    "s": "That car is very fast.",
+    "t": "Ese coche es muy rápido."
+  },
+  {
+    "word": "Field",
+    "meaning": "Campo",
+    "s": "The cows are in the field.",
+    "t": "Las vacas están en el campo."
+  },
+  {
+    "word": "Figure",
+    "meaning": "Figura / Cifra",
+    "s": "She has a slim figure.",
+    "t": "Ella tiene una figura delgada."
+  },
+  {
+    "word": "Final",
+    "meaning": "Final / Último",
+    "s": "This is the final decision.",
+    "t": "Esta es la decisión final."
+  },
+  {
+    "word": "Fish",
+    "meaning": "Pez / Pescado",
+    "s": "I like to eat grilled fish.",
+    "t": "Me gusta comer pescado a la plancha."
+  },
+  {
+    "word": "Five",
+    "meaning": "Cinco",
+    "s": "I have five dollars.",
+    "t": "Tengo cinco dólares."
+  },
+  {
+    "word": "Fly",
+    "meaning": "Volar / Mosca",
+    "s": "Birds can fly high.",
+    "t": "Los pájaros pueden volar alto."
+  },
+  {
+    "word": "Follow",
+    "meaning": "Seguir",
+    "s": "Follow the signs to the exit.",
+    "t": "Sigue las señales hacia la salida."
+  },
+  {
+    "word": "Free",
+    "meaning": "Libre / Gratis",
+    "s": "Admission is free today.",
+    "t": "La entrada es gratuita hoy."
+  },
+  {
+    "word": "Full",
+    "meaning": "Lleno",
+    "s": "The bus is full of people.",
+    "t": "El autobús está lleno de gente."
+  },
+  {
+    "word": "Ground",
+    "meaning": "Suelo / Tierra",
+    "s": "I sat on the ground.",
+    "t": "Me senté en el suelo."
+  },
+  {
+    "word": "Horse",
+    "meaning": "Caballo",
+    "s": "She knows how to ride a horse.",
+    "t": "Ella sabe montar a caballo."
+  },
+  {
+    "word": "Hundred",
+    "meaning": "Cien / Centena",
+    "s": "There are a hundred people here.",
+    "t": "Hay cien personas aquí."
+  },
+  {
+    "word": "Island",
+    "meaning": "Isla",
+    "s": "The island is very small.",
+    "t": "La isla es muy pequeña."
+  },
+  {
+    "word": "Language",
+    "meaning": "Lenguaje / Idioma",
+    "s": "Spanish is a beautiful language.",
+    "t": "El español es un idioma hermoso."
+  },
+  {
+    "word": "Last",
+    "meaning": "Último / Pasado",
+    "s": "I saw him last week.",
+    "t": "Lo vi la semana pasada."
+  },
+  {
+    "word": "Laugh",
+    "meaning": "Reír / Risa",
+    "s": "The joke made me laugh.",
+    "t": "El chiste me hizo reír."
+  },
+  {
+    "word": "Machine",
+    "meaning": "Máquina",
+    "s": "This machine is very old.",
+    "t": "Esta máquina es muy vieja."
+  },
+  {
+    "word": "Map",
+    "meaning": "Mapa",
+    "s": "Check the map for directions.",
+    "t": "Consulta el mapa para ver las direcciones."
+  },
+  {
+    "word": "Moon",
+    "meaning": "Luna",
+    "s": "The moon is very bright tonight.",
+    "t": "La luna está muy brillante esta noche."
+  },
+  {
+    "word": "Voice",
+    "meaning": "Voz",
+    "s": "She has a beautiful singing voice.",
+    "t": "Ella tiene una hermosa voz para cantar."
+  },
+  {
+    "word": "Walk",
+    "meaning": "Caminar / Paseo",
+    "s": "I walk to work every day.",
+    "t": "Camino al trabajo todos los días."
+  },
+  {
+    "word": "War",
+    "meaning": "Guerra",
+    "s": "Nobody wants a war.",
+    "t": "Nadie quiere una guerra."
+  },
+  {
+    "word": "Wind",
+    "meaning": "Viento",
+    "s": "The wind is blowing hard.",
+    "t": "El viento está soplando fuerte."
+  },
+  {
+    "word": "Winter",
+    "meaning": "Invierno",
+    "s": "It snows a lot here in winter.",
+    "t": "Nieva mucho aquí en invierno."
+  },
+  {
+    "word": "World",
+    "meaning": "Mundo",
+    "s": "I want to travel around the world.",
+    "t": "Quiero viajar por todo el mundo."
+  },
+  {
+    "word": "Above",
+    "meaning": "Encima / Arriba de",
+    "s": "The plane is flying above the clouds.",
+    "t": "El avión está volando sobre las nubes."
+  },
+  {
+    "word": "Add",
+    "meaning": "Añadir / Sumar",
+    "s": "Add some salt to the soup.",
+    "t": "Añade un poco de sal a la sopa."
+  },
+  {
+    "word": "Afternoon",
+    "meaning": "Tarde",
+    "s": "See you this afternoon.",
+    "t": "Nos vemos esta tarde."
+  },
+  {
+    "word": "Already",
+    "meaning": "Ya",
+    "s": "I have already finished my homework.",
+    "t": "Ya he terminado mi tarea."
+  },
+  {
+    "word": "Although",
+    "meaning": "Aunque",
+    "s": "Although it was cold, we went out.",
+    "t": "Aunque hacía frío, salimos."
+  },
+  {
+    "word": "Area",
+    "meaning": "Área / Zona",
+    "s": "This is a very quiet area.",
+    "t": "Esta es una zona muy tranquila."
+  },
+  {
+    "word": "Become",
+    "meaning": "Llegar a ser / Convertirse",
+    "s": "He wants to become a pilot.",
+    "t": "Él quiere convertirse en piloto."
+  },
+  {
+    "word": "Body",
+    "meaning": "Cuerpo",
+    "s": "Keep your body healthy.",
+    "t": "Mantén tu cuerpo sano."
+  },
+  {
+    "word": "Best",
+    "meaning": "Mejor / El mejor",
+    "s": "You are my best friend.",
+    "t": "Eres mi mejor amigo."
+  },
+  {
+    "word": "Black",
+    "meaning": "Negro",
+    "s": "She is wearing a black dress.",
+    "t": "Ella lleva un vestido negro."
+  },
+  {
+    "word": "Bring",
+    "meaning": "Traer",
+    "s": "Can you bring me some water?",
+    "t": "¿Puedes traerme algo de agua?"
+  },
+  {
+    "word": "Business",
+    "meaning": "Negocio / Empresa",
+    "s": "He owns a small business.",
+    "t": "Él es dueño de un pequeño negocio."
+  },
+  {
+    "word": "Buy",
+    "meaning": "Comprar",
+    "s": "I need to buy a new car.",
+    "t": "Necesito comprar un coche nuevo."
+  },
+  {
+    "word": "Color",
+    "meaning": "Color",
+    "s": "What is your favorite color?",
+    "t": "¿Cuál es tu color favorito?"
+  },
+  {
+    "word": "Complete",
+    "meaning": "Completo / Completar",
+    "s": "The set is finally complete.",
+    "t": "El conjunto está finalmente completo."
+  },
+  {
+    "word": "Create",
+    "meaning": "Crear",
+    "s": "Artists create beautiful things.",
+    "t": "Los artistas crean cosas hermosas."
+  },
+  {
+    "word": "Dark",
+    "meaning": "Oscuro",
+    "s": "It is getting dark outside.",
+    "t": "Se está haciendo oscuro afuera."
+  },
+  {
+    "word": "Door",
+    "meaning": "Puerta",
+    "s": "Please open the door.",
+    "t": "Por favor abre la puerta."
+  },
+  {
+    "word": "During",
+    "meaning": "Durante",
+    "s": "I fell asleep during the movie.",
+    "t": "Me quedé dormido durante la película."
+  },
+  {
+    "word": "Early",
+    "meaning": "Temprano",
+    "s": "I wake up early every day.",
+    "t": "Me despierto temprano todos los días."
+  },
+  {
+    "word": "Easy",
+    "meaning": "Fácil",
+    "s": "The exam was very easy.",
+    "t": "El examen fue muy fácil."
+  },
+  {
+    "word": "Ever",
+    "meaning": "Alguna vez / Siempre",
+    "s": "Have you ever been to Paris?",
+    "t": "¿Has estado alguna vez en París?"
+  },
+  {
+    "word": "Fall",
+    "meaning": "Caer / Otoño",
+    "s": "Be careful, don't fall.",
+    "t": "Ten cuidado, no te caigas."
+  },
+  {
+    "word": "Farm",
+    "meaning": "Granja",
+    "s": "My uncle lives on a farm.",
+    "t": "Mi tío vive en una granja."
+  },
+  {
+    "word": "Fast",
+    "meaning": "Rápido",
+    "s": "That car is very fast.",
+    "t": "Ese coche es muy rápido."
+  },
+  {
+    "word": "Field",
+    "meaning": "Campo",
+    "s": "The cows are in the field.",
+    "t": "Las vacas están en el campo."
+  },
+  {
+    "word": "Figure",
+    "meaning": "Figura / Cifra",
+    "s": "She has a slim figure.",
+    "t": "Ella tiene una figura delgada."
+  },
+  {
+    "word": "Final",
+    "meaning": "Final / Último",
+    "s": "This is the final decision.",
+    "t": "Esta es la decisión final."
+  },
+  {
+    "word": "Fish",
+    "meaning": "Pez / Pescado",
+    "s": "I like to eat grilled fish.",
+    "t": "Me gusta comer pescado a la plancha."
+  },
+  {
+    "word": "Five",
+    "meaning": "Cinco",
+    "s": "I have five dollars.",
+    "t": "Tengo cinco dólares."
+  },
+  {
+    "word": "Fly",
+    "meaning": "Volar / Mosca",
+    "s": "Birds can fly high.",
+    "t": "Los pájaros pueden volar alto."
+  },
+  {
+    "word": "Follow",
+    "meaning": "Seguir",
+    "s": "Follow the signs to the exit.",
+    "t": "Sigue las señales hacia la salida."
+  },
+  {
+    "word": "Free",
+    "meaning": "Libre / Gratis",
+    "s": "Admission is free today.",
+    "t": "La entrada es gratuita hoy."
+  },
+  {
+    "word": "Full",
+    "meaning": "Lleno",
+    "s": "The bus is full of people.",
+    "t": "El autobús está lleno de gente."
+  },
+  {
+    "word": "Ground",
+    "meaning": "Suelo / Tierra",
+    "s": "I sat on the ground.",
+    "t": "Me senté en el suelo."
+  },
+  {
+    "word": "Horse",
+    "meaning": "Caballo",
+    "s": "She knows how to ride a horse.",
+    "t": "Ella sabe montar a caballo."
+  },
+  {
+    "word": "Hundred",
+    "meaning": "Cien / Centena",
+    "s": "There are a hundred people here.",
+    "t": "Hay cien personas aquí."
+  },
+  {
+    "word": "Island",
+    "meaning": "Isla",
+    "s": "The island is very small.",
+    "t": "La isla es muy pequeña."
+  },
+  {
+    "word": "Language",
+    "meaning": "Lenguaje / Idioma",
+    "s": "Spanish is a beautiful language.",
+    "t": "El español es un idioma hermoso."
+  },
+  {
+    "word": "Last",
+    "meaning": "Último / Pasado",
+    "s": "I saw him last week.",
+    "t": "Lo vi la semana pasada."
+  },
+  {
+    "word": "Laugh",
+    "meaning": "Reír / Risa",
+    "s": "The joke made me laugh.",
+    "t": "El chiste me hizo reír."
+  },
+  {
+    "word": "Machine",
+    "meaning": "Máquina",
+    "s": "This machine is very old.",
+    "t": "Esta máquina es muy vieja."
+  },
+  {
+    "word": "Map",
+    "meaning": "Mapa",
+    "s": "Check the map for directions.",
+    "t": "Consulta el mapa para ver las direcciones."
+  },
+  {
+    "word": "Moon",
+    "meaning": "Luna",
+    "s": "The moon is very bright tonight.",
+    "t": "La luna está muy brillante esta noche."
+  },
+  {
+    "word": "Common",
+    "meaning": "Común",
+    "s": "This is a common mistake.",
+    "t": "Este es un error común."
+  },
+  {
+    "word": "Gold",
+    "meaning": "Oro",
+    "s": "The ring is made of gold.",
+    "t": "El anillo está hecho de oro."
+  },
+  {
+    "word": "Possible",
+    "meaning": "Posible",
+    "s": "Is it possible to finish today?",
+    "t": "¿Es posible terminar hoy?"
+  },
+  {
+    "word": "Dry",
+    "meaning": "Seco",
+    "s": "The desert is very dry.",
+    "t": "El desierto es muy seco."
+  },
+  {
+    "word": "Wonder",
+    "meaning": "Maravilla / Preguntarse",
+    "s": "I wonder why he is late.",
+    "t": "Me pregunto por qué llega tarde."
+  },
+  {
+    "word": "Laugh",
+    "meaning": "Reír / Risa",
+    "s": "It’s good to laugh every day.",
+    "t": "Es bueno reír todos los días."
+  },
+  {
+    "word": "Ago",
+    "meaning": "Hace (tiempo)",
+    "s": "I moved here ten years ago.",
+    "t": "Me mudé aquí hace diez años."
+  },
+  {
+    "word": "Ran",
+    "meaning": "Corrió (pasado de run)",
+    "s": "He ran as fast as he could.",
+    "t": "Él corrió tan rápido como pudo."
+  },
+  {
+    "word": "Check",
+    "meaning": "Comprobar / Cheque",
+    "s": "Please check your email.",
+    "t": "Por favor, comprueba tu correo electrónico."
+  },
+  {
+    "word": "Game",
+    "meaning": "Juego / Partido",
+    "s": "Who won the game last night?",
+    "t": "¿Quién ganó el juego anoche?"
+  },
+  {
+    "word": "Shape",
+    "meaning": "Forma",
+    "s": "What shape is the table?",
+    "t": "¿Qué forma tiene la mesa?"
+  },
+  {
+    "word": "Yes",
+    "meaning": "Sí",
+    "s": "Yes, I can help you.",
+    "t": "Sí, puedo ayudarte."
+  },
+  {
+    "word": "Hot",
+    "meaning": "Caliente / Calor",
+    "s": "Be careful, the soup is hot.",
+    "t": "Ten cuidado, la sopa está caliente."
+  },
+  {
+    "word": "Brought",
+    "meaning": "Trajo (pasado de bring)",
+    "s": "He brought a gift for you.",
+    "t": "Él trajo un regalo para ti."
+  },
+  {
+    "word": "Heat",
+    "meaning": "Calor",
+    "s": "The heat in summer is intense.",
+    "t": "El calor en verano es intenso."
+  },
+  {
+    "word": "Stay",
+    "meaning": "Quedarse / Estancia",
+    "s": "Please stay with us.",
+    "t": "Por favor, quédate con nosotros."
+  },
+  {
+    "word": "Bed",
+    "meaning": "Cama",
+    "s": "It’s time to go to bed.",
+    "t": "Es hora de ir a la cama."
+  },
+  {
+    "word": "Sit",
+    "meaning": "Sentarse",
+    "s": "Please sit down.",
+    "t": "Por favor, siéntate."
+  },
+  {
+    "word": "Distance",
+    "meaning": "Distancia",
+    "s": "What is the distance to Madrid?",
+    "t": "¿Cuál es la distancia a Madrid?"
+  },
+  {
+    "word": "Fill",
+    "meaning": "Llenar",
+    "s": "Fill the glass with water.",
+    "t": "Llena el vaso con agua."
+  },
+  {
+    "word": "East",
+    "meaning": "Este (punto cardinal)",
+    "s": "The sun rises in the east.",
+    "t": "El sol sale por el este."
+  },
+  {
+    "word": "Paint",
+    "meaning": "Pintura / Pintar",
+    "s": "I like the color of this paint.",
+    "t": "Me gusta el color de esta pintura."
+  },
+  {
+    "word": "Weight",
+    "meaning": "Peso",
+    "s": "What is the weight of this box?",
+    "t": "¿Cuál es el peso de esta caja?"
+  },
+  {
+    "word": "Among",
+    "meaning": "Entre (varios)",
+    "s": "He was among the crowd.",
+    "t": "Él estaba entre la multitud."
+  },
+  {
+    "word": "Grand",
+    "meaning": "Grande / Gran",
+    "s": "It was a grand opening ceremony.",
+    "t": "Fue una gran ceremonia de apertura."
+  },
+  {
+    "word": "Power",
+    "meaning": "Poder / Energía",
+    "s": "The power is out due to the storm.",
+    "t": "Se cortó la energía debido a la tormenta."
+  },
+  {
+    "word": "Town",
+    "meaning": "Pueblo / Ciudad pequeña",
+    "s": "I grew up in a small town.",
+    "t": "Crecí en un pueblo pequeño."
+  },
+  {
+    "word": "Fine",
+    "meaning": "Bien / Multa",
+    "s": "I’m fine, thank you.",
+    "t": "Estoy bien, gracias."
+  },
+  {
+    "word": "Certain",
+    "meaning": "Cierto / Seguro",
+    "s": "Are you certain about the time?",
+    "t": "¿Estás seguro de la hora?"
+  },
+  {
+    "word": "Correct",
+    "meaning": "Correcto / Corregir",
+    "s": "Your answer is correct.",
+    "t": "Tu respuesta es correcta."
+  },
+  {
+    "word": "Quickly",
+    "meaning": "Rápidamente",
+    "s": "Please finish your work quickly.",
+    "t": "Por favor, termina tu trabajo rápidamente."
+  },
+  {
+    "word": "Lead",
+    "meaning": "Liderar / Plomo",
+    "s": "She will lead the team.",
+    "t": "Ella liderará el equipo."
+  },
+  {
+    "word": "Wait",
+    "meaning": "Esperar",
+    "s": "Please wait for me.",
+    "t": "Por favor, espérame."
+  },
+  {
+    "word": "Done",
+    "meaning": "Hecho",
+    "s": "I am done with my homework.",
+    "t": "He terminado con mi tarea."
+  },
+  {
+    "word": "English",
+    "meaning": "Inglés",
+    "s": "English is a global language.",
+    "t": "El inglés es un idioma global."
+  },
+  {
+    "word": "Half",
+    "meaning": "Mitad",
+    "s": "Cut the apple in half.",
+    "t": "Corta la manzana por la mitad."
+  },
+  {
+    "word": "Ten",
+    "meaning": "Diez",
+    "s": "I have ten fingers.",
+    "t": "Tengo diez dedos."
+  },
+  {
+    "word": "Minute",
+    "meaning": "Minuto",
+    "s": "Give me one minute.",
+    "t": "Dame un minuto."
+  },
+  {
+    "word": "Front",
+    "meaning": "Frente / Parte delantera",
+    "s": "The car is in front of the house.",
+    "t": "El coche está frente a la casa."
+  },
+  {
+    "word": "Feel",
+    "meaning": "Sentir / Sensación",
+    "s": "How do you feel today?",
+    "t": "¿Cómo te sientes hoy?"
+  },
+  {
+    "word": "Fact",
+    "meaning": "Hecho / Realidad",
+    "s": "It is a fact that the earth is round.",
+    "t": "Es un hecho que la tierra es redonda."
+  },
+  {
+    "word": "Inch",
+    "meaning": "Pulgada",
+    "s": "The paper is an inch thick.",
+    "t": "El papel tiene una pulgada de grosor."
+  },
+  {
+    "word": "Boat",
+    "meaning": "Barco / Bote",
+    "s": "We spent the day on a boat.",
+    "t": "Pasamos el día en un barco."
+  },
+  {
+    "word": "Contain",
+    "meaning": "Contener",
+    "s": "The box contains old books.",
+    "t": "La caja contiene libros viejos."
+  },
+  {
+    "word": "Course",
+    "meaning": "Curso / Rumbo",
+    "s": "I’m taking a Spanish course.",
+    "t": "Estoy tomando un curso de español."
+  },
+  {
+    "word": "Deep",
+    "meaning": "Profundo",
+    "s": "The lake is very deep.",
+    "t": "El lago es muy profundo."
+  },
+  {
+    "word": "Produce",
+    "meaning": "Producir",
+    "s": "They produce high-quality cars.",
+    "t": "Ellos producen coches de alta calidad."
+  },
+  {
+    "word": "Building",
+    "meaning": "Edificio",
+    "s": "It is the tallest building in the city.",
+    "t": "Es el edificio más alto de la ciudad."
+  },
+  {
+    "word": "Inside",
+    "meaning": "Dentro / Adentro",
+    "s": "Go inside the house.",
+    "t": "Entra en la casa."
+  },
+  {
+    "word": "Wheels",
+    "meaning": "Ruedas",
+    "s": "The wheels on the bus go round.",
+    "t": "Las ruedas del autobús giran."
+  },
+  {
+    "word": "Base",
+    "meaning": "Base / Fondo",
+    "s": "The base of the lamp is broken.",
+    "t": "La base de la lámpara está rota."
+  },
+  {
+    "word": "Blue",
+    "meaning": "Azul",
+    "s": "The sky is clear and blue.",
+    "t": "El cielo está despejado y azul."
+  },
+  {
+    "word": "Object",
+    "meaning": "Objeto",
+    "s": "What is that round object?",
+    "t": "¿Qué es ese objeto redondo?"
+  },
+  {
+    "word": "Decide",
+    "meaning": "Decidir",
+    "s": "It's time to decide our next move.",
+    "t": "Es hora de decidir nuestro próximo movimiento."
+  },
+  {
+    "word": "Surface",
+    "meaning": "Superficie",
+    "s": "The surface of the lake is calm.",
+    "t": "La superficie del lago está tranquila."
+  },
+  {
+    "word": "Moon",
+    "meaning": "Luna",
+    "s": "The moon shines at night.",
+    "t": "La luna brilla por la noche."
+  },
+  {
+    "word": "Island",
+    "meaning": "Isla",
+    "s": "They live on a small island.",
+    "t": "Viven en una isla pequeña."
+  },
+  {
+    "word": "Foot",
+    "meaning": "Pie",
+    "s": "He hurt his foot playing soccer.",
+    "t": "Se lastimó el pie jugando al fútbol."
+  },
+  {
+    "word": "System",
+    "meaning": "Sistema",
+    "s": "The solar system is huge.",
+    "t": "El sistema solar es enorme."
+  },
+  {
+    "word": "Busy",
+    "meaning": "Ocupado",
+    "s": "I am very busy today.",
+    "t": "Estoy muy ocupado hoy."
+  },
+  {
+    "word": "Record",
+    "meaning": "Grabar / Registro",
+    "s": "He broke the world record.",
+    "t": "Él batió el récord mundial."
+  },
+  {
+    "word": "Boat",
+    "meaning": "Barco",
+    "s": "The boat sailed across the sea.",
+    "t": "El barco navegó por el mar."
+  },
+  {
+    "word": "Common",
+    "meaning": "Común",
+    "s": "It’s a common cold.",
+    "t": "Es un resfriado común."
+  },
+  {
+    "word": "Gold",
+    "meaning": "Oro",
+    "s": "She wears a gold necklace.",
+    "t": "Ella lleva un collar de oro."
+  },
+  {
+    "word": "Possible",
+    "meaning": "Posible",
+    "s": "Everything is possible if you try.",
+    "t": "Todo es posible si lo intentas."
+  },
+  {
+    "word": "Plane",
+    "meaning": "Avión",
+    "s": "The plane arrived on time.",
+    "t": "El avión llegó a tiempo."
+  },
+  {
+    "word": "Steady",
+    "meaning": "Firme / Constante",
+    "s": "He kept a steady pace.",
+    "t": "Mantuvo un ritmo constante."
+  },
+  {
+    "word": "Dry",
+    "meaning": "Seco",
+    "s": "Wait for the paint to dry.",
+    "t": "Espera a que se seque la pintura."
+  },
+  {
+    "word": "Wonder",
+    "meaning": "Maravilla / Preguntarse",
+    "s": "I wonder what will happen next.",
+    "t": "Me pregunto ne pasará después."
+  },
+  {
+    "word": "Laugh",
+    "meaning": "Reír",
+    "s": "His jokes always make me laugh.",
+    "t": "Sus chistes siempre me hacen reír."
+  },
+  {
+    "word": "Thousand",
+    "meaning": "Mil",
+    "s": "A thousand people attended the concert.",
+    "t": "Mil personas asistieron al concierto."
+  },
+  {
+    "word": "Ago",
+    "meaning": "Hace",
+    "s": "I saw him two days ago.",
+    "t": "Lo vi hace dos días."
+  },
+  {
+    "word": "Ran",
+    "meaning": "Corrió",
+    "s": "The dog ran after the ball.",
+    "t": "El perro corrió tras la pelota."
+  },
+  {
+    "word": "Check",
+    "meaning": "Comprobar / Verificar",
+    "s": "Check the price before buying.",
+    "t": "Comprueba el precio antes de comprar."
+  },
+  {
+    "word": "Game",
+    "meaning": "Juego / Partido",
+    "s": "Let's play a game.",
+    "t": "Juguemos a un juego."
+  },
+  {
+    "word": "Shape",
+    "meaning": "Forma",
+    "s": "The clouds have a strange shape.",
+    "t": "Las nubes tienen una forma extraña."
+  },
+  {
+    "word": "Equate",
+    "meaning": "Equiparar / Igualar",
+    "s": "You cannot equate wealth with happiness.",
+    "t": "No puedes equiparar la riqueza con la felicidad."
+  },
+  {
+    "word": "Hot",
+    "meaning": "Caliente",
+    "s": "The coffee is still hot.",
+    "t": "El café todavía está caliente."
+  },
+  {
+    "word": "Miss",
+    "meaning": "Extrañar / Perder",
+    "s": "Don't miss the bus!",
+    "t": "¡No pierdas el autobús!"
+  },
+  {
+    "word": "Brought",
+    "meaning": "Trajo",
+    "s": "She brought her sister to the party.",
+    "t": "Ella trajo a su hermana a la fiesta."
+  },
+  {
+    "word": "Heat",
+    "meaning": "Calor",
+    "s": "I can't stand the heat.",
+    "t": "No soporto el calor."
+  },
+  {
+    "word": "Snow",
+    "meaning": "Nieve",
+    "s": "I love the first snow of winter.",
+    "t": "Me encanta la primera nieve del invierno."
+  },
+  {
+    "word": "Tire",
+    "meaning": "Neumático / Cansar",
+    "s": "The car needs a new tire.",
+    "t": "El coche necesita un neumático nuevo."
+  },
+  {
+    "word": "Bring",
+    "meaning": "Traer",
+    "s": "Bring your umbrella with you.",
+    "t": "Trae tu paraguas contigo."
+  },
+  {
+    "word": "Yes",
+    "meaning": "Sí",
+    "s": "Yes, I will be there.",
+    "t": "Sí, estaré allí."
+  },
+  {
+    "word": "Distant",
+    "meaning": "Distante",
+    "s": "I heard a distant sound.",
+    "t": "Escuché un sonido distante."
+  },
+  {
+    "word": "Fill",
+    "meaning": "Llenar",
+    "s": "Fill the bottle with water.",
+    "t": "Llena la botella con agua."
+  },
+  {
+    "word": "East",
+    "meaning": "Este",
+    "s": "Japan is in the East.",
+    "t": "Japón está en el Este."
+  },
+  {
+    "word": "Paint",
+    "meaning": "Pintar / Pintura",
+    "s": "I am going to paint my room.",
+    "t": "Voy a pintar mi habitación."
+  },
+  {
+    "word": "Language",
+    "meaning": "Idioma",
+    "s": "How many languages do you speak?",
+    "t": "¿Cuántos idiomas hablas?"
+  },
+  {
+    "word": "Among",
+    "meaning": "Entre",
+    "s": "He was among friends.",
+    "t": "Él estaba entre amigos."
+  },
+  {
+    "word": "Grand",
+    "meaning": "Gran / Grandioso",
+    "s": "It was a grand hotel.",
+    "t": "Era un hotel grandioso."
+  },
+  {
+    "word": "Ball",
+    "meaning": "Pelota",
+    "s": "Throw the ball to me.",
+    "t": "Lánzame la pelota."
+  },
+  {
+    "word": "Yet",
+    "meaning": "Aún / Todavía",
+    "s": "Is it dinner time yet?",
+    "t": "¿Ya es hora de cenar?"
+  },
+  {
+    "word": "Wave",
+    "meaning": "Ola / Ondear",
+    "s": "The waves are high today.",
+    "t": "Las olas están altas hoy."
+  },
+  {
+    "word": "Drop",
+    "meaning": "Caer / Gota",
+    "s": "Don't drop that glass.",
+    "t": "No dejes caer ese vaso."
+  },
+  {
+    "word": "Heart",
+    "meaning": "Corazón",
+    "s": "Listen to your heart.",
+    "t": "Escucha a tu corazón."
+  },
+  {
+    "word": "Am",
+    "meaning": "Soy / Estoy",
+    "s": "I am so happy for you.",
+    "t": "Estoy muy feliz por ti."
+  },
+  {
+    "word": "Present",
+    "meaning": "Presente / Regalo",
+    "s": "Thank you for the birthday present.",
+    "t": "Gracias por el regalo de cumpleaños."
+  },
+  {
+    "word": "Heavy",
+    "meaning": "Pesado",
+    "s": "This suitcase is very heavy.",
+    "t": "Esta maleta es muy pesada."
+  },
+  {
+    "word": "Base",
+    "meaning": "Base / Fondo",
+    "s": "The base of the lamp is broken.",
+    "t": "La base de la lámpara está rota."
+  },
+  {
+    "word": "Blue",
+    "meaning": "Azul",
+    "s": "The sky is clear and blue.",
+    "t": "El cielo está despejado y azul."
+  },
+  {
+    "word": "Object",
+    "meaning": "Objeto",
+    "s": "What is that round object?",
+    "t": "¿Qué es ese objeto redondo?"
+  },
+  {
+    "word": "Decide",
+    "meaning": "Decidir",
+    "s": "It's time to decide our next move.",
+    "t": "Es hora de decidir nuestro próximo movimiento."
+  },
+  {
+    "word": "Surface",
+    "meaning": "Superficie",
+    "s": "The surface of the lake is calm.",
+    "t": "La superficie del lago está tranquila."
+  },
+  {
+    "word": "Moon",
+    "meaning": "Luna",
+    "s": "The moon shines at night.",
+    "t": "La luna brilla por la noche."
+  },
+  {
+    "word": "Island",
+    "meaning": "Isla",
+    "s": "They live on a small island.",
+    "t": "Viven en una isla pequeña."
+  },
+  {
+    "word": "Foot",
+    "meaning": "Pie",
+    "s": "He hurt his foot playing soccer.",
+    "t": "Se lastimó el pie jugando al fútbol."
+  },
+  {
+    "word": "System",
+    "meaning": "Sistema",
+    "s": "The solar system is huge.",
+    "t": "El sistema solar es enorme."
+  },
+  {
+    "word": "Busy",
+    "meaning": "Ocupado",
+    "s": "I am very busy today.",
+    "t": "Estoy muy ocupado hoy."
+  },
+  {
+    "word": "Record",
+    "meaning": "Grabar / Registro",
+    "s": "He broke the world record.",
+    "t": "Él batió el récord mundial."
+  },
+  {
+    "word": "Boat",
+    "meaning": "Barco",
+    "s": "The boat sailed across the sea.",
+    "t": "El barco navegó por el mar."
+  },
+  {
+    "word": "Common",
+    "meaning": "Común",
+    "s": "It’s a common cold.",
+    "t": "Es un resfriado común."
+  },
+  {
+    "word": "Gold",
+    "meaning": "Oro",
+    "s": "She wears a gold necklace.",
+    "t": "Ella lleva un collar de oro."
+  },
+  {
+    "word": "Possible",
+    "meaning": "Posible",
+    "s": "Everything is possible if you try.",
+    "t": "Todo es posible si lo intentas."
+  },
+  {
+    "word": "Plane",
+    "meaning": "Avión",
+    "s": "The plane arrived on time.",
+    "t": "El avión llegó a tiempo."
+  },
+  {
+    "word": "Steady",
+    "meaning": "Firme / Constante",
+    "s": "He kept a steady pace.",
+    "t": "Mantuvo un ritmo constante."
+  },
+  {
+    "word": "Dry",
+    "meaning": "Seco",
+    "s": "Wait for the paint to dry.",
+    "t": "Espera a que se seque la pintura."
+  },
+  {
+    "word": "Wonder",
+    "meaning": "Maravilla / Preguntarse",
+    "s": "I wonder what will happen next.",
+    "t": "Me pregunto ne pasará después."
+  },
+  {
+    "word": "Laugh",
+    "meaning": "Reír",
+    "s": "His jokes always make me laugh.",
+    "t": "Sus chistes siempre me hacen reír."
+  },
+  {
+    "word": "Thousand",
+    "meaning": "Mil",
+    "s": "A thousand people attended the concert.",
+    "t": "Mil personas asistieron al concierto."
+  },
+  {
+    "word": "Ago",
+    "meaning": "Hace",
+    "s": "I saw him two days ago.",
+    "t": "Lo vi hace dos días."
+  },
+  {
+    "word": "Ran",
+    "meaning": "Corrió",
+    "s": "The dog ran after the ball.",
+    "t": "El perro corrió tras la pelota."
+  },
+  {
+    "word": "Check",
+    "meaning": "Comprobar / Verificar",
+    "s": "Check the price before buying.",
+    "t": "Comprueba el precio antes de comprar."
+  },
+  {
+    "word": "Game",
+    "meaning": "Juego / Partido",
+    "s": "Let's play a game.",
+    "t": "Juguemos a un juego."
+  },
+  {
+    "word": "Shape",
+    "meaning": "Forma",
+    "s": "The clouds have a strange shape.",
+    "t": "Las nubes tienen una forma extraña."
+  },
+  {
+    "word": "Equate",
+    "meaning": "Equiparar / Igualar",
+    "s": "You cannot equate wealth with happiness.",
+    "t": "No puedes equiparar la riqueza con la felicidad."
+  },
+  {
+    "word": "Hot",
+    "meaning": "Caliente",
+    "s": "The coffee is still hot.",
+    "t": "El café todavía está caliente."
+  },
+  {
+    "word": "Miss",
+    "meaning": "Extrañar / Perder",
+    "s": "Don't miss the bus!",
+    "t": "¡No pierdas el autobús!"
+  },
+  {
+    "word": "Brought",
+    "meaning": "Trajo",
+    "s": "She brought her sister to the party.",
+    "t": "Ella trajo a su hermana a la fiesta."
+  },
+  {
+    "word": "Heat",
+    "meaning": "Calor",
+    "s": "I can't stand the heat.",
+    "t": "No soporto el calor."
+  },
+  {
+    "word": "Snow",
+    "meaning": "Nieve",
+    "s": "I love the first snow of winter.",
+    "t": "Me encanta la primera nieve del invierno."
+  },
+  {
+    "word": "Tire",
+    "meaning": "Neumático / Cansar",
+    "s": "The car needs a new tire.",
+    "t": "El coche necesita un neumático nuevo."
+  },
+  {
+    "word": "Bring",
+    "meaning": "Traer",
+    "s": "Bring your umbrella with you.",
+    "t": "Trae tu paraguas contigo."
+  },
+  {
+    "word": "Yes",
+    "meaning": "Sí",
+    "s": "Yes, I will be there.",
+    "t": "Sí, estaré allí."
+  },
+  {
+    "word": "Distant",
+    "meaning": "Distante",
+    "s": "I heard a distant sound.",
+    "t": "Escuché un sonido distante."
+  },
+  {
+    "word": "Fill",
+    "meaning": "Llenar",
+    "s": "Fill the bottle with water.",
+    "t": "Llena la botella con agua."
+  },
+  {
+    "word": "East",
+    "meaning": "Este",
+    "s": "Japan is in the East.",
+    "t": "Japón está en el Este."
+  },
+  {
+    "word": "Paint",
+    "meaning": "Pintar / Pintura",
+    "s": "I am going to paint my room.",
+    "t": "Voy a pintar mi habitación."
+  },
+  {
+    "word": "Language",
+    "meaning": "Idioma",
+    "s": "How many languages do you speak?",
+    "t": "¿Cuántos idiomas hablas?"
+  },
+  {
+    "word": "Among",
+    "meaning": "Entre",
+    "s": "He was among friends.",
+    "t": "Él estaba entre amigos."
+  },
+  {
+    "word": "Grand",
+    "meaning": "Gran / Grandioso",
+    "s": "It was a grand hotel.",
+    "t": "Era un hotel grandioso."
+  },
+  {
+    "word": "Ball",
+    "meaning": "Pelota",
+    "s": "Throw the ball to me.",
+    "t": "Lánzame la pelota."
+  },
+  {
+    "word": "Yet",
+    "meaning": "Aún / Todavía",
+    "s": "Is it dinner time yet?",
+    "t": "¿Ya es hora de cenar?"
+  },
+  {
+    "word": "Wave",
+    "meaning": "Ola / Ondear",
+    "s": "The waves are high today.",
+    "t": "Las olas están altas hoy."
+  },
+  {
+    "word": "Drop",
+    "meaning": "Caer / Gota",
+    "s": "Don't drop that glass.",
+    "t": "No dejes caer ese vaso."
+  },
+  {
+    "word": "Heart",
+    "meaning": "Corazón",
+    "s": "Listen to your heart.",
+    "t": "Escucha a tu corazón."
+  },
+  {
+    "word": "Am",
+    "meaning": "Soy / Estoy",
+    "s": "I am so happy for you.",
+    "t": "Estoy muy feliz por ti."
+  },
+  {
+    "word": "Present",
+    "meaning": "Presente / Regalo",
+    "s": "Thank you for the birthday present.",
+    "t": "Gracias por el regalo de cumpleaños."
+  },
+  {
+    "word": "Heavy",
+    "meaning": "Pesado",
+    "s": "This suitcase is very heavy.",
+    "t": "Esta maleta es muy pesada."
+  },
+  {
+    "word": "Prove",
+    "meaning": "Probar / Demostrar",
+    "s": "He worked hard to prove his point.",
+    "t": "Trabajó duro para demostrar su punto."
+  },
+  {
+    "word": "Lone",
+    "meaning": "Solitario / Único",
+    "s": "A lone traveler walked down the road.",
+    "t": "Un viajero solitario caminaba por la carretera."
+  },
+  {
+    "word": "Leg",
+    "meaning": "Pierna",
+    "s": "She broke her leg while skiing.",
+    "t": "Se rompió la pierna mientras esquiaba."
+  },
+  {
+    "word": "Exercise",
+    "meaning": "Ejercicio / Ejercitar",
+    "s": "Regular exercise is good for your health.",
+    "t": "El ejercicio regular es bueno para la salud."
+  },
+  {
+    "word": "Wall",
+    "meaning": "Pared / Muro",
+    "s": "He hung a picture on the wall.",
+    "t": "Colgó un cuadro en la pared."
+  },
+  {
+    "word": "Catch",
+    "meaning": "Atrapar / Coger",
+    "s": "Try to catch the ball.",
+    "t": "Intenta atrapar la pelota."
+  },
+  {
+    "word": "Mount",
+    "meaning": "Montar / Monte",
+    "s": "They prepared to mount the horses.",
+    "t": "Se prepararon para montar los caballos."
+  },
+  {
+    "word": "Wish",
+    "meaning": "Desear / Deseo",
+    "s": "I wish you a happy birthday.",
+    "t": "Te deseo un feliz cumpleaños."
+  },
+  {
+    "word": "Board",
+    "meaning": "Tablero / Junta / Abordar",
+    "s": "Write the answer on the board.",
+    "t": "Escribe la respuesta en el tablero."
+  },
+  {
+    "word": "Joy",
+    "meaning": "Alegría / Gozo",
+    "s": "The news brought joy to the family.",
+    "t": "La noticia trajo alegría a la familia."
+  },
+  {
+    "word": "Winter",
+    "meaning": "Invierno",
+    "s": "Winter is cold in the mountains.",
+    "t": "El invierno es frío en las montañas."
+  },
+  {
+    "word": "Sat",
+    "meaning": "Sentó / Sentado (pasado de sit)",
+    "s": "She sat by the window all day.",
+    "t": "Ella se sentó junto a la ventana todo el día."
+  },
+  {
+    "word": "Written",
+    "meaning": "Escrito",
+    "s": "The instructions are written clearly.",
+    "t": "Las instrucciones están escritas claramente."
+  },
+  {
+    "word": "Wild",
+    "meaning": "Salvaje / Silvestre",
+    "s": "They saw wild animals in the forest.",
+    "t": "Vieron animales salvajes en el bosque."
+  },
+  {
+    "word": "Instrument",
+    "meaning": "Instrumento",
+    "s": "Do you play a musical instrument?",
+    "t": "¿Tocas algún instrumento musical?"
+  },
+  {
+    "word": "Kept",
+    "meaning": "Mantuvo / Guardó (pasado de keep)",
+    "s": "He kept his promise.",
+    "t": "Él mantuvo su promesa."
+  },
+  {
+    "word": "Glass",
+    "meaning": "Vaso / Vidrio",
+    "s": "The window is made of glass.",
+    "t": "La ventana está hecha de vidrio."
+  },
+  {
+    "word": "Grass",
+    "meaning": "Césped / Hierba",
+    "s": "The grass is green and soft.",
+    "t": "El césped es verde y suave."
+  },
+  {
+    "word": "Cow",
+    "meaning": "Vaca",
+    "s": "The cow provides milk.",
+    "t": "La vaca proporciona leche."
+  },
+  {
+    "word": "Job",
+    "meaning": "Trabajo / Empleo",
+    "s": "He is looking for a new job.",
+    "t": "Él está buscando un nuevo trabajo."
+  },
+  {
+    "word": "Edge",
+    "meaning": "Borde / Orilla",
+    "s": "Don't stand near the edge.",
+    "t": "No te pares cerca del borde."
+  },
+  {
+    "word": "Sign",
+    "meaning": "Signo / Señal / Firmar",
+    "s": "Please sign your name here.",
+    "t": "Por favor, firme con su nombre aquí."
+  },
+  {
+    "word": "Visit",
+    "meaning": "Visita / Visitar",
+    "s": "I want to visit my grandparents.",
+    "t": "Quiero visitar a mi abuelos."
+  },
+  {
+    "word": "Past",
+    "meaning": "Pasado",
+    "s": "We cannot change the past.",
+    "t": "No podemos cambiar el pasado."
+  },
+  {
+    "word": "Soft",
+    "meaning": "Suave / Blando",
+    "s": "The pillow is very soft.",
+    "t": "La almohada es muy suave."
+  },
+  {
+    "word": "Fun",
+    "meaning": "Diversión / Divertido",
+    "s": "We had so much fun at the party.",
+    "t": "Nos divertimos mucho en la fiesta."
+  },
+  {
+    "word": "Bright",
+    "meaning": "Brillante / Luminoso",
+    "s": "The stars are bright tonight.",
+    "t": "Las estrellas están brillantes esta noche."
+  },
+  {
+    "word": "Gas",
+    "meaning": "Gas / Gasolina",
+    "s": "The car is out of gas.",
+    "t": "El coche se quedó sin gasolina."
+  },
+  {
+    "word": "Weather",
+    "meaning": "Clima / Tiempo",
+    "s": "What is the weather like today?",
+    "t": "¿Cómo está el clima hoy?"
+  },
+  {
+    "word": "Month",
+    "meaning": "Mes",
+    "s": "I will see you next month.",
+    "t": "Te veré el próximo mes."
+  },
+  {
+    "word": "Million",
+    "meaning": "Millón",
+    "s": "A million people live in this city.",
+    "t": "Un millón de personas viven en esta ciudad."
+  },
+  {
+    "word": "Bear",
+    "meaning": "Oso / Soportar",
+    "s": "We saw a big brown bear.",
+    "t": "Vimos un gran oso pardo."
+  },
+  {
+    "word": "Finish",
+    "meaning": "Terminar / Finalizar",
+    "s": "I need to finish my work.",
+    "t": "Necesito terminar mi trabajo."
+  },
+  {
+    "word": "Happy",
+    "meaning": "Feliz / Contento",
+    "s": "She looks very happy today.",
+    "t": "Ella se ve muy feliz hoy."
+  },
+  {
+    "word": "Hope",
+    "meaning": "Esperanza / Esperar",
+    "s": "I hope you feel better soon.",
+    "t": "Espero que te sientas mejor pronto."
+  },
+  {
+    "word": "Flower",
+    "meaning": "Flor",
+    "s": "This flower has a sweet smell.",
+    "t": "Esta flor tiene un olor dulce."
+  },
+  {
+    "word": "Clothes",
+    "meaning": "Ropa / Vestimenta",
+    "s": "She bought some new clothes.",
+    "t": "Ella compró ropa nueva."
+  },
+  {
+    "word": "Strange",
+    "meaning": "Extraño / Raro",
+    "s": "I heard a strange noise.",
+    "t": "Escuché un ruido extraño."
+  },
+  {
+    "word": "Gone",
+    "meaning": "Ido / Desaparecido",
+    "s": "All the cake is gone.",
+    "t": "Todo el pastel se ha ido."
+  },
+  {
+    "word": "Trade",
+    "meaning": "Comercio / Intercambio",
+    "s": "They trade goods across the border.",
+    "t": "Intercambian mercancías a través de la frontera."
+  },
+  {
+    "word": "Melody",
+    "meaning": "Melodía",
+    "s": "That is a very catchy melody.",
+    "t": "Esa es una melodía muy pegadiza."
+  },
+  {
+    "word": "Trip",
+    "meaning": "Viaje / Tropezar",
+    "s": "How was your trip to London?",
+    "t": "¿Cómo fue tu viaje a Londres?"
+  },
+  {
+    "word": "Office",
+    "meaning": "Oficina",
+    "s": "My office is in the city center.",
+    "t": "Mi oficina está en el centro de la ciudad."
+  },
+  {
+    "word": "Receive",
+    "meaning": "Recibir",
+    "s": "Did you receive my email?",
+    "t": "¿Recibiste mi correo electrónico?"
+  },
+  {
+    "word": "Row",
+    "meaning": "Fila / Remar",
+    "s": "Sit in the front row.",
+    "t": "Siéntate en la primera fila."
+  },
+  {
+    "word": "Mouth",
+    "meaning": "Boca",
+    "s": "Open your mouth wide.",
+    "t": "Abre bien la boca."
+  },
+  {
+    "word": "Exact",
+    "meaning": "Exacto",
+    "s": "What is the exact time?",
+    "t": "¿Cuál es la hora exacta?"
+  },
+  {
+    "word": "Symbol",
+    "meaning": "Símbolo",
+    "s": "The dove is a symbol of peace.",
+    "t": "La paloma es un símbolo de paz."
+  },
+  {
+    "word": "Die",
+    "meaning": "Morir",
+    "s": "Flowers die without water.",
+    "t": "Las flores mueren sin agua."
+  },
+  {
+    "word": "Least",
+    "meaning": "Mínimo / El menos",
+    "s": "At least you tried your best.",
+    "t": "Al menos hiciste tu mejor esfuerzo."
+  },
+  {
+    "word": "Trouble",
+    "meaning": "Problema / Dificultad",
+    "s": "I don't want any trouble.",
+    "t": "No quiero ningún problema."
+  },
+  {
+    "word": "Shouted",
+    "meaning": "Gritó",
+    "s": "He shouted for help.",
+    "t": "Él gritó pidiendo ayuda."
+  },
+  {
+    "word": "Except",
+    "meaning": "Excepto",
+    "s": "Everyone was there except him.",
+    "t": "Todos estaban allí excepto él."
+  },
+  {
+    "word": "Wrote",
+    "meaning": "Escribió (pasado de write)",
+    "s": "She wrote a letter to her friend.",
+    "t": "Ella escribió una carta a su amiga."
+  },
+  {
+    "word": "Seed",
+    "meaning": "Semilla",
+    "s": "Plant the seed in the soil.",
+    "t": "Planta la semilla en el suelo."
+  },
+  {
+    "word": "Tone",
+    "meaning": "Tono",
+    "s": "I don't like your tone of voice.",
+    "t": "No me gusta tu tono de voz."
+  },
+  {
+    "word": "Join",
+    "meaning": "Unirse / Juntar",
+    "s": "Would you like to join us?",
+    "t": "¿Te gustaría unirte a nosotros?"
+  },
+  {
+    "word": "Suggest",
+    "meaning": "Sugerir",
+    "s": "What do you suggest we do?",
+    "t": "¿Qué sugieres que hagamos?"
+  },
+  {
+    "word": "Clean",
+    "meaning": "Limpio / Limpiar",
+    "s": "The room is finally clean.",
+    "t": "La habitación está finalmente limpia."
+  },
+  {
+    "word": "Break",
+    "meaning": "Romper / Descanso",
+    "s": "Let's take a ten-minute break.",
+    "t": "Tomemos un descanso de diez minutos."
+  },
+  {
+    "word": "Lady",
+    "meaning": "Dama / Señora",
+    "s": "She is a very kind lady.",
+    "t": "Ella es una dama muy amable."
+  },
+  {
+    "word": "Yard",
+    "meaning": "Patio / Yarda",
+    "s": "The kids are playing in the yard.",
+    "t": "Los niños están jugando en el patio."
+  },
+  {
+    "word": "Rise",
+    "meaning": "Subir / Aumentar",
+    "s": "The sun will rise at six.",
+    "t": "El sol saldrá a las seis."
+  },
+  {
+    "word": "Bad",
+    "meaning": "Malo",
+    "s": "Eating too much sugar is bad for you.",
+    "t": "Comer demasiada azúcar es malo para ti."
+  },
+  {
+    "word": "Blow",
+    "meaning": "Soplar",
+    "s": "Blow out the candles.",
+    "t": "Sopla las velas."
+  },
+  {
+    "word": "Oil",
+    "meaning": "Aceite / Petróleo",
+    "s": "Add some olive oil to the salad.",
+    "t": "Añade un poco de aceite de oliva a la ensalada."
+  },
+  {
+    "word": "Blood",
+    "meaning": "Sangre",
+    "s": "He fainted at the sight of blood.",
+    "t": "Él se desmayó al ver sangre."
+  },
+  {
+    "word": "Touch",
+    "meaning": "Tocar / Tacto",
+    "s": "Please do not touch the paintings.",
+    "t": "Por favor, no toques las pinturas."
+  },
+  {
+    "word": "Grew",
+    "meaning": "Creció (pasado de grow)",
+    "s": "The plants grew quickly this summer.",
+    "t": "Las plantas crecieron rápido este verano."
+  },
+  {
+    "word": "Cent",
+    "meaning": "Centavo",
+    "s": "It doesn't cost a single cent.",
+    "t": "No cuesta ni un solo centavo."
+  },
+  {
+    "word": "Mix",
+    "meaning": "Mezclar",
+    "s": "Mix the flour and water together.",
+    "t": "Mezcla la harina y el agua juntas."
+  },
+  {
+    "word": "Team",
+    "meaning": "Equipo",
+    "s": "Our team won the championship.",
+    "t": "Nuestro equipo ganó el campeonato."
+  },
+  {
+    "word": "Wire",
+    "meaning": "Alambre / Cable",
+    "s": "Don't touch that live wire.",
+    "t": "No toques ese cable con corriente."
+  },
+  {
+    "word": "Cost",
+    "meaning": "Costar / Costo",
+    "s": "How much does this cost?",
+    "t": "¿Cuánto cuesta esto?"
+  },
+  {
+    "word": "Lost",
+    "meaning": "Perdido",
+    "s": "I got lost in the big city.",
+    "t": "Me perdí en la gran ciudad."
+  },
+  {
+    "word": "Brown",
+    "meaning": "Marrón / Café",
+    "s": "The bear has thick brown fur.",
+    "t": "El oso tiene un espeso pelaje marrón."
+  },
+  {
+    "word": "Wear",
+    "meaning": "Usar / Llevar puesto",
+    "s": "I like to wear comfortable clothes.",
+    "t": "Me gusta usar ropa cómoda."
+  },
+  {
+    "word": "Garden",
+    "meaning": "Jardín",
+    "s": "They are planting flowers in the garden.",
+    "t": "Están plantando flores en el jardín."
+  },
+  {
+    "word": "Equal",
+    "meaning": "Igual",
+    "s": "All people are born equal.",
+    "t": "Todas las personas nacen iguales."
+  },
+  {
+    "word": "Sent",
+    "meaning": "Enviado / Envió (pasado de send)",
+    "s": "I sent you an email yesterday.",
+    "t": "Te envié un correo electrónico ayer."
+  },
+  {
+    "word": "Choose",
+    "meaning": "Elegir",
+    "s": "Choose the one you like best.",
+    "t": "Elige el que más te guste."
+  },
+  {
+    "word": "Fell",
+    "meaning": "Cayó (pasado de fall)",
+    "s": "He fell off his bike.",
+    "t": "Él se cayó de su bicicleta."
+  },
+  {
+    "word": "Fit",
+    "meaning": "Caber / Ajustar / En forma",
+    "s": "These shoes don't fit me.",
+    "t": "Estos zapatos no me quedan."
+  },
+  {
+    "word": "Flow",
+    "meaning": "Flujo / Fluir",
+    "s": "The water continues to flow.",
+    "t": "El agua continúa fluyendo."
+  },
+  {
+    "word": "Fair",
+    "meaning": "Justo / Feria",
+    "s": "Life isn't always fair.",
+    "t": "La vida no siempre es justa."
+  },
+  {
+    "word": "Bank",
+    "meaning": "Banco / Orilla",
+    "s": "I need to go to the bank.",
+    "t": "Necesito ir al banco."
+  },
+  {
+    "word": "Collect",
+    "meaning": "Coleccionar / Recoger",
+    "s": "I collect old coins.",
+    "t": "Colecciono monedas antiguas."
+  },
+  {
+    "word": "Save",
+    "meaning": "Ahorrar / Salvar",
+    "s": "You should save some money.",
+    "t": "Deberías ahorrar algo de dinero."
+  },
+  {
+    "word": "Control",
+    "meaning": "Control / Controlar",
+    "s": "Stay in control of your emotions.",
+    "t": "Mantén el control de tus emociones."
+  },
+  {
+    "word": "Decimal",
+    "meaning": "Decimal",
+    "s": "Learn how to use decimal points.",
+    "t": "Aprende a usar los puntos decimales."
+  },
+  {
+    "word": "Gentle",
+    "meaning": "Gentil / Suave",
+    "s": "Be gentle with the baby.",
+    "t": "Sé gentil con el bebé."
+  },
+  {
+    "word": "Woman",
+    "meaning": "Mujer",
+    "s": "She is a very strong woman.",
+    "t": "Ella es una mujer muy fuerte."
+  },
+  {
+    "word": "Captain",
+    "meaning": "Capitán",
+    "s": "The captain led the ship safely.",
+    "t": "El capitán guió el barco a salvo."
+  },
+  {
+    "word": "Practice",
+    "meaning": "Práctica / Practicar",
+    "s": "Practice makes perfect.",
+    "t": "La práctica hace al maestro."
+  },
+  {
+    "word": "Separate",
+    "meaning": "Separado / Separar",
+    "s": "Keep the two groups separate.",
+    "t": "Mantén los dos grupos separados."
+  },
+  {
+    "word": "Difficult",
+    "meaning": "Difícil",
+    "s": "The math problem was very difficult.",
+    "t": "El problema de matemáticas fue muy difícil."
+  },
+  {
+    "word": "Doctor",
+    "meaning": "Doctor / Médico",
+    "s": "The doctor is waiting for you.",
+    "t": "El médico te está esperando."
+  },
+  {
+    "word": "Please",
+    "meaning": "Por favor / Complacer",
+    "s": "Close the door, please.",
+    "t": "Cierra la puerta, por favor."
+  },
+  {
+    "word": "Protect",
+    "meaning": "Proteger",
+    "s": "We must protect the environment.",
+    "t": "Debemos proteger el medio ambiente."
+  },
+  {
+    "word": "Noon",
+    "meaning": "Mediodía",
+    "s": "The meeting starts at noon.",
+    "t": "La reunión comienza al mediodía."
+  },
+  {
+    "word": "Whose",
+    "meaning": "De quién",
+    "s": "Whose book is this?",
+    "t": "¿De quién es este libro?"
+  },
+  {
+    "word": "Locate",
+    "meaning": "Localizar / Ubicar",
+    "s": "Can you locate the city on the map?",
+    "t": "¿Puedes localizar la ciudad en el mapa?"
+  },
+  {
+    "word": "Ring",
+    "meaning": "Anillo / Sonar",
+    "s": "The phone began to ring.",
+    "t": "El teléfono empezó a sonar."
+  },
+  {
+    "word": "Character",
+    "meaning": "Personaje / Carácter",
+    "s": "Who is your favorite character in the movie?",
+    "t": "¿Quién es tu personaje favorito en la película?"
+  },
+  {
+    "word": "Insects",
+    "meaning": "Insectos",
+    "s": "There are many insects in the garden.",
+    "t": "Hay muchos insectos en el jardín."
+  },
+  {
+    "word": "Caught",
+    "meaning": "Atrapado (pasado de catch)",
+    "s": "He caught the ball with one hand.",
+    "t": "Él atrapó la pelota con una mano."
+  },
+  {
+    "word": "Period",
+    "meaning": "Periodo / Punto final",
+    "s": "It was a difficult period for the company.",
+    "t": "Fue un periodo difícil para la empresa."
+  },
+  {
+    "word": "Indicate",
+    "meaning": "Indicar",
+    "s": "Signs indicate that the road is closed.",
+    "t": "Las señales indican que el camino está cerrado."
+  },
+  {
+    "word": "Radio",
+    "meaning": "Radio",
+    "s": "I like listening to the radio.",
+    "t": "Me gusta escuchar la radio."
+  },
+  {
+    "word": "Spoke",
+    "meaning": "Habló (pasado de speak)",
+    "s": "She spoke to the manager yesterday.",
+    "t": "Ella habló con el gerente ayer."
+  },
+  {
+    "word": "Atom",
+    "meaning": "Átomo",
+    "s": "An atom is the smallest unit of matter.",
+    "t": "Un átomo es la unidad más pequeña de materia."
+  },
+  {
+    "word": "Human",
+    "meaning": "Humano",
+    "s": "To err is human.",
+    "t": "Errar es de humanos."
+  },
+  {
+    "word": "History",
+    "meaning": "Historia",
+    "s": "I am interested in ancient history.",
+    "t": "Me interesa la historia antigua."
+  },
+  {
+    "word": "Effect",
+    "meaning": "Efecto",
+    "s": "The medicine had a fast effect.",
+    "t": "La medicina tuvo un efecto rápido."
+  },
+  {
+    "word": "Electric",
+    "meaning": "Eléctrico",
+    "s": "Do you have an electric car?",
+    "t": "¿Tienes un coche eléctrico?"
+  },
+  {
+    "word": "Expect",
+    "meaning": "Esperar / Suponer",
+    "s": "I expect to see you there.",
+    "t": "Espero verte allí."
+  },
+  {
+    "word": "Crop",
+    "meaning": "Cosecha / Cultivo",
+    "s": "The wheat crop was very good this year.",
+    "t": "La cosecha de trigo fue muy buena este año."
+  },
+  {
+    "word": "Modern",
+    "meaning": "Moderno",
+    "s": "They live in a modern apartment.",
+    "t": "Viven en un apartamento moderno."
+  },
+  {
+    "word": "Element",
+    "meaning": "Elemento",
+    "s": "Water is a vital element for life.",
+    "t": "El agua es un elemento vital para la vida."
+  },
+  {
+    "word": "Hit",
+    "meaning": "Golpear / Éxito",
+    "s": "The song became a huge hit.",
+    "t": "La canción se convirtió en un gran éxito."
+  },
+  {
+    "word": "Student",
+    "meaning": "Estudiante",
+    "s": "She is a hard-working student.",
+    "t": "Ella es una estudiante aplicada."
+  },
+  {
+    "word": "Corner",
+    "meaning": "Esquina / Rincón",
+    "s": "The shop is on the corner.",
+    "t": "La tienda está en la esquina."
+  },
+  {
+    "word": "Party",
+    "meaning": "Fiesta / Partido",
+    "s": "Are you coming to my birthday party?",
+    "t": "¿Vendrás a mi fiesta de cumpleaños?"
+  },
+  {
+    "word": "Supply",
+    "meaning": "Suministrar / Provisión",
+    "s": "We have a limited supply of water.",
+    "t": "Tenemos una provisión limitada de agua."
+  },
+  {
+    "word": "Bone",
+    "meaning": "Hueso",
+    "s": "The dog is chewing a bone.",
+    "t": "El perro está masticando un hueso."
+  },
+  {
+    "word": "Rail",
+    "meaning": "Riel / Ferrocarril",
+    "s": "We traveled by rail.",
+    "t": "Viajamos en ferrocarril."
+  },
+  {
+    "word": "Imagine",
+    "meaning": "Imaginar",
+    "s": "Can you imagine a world without music?",
+    "t": "¿Puedes imaginar un mundo sin música?"
+  },
+  {
+    "word": "Provide",
+    "meaning": "Proporcionar / Proveer",
+    "s": "The hotel provides free breakfast.",
+    "t": "El hotel ofrece desayuno gratuito."
+  },
+  {
+    "word": "Agree",
+    "meaning": "Estar de acuerdo",
+    "s": "I completely agree with you.",
+    "t": "Estoy completamente de acuerdo contigo."
+  },
+  {
+    "word": "Thus",
+    "meaning": "Así / Por lo tanto",
+    "s": "The plan was simple, thus effective.",
+    "t": "El plan era simple, por lo tanto efectivo."
+  },
+  {
+    "word": "Gentle",
+    "meaning": "Gentil / Suave",
+    "s": "A gentle breeze was blowing.",
+    "t": "Soplaba una brisa suave."
+  },
+  {
+    "word": "Woman",
+    "meaning": "Mujer",
+    "s": "She is an amazing woman.",
+    "t": "Ella es una mujer increíble."
+  },
+  {
+    "word": "Captain",
+    "meaning": "Capitán",
+    "s": "The captain saluted his crew.",
+    "t": "El capitán saludó a su tripulación."
+  },
+  {
+    "word": "Guess",
+    "meaning": "Adivinar / Suposición",
+    "s": "Can you guess my age?",
+    "t": "¿Puedes adivinar mi edad?"
+  },
+  {
+    "word": "Necessary",
+    "meaning": "Necesario",
+    "s": "Is it necessary to bring a jacket?",
+    "t": "¿Es necesario traer una chaqueta?"
+  },
+  {
+    "word": "Sharp",
+    "meaning": "Afilado / Agudo",
+    "s": "Be careful, the knife is very sharp.",
+    "t": "Ten cuidado, el cuchillo está muy afilado."
+  },
+  {
+    "word": "Wing",
+    "meaning": "Ala",
+    "s": "The bird has a broken wing.",
+    "t": "El pájaro tiene un ala rota."
+  },
+  {
+    "word": "Create",
+    "meaning": "Crear",
+    "s": "You can create your own website.",
+    "t": "Puedes crear tu propio sitio web."
+  },
+  {
+    "word": "Neighbor",
+    "meaning": "Vecino",
+    "s": "My neighbor is very friendly.",
+    "t": "Mi vecino es muy amable."
+  },
+  {
+    "word": "Wash",
+    "meaning": "Lavar",
+    "s": "Wash your hands before eating.",
+    "t": "Lávate las manos antes de comer."
+  },
+  {
+    "word": "Bat",
+    "meaning": "Murciélago / Bate",
+    "s": "The bat flew into the cave.",
+    "t": "El murciélago voló hacia la cueva."
+  },
+  {
+    "word": "Rather",
+    "meaning": "Más bien / Bastante",
+    "s": "It is rather cold today.",
+    "t": "Hace bastante frío hoy."
+  },
+  {
+    "word": "Crowd",
+    "meaning": "Multitud",
+    "s": "A large crowd gathered outside.",
+    "t": "Una gran multitud se reunió afuera."
+  },
+  {
+    "word": "Corn",
+    "meaning": "Maíz",
+    "s": "We ate fresh corn on the cob.",
+    "t": "Comimos maíz fresco en la mazorca."
+  },
+  {
+    "word": "Compare",
+    "meaning": "Comparar",
+    "s": "Compare the two pictures.",
+    "t": "Compara las dos imágenes."
+  },
+  {
+    "word": "Poem",
+    "meaning": "Poema",
+    "s": "She wrote a beautiful poem.",
+    "t": "Ella escribió un hermoso poema."
+  },
+  {
+    "word": "String",
+    "meaning": "Cuerda / Hilo",
+    "s": "Tie the box with a string.",
+    "t": "Ata la caja con una cuerda."
+  },
+  {
+    "word": "Bell",
+    "meaning": "Campana / Timbre",
+    "s": "I rang the door bell twice.",
+    "t": "Toqué el timbre de la puerta dos veces."
+  },
+  {
+    "word": "Depend",
+    "meaning": "Depender",
+    "s": "It depends on the weather.",
+    "t": "Depende del clima."
+  },
+  {
+    "word": "Meat",
+    "meaning": "Carne",
+    "s": "I don't eat red meat.",
+    "t": "No como carne roja."
+  },
+  {
+    "word": "Rub",
+    "meaning": "Frotar",
+    "s": "Rub your hands together to stay warm.",
+    "t": "Frota tus manos para mantenerte caliente."
+  },
+  {
+    "word": "Tube",
+    "meaning": "Tubo",
+    "s": "I bought a tube of toothpaste.",
+    "t": "Compré un tubo de pasta de dientes."
+  },
+  {
+    "word": "Famous",
+    "meaning": "Famoso",
+    "s": "He is a famous actor.",
+    "t": "Él es un actor famoso."
+  },
+  {
+    "word": "Dollar",
+    "meaning": "Dólar",
+    "s": "The coffee costs one dollar.",
+    "t": "El café cuesta un dólar."
+  },
+  {
+    "word": "Stream",
+    "meaning": "Arroyo / Corriente",
+    "s": "There is a small stream in the forest.",
+    "t": "Hay un pequeño arroyo en el bosque."
+  },
+  {
+    "word": "Fear",
+    "meaning": "Miedo / Temor",
+    "s": "He has a fear of heights.",
+    "t": "Él tiene miedo a las alturas."
+  },
+  {
+    "word": "Sight",
+    "meaning": "Vista / Visión",
+    "s": "The sunset was a beautiful sight.",
+    "t": "El atardecer fue una vista hermosa."
+  },
+  {
+    "word": "Thin",
+    "meaning": "Delgado / Fino",
+    "s": "The paper is very thin.",
+    "t": "El papel es muy delgado."
+  },
+  {
+    "word": "Triangle",
+    "meaning": "Triángulo",
+    "s": "A triangle has three sides.",
+    "t": "Un triángulo tiene tres lados."
+  },
+  {
+    "word": "Planet",
+    "meaning": "Planeta",
+    "s": "Earth is the third planet from the sun.",
+    "t": "La Tierra es el tercer planeta desde el sol."
+  },
+  {
+    "word": "Hurry",
+    "meaning": "Prisa / Apurarse",
+    "s": "Hurry up, or we will be late.",
+    "t": "Apúrate, o llegaremos tarde."
+  },
+  {
+    "word": "Chief",
+    "meaning": "Jefe / Principal",
+    "s": "The police chief is in a meeting.",
+    "t": "El jefe de policía está en una reunión."
+  },
+  {
+    "word": "Colony",
+    "meaning": "Colonia",
+    "s": "They discovered an ant colony.",
+    "t": "Descubrieron una colonia de hormigas."
+  },
+  {
+    "word": "Clock",
+    "meaning": "Reloj",
+    "s": "The clock on the wall is slow.",
+    "t": "El reloj de la pared está atrasado."
+  },
+  {
+    "word": "Mine",
+    "meaning": "Mina / Mío",
+    "s": "That book is mine.",
+    "t": "Ese libro es mío."
+  },
+  {
+    "word": "Tie",
+    "meaning": "Atar / Corbata / Empate",
+    "s": "Tie your shoelaces.",
+    "t": "Átate los cordones de los zapatos."
+  },
+  {
+    "word": "Enter",
+    "meaning": "Entrar",
+    "s": "Please enter through the back door.",
+    "t": "Por favor, entre por la puerta trasera."
+  },
+  {
+    "word": "Major",
+    "meaning": "Mayor / Importante",
+    "s": "It was a major success.",
+    "t": "Fue un éxito importante."
+  },
+  {
+    "word": "Fresh",
+    "meaning": "Fresco",
+    "s": "I love the smell of fresh bread.",
+    "t": "Me encanta el olor del pan fresco."
+  },
+  {
+    "word": "Search",
+    "meaning": "Buscar / Búsqueda",
+    "s": "I did a search for the best hotels.",
+    "t": "Hice una búsqueda de los mejores hoteles."
+  },
+  {
+    "word": "Send",
+    "meaning": "Enviar",
+    "s": "I will send you the details later.",
+    "t": "Te enviaré los detalles más tarde."
+  },
+  {
+    "word": "Yellow",
+    "meaning": "Amarillo",
+    "s": "She is wearing a yellow raincoat.",
+    "t": "Ella lleva un impermeable amarillo."
+  },
+  {
+    "word": "Gun",
+    "meaning": "Pistola / Arma",
+    "s": "The guard has a gun.",
+    "t": "El guardia tiene una pistola."
+  },
+  {
+    "word": "Allow",
+    "meaning": "Permitir",
+    "s": "Pets are not allowed in the hotel.",
+    "t": "No se permiten mascotas en el hotel."
+  },
+  {
+    "word": "Print",
+    "meaning": "Imprimir / Huella",
+    "s": "Can you print this document?",
+    "t": "¿Puedes imprimir este documento?"
+  },
+  {
+    "word": "Dead",
+    "meaning": "Muerto",
+    "s": "The battery is dead.",
+    "t": "La batería está muerta."
+  },
+  {
+    "word": "Spot",
+    "meaning": "Lugar / Mancha",
+    "s": "This is a great spot for a picnic.",
+    "t": "Este es un gran lugar para un picnic."
+  },
+  {
+    "word": "Desert",
+    "meaning": "Desierto",
+    "s": "The desert is hot and sandy.",
+    "t": "El desierto es caluroso y arenoso."
+  },
+  {
+    "word": "Suit",
+    "meaning": "Traje / Convenir",
+    "s": "He wore a black suit to the wedding.",
+    "t": "Él llevó un traje negro a la boda."
+  },
+  {
+    "word": "Current",
+    "meaning": "Corriente / Actual",
+    "s": "The current situation is difficult.",
+    "t": "La situación actual es difícil."
+  },
+  {
+    "word": "Lift",
+    "meaning": "Levantar / Ascensor",
+    "s": "Can you help me lift this box?",
+    "t": "¿Puedes ayudarme a levantar esta caja?"
+  },
+  {
+    "word": "Rose",
+    "meaning": "Rosa / Subió",
+    "s": "She received a red rose.",
+    "t": "Ella recibió una rosa roja."
+  },
+  {
+    "word": "Continue",
+    "meaning": "Continuar",
+    "s": "Please continue with your work.",
+    "t": "Por favor, continúe con su trabajo."
+  },
+  {
+    "word": "Block",
+    "meaning": "Bloque / Bloquear",
+    "s": "I live on the next block.",
+    "t": "Vivo en la siguiente cuadra."
+  },
+  {
+    "word": "Chart",
+    "meaning": "Gráfico / Tabla",
+    "s": "Check the chart for the results.",
+    "t": "Consulta el gráfico para ver los resultados."
+  },
+  {
+    "word": "Hat",
+    "meaning": "Sombrero / Gorra",
+    "s": "Put on your hat, it's sunny.",
+    "t": "Ponte el sombrero, está soleado."
+  },
+  {
+    "word": "Sell",
+    "meaning": "Vender",
+    "s": "They sell fresh vegetables.",
+    "t": "Ellos venden verduras frescas."
+  },
+  {
+    "word": "Success",
+    "meaning": "Éxito",
+    "s": "Hard work is the key to success.",
+    "t": "El trabajo duro es la clave del éxito."
+  },
+  {
+    "word": "Company",
+    "meaning": "Compañía / Empresa",
+    "s": "He works for a tech company.",
+    "t": "Él trabaja para una empresa de tecnología."
+  },
+  {
+    "word": "Subtract",
+    "meaning": "Restar",
+    "s": "If you subtract five from ten, you get five.",
+    "t": "Si restas cinco de diez, obtienes cinco."
+  },
+  {
+    "word": "Event",
+    "meaning": "Evento",
+    "s": "The concert was a big event.",
+    "t": "El concierto fue un gran evento."
+  },
+  {
+    "word": "Particular",
+    "meaning": "Particular / Especial",
+    "s": "I have no particular preference.",
+    "t": "No tengo ninguna preferencia en particular."
+  },
+  {
+    "word": "Deal",
+    "meaning": "Trato / Negocio",
+    "s": "We made a deal.",
+    "t": "Hicimos un trato."
+  },
+  {
+    "word": "Swim",
+    "meaning": "Nadar",
+    "s": "I love to swim in the ocean.",
+    "t": "Me encanta nadar en el océano."
+  },
+  {
+    "word": "Term",
+    "meaning": "Término / Plazo",
+    "s": "The school term ends in June.",
+    "t": "El periodo escolar termina en junio."
+  },
+  {
+    "word": "Opposite",
+    "meaning": "Opuesto",
+    "s": "Black is the opposite of white.",
+    "t": "El negro es lo opuesto al blanco."
+  },
+  {
+    "word": "Wife",
+    "meaning": "Esposa",
+    "s": "His wife is a lawyer.",
+    "t": "Su esposa es abogada."
+  },
+  {
+    "word": "Shoe",
+    "meaning": "Zapato",
+    "s": "I lost my left shoe.",
+    "t": "Perdí mi zapato izquierdo."
+  },
+  {
+    "word": "Shoulder",
+    "meaning": "Hombro",
+    "s": "He has a bird on his shoulder.",
+    "t": "Él tiene un pájaro en su hombro."
+  },
+  {
+    "word": "Spread",
+    "meaning": "Extender / Difundir",
+    "s": "Spread the butter on the bread.",
+    "t": "Unta la mantequilla en el pan."
+  },
+  {
+    "word": "Arrange",
+    "meaning": "Organizar / Arreglar",
+    "s": "I need to arrange a meeting.",
+    "t": "Necesito organizar una reunión."
+  },
+  {
+    "word": "Camp",
+    "meaning": "Campamento / Acampar",
+    "s": "We like to camp in the mountains.",
+    "t": "Nos gusta acampar en las montañas."
+  },
+  {
+    "word": "Cotton",
+    "meaning": "Algodón",
+    "s": "This shirt is made of 100% cotton.",
+    "t": "Esta camisa está hecha de 100% algodón."
+  },
+  {
+    "word": "Born",
+    "meaning": "Nacido",
+    "s": "He was born in October.",
+    "t": "Él nació en octubre."
+  },
+  {
+    "word": "Determine",
+    "meaning": "Determinar",
+    "s": "The results will determine the winner.",
+    "t": "Los resultados determinarán al ganador."
+  },
+  {
+    "word": "Quart",
+    "meaning": "Cuarto (de galón)",
+    "s": "I bought a quart of milk.",
+    "t": "Compré un cuarto de galón de leche."
+  },
+  {
+    "word": "Nine",
+    "meaning": "Nueve",
+    "s": "The store opens at nine.",
+    "t": "La tienda abre a las nueve."
+  },
+  {
+    "word": "Truck",
+    "meaning": "Camión",
+    "s": "The truck is carrying heavy boxes.",
+    "t": "El camión lleva cajas pesadas."
+  },
+  {
+    "word": "Noise",
+    "meaning": "Ruido",
+    "s": "Stop making so much noise.",
+    "t": "Deja de hacer tanto ruido."
+  },
+  {
+    "word": "Level",
+    "meaning": "Nivel",
+    "s": "The water level is rising.",
+    "t": "El nivel del agua está subiendo."
+  },
+  {
+    "word": "Chance",
+    "meaning": "Oportunidad / Azar",
+    "s": "This is your last chance.",
+    "t": "Esta es tu última oportunidad."
+  },
+  {
+    "word": "Gather",
+    "meaning": "Reunir / Recoger",
+    "s": "Let's gather some wood for the fire.",
+    "t": "Reunamos algo de madera para el fuego."
+  },
+  {
+    "word": "Shop",
+    "meaning": "Tienda / Comprar",
+    "s": "I need to shop for some groceries.",
+    "t": "Necesito comprar algunos comestibles."
+  },
+  {
+    "word": "Stretch",
+    "meaning": "Estirar",
+    "s": "It’s important to stretch after a workout.",
+    "t": "Es importante estirarse después de un entrenamiento."
+  },
+  {
+    "word": "Throw",
+    "meaning": "Lanzar / Tirar",
+    "s": "Throw the ball to me.",
+    "t": "Lánzame la pelota."
+  },
+  {
+    "word": "Shine",
+    "meaning": "Brillar",
+    "s": "The sun will shine again tomorrow.",
+    "t": "El sol volverá a brillar mañana."
+  },
+  {
+    "word": "Property",
+    "meaning": "Propiedad",
+    "s": "This building is private property.",
+    "t": "Este edificio es propiedad privada."
+  },
+  {
+    "word": "Column",
+    "meaning": "Columna",
+    "s": "Check the second column of the table.",
+    "t": "Revisa la segunda columna de la tabla."
+  },
+  {
+    "word": "Molecule",
+    "meaning": "Molécula",
+    "s": "Water consists of oxygen and hydrogen molecules.",
+    "t": "El agua consiste en moléculas de oxígeno e hidrógeno."
+  },
+  {
+    "word": "Select",
+    "meaning": "Seleccionar",
+    "s": "Please select a file to upload.",
+    "t": "Por favor, seleccione un archivo para subir."
+  },
+  {
+    "word": "Wrong",
+    "meaning": "Equivocado / Mal",
+    "s": "I think this is the wrong address.",
+    "t": "Creo que esta es la dirección equivocada."
+  },
+  {
+    "word": "Gray",
+    "meaning": "Gris",
+    "s": "The sky is gray and cloudy.",
+    "t": "El cielo está gris y nublado."
+  },
+  {
+    "word": "Repeat",
+    "meaning": "Repetir",
+    "s": "Can you repeat that, please?",
+    "t": "¿Puedes repetir eso, por favor?"
+  },
+  {
+    "word": "Require",
+    "meaning": "Requerir / Exigir",
+    "s": "The job requires a lot of travel.",
+    "t": "El trabajo requiere viajar mucho."
+  },
+  {
+    "word": "Broad",
+    "meaning": "Ancho / Amplio",
+    "s": "He has broad shoulders.",
+    "t": "Él tiene hombros anchos."
+  },
+  {
+    "word": "Prepare",
+    "meaning": "Preparar",
+    "s": "I need to prepare for the presentation.",
+    "t": "Necesito prepararme para la presentación."
+  },
+  {
+    "word": "Salt",
+    "meaning": "Sal",
+    "s": "Pass me the salt, please.",
+    "t": "Pásame la sal, por favor."
+  },
+  {
+    "word": "Nose",
+    "meaning": "Nariz",
+    "s": "He has a cold and a runny nose.",
+    "t": "Él tiene un resfriado y la nariz congestionada."
+  },
+  {
+    "word": "Plural",
+    "meaning": "Plural",
+    "s": "What is the plural form of 'child'?",
+    "t": "¿Cuál es la forma plural de 'niño'?"
+  },
+  {
+    "word": "Anger",
+    "meaning": "Enojo / Ira",
+    "s": "He struggled to control his anger.",
+    "t": "Él luchó por controlar su ira."
+  },
+  {
+    "word": "Claim",
+    "meaning": "Reclamar / Afirmar",
+    "s": "He made a claim for the insurance money.",
+    "t": "Él hizo una reclamación por el dinero del seguro."
+  },
+  {
+    "word": "Continent",
+    "meaning": "Continente",
+    "s": "Africa is a large continent.",
+    "t": "África es un continente grande."
+  },
+  {
+    "word": "Oxygen",
+    "meaning": "Oxígeno",
+    "s": "We need oxygen to breathe.",
+    "t": "Necesitamos oxígeno para respirar."
+  },
+  {
+    "word": "Sugar",
+    "meaning": "Azúcar",
+    "s": "Do you take sugar in your tea?",
+    "t": "¿Le pones azúcar a tu té?"
+  },
+  {
+    "word": "Death",
+    "meaning": "Muerte",
+    "s": "Life and death are parts of nature.",
+    "t": "La vida y la muerte son partes de la naturaleza."
+  },
+  {
+    "word": "Pretty",
+    "meaning": "Bonito / Bastante",
+    "s": "It’s a pretty house.",
+    "t": "Es una casa bonita."
+  },
+  {
+    "word": "Skill",
+    "meaning": "Habilidad",
+    "s": "Cooking is a useful skill.",
+    "t": "Cocinar es una habilidad útil."
+  },
+  {
+    "word": "Women",
+    "meaning": "Mujeres",
+    "s": "There are three women in the office.",
+    "t": "Hay tres mujeres en la oficina."
+  },
+  {
+    "word": "Season",
+    "meaning": "Estación / Temporada",
+    "s": "Spring is my favorite season.",
+    "t": "La primavera es mi estación favorita."
+  },
+  {
+    "word": "Solution",
+    "meaning": "Solución",
+    "s": "We found a solution to the problem.",
+    "t": "Encontramos una solución al problema."
+  },
+  {
+    "word": "Magnet",
+    "meaning": "Imán",
+    "s": "The magnet attracts the metal.",
+    "t": "El imán atrae al metal."
+  },
+  {
+    "word": "Silver",
+    "meaning": "Plata",
+    "s": "The spoon is made of silver.",
+    "t": "La cuchara está hecha de plata."
+  },
+  {
+    "word": "Thank",
+    "meaning": "Agradecer",
+    "s": "Thank you for your help.",
+    "t": "Gracias por tu ayuda."
+  },
+  {
+    "word": "Branch",
+    "meaning": "Rama / Sucursal",
+    "s": "The bird sat on a branch.",
+    "t": "El pájaro se sentó en una rama."
+  },
+  {
+    "word": "Match",
+    "meaning": "Partido / Fosfóro",
+    "s": "We watched a football match.",
+    "t": "Vimos un partido de fútbol."
+  },
+  {
+    "word": "Suffix",
+    "meaning": "Sufijo",
+    "s": "The suffix '-ly' creates an adverb.",
+    "t": "El sufijo '-ly' crea un adverbio."
+  },
+  {
+    "word": "Especially",
+    "meaning": "Especialmente",
+    "s": "I love fruit, especially apples.",
+    "t": "Me encanta la fruta, especialmente las manzanas."
+  },
+  {
+    "word": "Fig",
+    "meaning": "Higo / Figura",
+    "s": "There is a fig tree in the yard.",
+    "t": "Hay un higueral en el patio."
+  },
+  {
+    "word": "Afraid",
+    "meaning": "Asustado / Temeroso",
+    "s": "Don't be afraid of the dark.",
+    "t": "No tengas miedo a la oscuridad."
+  },
+  {
+    "word": "Huge",
+    "meaning": "Enorme",
+    "s": "They live in a huge mansion.",
+    "t": "Viven en una mansión enorme."
+  },
+  {
+    "word": "Sister",
+    "meaning": "Hermana",
+    "s": "I have one older sister.",
+    "t": "Tengo una hermana mayor."
+  },
+  {
+    "word": "Steel",
+    "meaning": "Acero",
+    "s": "The bridge is made of steel.",
+    "t": "El puente está hecho de acero."
+  },
+  {
+    "word": "Forward",
+    "meaning": "Adelante / Reenviar",
+    "s": "Please move forward in the line.",
+    "t": "Por favor, avance en la fila."
+  },
+  {
+    "word": "Similar",
+    "meaning": "Similar / Parecido",
+    "s": "Our tastes in music are very similar.",
+    "t": "Nuestros gustos musicales son muy similares."
+  },
+  {
+    "word": "Guide",
+    "meaning": "Guía / Guiar",
+    "s": "The tour guide was very knowledgeable.",
+    "t": "El guía turístico era muy conocedor."
+  },
+  {
+    "word": "Experience",
+    "meaning": "Experiencia",
+    "s": "Travel is a great experience.",
+    "t": "Viajar es una gran experiencia."
+  },
+  {
+    "word": "Score",
+    "meaning": "Puntuación / Puntaje",
+    "s": "What was the final score of the game?",
+    "t": "¿Cuál fue el puntaje final del juego?"
+  },
+  {
+    "word": "Apple",
+    "meaning": "Manzana",
+    "s": "An apple a day keeps the doctor away.",
+    "t": "Una manzana al día mantiene alejado al médico."
+  },
+  {
+    "word": "Bought",
+    "meaning": "Comprado / Compró",
+    "s": "I bought a new pair of jeans.",
+    "t": "Compré un par de vaqueros nuevos."
+  },
+  {
+    "word": "Led",
+    "meaning": "Liderado / Guió",
+    "s": "He led the team to victory.",
+    "t": "Él guió al equipo a la victoria."
+  },
+  {
+    "word": "Pitch",
+    "meaning": "Tono / Lanzamiento",
+    "s": "The pitch of her voice was very high.",
+    "t": "El tono de su voz era muy alto."
+  },
+  {
+    "word": "Coat",
+    "meaning": "Abrigo",
+    "s": "Put on your coat, it's freezing.",
+    "t": "Ponte el abrigo, está helando."
+  },
+  {
+    "word": "Mass",
+    "meaning": "Masa",
+    "s": "The mass of the object is ten kilograms.",
+    "t": "La masa del objeto es de diez kilogramos."
+  },
+  {
+    "word": "Card",
+    "meaning": "Tarjeta / Carta",
+    "s": "Can I pay by credit card?",
+    "t": "¿Puedo pagar con tarjeta de crédito?"
+  },
+  {
+    "word": "Band",
+    "meaning": "Banda / Grupo musical",
+    "s": "He plays drums in a rock band.",
+    "t": "Él toca la batería en una banda de rock."
+  },
+  {
+    "word": "Rope",
+    "meaning": "Cuerda",
+    "s": "Tie the boat with a strong rope.",
+    "t": "Ata el bote con una cuerda fuerte."
+  },
+  {
+    "word": "Slip",
+    "meaning": "Resbalar / Deslizar",
+    "s": "Be careful not to slip on the ice.",
+    "t": "Ten cuidado de no resbalar en el hielo."
+  },
+  {
+    "word": "Win",
+    "meaning": "Ganar",
+    "s": "I hope our team will win tonight.",
+    "t": "Espero que nuestro equipo gane esta noche."
+  },
+  {
+    "word": "Dream",
+    "meaning": "Sueño / Soñar",
+    "s": "I had a very strange dream last night.",
+    "t": "Tuve un sueño muy extraño anoche."
+  },
+  {
+    "word": "Evening",
+    "meaning": "Tarde / Noche",
+    "s": "Let's go for a walk this evening.",
+    "t": "Vamos a dar un paseo esta tarde."
+  },
+  {
+    "word": "Condition",
+    "meaning": "Condición / Estado",
+    "s": "The car is in excellent condition.",
+    "t": "El coche está en excelentes condiciones."
+  },
+  {
+    "word": "Feed",
+    "meaning": "Alimentar",
+    "s": "Don't forget to feed the cat.",
+    "t": "No te olvides de alimentar al gato."
+  },
+  {
+    "word": "Tool",
+    "meaning": "Herramienta",
+    "s": "A hammer is a basic tool.",
+    "t": "Un martillo es una herramienta básica."
+  },
+  {
+    "word": "Total",
+    "meaning": "Total",
+    "s": "What is the total cost of the trip?",
+    "t": "¿Cuál es el costo total del viaje?"
+  },
+  {
+    "word": "Basic",
+    "meaning": "Básico",
+    "s": "Food and water are basic needs.",
+    "t": "La comida y el agua son necesidades básicas."
+  },
+  {
+    "word": "Smell",
+    "meaning": "Oler / Olor",
+    "s": "I love the smell of fresh coffee.",
+    "t": "Me encanta el olor del café recién hecho."
+  },
+  {
+    "word": "Valley",
+    "meaning": "Valle",
+    "s": "The village is located in a green valley.",
+    "t": "El pueblo está situado en un valle verde."
+  },
+  {
+    "word": "Nor",
+    "meaning": "Ni",
+    "s": "He is neither tall nor short.",
+    "t": "Él no es ni alto ni bajo."
+  },
+  {
+    "word": "Double",
+    "meaning": "Doble",
+    "s": "I need a double espresso, please.",
+    "t": "Necesito un espresso doble, por favor."
+  },
+  {
+    "word": "Seat",
+    "meaning": "Asiento",
+    "s": "Is this seat taken?",
+    "t": "¿Está ocupado este asiento?"
+  },
+  {
+    "word": "Arrive",
+    "meaning": "Llegar",
+    "s": "The train will arrive at five o'clock.",
+    "t": "El tren llegará a las cinco."
+  },
+  {
+    "word": "Master",
+    "meaning": "Maestro / Amo",
+    "s": "He is a master of martial arts.",
+    "t": "Él es un maestro de las artes marciales."
+  },
+  {
+    "word": "Track",
+    "meaning": "Pista / Rastro / Rastrear",
+    "s": "The police are on the right track.",
+    "t": "La policía está en el camino correcto."
+  },
+  {
+    "word": "Shore",
+    "meaning": "Orilla / Costa",
+    "s": "We spent the day on the shore.",
+    "t": "Pasamos el día en la orilla."
+  },
+  {
+    "word": "Division",
+    "meaning": "División",
+    "s": "The division of tasks was fair.",
+    "t": "La división de tareas fue justa."
+  },
+  {
+    "word": "Sheet",
+    "meaning": "Hoja / Sábana",
+    "s": "Can I have another sheet of paper?",
+    "t": "¿Puedo tener otra hoja de papel?"
+  },
+  {
+    "word": "Substance",
+    "meaning": "Sustancia",
+    "s": "The substance was sticky and red.",
+    "t": "La sustancia era pegajosa y roja."
+  },
+  {
+    "word": "Favor",
+    "meaning": "Favor",
+    "s": "Can you do me a favor?",
+    "t": "¿Puedes hacerme un favor?"
+  },
+  {
+    "word": "Connect",
+    "meaning": "Conectar",
+    "s": "The bridge connects the two islands.",
+    "t": "El puente conecta las dos islas."
+  },
+  {
+    "word": "Post",
+    "meaning": "Poste / Correo / Publicar",
+    "s": "I will send the letter by post.",
+    "t": "Enviaré la carta por correo."
+  },
+  {
+    "word": "Spend",
+    "meaning": "Gastar / Pasar (tiempo)",
+    "s": "I like to spend time in the library.",
+    "t": "Me gusta pasar tiempo en la biblioteca."
+  },
+  {
+    "word": "Glad",
+    "meaning": "Alegre / Contento",
+    "s": "I am so glad to see you again.",
+    "t": "Estoy tan contento de verte de nuevo."
+  },
+  {
+    "word": "Original",
+    "meaning": "Original",
+    "s": "This is the original version of the book.",
+    "t": "Esta es la versión original del libro."
+  },
+  {
+    "word": "Share",
+    "meaning": "Compartir",
+    "s": "Let's share the pizza.",
+    "t": "Compartamos la pizza."
+  },
+  {
+    "word": "Station",
+    "meaning": "Estación",
+    "s": "I will meet you at the bus station.",
+    "t": "Te veré en la estación de autobuses."
+  },
+  {
+    "word": "Dad",
+    "meaning": "Papá",
+    "s": "My dad is my hero.",
+    "t": "Mi papá es mi héroe."
+  },
+  {
+    "word": "Bread",
+    "meaning": "Pan",
+    "s": "I eat bread every morning.",
+    "t": "Como pan cada mañana."
+  },
+  {
+    "word": "Charge",
+    "meaning": "Cargar / Cargo",
+    "s": "I need to charge my phone.",
+    "t": "Necesito cargar mi teléfono."
+  },
+  {
+    "word": "Proper",
+    "meaning": "Adecuado / Propio",
+    "s": "Wear proper clothes for the interview.",
+    "t": "Usa ropa adecuada para la entrevista."
+  },
+  {
+    "word": "Bar",
+    "meaning": "Barra / Bar",
+    "s": "He ate a bar of chocolate.",
+    "t": "Él se comió una barra de chocolate."
+  },
+  {
+    "word": "Offer",
+    "meaning": "Oferecer / Oferta",
+    "s": "I accepted their job offer.",
+    "t": "Acepté su oferta de trabajo."
+  },
+  {
+    "word": "Segment",
+    "meaning": "Segmento / Parte",
+    "s": "The orange is divided into segments.",
+    "t": "La naranja está dividida en segmentos."
+  },
+  {
+    "word": "Slave",
+    "meaning": "Esclavo",
+    "s": "He felt like a slave to his work.",
+    "t": "Se sentía como un esclavo de su trabajo."
+  },
+  {
+    "word": "Duck",
+    "meaning": "Pato / Agacharse",
+    "s": "The duck is swimming in the pond.",
+    "t": "El pato está nadando en el estanque."
+  },
+  {
+    "word": "Market",
+    "meaning": "Mercado",
+    "s": "I bought fresh vegetables at the market.",
+    "t": "Compré verduras frescas en el mercado."
+  },
+  {
+    "word": "Degree",
+    "meaning": "Grado / Título",
+    "s": "Water freezes at zero degrees.",
+    "t": "El agua se congela a los cero grados."
+  },
+  {
+    "word": "Populate",
+    "meaning": "Poblar",
+    "s": "Birds populate the forest in spring.",
+    "t": "Las aves pueblan el bosque en primavera."
+  },
+  {
+    "word": "Chick",
+    "meaning": "Polluelo",
+    "s": "The chick is yellow and soft.",
+    "t": "El polluelo es amarillo y suave."
+  },
+  {
+    "word": "Dear",
+    "meaning": "Querido / Caro",
+    "s": "She is a very dear friend of mine.",
+    "t": "Ella es una amiga muy querida mía."
+  },
+  {
+    "word": "Enemy",
+    "meaning": "Enemigo",
+    "s": "The two countries were enemies.",
+    "t": "Los dos países eran enemigos."
+  },
+  {
+    "word": "Reply",
+    "meaning": "Responder / Respuesta",
+    "s": "I am waiting for his reply.",
+    "t": "Estoy esperando su respuesta."
+  },
+  {
+    "word": "Drink",
+    "meaning": "Beber / Bebida",
+    "s": "I would like a cold drink.",
+    "t": "Me gustaría una bebida fría."
+  },
+  {
+    "word": "Occur",
+    "meaning": "Ocurrir / Suceder",
+    "s": "When did the accident occur?",
+    "t": "¿Cuándo ocurrió el accidente?"
+  },
+  {
+    "word": "Support",
+    "meaning": "Soporte / Apoyar",
+    "s": "I will support you in your decision.",
+    "t": "Te apoyaré en tu decisión."
+  },
+  {
+    "word": "Range",
+    "meaning": "Rango / Alcance",
+    "s": "The mountains are within a close range.",
+    "t": "Las montañas están a corta distancia."
+  },
+  {
+    "word": "Motion",
+    "meaning": "Movimiento",
+    "s": "The motion of the ship made me sick.",
+    "t": "El movimiento del barco me mareó."
+  },
+  {
+    "word": "Path",
+    "meaning": "Camino / Senda",
+    "s": "Follow the path through the woods.",
+    "t": "Sigue el camino a través del bosque."
+  },
+  {
+    "word": "Liquid",
+    "meaning": "Líquido",
+    "s": "Oil is a thick liquid.",
+    "t": "El aceite es un líquido espeso."
+  },
+  {
+    "word": "Log",
+    "meaning": "Tronco / Registro",
+    "s": "We sat on a log by the fire.",
+    "t": "Nos sentamos en un tronco junto al fuego."
+  },
+  {
+    "word": "Meant",
+    "meaning": "Significó / Quiso decir",
+    "s": "I'm sorry, I meant no harm.",
+    "t": "Lo siento, no quise hacer daño."
+  },
+  {
+    "word": "Quotient",
+    "meaning": "Cociente",
+    "s": "Divide ten by two to find the quotient.",
+    "t": "Divide diez entre dos para hallar el cociente."
+  },
+  {
+    "word": "Teeth",
+    "meaning": "Dientes",
+    "s": "Brush your teeth twice a day.",
+    "t": "Cepíllate los dientes dos veces al día."
+  },
+  {
+    "word": "Shell",
+    "meaning": "Concha / Cáscara",
+    "s": "I found a beautiful shell on the beach.",
+    "t": "Encontré una concha hermosa en la playa."
+  },
+  {
+    "word": "Neck",
+    "meaning": "Cuello",
+    "s": "She wore a scarf around her neck.",
+    "t": "Ella llevaba una bufanda alrededor del cuello."
+  },
+  {
+    "word": "Fruit",
+    "meaning": "Fruta",
+    "s": "Fresh fruit is good for you.",
+    "t": "La fruta fresca es buena para ti."
+  },
+  {
+    "word": "Tall",
+    "meaning": "Alto",
+    "s": "He is the tallest boy in the class.",
+    "t": "Él es el chico más alto de la clase."
+  },
+  {
+    "word": "Soldier",
+    "meaning": "Soldado",
+    "s": "The soldier was very brave.",
+    "t": "El soldado fue muy valiente."
+  },
+  {
+    "word": "Sport",
+    "meaning": "Deporte",
+    "s": "My favorite sport is tennis.",
+    "t": "Mi deporte favorito es el tenis."
+  },
+  {
+    "word": "Skin",
+    "meaning": "Piel",
+    "s": "Protect your skin from the sun.",
+    "t": "Protege tu piel del sol."
+  },
+  {
+    "word": "Smile",
+    "meaning": "Sonreír / Sonrisa",
+    "s": "She has a very nice smile.",
+    "t": "Ella tiene una sonrisa muy bonita."
+  },
+  {
+    "word": "Soil",
+    "meaning": "Suelo / Tierra",
+    "s": "The soil is rich and dark.",
+    "t": "El suelo es rico y oscuro."
+  },
+  {
+    "word": "Solve",
+    "meaning": "Resolver",
+    "s": "Can you solve this puzzle?",
+    "t": "¿Puedes resolver este rompecabezas?"
+  },
+  {
+    "word": "Soon",
+    "meaning": "Pronto",
+    "s": "I hope to see you again soon.",
+    "t": "Espero volver a verte pronto."
+  },
+  {
+    "word": "South",
+    "meaning": "Sur",
+    "s": "Birds fly south for the winter.",
+    "t": "Las aves vuelan al sur durante el invierno."
+  },
+  {
+    "word": "Speech",
+    "meaning": "Discurso / Habla",
+    "s": "He gave a long speech at the wedding.",
+    "t": "Dio un largo discurso en la boda."
+  },
+  {
+    "word": "Speed",
+    "meaning": "Velocidad",
+    "s": "The car was traveling at a high speed.",
+    "t": "El coche viajaba a gran velocidad."
+  },
+  {
+    "word": "Stand",
+    "meaning": "Pararse / Estar de pie",
+    "s": "Please stand behind the line.",
+    "t": "Por favor, póngase detrás de la línea."
+  },
+  {
+    "word": "Star",
+    "meaning": "Estrella",
+    "s": "The sky is full of stars tonight.",
+    "t": "El cielo está lleno de estrellas esta noche."
+  },
+  {
+    "word": "Still",
+    "meaning": "Todavía / Quieto",
+    "s": "The water was perfectly still.",
+    "t": "El agua estaba perfectamente quieta."
+  },
+  {
+    "word": "Stone",
+    "meaning": "Piedra",
+    "s": "He threw a stone into the lake.",
+    "t": "Tiró una piedra al lago."
+  },
+  {
+    "word": "Straight",
+    "meaning": "Directo / Recto",
+    "s": "Go straight down this road.",
+    "t": "Sigue recto por este camino."
+  },
+  {
+    "word": "Surprise",
+    "meaning": "Sorpresa",
+    "s": "The party was a total surprise.",
+    "t": "La fiesta fue una sorpresa total."
+  },
+  {
+    "word": "Tail",
+    "meaning": "Cola / Rabo",
+    "s": "The dog wagged its tail.",
+    "t": "El perro movió la cola."
+  },
+  {
+    "word": "Tape",
+    "meaning": "Cinta",
+    "s": "Use some tape to fix the box.",
+    "t": "Usa un poco de cinta para arreglar la caja."
+  },
+  {
+    "word": "Task",
+    "meaning": "Tarea",
+    "s": "Our first task is to clean the house.",
+    "t": "Nuestra primera tarea es limpiar la casa."
+  },
+  {
+    "word": "Taste",
+    "meaning": "Gusto / Saborear",
+    "s": "I don't like the taste of onions.",
+    "t": "No me gusta el sabor de las cebollas."
+  },
+  {
+    "word": "Teach",
+    "meaning": "Enseñar",
+    "s": "She will teach us English.",
+    "t": "Ella nos enseñará inglés."
+  },
+  {
+    "word": "Tear",
+    "meaning": "Lágrima / Rasgar",
+    "s": "She wiped a tear from her eye.",
+    "t": "Se limpió una lágrima del ojo."
+  },
+  {
+    "word": "Dessert",
+    "meaning": "Postre",
+    "s": "What's for dessert tonight?",
+    "t": "¿Qué hay de postre esta noche?"
+  },
+  {
+    "word": "Coast",
+    "meaning": "Costa",
+    "s": "We live on the east coast.",
+    "t": "Vivimos en la costa este."
+  },
+  {
+    "word": "Offer",
+    "meaning": "Oferecer / Oferta",
+    "s": "I accepted their job offer.",
+    "t": "Acepté su oferta de trabajo."
+  },
+  {
+    "word": "Segment",
+    "meaning": "Segmento / Parte",
+    "s": "The orange is divided into segments.",
+    "t": "La naranja está dividida en segmentos."
+  },
+  {
+    "word": "Slave",
+    "meaning": "Esclavo",
+    "s": "He felt like a slave to his work.",
+    "t": "Se sentía como un esclavo de su trabajo."
+  },
+  {
+    "word": "Duck",
+    "meaning": "Pato / Agacharse",
+    "s": "The duck is swimming in the pond.",
+    "t": "El pato está nadando en el estanque."
+  },
+  {
+    "word": "Market",
+    "meaning": "Mercado",
+    "s": "I bought fresh vegetables at the market.",
+    "t": "Compré verduras frescas en el mercado."
+  },
+  {
+    "word": "Degree",
+    "meaning": "Grado / Título",
+    "s": "Water freezes at zero degrees.",
+    "t": "El agua se congela a los cero grados."
+  },
+  {
+    "word": "Populate",
+    "meaning": "Poblar",
+    "s": "Birds populate the forest in spring.",
+    "t": "Las aves pueblan el bosque en primavera."
+  },
+  {
+    "word": "Chick",
+    "meaning": "Polluelo",
+    "s": "The chick is yellow and soft.",
+    "t": "El polluelo es amarillo y suave."
+  },
+  {
+    "word": "Dear",
+    "meaning": "Querido / Caro",
+    "s": "She is a very dear friend of mine.",
+    "t": "Ella es una amiga muy querida mía."
+  },
+  {
+    "word": "Enemy",
+    "meaning": "Enemigo",
+    "s": "The two countries were enemies.",
+    "t": "Los dos países eran enemigos."
+  },
+  {
+    "word": "Reply",
+    "meaning": "Responder / Respuesta",
+    "s": "I am waiting for his reply.",
+    "t": "Estoy esperando su respuesta."
+  },
+  {
+    "word": "Drink",
+    "meaning": "Beber / Bebida",
+    "s": "I would like a cold drink.",
+    "t": "Me gustaría una bebida fría."
+  },
+  {
+    "word": "Occur",
+    "meaning": "Ocurrir / Suceder",
+    "s": "When did the accident occur?",
+    "t": "¿Cuándo ocurrió el accidente?"
+  },
+  {
+    "word": "Support",
+    "meaning": "Soporte / Apoyar",
+    "s": "I will support you in your decision.",
+    "t": "Te apoyaré en tu decisión."
+  },
+  {
+    "word": "Range",
+    "meaning": "Rango / Alcance",
+    "s": "The mountains are within a close range.",
+    "t": "Las montañas están a corta distancia."
+  },
+  {
+    "word": "Motion",
+    "meaning": "Movimiento",
+    "s": "The motion of the ship made me sick.",
+    "t": "El movimiento del barco me mareó."
+  },
+  {
+    "word": "Path",
+    "meaning": "Camino / Senda",
+    "s": "Follow the path through the woods.",
+    "t": "Sigue el camino a través del bosque."
+  },
+  {
+    "word": "Liquid",
+    "meaning": "Líquido",
+    "s": "Oil is a thick liquid.",
+    "t": "El aceite es un líquido espeso."
+  },
+  {
+    "word": "Log",
+    "meaning": "Tronco / Registro",
+    "s": "We sat on a log by the fire.",
+    "t": "Nos sentamos en un tronco junto al fuego."
+  },
+  {
+    "word": "Meant",
+    "meaning": "Significó / Quiso decir",
+    "s": "I'm sorry, I meant no harm.",
+    "t": "Lo siento, no quise hacer daño."
+  },
+  {
+    "word": "Quotient",
+    "meaning": "Cociente",
+    "s": "Divide ten by two to find the quotient.",
+    "t": "Divide diez entre dos para hallar el cociente."
+  },
+  {
+    "word": "Teeth",
+    "meaning": "Dientes",
+    "s": "Brush your teeth twice a day.",
+    "t": "Cepíllate los dientes dos veces al día."
+  },
+  {
+    "word": "Shell",
+    "meaning": "Concha / Cáscara",
+    "s": "I found a beautiful shell on the beach.",
+    "t": "Encontré una concha hermosa en la playa."
+  },
+  {
+    "word": "Neck",
+    "meaning": "Cuello",
+    "s": "She wore a scarf around her neck.",
+    "t": "Ella llevaba una bufanda alrededor del cuello."
+  },
+  {
+    "word": "Fruit",
+    "meaning": "Fruta",
+    "s": "Fresh fruit is good for you.",
+    "t": "La fruta fresca es buena para ti."
+  },
+  {
+    "word": "Tall",
+    "meaning": "Alto",
+    "s": "He is the tallest boy in the class.",
+    "t": "Él es el chico más alto de la clase."
+  },
+  {
+    "word": "Soldier",
+    "meaning": "Soldado",
+    "s": "The soldier was very brave.",
+    "t": "El soldado fue muy valiente."
+  },
+  {
+    "word": "Sport",
+    "meaning": "Deporte",
+    "s": "My favorite sport is tennis.",
+    "t": "Mi deporte favorito es el tenis."
+  },
+  {
+    "word": "Skin",
+    "meaning": "Piel",
+    "s": "Protect your skin from the sun.",
+    "t": "Protege tu piel del sol."
+  },
+  {
+    "word": "Smile",
+    "meaning": "Sonreír / Sonrisa",
+    "s": "She has a very nice smile.",
+    "t": "Ella tiene una sonrisa muy bonita."
+  },
+  {
+    "word": "Soil",
+    "meaning": "Suelo / Tierra",
+    "s": "The soil is rich and dark.",
+    "t": "El suelo es rico y oscuro."
+  },
+  {
+    "word": "Solve",
+    "meaning": "Resolver",
+    "s": "Can you solve this puzzle?",
+    "t": "¿Puedes resolver este rompecabezas?"
+  },
+  {
+    "word": "Soon",
+    "meaning": "Pronto",
+    "s": "I hope to see you again soon.",
+    "t": "Espero volver a verte pronto."
+  },
+  {
+    "word": "South",
+    "meaning": "Sur",
+    "s": "Birds fly south for the winter.",
+    "t": "Las aves vuelan al sur durante el invierno."
+  },
+  {
+    "word": "Speech",
+    "meaning": "Discurso / Habla",
+    "s": "He gave a long speech at the wedding.",
+    "t": "Dio un largo discurso en la boda."
+  },
+  {
+    "word": "Speed",
+    "meaning": "Velocidad",
+    "s": "The car was traveling at a high speed.",
+    "t": "El coche viajaba a gran velocidad."
+  },
+  {
+    "word": "Stand",
+    "meaning": "Pararse / Estar de pie",
+    "s": "Please stand behind the line.",
+    "t": "Por favor, póngase detrás de la línea."
+  },
+  {
+    "word": "Star",
+    "meaning": "Estrella",
+    "s": "The sky is full of stars tonight.",
+    "t": "El cielo está lleno de estrellas esta noche."
+  },
+  {
+    "word": "Still",
+    "meaning": "Todavía / Quieto",
+    "s": "The water was perfectly still.",
+    "t": "El agua estaba perfectamente quieta."
+  },
+  {
+    "word": "Stone",
+    "meaning": "Piedra",
+    "s": "He threw a stone into the lake.",
+    "t": "Tiró una piedra al lago."
+  },
+  {
+    "word": "Straight",
+    "meaning": "Directo / Recto",
+    "s": "Go straight down this road.",
+    "t": "Sigue recto por este camino."
+  },
+  {
+    "word": "Surprise",
+    "meaning": "Sorpresa",
+    "s": "The party was a total surprise.",
+    "t": "La fiesta fue una sorpresa total."
+  },
+  {
+    "word": "Tail",
+    "meaning": "Cola / Rabo",
+    "s": "The dog wagged its tail.",
+    "t": "El perro movió la cola."
+  },
+  {
+    "word": "Tape",
+    "meaning": "Cinta",
+    "s": "Use some tape to fix the box.",
+    "t": "Usa un poco de cinta para arreglar la caja."
+  },
+  {
+    "word": "Task",
+    "meaning": "Tarea",
+    "s": "Our first task is to clean the house.",
+    "t": "Nuestra primera tarea es limpiar la casa."
+  },
+  {
+    "word": "Taste",
+    "meaning": "Gusto / Saborear",
+    "s": "I don't like the taste of onions.",
+    "t": "No me gusta el sabor de las cebollas."
+  },
+  {
+    "word": "Teach",
+    "meaning": "Enseñar",
+    "s": "She will teach us English.",
+    "t": "Ella nos enseñará inglés."
+  },
+  {
+    "word": "Tear",
+    "meaning": "Lágrima / Rasgar",
+    "s": "She wiped a tear from her eye.",
+    "t": "Se limpió una lágrima del ojo."
+  },
+  {
+    "word": "Dessert",
+    "meaning": "Postre",
+    "s": "What's for dessert tonight?",
+    "t": "¿Qué hay de postre esta noche?"
+  },
+  {
+    "word": "Coast",
+    "meaning": "Costa",
+    "s": "We live on the east coast.",
+    "t": "Vivimos en la costa este."
+  },
+  {
+    "word": "Win",
+    "meaning": "Ganar",
+    "s": "I hope our team will win the game.",
+    "t": "Espero que nuestro equipo gane el juego."
+  },
+  {
+    "word": "Dream",
+    "meaning": "Sueño / Soñar",
+    "s": "I had a very strange dream last night.",
+    "t": "Tuve un sueño muy extraño anoche."
+  },
+  {
+    "word": "Evening",
+    "meaning": "Tarde / Noche",
+    "s": "Let's go for a walk this evening.",
+    "t": "Vamos a dar un paseo esta tarde."
+  },
+  {
+    "word": "Condition",
+    "meaning": "Condición / Estado",
+    "s": "The car is in excellent condition.",
+    "t": "El coche está en excelentes condiciones."
+  },
+  {
+    "word": "Feed",
+    "meaning": "Alimentar",
+    "s": "Don't forget to feed the cat.",
+    "t": "No te olvides de alimentar al gato."
+  },
+  {
+    "word": "Tool",
+    "meaning": "Herramienta",
+    "s": "A hammer is a basic tool.",
+    "t": "Un martillo es una herramienta básica."
+  },
+  {
+    "word": "Total",
+    "meaning": "Total",
+    "s": "What is the total cost of the trip?",
+    "t": "¿Cuál es el costo total del viaje?"
+  },
+  {
+    "word": "Basic",
+    "meaning": "Básico",
+    "s": "Food and water are basic needs.",
+    "t": "La comida y el agua son necesidades básicas."
+  },
+  {
+    "word": "Smell",
+    "meaning": "Oler / Olor",
+    "s": "I love the smell of fresh coffee.",
+    "t": "Me encanta el olor del café recién hecho."
+  },
+  {
+    "word": "Valley",
+    "meaning": "Valle",
+    "s": "The village is located in a green valley.",
+    "t": "El pueblo está situado en un valle verde."
+  },
+  {
+    "word": "Nor",
+    "meaning": "Ni",
+    "s": "He is neither tall nor short.",
+    "t": "Él no es ni alto ni bajo."
+  },
+  {
+    "word": "Double",
+    "meaning": "Doble",
+    "s": "I need a double espresso, please.",
+    "t": "Necesito un espresso doble, por favor."
+  },
+  {
+    "word": "Seat",
+    "meaning": "Asiento",
+    "s": "Is this seat taken?",
+    "t": "¿Está ocupado este asiento?"
+  },
+  {
+    "word": "Arrive",
+    "meaning": "Llegar",
+    "s": "The train will arrive at five o'clock.",
+    "t": "El tren llegará a las cinco."
+  },
+  {
+    "word": "Master",
+    "meaning": "Maestro / Amo",
+    "s": "He is a master of martial arts.",
+    "t": "Él es un maestro de las artes marciales."
+  },
+  {
+    "word": "Track",
+    "meaning": "Pista / Rastrear",
+    "s": "The police are on the right track.",
+    "t": "La policía está en el camino correcto."
+  },
+  {
+    "word": "Shore",
+    "meaning": "Orilla / Costa",
+    "s": "We spent the day on the shore.",
+    "t": "Pasamos el día en la orilla."
+  },
+  {
+    "word": "Division",
+    "meaning": "División",
+    "s": "The division of tasks was fair.",
+    "t": "La división de tareas fue justa."
+  },
+  {
+    "word": "Sheet",
+    "meaning": "Hoja / Sábana",
+    "s": "Can I have another sheet of paper?",
+    "t": "¿Puedo tener otra hoja de papel?"
+  },
+  {
+    "word": "Substance",
+    "meaning": "Sustancia",
+    "s": "The substance was sticky and red.",
+    "t": "La sustancia era pegajosa y roja."
+  },
+  {
+    "word": "Favor",
+    "meaning": "Favor",
+    "s": "Can you do me a favor?",
+    "t": "¿Puedes hacerme un favor?"
+  },
+  {
+    "word": "Connect",
+    "meaning": "Conectar",
+    "s": "The bridge connects the two islands.",
+    "t": "El puente conecta las dos islas."
+  },
+  {
+    "word": "Post",
+    "meaning": "Poste / Publicar",
+    "s": "I will send the letter by post.",
+    "t": "Enviaré la carta por correo."
+  },
+  {
+    "word": "Spend",
+    "meaning": "Gastar / Pasar tiempo",
+    "s": "I like to spend time in the library.",
+    "t": "Me gusta pasar tiempo en la biblioteca."
+  },
+  {
+    "word": "Glad",
+    "meaning": "Alegre / Contento",
+    "s": "I am so glad to see you again.",
+    "t": "Estoy tan contento de verte de nuevo."
+  },
+  {
+    "word": "Original",
+    "meaning": "Original",
+    "s": "This is the original version of the book.",
+    "t": "Esta es la versión original del libro."
+  },
+  {
+    "word": "Share",
+    "meaning": "Compartir",
+    "s": "Let's share the pizza.",
+    "t": "Compartamos la pizza."
+  },
+  {
+    "word": "Station",
+    "meaning": "Estación",
+    "s": "I will meet you at the bus station.",
+    "t": "Te veré en la estación de autobuses."
+  },
+  {
+    "word": "Dad",
+    "meaning": "Papá",
+    "s": "My dad is my hero.",
+    "t": "Mi papá es mi héroe."
+  },
+  {
+    "word": "Bread",
+    "meaning": "Pan",
+    "s": "I eat bread every morning.",
+    "t": "Como pan cada mañana."
+  },
+  {
+    "word": "Charge",
+    "meaning": "Cargar / Cargo",
+    "s": "I need to charge my phone.",
+    "t": "Necesito cargar mi teléfono."
+  },
+  {
+    "word": "Proper",
+    "meaning": "Adecuado / Propio",
+    "s": "Wear proper clothes for the interview.",
+    "t": "Usa ropa adecuada para la entrevista."
+  },
+  {
+    "word": "Bar",
+    "meaning": "Barra / Bar",
+    "s": "He ate a bar of chocolate.",
+    "t": "Él se comió una barra de chocolate."
+  },
+  {
+    "word": "Offer",
+    "meaning": "Ofrecer / Oferta",
+    "s": "I accepted their job offer.",
+    "t": "Acepté su oferta de trabajo."
+  },
+  {
+    "word": "Segment",
+    "meaning": "Segmento / Parte",
+    "s": "The orange is divided into segments.",
+    "t": "La naranja está dividida en segmentos."
+  },
+  {
+    "word": "Slave",
+    "meaning": "Esclavo",
+    "s": "He felt like a slave to his work.",
+    "t": "Se sentía como un esclavo de su trabajo."
+  },
+  {
+    "word": "Duck",
+    "meaning": "Pato / Agacharse",
+    "s": "The duck is swimming in the pond.",
+    "t": "El pato está nadando en el estanque."
+  },
+  {
+    "word": "Market",
+    "meaning": "Mercado",
+    "s": "I bought fresh vegetables at the market.",
+    "t": "Compré verduras frescas en el mercado."
+  },
+  {
+    "word": "Degree",
+    "meaning": "Grado / Título",
+    "s": "Water freezes at zero degrees.",
+    "t": "El agua se congela a los cero grados."
+  },
+  {
+    "word": "Populate",
+    "meaning": "Poblar",
+    "s": "Birds populate the forest in spring.",
+    "t": "Las aves pueblan el bosque en primavera."
+  },
+  {
+    "word": "Chick",
+    "meaning": "Polluelo",
+    "s": "The chick is yellow and soft.",
+    "t": "El polluelo es amarillo y suave."
+  },
+  {
+    "word": "Dear",
+    "meaning": "Querido / Caro",
+    "s": "She is a very dear friend of mine.",
+    "t": "Ella es una amiga muy querida mía."
+  },
+  {
+    "word": "Enemy",
+    "meaning": "Enemigo",
+    "s": "The two countries were enemies.",
+    "t": "Los dos países eran enemigos."
+  },
+  {
+    "word": "Reply",
+    "meaning": "Responder / Respuesta",
+    "s": "I am waiting for his reply.",
+    "t": "Estoy esperando su respuesta."
+  },
+  {
+    "word": "Drink",
+    "meaning": "Beber / Bebida",
+    "s": "I would like a cold drink.",
+    "t": "Me gustaría una bebida fría."
+  },
+  {
+    "word": "Occur",
+    "meaning": "Ocurrir / Suceder",
+    "s": "When did the accident occur?",
+    "t": "¿Cuándo ocurrió el accidente?"
+  },
+  {
+    "word": "Support",
+    "meaning": "Soporte / Apoyar",
+    "s": "I will support you in your decision.",
+    "t": "Te apoyaré en tu decisión."
+  },
+  {
+    "word": "Range",
+    "meaning": "Rango / Alcance",
+    "s": "The mountains are within a close range.",
+    "t": "Las montañas están a corta distancia."
+  },
+  {
+    "word": "Motion",
+    "meaning": "Movimiento",
+    "s": "The motion of the ship made me sick.",
+    "t": "El movimiento del barco me mareó."
+  },
+  {
+    "word": "Path",
+    "meaning": "Camino / Senda",
+    "s": "Follow the path through the woods.",
+    "t": "Sigue el camino a través del bosque."
+  },
+  {
+    "word": "Liquid",
+    "meaning": "Líquido",
+    "s": "Oil is a thick liquid.",
+    "t": "El aceite es un líquido espeso."
+  },
+  {
+    "word": "Log",
+    "meaning": "Tronco / Registro",
+    "s": "We sat on a log by the fire.",
+    "t": "Nos sentamos en un tronco junto al fuego."
+  },
+  {
+    "word": "Meant",
+    "meaning": "Significó / Quiso decir",
+    "s": "I'm sorry, I meant no harm.",
+    "t": "Lo siento, no quise hacer daño."
+  },
+  {
+    "word": "Quotient",
+    "meaning": "Cociente",
+    "s": "Divide ten by two to find the quotient.",
+    "t": "Divide diez entre dos para hallar el cociente."
+  },
+  {
+    "word": "Teeth",
+    "meaning": "Dientes",
+    "s": "Brush your teeth twice a day.",
+    "t": "Cepíllate los dientes dos veces al día."
+  },
+  {
+    "word": "Shell",
+    "meaning": "Concha / Cáscara",
+    "s": "I found a beautiful shell on the beach.",
+    "t": "Encontré una concha hermosa en la playa."
+  },
+  {
+    "word": "Neck",
+    "meaning": "Cuello",
+    "s": "She wore a scarf around her neck.",
+    "t": "Ella llevaba una bufanda alrededor del cuello."
+  },
+  {
+    "word": "Fruit",
+    "meaning": "Fruta",
+    "s": "Fresh fruit is good for you.",
+    "t": "La fruta fresca es buena para ti."
+  },
+  {
+    "word": "Tall",
+    "meaning": "Alto",
+    "s": "He is the tallest boy in the class.",
+    "t": "Él es el chico más alto de la clase."
+  },
+  {
+    "word": "Soldier",
+    "meaning": "Soldado",
+    "s": "The soldier was very brave.",
+    "t": "El soldado fue muy valiente."
+  },
+  {
+    "word": "Sport",
+    "meaning": "Deporte",
+    "s": "My favorite sport is tennis.",
+    "t": "Mi deporte favorito es el tenis."
+  },
+  {
+    "word": "Skin",
+    "meaning": "Piel",
+    "s": "Protect your skin from the sun.",
+    "t": "Protege tu piel del sol."
+  },
+  {
+    "word": "Smile",
+    "meaning": "Sonreír / Sonrisa",
+    "s": "She has a very nice smile.",
+    "t": "Ella tiene una sonrisa muy bonita."
+  },
+  {
+    "word": "Soil",
+    "meaning": "Suelo / Tierra",
+    "s": "The soil is rich and dark.",
+    "t": "El suelo es rico y oscuro."
+  },
+  {
+    "word": "Solve",
+    "meaning": "Resolver",
+    "s": "Can you solve this puzzle?",
+    "t": "¿Puedes resolver este rompecabezas?"
+  },
+  {
+    "word": "Soon",
+    "meaning": "Pronto",
+    "s": "I hope to see you again soon.",
+    "t": "Espero volver a verte pronto."
+  },
+  {
+    "word": "South",
+    "meaning": "Sur",
+    "s": "Birds fly south for the winter.",
+    "t": "Las aves vuelan al sur durante el invierno."
+  },
+  {
+    "word": "Speech",
+    "meaning": "Discurso / Habla",
+    "s": "He gave a long speech at the wedding.",
+    "t": "Dio un largo discurso en la boda."
+  },
+  {
+    "word": "Speed",
+    "meaning": "Velocidad",
+    "s": "The car was traveling at a high speed.",
+    "t": "El coche viajaba a gran velocidad."
+  },
+  {
+    "word": "Stand",
+    "meaning": "Pararse / Estar de pie",
+    "s": "Please stand behind the line.",
+    "t": "Por favor, póngase detrás de la línea."
+  },
+  {
+    "word": "Star",
+    "meaning": "Estrella",
+    "s": "The sky is full of stars tonight.",
+    "t": "El cielo está lleno de estrellas esta noche."
+  },
+  {
+    "word": "Still",
+    "meaning": "Todavía / Quieto",
+    "s": "The water was perfectly still.",
+    "t": "El agua estaba perfectamente quieta."
+  },
+  {
+    "word": "Stone",
+    "meaning": "Piedra",
+    "s": "He threw a stone into the lake.",
+    "t": "Tiró una piedra al lago."
+  },
+  {
+    "word": "Straight",
+    "meaning": "Directo / Recto",
+    "s": "Go straight down this road.",
+    "t": "Sigue recto por este camino."
+  },
+  {
+    "word": "Surprise",
+    "meaning": "Sorpresa",
+    "s": "The party was a total surprise.",
+    "t": "La fiesta fue una sorpresa total."
+  },
+  {
+    "word": "Tail",
+    "meaning": "Cola / Rabo",
+    "s": "The dog wagged its tail.",
+    "t": "El perro movió la cola."
+  },
+  {
+    "word": "Tape",
+    "meaning": "Cinta",
+    "s": "Use some tape to fix the box.",
+    "t": "Usa un poco de cinta para arreglar la caja."
+  },
+  {
+    "word": "Task",
+    "meaning": "Tarea",
+    "s": "Our first task is to clean the house.",
+    "t": "Nuestra primera tarea es limpiar la casa."
+  },
+  {
+    "word": "Taste",
+    "meaning": "Gusto / Saborear",
+    "s": "I don't like the taste of onions.",
+    "t": "No me gusta el sabor de las cebollas."
+  },
+  {
+    "word": "Teach",
+    "meaning": "Enseñar",
+    "s": "She will teach us English.",
+    "t": "Ella nos enseñará inglés."
+  },
+  {
+    "word": "Tear",
+    "meaning": "Lágrima / Rasgar",
+    "s": "She wiped a tear from her eye.",
+    "t": "Se limpió una lágrima del ojo."
+  },
+  {
+    "word": "Dessert",
+    "meaning": "Postre",
+    "s": "What's for dessert tonight?",
+    "t": "¿Qué hay de postre esta noche?"
+  },
+  {
+    "word": "Coast",
+    "meaning": "Costa",
+    "s": "We live on the east coast.",
+    "t": "Vivimos en la costa este."
+  },
+  {
+    "word": "Adventure",
+    "meaning": "Aventura",
+    "s": "Life is a great adventure.",
+    "t": "La vida es una gran aventura."
+  },
+  {
+    "word": "Advice",
+    "meaning": "Consejo",
+    "s": "Thank you for the good advice.",
+    "t": "Gracias por el buen consejo."
+  },
+  {
+    "word": "Balance",
+    "meaning": "Equilibrio",
+    "s": "Keep your balance on the ice.",
+    "t": "Mantén tu equilibrio en el hielo."
+  },
+  {
+    "word": "Century",
+    "meaning": "Siglo",
+    "s": "We live in the 21st century.",
+    "t": "Vivimos en el siglo veintiuno."
+  },
+  {
+    "word": "Damage",
+    "meaning": "Daño",
+    "s": "The storm caused great damage.",
+    "t": "La tormenta causó grandes daños."
+  },
+  {
+    "word": "Effort",
+    "meaning": "Esfuerzo",
+    "s": "It takes effort to succeed.",
+    "t": "Se necesita esfuerzo para tener éxito."
+  },
+  {
+    "word": "Famous",
+    "meaning": "Famoso",
+    "s": "He is a famous writer.",
+    "t": "Él es un escritor famoso."
+  },
+  {
+    "word": "Garden",
+    "meaning": "Jardín",
+    "s": "The flowers in the garden are blooming.",
+    "t": "Las flores del jardín están floreciendo."
+  },
+  {
+    "word": "Health",
+    "meaning": "Salud",
+    "s": "Health is better than wealth.",
+    "t": "La salud es mejor que la riqueza."
+  },
+  {
+    "word": "Income",
+    "meaning": "Ingreso",
+    "s": "He has a steady monthly income.",
+    "t": "Él tiene un ingreso mensual estable."
+  },
+  {
+    "word": "Judge",
+    "meaning": "Juez / Juzgar",
+    "s": "Don't judge a book by its cover.",
+    "t": "No juzgues un libro por su portada."
+  },
+  {
+    "word": "Knowledge",
+    "meaning": "Conocimiento",
+    "s": "Knowledge is power.",
+    "t": "El conocimiento es poder."
+  },
+  {
+    "word": "Level",
+    "meaning": "Nivel",
+    "s": "The water level is rising.",
+    "t": "El nivel del agua está subiendo."
+  },
+  {
+    "word": "Memory",
+    "meaning": "Memoria",
+    "s": "I have a good memory for names.",
+    "t": "Tengo buena memoria para los nombres."
+  },
+  {
+    "word": "Nature",
+    "meaning": "Naturaleza",
+    "s": "We must protect mother nature.",
+    "t": "Debemos proteger a la madre naturaleza."
+  },
+  {
+    "word": "Object",
+    "meaning": "Objeto",
+    "s": "The object was hidden in the box.",
+    "t": "El objeto estaba escondido en la caja."
+  },
+  {
+    "word": "Public",
+    "meaning": "Público",
+    "s": "This is a public library.",
+    "t": "Esta es una biblioteca pública."
+  }
+]

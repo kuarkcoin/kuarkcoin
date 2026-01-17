@@ -1,0 +1,6002 @@
+[
+    {
+        "id": 1,
+        "question_text": "Only after the final variables had been recalibrated ____ a pattern begin to emerge.",
+        "option_a": "did",
+        "option_b": "had",
+        "option_c": "was",
+        "option_d": "would",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 2,
+        "question_text": "Hardly ____ revising the report when the board demanded another rewrite.",
+        "option_a": "had she finished",
+        "option_b": "she finished",
+        "option_c": "she had been finishing",
+        "option_d": "she has finished",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 3,
+        "question_text": "No sooner ____ the new policy announced than tensions rose.",
+        "option_a": "was",
+        "option_b": "had",
+        "option_c": "has been",
+        "option_d": "have",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 4,
+        "question_text": "Under no circumstances ____ the encrypted file shared outside the department.",
+        "option_a": "will be",
+        "option_b": "should be",
+        "option_c": "must be",
+        "option_d": "should",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 5,
+        "question_text": "Were he to have acknowledged the discrepancy earlier, the fallout ____ less damaging.",
+        "option_a": "would be",
+        "option_b": "would have been",
+        "option_c": "is",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 6,
+        "question_text": "Scarcely ____ to question the premise when counterarguments appeared.",
+        "option_a": "had they begun",
+        "option_b": "they began",
+        "option_c": "were they beginning",
+        "option_d": "they had begun",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 7,
+        "question_text": "Only by cross-verifying external datasets ____ the anomaly explained.",
+        "option_a": "was",
+        "option_b": "could",
+        "option_c": "has",
+        "option_d": "had been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 8,
+        "question_text": "Should the negotiations ____ unexpectedly, alternative strategies must be deployed.",
+        "option_a": "collapse",
+        "option_b": "collapsed",
+        "option_c": "be collapsing",
+        "option_d": "have collapsed",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 9,
+        "question_text": "Had the committee acted sooner, the crisis ____ entirely.",
+        "option_a": "would avoid",
+        "option_b": "would have been avoided",
+        "option_c": "was avoided",
+        "option_d": "would be avoided",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 10,
+        "question_text": "Not until the results were reanalyzed ____ how flawed the assumptions were.",
+        "option_a": "the team realized",
+        "option_b": "did the team realize",
+        "option_c": "had the team realized",
+        "option_d": "was the team realizing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 11,
+        "question_text": "Rarely ____ a correlation as complex as the one identified.",
+        "option_a": "has there appeared",
+        "option_b": "does appear",
+        "option_c": "is appearing",
+        "option_d": "appeared",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 12,
+        "question_text": "Only when combined with qualitative evidence ____ the findings gain significance.",
+        "option_a": "the findings gain",
+        "option_b": "do the findings gain",
+        "option_c": "the findings gained",
+        "option_d": "gained the findings",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 13,
+        "question_text": "Had it not been for her intervention, the project ____ indefinitely.",
+        "option_a": "might stall",
+        "option_b": "might have stalled",
+        "option_c": "might be stalled",
+        "option_d": "should have stalled",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 14,
+        "question_text": "Little ____ that his statement would be cited for years.",
+        "option_a": "he expected",
+        "option_b": "did he expect",
+        "option_c": "he had expected",
+        "option_d": "was he expecting",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 15,
+        "question_text": "At no point ____ the research team aware of the hidden variables.",
+        "option_a": "was",
+        "option_b": "were",
+        "option_c": "had been",
+        "option_d": "are",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 16,
+        "question_text": "Hardly ____ the conference ended when participants began debating online.",
+        "option_a": "had",
+        "option_b": "has",
+        "option_c": "was",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 17,
+        "question_text": "Were the experiment to have been replicated, the results ____ more credible.",
+        "option_a": "would become",
+        "option_b": "would have become",
+        "option_c": "will become",
+        "option_d": "become",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 18,
+        "question_text": "Not only ____ the hypothesis flawed, but it also contradicted earlier data.",
+        "option_a": "was",
+        "option_b": "were",
+        "option_c": "has been",
+        "option_d": "had been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 19,
+        "question_text": "Only with a more rigorous sampling method ____ statistically valid conclusions.",
+        "option_a": "can we draw",
+        "option_b": "we can draw",
+        "option_c": "we draw",
+        "option_d": "we can have drawn",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 20,
+        "question_text": "Were she not so meticulous, the inconsistencies ____ unnoticed.",
+        "option_a": "might go",
+        "option_b": "might have gone",
+        "option_c": "would go",
+        "option_d": "will go",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 21,
+        "question_text": "No sooner ____ the findings published than peers demanded replication.",
+        "option_a": "were",
+        "option_b": "had",
+        "option_c": "have",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 22,
+        "question_text": "Should the assumptions ____ incorrect, the entire model collapses.",
+        "option_a": "prove",
+        "option_b": "proved",
+        "option_c": "are proving",
+        "option_d": "have proved",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 23,
+        "question_text": "Only after examining the logs ____ the breach originated earlier.",
+        "option_a": "they realized",
+        "option_b": "did they realize",
+        "option_c": "they had realized",
+        "option_d": "was realized",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 24,
+        "question_text": "Had the auditors looked more carefully, the discrepancies ____ detected sooner.",
+        "option_a": "were",
+        "option_b": "would be",
+        "option_c": "would have been",
+        "option_d": "may be",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 25,
+        "question_text": "Seldom ____ a theory revised so drastically after peer review.",
+        "option_a": "does",
+        "option_b": "has",
+        "option_c": "is",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 26,
+        "question_text": "Under no condition ____ external consultants allowed access to raw datasets.",
+        "option_a": "are",
+        "option_b": "should be",
+        "option_c": "must",
+        "option_d": "should",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 27,
+        "question_text": "Little ____ how significantly the policy would reshape the sector.",
+        "option_a": "was anticipated",
+        "option_b": "did they anticipate",
+        "option_c": "they anticipated",
+        "option_d": "they have anticipated",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 28,
+        "question_text": "Only when recontextualized ____ the data reveal underlying biases.",
+        "option_a": "do",
+        "option_b": "did",
+        "option_c": "has",
+        "option_d": "had",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 29,
+        "question_text": "Had the variables been isolated, the causal link ____ confirmed.",
+        "option_a": "would be",
+        "option_b": "would have been",
+        "option_c": "could be",
+        "option_d": "should have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 30,
+        "question_text": "Hardly ____ the simulations completed when hardware failures occurred.",
+        "option_a": "were",
+        "option_b": "had",
+        "option_c": "have been",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 31,
+        "question_text": "Were he to reassess his stance, the negotiations ____ new momentum.",
+        "option_a": "gain",
+        "option_b": "gained",
+        "option_c": "would gain",
+        "option_d": "would have gained",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 32,
+        "question_text": "No sooner ____ the networks synchronized than latency issues reappeared.",
+        "option_a": "had",
+        "option_b": "was",
+        "option_c": "were",
+        "option_d": "has",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 33,
+        "question_text": "Only by interpreting the data longitudinally ____ meaningful conclusions.",
+        "option_a": "are we deriving",
+        "option_b": "can we derive",
+        "option_c": "we derive",
+        "option_d": "we had derived",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 34,
+        "question_text": "Rarely ____ evidence this compelling in behavioral research.",
+        "option_a": "has there been",
+        "option_b": "there has been",
+        "option_c": "is there",
+        "option_d": "was there",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 35,
+        "question_text": "Had she been fully briefed, she ____ a different recommendation.",
+        "option_a": "would make",
+        "option_b": "would have made",
+        "option_c": "made",
+        "option_d": "would be making",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 36,
+        "question_text": "Not until the metrics were normalized ____ accurate comparisons possible.",
+        "option_a": "were",
+        "option_b": "was",
+        "option_c": "are",
+        "option_d": "have been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 37,
+        "question_text": "Scarcely ____ the algorithm deployed when anomalies appeared.",
+        "option_a": "was",
+        "option_b": "had",
+        "option_c": "has been",
+        "option_d": "have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 38,
+        "question_text": "Only when the context was broadened ____ the trend become visible.",
+        "option_a": "does",
+        "option_b": "did",
+        "option_c": "had",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 39,
+        "question_text": "Were the findings to contradict expectations, the model ____ reassessed.",
+        "option_a": "is",
+        "option_b": "will be",
+        "option_c": "would be",
+        "option_d": "would have been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 40,
+        "question_text": "At no stage ____ the correlation statistically significant.",
+        "option_a": "was",
+        "option_b": "has been",
+        "option_c": "is",
+        "option_d": "had been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 41,
+        "question_text": "Had conditions been optimal, the results ____ even more robust.",
+        "option_a": "will become",
+        "option_b": "would become",
+        "option_c": "would have become",
+        "option_d": "became",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 42,
+        "question_text": "Hardly ____ verifying the data when contradictory values surfaced.",
+        "option_a": "did they finish",
+        "option_b": "had they finished",
+        "option_c": "they finished",
+        "option_d": "they had been finishing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 43,
+        "question_text": "Only by triangulating independent sources ____ objectivity established.",
+        "option_a": "can be",
+        "option_b": "was",
+        "option_c": "is",
+        "option_d": "could be",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 44,
+        "question_text": "No sooner ____ the new protocol implemented than compatibility issues emerged.",
+        "option_a": "was",
+        "option_b": "had",
+        "option_c": "has been",
+        "option_d": "were",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 45,
+        "question_text": "Were he not constrained by deadlines, he ____ further refinements.",
+        "option_a": "will attempt",
+        "option_b": "would attempt",
+        "option_c": "would have attempted",
+        "option_d": "is attempting",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 46,
+        "question_text": "Under no circumstances ____ analysts modify the raw figures.",
+        "option_a": "are",
+        "option_b": "should",
+        "option_c": "must be",
+        "option_d": "were",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 47,
+        "question_text": "Scarcely ____ the error corrected when another occurred.",
+        "option_a": "had",
+        "option_b": "was",
+        "option_c": "has",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 48,
+        "question_text": "Only after several iterations ____ the output stabilize.",
+        "option_a": "does",
+        "option_b": "did",
+        "option_c": "had",
+        "option_d": "would",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 49,
+        "question_text": "Rarely ____ peer reviewers agree so unanimously.",
+        "option_a": "do",
+        "option_b": "have",
+        "option_c": "are",
+        "option_d": "had",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 50,
+        "question_text": "Had the sample size been larger, the confidence interval ____ narrower.",
+        "option_a": "will be",
+        "option_b": "would be",
+        "option_c": "would have been",
+        "option_d": "was",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 51,
+        "question_text": "Only after revisiting historical datasets ____ the predictive model show improvement.",
+        "option_a": "did",
+        "option_b": "had",
+        "option_c": "was",
+        "option_d": "would",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 52,
+        "question_text": "Had the committee not intervened, the proposal ____ prematurely.",
+        "option_a": "might be withdrawn",
+        "option_b": "might have been withdrawn",
+        "option_c": "was withdrawn",
+        "option_d": "is withdrawn",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 53,
+        "question_text": "Under no circumstances ____ unauthorized personnel be granted temporary access.",
+        "option_a": "shall",
+        "option_b": "should",
+        "option_c": "must",
+        "option_d": "ought",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 54,
+        "question_text": "Hardly ____ the hypothesis formed when contradictory evidence surfaced.",
+        "option_a": "was",
+        "option_b": "had",
+        "option_c": "has been",
+        "option_d": "have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 55,
+        "question_text": "No sooner ____ initial success reported than doubts were raised about methodology.",
+        "option_a": "was",
+        "option_b": "had",
+        "option_c": "has been",
+        "option_d": "have",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 56,
+        "question_text": "Were the assumptions to prove accurate, the implications ____ far-reaching.",
+        "option_a": "will be",
+        "option_b": "would be",
+        "option_c": "would have been",
+        "option_d": "are",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 57,
+        "question_text": "Only by assessing longitudinal data ____ subtle patterns emerge.",
+        "option_a": "did",
+        "option_b": "do",
+        "option_c": "can",
+        "option_d": "have",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 58,
+        "question_text": "Seldom ____ researchers encounter variables so resistant to isolation.",
+        "option_a": "are",
+        "option_b": "have",
+        "option_c": "do",
+        "option_d": "did",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 59,
+        "question_text": "Had the early warnings been acknowledged, resources ____ allocated more effectively.",
+        "option_a": "would be",
+        "option_b": "would have been",
+        "option_c": "could be",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 60,
+        "question_text": "Not until additional trials were conducted ____ the phenomenon replicable.",
+        "option_a": "was",
+        "option_b": "were",
+        "option_c": "did they deem",
+        "option_d": "had they deemed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 61,
+        "question_text": "Rarely ____ a peer review process proceed without significant revisions.",
+        "option_a": "does",
+        "option_b": "has",
+        "option_c": "is",
+        "option_d": "did",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 62,
+        "question_text": "Scarcely ____ the algorithm calibrated when new inconsistencies emerged.",
+        "option_a": "was",
+        "option_b": "has",
+        "option_c": "had",
+        "option_d": "have",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 63,
+        "question_text": "Were it not for the unforeseen variables, the outcome ____ predictable.",
+        "option_a": "would be",
+        "option_b": "would have been",
+        "option_c": "was",
+        "option_d": "is",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 64,
+        "question_text": "Only by employing stricter controls ____ margin of error reduced.",
+        "option_a": "was the",
+        "option_b": "could the",
+        "option_c": "had the",
+        "option_d": "has the",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 65,
+        "question_text": "No sooner ____ the abstract published than critiques appeared online.",
+        "option_a": "was",
+        "option_b": "had",
+        "option_c": "is",
+        "option_d": "has been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 66,
+        "question_text": "Had the correlation been linear, the projection ____ more reliable.",
+        "option_a": "will be",
+        "option_b": "would be",
+        "option_c": "would have been",
+        "option_d": "was",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 67,
+        "question_text": "At no point ____ the analysts deviate from standardized protocols.",
+        "option_a": "do",
+        "option_b": "did",
+        "option_c": "have",
+        "option_d": "had",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 68,
+        "question_text": "Hardly ____ the keynote address concluded when questions poured in.",
+        "option_a": "had",
+        "option_b": "was",
+        "option_c": "has",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 69,
+        "question_text": "Only when contextual factors were considered ____ the anomaly explained.",
+        "option_a": "could be",
+        "option_b": "was",
+        "option_c": "could",
+        "option_d": "was being",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 70,
+        "question_text": "Were the department to implement the new framework, efficiency ____ immediately.",
+        "option_a": "would improve",
+        "option_b": "will improve",
+        "option_c": "would have improved",
+        "option_d": "has improved",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 71,
+        "question_text": "Scarcely ____ to evaluate the impact when new variables were introduced.",
+        "option_a": "had we begun",
+        "option_b": "we began",
+        "option_c": "were we beginning",
+        "option_d": "we have begun",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 72,
+        "question_text": "Not until more rigorous criteria were applied ____ the findings validated.",
+        "option_a": "were",
+        "option_b": "did they get",
+        "option_c": "did they become",
+        "option_d": "had been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 73,
+        "question_text": "Rarely ____ an entire dataset reclassified after publication.",
+        "option_a": "is",
+        "option_b": "has",
+        "option_c": "does",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 74,
+        "question_text": "Only by reconstructing the dataset manually ____ the missing entries identified.",
+        "option_a": "they could",
+        "option_b": "could they",
+        "option_c": "can they",
+        "option_d": "they can",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 75,
+        "question_text": "Had he not misinterpreted the trend, he ____ a vastly different conclusion.",
+        "option_a": "would draw",
+        "option_b": "would have drawn",
+        "option_c": "drew",
+        "option_d": "will draw",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 76,
+        "question_text": "No sooner ____ the meeting adjourned than stakeholders demanded clarifications.",
+        "option_a": "had",
+        "option_b": "was",
+        "option_c": "were",
+        "option_d": "has",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 77,
+        "question_text": "Were she to challenge the prevailing theory, her work ____ substantial attention.",
+        "option_a": "will gain",
+        "option_b": "would gain",
+        "option_c": "would have gained",
+        "option_d": "gained",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 78,
+        "question_text": "Hardly ____ the final parameters adjusted when the system crashed.",
+        "option_a": "were",
+        "option_b": "had",
+        "option_c": "have been",
+        "option_d": "has been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 79,
+        "question_text": "Only after aggregating multiple surveys ____ a consistent pattern visible.",
+        "option_a": "is",
+        "option_b": "was",
+        "option_c": "did they find",
+        "option_d": "had they found",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 80,
+        "question_text": "At no stage ____ the trial considered ethically questionable.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "has been",
+        "option_d": "had",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 81,
+        "question_text": "Had the forecast been accurate, the team ____ alternative actions.",
+        "option_a": "would take",
+        "option_b": "would have taken",
+        "option_c": "might take",
+        "option_d": "was taking",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 82,
+        "question_text": "Rarely ____ interdisciplinary cooperation proceed this smoothly.",
+        "option_a": "has",
+        "option_b": "does",
+        "option_c": "did",
+        "option_d": "is",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 83,
+        "question_text": "Under no circumstances ____ the data interpreted without proper citations.",
+        "option_a": "should",
+        "option_b": "are",
+        "option_c": "must",
+        "option_d": "shall",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 84,
+        "question_text": "Scarcely ____ she present her findings when counterclaims surfaced.",
+        "option_a": "did",
+        "option_b": "had",
+        "option_c": "was",
+        "option_d": "has",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 85,
+        "question_text": "Only by refining the predictive algorithm ____ major inaccuracies avoided.",
+        "option_a": "were",
+        "option_b": "can be",
+        "option_c": "could be",
+        "option_d": "had been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 86,
+        "question_text": "No sooner ____ the funding approved than the project was expanded.",
+        "option_a": "was",
+        "option_b": "had been",
+        "option_c": "has been",
+        "option_d": "is",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 87,
+        "question_text": "Had the sampling error been detected earlier, the dataset ____ recalibrated.",
+        "option_a": "would be",
+        "option_b": "would have been",
+        "option_c": "was",
+        "option_d": "could be",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 88,
+        "question_text": "Not until the secondary analysis was complete ____ the model stable.",
+        "option_a": "was",
+        "option_b": "did they find",
+        "option_c": "had they found",
+        "option_d": "is",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 89,
+        "question_text": "Seldom ____ researchers confront such contradictory evidence.",
+        "option_a": "have",
+        "option_b": "do",
+        "option_c": "are",
+        "option_d": "did",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 90,
+        "question_text": "Only when contextualized properly ____ meaningful insight.",
+        "option_a": "does the data yield",
+        "option_b": "the data yields",
+        "option_c": "has the data yielded",
+        "option_d": "did yield",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 91,
+        "question_text": "Were it not for his skepticism, critical flaws ____ overlooked.",
+        "option_a": "might be",
+        "option_b": "might have been",
+        "option_c": "would be",
+        "option_d": "are",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 92,
+        "question_text": "Hardly ____ the new framework implemented when unforeseen issues arose.",
+        "option_a": "was",
+        "option_b": "has been",
+        "option_c": "had been",
+        "option_d": "is",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 93,
+        "question_text": "No sooner ____ the simulation restarted than error logs populated.",
+        "option_a": "had",
+        "option_b": "was",
+        "option_c": "has",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 94,
+        "question_text": "Only after a revised methodology was proposed ____ renewed interest.",
+        "option_a": "was there",
+        "option_b": "there was",
+        "option_c": "were there",
+        "option_d": "there were",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 95,
+        "question_text": "Were the criteria to shift again, the predictive model ____ significant adaptation.",
+        "option_a": "will require",
+        "option_b": "would require",
+        "option_c": "would have required",
+        "option_d": "requires",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 96,
+        "question_text": "Scarcely ____ the researchers prepare for publication when new data arrived.",
+        "option_a": "did",
+        "option_b": "had",
+        "option_c": "were",
+        "option_d": "have",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 97,
+        "question_text": "Not until independent replication occurred ____ the theory widely accepted.",
+        "option_a": "was",
+        "option_b": "did",
+        "option_c": "had",
+        "option_d": "has been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 98,
+        "question_text": "Had the preliminary signals been stronger, investors ____ more swiftly.",
+        "option_a": "would act",
+        "option_b": "would have acted",
+        "option_c": "acted",
+        "option_d": "will act",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 99,
+        "question_text": "Under no condition ____ analysts disclose draft reports to the press.",
+        "option_a": "must",
+        "option_b": "are",
+        "option_c": "should",
+        "option_d": "may",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 100,
+        "question_text": "Only by creating a broader comparative framework ____ subtle distinctions detected.",
+        "option_a": "could be",
+        "option_b": "could",
+        "option_c": "were",
+        "option_d": "are",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 101,
+        "question_text": "Never before ____ I encountered such a complex problem.",
+        "option_a": "did",
+        "option_b": "have",
+        "option_c": "had",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 102,
+        "question_text": "Were it not for the heavy rain, we ____ the summit by now.",
+        "option_a": "would reach",
+        "option_b": "would have reached",
+        "option_c": "reached",
+        "option_d": "will reach",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 103,
+        "question_text": "Little ____ she know about the surprise waiting for her.",
+        "option_a": "does",
+        "option_b": "did",
+        "option_c": "has",
+        "option_d": "was",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 104,
+        "question_text": "Should you ____ any difficulties, please contact support immediately.",
+        "option_a": "experience",
+        "option_b": "experienced",
+        "option_c": "have experienced",
+        "option_d": "experiencing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 105,
+        "question_text": "Had I known about the delay, I ____ a different flight.",
+        "option_a": "booked",
+        "option_b": "would book",
+        "option_c": "would have booked",
+        "option_d": "will book",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 106,
+        "question_text": "Scarcely ____ the game started when the power went out.",
+        "option_a": "was",
+        "option_b": "has",
+        "option_c": "had",
+        "option_d": "did",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 107,
+        "question_text": "Only by working together ____ we achieve our goals.",
+        "option_a": "can",
+        "option_b": "do",
+        "option_c": "will",
+        "option_d": "must",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 108,
+        "question_text": "Not only ____ late, but he also forgot his presentation.",
+        "option_a": "was he",
+        "option_b": "he was",
+        "option_c": "is he",
+        "option_d": "he is",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 109,
+        "question_text": "On no account ____ the employees be disturbed during the drill.",
+        "option_a": "should",
+        "option_b": "must",
+        "option_c": "can",
+        "option_d": "may",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 110,
+        "question_text": "Seldom ____ one see such a magnificent display of talent.",
+        "option_a": "does",
+        "option_b": "is",
+        "option_c": "has",
+        "option_d": "will",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 111,
+        "question_text": "Barely ____ he entered the room when the phone rang.",
+        "option_a": "did",
+        "option_b": "had",
+        "option_c": "was",
+        "option_d": "has",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 112,
+        "question_text": "In no way ____ responsible for the damage caused.",
+        "option_a": "am I",
+        "option_b": "I am",
+        "option_c": "was I",
+        "option_d": "I was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 113,
+        "question_text": "Hardly ever ____ such a rude customer in this store.",
+        "option_a": "do we get",
+        "option_b": "we get",
+        "option_c": "have we got",
+        "option_d": "we have got",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 114,
+        "question_text": "Only when the contract is signed ____ work begin.",
+        "option_a": "does",
+        "option_b": "can",
+        "option_c": "will",
+        "option_d": "shall",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 115,
+        "question_text": "So quickly ____ the thief run that no one could catch him.",
+        "option_a": "did",
+        "option_b": "does",
+        "option_c": "has",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 116,
+        "question_text": "Such ____ the force of the storm that trees were uprooted.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "has been",
+        "option_d": "were",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 117,
+        "question_text": "Not until next week ____ the results be announced.",
+        "option_a": "will",
+        "option_b": "do",
+        "option_c": "are",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 118,
+        "question_text": "Only recently ____ I realize the importance of saving money.",
+        "option_a": "did",
+        "option_b": "do",
+        "option_c": "have",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 119,
+        "question_text": "Nowhere ____ you find a better offer than this one.",
+        "option_a": "can",
+        "option_b": "will",
+        "option_c": "do",
+        "option_d": "should",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 120,
+        "question_text": "Little ____ we know that the solution was right in front of us.",
+        "option_a": "did",
+        "option_b": "do",
+        "option_c": "have",
+        "option_d": "were",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 121,
+        "question_text": "Were I in your shoes, I ____ the offer immediately.",
+        "option_a": "accepted",
+        "option_b": "would accept",
+        "option_c": "will accept",
+        "option_d": "would have accepted",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 122,
+        "question_text": "Had we arrived earlier, we ____ better seats.",
+        "option_a": "would get",
+        "option_b": "got",
+        "option_c": "would have got",
+        "option_d": "had got",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 123,
+        "question_text": "Should the weather improve, we ____ go for a picnic.",
+        "option_a": "might",
+        "option_b": "would",
+        "option_c": "will",
+        "option_d": "can",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 124,
+        "question_text": "But for his advice, I ____ failed the exam.",
+        "option_a": "would",
+        "option_b": "might",
+        "option_c": "would have",
+        "option_d": "could",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 125,
+        "question_text": "If it hadn't been for the traffic, we ____ on time.",
+        "option_a": "would be",
+        "option_b": "would have been",
+        "option_c": "were",
+        "option_d": "had been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 126,
+        "question_text": "Suppose you ____ the lottery, what would you do?",
+        "option_a": "win",
+        "option_b": "won",
+        "option_c": "had won",
+        "option_d": "winning",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 127,
+        "question_text": "Provided that you ____ the instructions, everything will be fine.",
+        "option_a": "follow",
+        "option_b": "followed",
+        "option_c": "following",
+        "option_d": "will follow",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 128,
+        "question_text": "Unless he ____ soon, we will leave without him.",
+        "option_a": "arrives",
+        "option_b": "arrived",
+        "option_c": "arrive",
+        "option_d": "will arrive",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 129,
+        "question_text": "Imagine we ____ in a world without internet.",
+        "option_a": "live",
+        "option_b": "lived",
+        "option_c": "living",
+        "option_d": "will live",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 130,
+        "question_text": "In case of emergency, ____ the glass.",
+        "option_a": "break",
+        "option_b": "broke",
+        "option_c": "broken",
+        "option_d": "breaking",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 131,
+        "question_text": "It is high time we ____ home.",
+        "option_a": "go",
+        "option_b": "went",
+        "option_c": "gone",
+        "option_d": "going",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 132,
+        "question_text": "I'd rather you ____ smoke in here.",
+        "option_a": "don't",
+        "option_b": "didn't",
+        "option_c": "not",
+        "option_d": "won't",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 133,
+        "question_text": "I wish I ____ harder for the test.",
+        "option_a": "studied",
+        "option_b": "had studied",
+        "option_c": "study",
+        "option_d": "studying",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 134,
+        "question_text": "If only I ____ the answer to the question.",
+        "option_a": "know",
+        "option_b": "knew",
+        "option_c": "known",
+        "option_d": "knowing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 135,
+        "question_text": "It's about time he ____ a job.",
+        "option_a": "finds",
+        "option_b": "found",
+        "option_c": "finding",
+        "option_d": "find",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 136,
+        "question_text": "She acts as if she ____ everything.",
+        "option_a": "knows",
+        "option_b": "knew",
+        "option_c": "known",
+        "option_d": "knowing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 137,
+        "question_text": "I would sooner you ____ tell anyone about this.",
+        "option_a": "don't",
+        "option_b": "didn't",
+        "option_c": "not",
+        "option_d": "wouldn't",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 138,
+        "question_text": "Whatever happens, I ____ stand by you.",
+        "option_a": "will",
+        "option_b": "would",
+        "option_c": "can",
+        "option_d": "should",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 139,
+        "question_text": "Whether you like it or not, we ____ to go.",
+        "option_a": "have",
+        "option_b": "had",
+        "option_c": "having",
+        "option_d": "will have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 140,
+        "question_text": "However hard he tried, he ____ not succeed.",
+        "option_a": "could",
+        "option_b": "can",
+        "option_c": "should",
+        "option_d": "would",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 141,
+        "question_text": "No matter how much money he makes, he ____ never satisfied.",
+        "option_a": "is",
+        "option_b": "was",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 142,
+        "question_text": "Much as I ____ him, I cannot agree with his methods.",
+        "option_a": "respect",
+        "option_b": "respected",
+        "option_c": "respecting",
+        "option_d": "respects",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 143,
+        "question_text": "Strange as it ____ seem, I actually enjoyed the lecture.",
+        "option_a": "may",
+        "option_b": "might",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 144,
+        "question_text": "Try as he ____, he couldn't lift the heavy box.",
+        "option_a": "may",
+        "option_b": "might",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 145,
+        "question_text": "Difficult though it ____ be, we must finish the project.",
+        "option_a": "may",
+        "option_b": "might",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 146,
+        "question_text": "For all his wealth, he ____ not happy.",
+        "option_a": "is",
+        "option_b": "was",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 147,
+        "question_text": "In spite of ____ tired, he continued working.",
+        "option_a": "being",
+        "option_b": "be",
+        "option_c": "been",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 148,
+        "question_text": "Despite the fact that it was raining, we ____ out.",
+        "option_a": "went",
+        "option_b": "go",
+        "option_c": "gone",
+        "option_d": "going",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 149,
+        "question_text": "While I admit it is difficult, I ____ think it is impossible.",
+        "option_a": "don't",
+        "option_b": "didn't",
+        "option_c": "not",
+        "option_d": "won't",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 150,
+        "question_text": "Whereas he is good at math, she ____ better at languages.",
+        "option_a": "is",
+        "option_b": "was",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 151,
+        "question_text": "On the grounds that he was ill, he ____ absent from work.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 152,
+        "question_text": "Seeing that you are here, we ____ as well start.",
+        "option_a": "might",
+        "option_b": "may",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 153,
+        "question_text": "In view of the recent events, we have decided to ____ the meeting.",
+        "option_a": "cancel",
+        "option_b": "canceling",
+        "option_c": "canceled",
+        "option_d": "cancels",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 154,
+        "question_text": "Given that he has no experience, he ____ remarkably well.",
+        "option_a": "did",
+        "option_b": "does",
+        "option_c": "done",
+        "option_d": "doing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 155,
+        "question_text": "Owing to the bad weather, the flight ____ delayed.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 156,
+        "question_text": "Due to the fact that he was late, he ____ the bus.",
+        "option_a": "missed",
+        "option_b": "misses",
+        "option_c": "missing",
+        "option_d": "miss",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 157,
+        "question_text": "It was not until yesterday ____ I heard the news.",
+        "option_a": "that",
+        "option_b": "when",
+        "option_c": "which",
+        "option_d": "where",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 158,
+        "question_text": "It is John ____ is to blame for the mistake.",
+        "option_a": "who",
+        "option_b": "which",
+        "option_c": "whom",
+        "option_d": "whose",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 159,
+        "question_text": "What I need ____ a long holiday.",
+        "option_a": "is",
+        "option_b": "are",
+        "option_c": "be",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 160,
+        "question_text": "All he did ____ complain about the food.",
+        "option_a": "was",
+        "option_b": "were",
+        "option_c": "is",
+        "option_d": "are",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 161,
+        "question_text": "The reason why he left ____ still a mystery.",
+        "option_a": "is",
+        "option_b": "are",
+        "option_c": "was",
+        "option_d": "were",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 162,
+        "question_text": "The place where we met ____ Paris.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "were",
+        "option_d": "are",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 163,
+        "question_text": "The day when she arrived ____ rainy.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "were",
+        "option_d": "are",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 164,
+        "question_text": "Whoever says that ____ lying.",
+        "option_a": "is",
+        "option_b": "are",
+        "option_c": "was",
+        "option_d": "were",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 165,
+        "question_text": "Whatever you do, ____ careful.",
+        "option_a": "be",
+        "option_b": "being",
+        "option_c": "been",
+        "option_d": "is",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 166,
+        "question_text": "Wherever he goes, he ____ friends.",
+        "option_a": "makes",
+        "option_b": "make",
+        "option_c": "making",
+        "option_d": "made",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 167,
+        "question_text": "Whenever I see him, he ____ smiling.",
+        "option_a": "is",
+        "option_b": "was",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 168,
+        "question_text": "However much you try, you ____ change his mind.",
+        "option_a": "cannot",
+        "option_b": "could not",
+        "option_c": "will not",
+        "option_d": "shall not",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 169,
+        "question_text": "Hardly had I reached the station ____ the train left.",
+        "option_a": "when",
+        "option_b": "than",
+        "option_c": "before",
+        "option_d": "after",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 170,
+        "question_text": "No sooner had we started ____ it began to rain.",
+        "option_a": "than",
+        "option_b": "when",
+        "option_c": "before",
+        "option_d": "after",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 171,
+        "question_text": "Scarcely had she spoken ____ she regretted her words.",
+        "option_a": "when",
+        "option_b": "than",
+        "option_c": "before",
+        "option_d": "after",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 172,
+        "question_text": "Barely had he finished his meal ____ the waiter took his plate.",
+        "option_a": "when",
+        "option_b": "than",
+        "option_c": "before",
+        "option_d": "after",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 173,
+        "question_text": "Not only is he intelligent, ____ also hardworking.",
+        "option_a": "but he is",
+        "option_b": "but is he",
+        "option_c": "he is but",
+        "option_d": "is he but",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 174,
+        "question_text": "Not until later ____ I understand what he meant.",
+        "option_a": "did",
+        "option_b": "do",
+        "option_c": "have",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 175,
+        "question_text": "Only then ____ I realize my mistake.",
+        "option_a": "did",
+        "option_b": "do",
+        "option_c": "have",
+        "option_d": "was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 176,
+        "question_text": "So tired ____ I that I fell asleep immediately.",
+        "option_a": "was",
+        "option_b": "am",
+        "option_c": "were",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 177,
+        "question_text": "Such was his anger ____ he couldn't speak.",
+        "option_a": "that",
+        "option_b": "which",
+        "option_c": "when",
+        "option_d": "where",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 178,
+        "question_text": "Never have I seen ____ a beautiful sunset.",
+        "option_a": "such",
+        "option_b": "so",
+        "option_c": "very",
+        "option_d": "too",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 179,
+        "question_text": "Little did he know that he ____ being watched.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "were",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 180,
+        "question_text": "On no condition ____ you open this box.",
+        "option_a": "must",
+        "option_b": "should",
+        "option_c": "can",
+        "option_d": "may",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 181,
+        "question_text": "Under no circumstances ____ be held responsible.",
+        "option_a": "will I",
+        "option_b": "I will",
+        "option_c": "am I",
+        "option_d": "I am",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 182,
+        "question_text": "In no way ____ imply that you are wrong.",
+        "option_a": "do I",
+        "option_b": "I do",
+        "option_c": "am I",
+        "option_d": "I am",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 183,
+        "question_text": "Only by studying hard ____ pass the exam.",
+        "option_a": "can you",
+        "option_b": "you can",
+        "option_c": "will you",
+        "option_d": "you will",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 184,
+        "question_text": "Had I known, I ____ helped you.",
+        "option_a": "would have",
+        "option_b": "would",
+        "option_c": "will have",
+        "option_d": "can have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 185,
+        "question_text": "Were it to rain, the match ____ be cancelled.",
+        "option_a": "would",
+        "option_b": "will",
+        "option_c": "can",
+        "option_d": "must",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 186,
+        "question_text": "Should you see him, ____ tell him to call me.",
+        "option_a": "please",
+        "option_b": "would",
+        "option_c": "could",
+        "option_d": "might",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 187,
+        "question_text": "Assuming that it is true, what ____ we do?",
+        "option_a": "should",
+        "option_b": "would",
+        "option_c": "could",
+        "option_d": "might",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 188,
+        "question_text": "Supposing he refuses, what ____ happen?",
+        "option_a": "will",
+        "option_b": "would",
+        "option_c": "can",
+        "option_d": "may",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 189,
+        "question_text": "As long as you promise to be careful, you ____ go.",
+        "option_a": "can",
+        "option_b": "could",
+        "option_c": "may",
+        "option_d": "might",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 190,
+        "question_text": "Unless you apologize, I ____ forgive you.",
+        "option_a": "will not",
+        "option_b": "would not",
+        "option_c": "can not",
+        "option_d": "may not",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 191,
+        "question_text": "Even if it rains, we ____ go.",
+        "option_a": "will",
+        "option_b": "would",
+        "option_c": "can",
+        "option_d": "should",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 192,
+        "question_text": "In case he comes, ____ him to wait.",
+        "option_a": "ask",
+        "option_b": "asked",
+        "option_c": "asking",
+        "option_d": "asks",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 193,
+        "question_text": "It is important that he ____ the truth.",
+        "option_a": "be told",
+        "option_b": "is told",
+        "option_c": "was told",
+        "option_d": "been told",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 194,
+        "question_text": "I suggest that she ____ a doctor.",
+        "option_a": "see",
+        "option_b": "sees",
+        "option_c": "saw",
+        "option_d": "seeing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 195,
+        "question_text": "It is essential that we ____ on time.",
+        "option_a": "be",
+        "option_b": "are",
+        "option_c": "were",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 196,
+        "question_text": "It is necessary that he ____ immediately.",
+        "option_a": "leave",
+        "option_b": "leaves",
+        "option_c": "left",
+        "option_d": "leaving",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 197,
+        "question_text": "God ____ the Queen!",
+        "option_a": "save",
+        "option_b": "saves",
+        "option_c": "saved",
+        "option_d": "saving",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 198,
+        "question_text": "Be that as it ____, I still disagree.",
+        "option_a": "may",
+        "option_b": "might",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 199,
+        "question_text": "Come what ____, I will always love you.",
+        "option_a": "may",
+        "option_b": "might",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 200,
+        "question_text": "Suffice it to ____ that we were not pleased.",
+        "option_a": "say",
+        "option_b": "said",
+        "option_c": "saying",
+        "option_d": "says",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 201,
+        "question_text": "Had she known the risks, she ____ a different approach entirely.",
+        "option_a": "would take",
+        "option_b": "would have taken",
+        "option_c": "took",
+        "option_d": "takes",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 202,
+        "question_text": "By the time we arrived, the report ____ already been reviewed twice.",
+        "option_a": "has",
+        "option_b": "had",
+        "option_c": "will have",
+        "option_d": "having",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 203,
+        "question_text": "It’s essential that every participant ____ the instructions beforehand.",
+        "option_a": "reads",
+        "option_b": "read",
+        "option_c": "has read",
+        "option_d": "is reading",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 204,
+        "question_text": "I regret ____ him about the meeting; he clearly wasn’t ready.",
+        "option_a": "to tell",
+        "option_b": "telling",
+        "option_c": "tell",
+        "option_d": "to have told",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 205,
+        "question_text": "She denied ____ any involvement despite the evidence.",
+        "option_a": "having",
+        "option_b": "to have",
+        "option_c": "to having",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 206,
+        "question_text": "We would rather you ____ the documents before tomorrow.",
+        "option_a": "check",
+        "option_b": "checked",
+        "option_c": "have checked",
+        "option_d": "checking",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 207,
+        "question_text": "Not having ____ the message earlier, she missed the deadline.",
+        "option_a": "see",
+        "option_b": "saw",
+        "option_c": "seen",
+        "option_d": "seeing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 208,
+        "question_text": "The proposal is likely ____ if we don’t update the data.",
+        "option_a": "reject",
+        "option_b": "rejected",
+        "option_c": "to be rejected",
+        "option_d": "rejecting",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 209,
+        "question_text": "No one could explain how the misunderstanding ____ in the first place.",
+        "option_a": "comes",
+        "option_b": "has come",
+        "option_c": "came",
+        "option_d": "coming",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 210,
+        "question_text": "The manager insisted on the files ____ immediately.",
+        "option_a": "to be reviewed",
+        "option_b": "reviewed",
+        "option_c": "reviewing",
+        "option_d": "to review",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 211,
+        "question_text": "She promised that she ____ the results by Monday.",
+        "option_a": "will send",
+        "option_b": "would send",
+        "option_c": "sends",
+        "option_d": "has sent",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 212,
+        "question_text": "The meeting, ____ lasted over two hours, resolved nothing.",
+        "option_a": "which",
+        "option_b": "where",
+        "option_c": "that",
+        "option_d": "what",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 213,
+        "question_text": "I’d prefer ____ this discussion until after lunch.",
+        "option_a": "postpone",
+        "option_b": "to postpone",
+        "option_c": "postponing",
+        "option_d": "to be postponed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 214,
+        "question_text": "The more you practice, the ____ mistakes you make.",
+        "option_a": "little",
+        "option_b": "few",
+        "option_c": "fewer",
+        "option_d": "least",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 215,
+        "question_text": "He admitted ____ the files accidentally.",
+        "option_a": "delete",
+        "option_b": "to delete",
+        "option_c": "to deleting",
+        "option_d": "deleting",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 216,
+        "question_text": "Her explanation was vague, which made it difficult ____ what she meant.",
+        "option_a": "to understand",
+        "option_b": "understanding",
+        "option_c": "to be understood",
+        "option_d": "understand",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 217,
+        "question_text": "If he ____ earlier, we could have finished by now.",
+        "option_a": "arrived",
+        "option_b": "had arrived",
+        "option_c": "arrives",
+        "option_d": "arriving",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 218,
+        "question_text": "I don't mind you ____ my notes as long as you return them.",
+        "option_a": "borrow",
+        "option_b": "to borrow",
+        "option_c": "borrowing",
+        "option_d": "borrowed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 219,
+        "question_text": "He appears ____ the instructions completely.",
+        "option_a": "misunderstanding",
+        "option_b": "to misunderstand",
+        "option_c": "misunderstand",
+        "option_d": "misunderstood",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 220,
+        "question_text": "We couldn’t risk ____ additional delays.",
+        "option_a": "having",
+        "option_b": "to have",
+        "option_c": "have",
+        "option_d": "to having",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 221,
+        "question_text": "By next year, the new policy ____ implemented nationwide.",
+        "option_a": "will be",
+        "option_b": "will have been",
+        "option_c": "has been",
+        "option_d": "is being",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 222,
+        "question_text": "Had they followed the guidelines, the issue ____ avoided.",
+        "option_a": "might be",
+        "option_b": "might have been",
+        "option_c": "was",
+        "option_d": "is",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 223,
+        "question_text": "Despite ____ numerous warnings, he continued.",
+        "option_a": "give",
+        "option_b": "to give",
+        "option_c": "given",
+        "option_d": "being given",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 224,
+        "question_text": "It took them hours to agree on a solution, ____ everyone exhausted.",
+        "option_a": "leaving",
+        "option_b": "left",
+        "option_c": "to leave",
+        "option_d": "leave",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 225,
+        "question_text": "Not only is the data incomplete, but the report is ____ misleading.",
+        "option_a": "also",
+        "option_b": "as well",
+        "option_c": "too",
+        "option_d": "even",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 226,
+        "question_text": "The director demanded that the issue ____ immediately.",
+        "option_a": "is resolved",
+        "option_b": "be resolved",
+        "option_c": "resolves",
+        "option_d": "resolved",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 227,
+        "question_text": "She is believed ____ the youngest researcher on the team.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "to being",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 228,
+        "question_text": "They apologized for ____ the deadline.",
+        "option_a": "miss",
+        "option_b": "to miss",
+        "option_c": "missing",
+        "option_d": "missed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 229,
+        "question_text": "I’d have helped if you ____ me earlier.",
+        "option_a": "told",
+        "option_b": "had told",
+        "option_c": "tell",
+        "option_d": "have told",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 230,
+        "question_text": "He was accused of ____ confidential data.",
+        "option_a": "leaking",
+        "option_b": "to leak",
+        "option_c": "leak",
+        "option_d": "to leaking",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 231,
+        "question_text": "The committee couldn’t reach a decision, the members ____ divided in their opinions.",
+        "option_a": "were",
+        "option_b": "are",
+        "option_c": "had been",
+        "option_d": "being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 232,
+        "question_text": "He’s looking forward to ____ the final draft tomorrow.",
+        "option_a": "review",
+        "option_b": "reviewing",
+        "option_c": "to review",
+        "option_d": "being reviewed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 233,
+        "question_text": "The results were far better than anyone could have ____.",
+        "option_a": "expect",
+        "option_b": "expected",
+        "option_c": "to expect",
+        "option_d": "expecting",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 234,
+        "question_text": "I suggest ____ more evidence before publishing the findings.",
+        "option_a": "gather",
+        "option_b": "to gather",
+        "option_c": "gathering",
+        "option_d": "to be gathered",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 235,
+        "question_text": "He avoided ____ eye contact during the entire meeting.",
+        "option_a": "to make",
+        "option_b": "making",
+        "option_c": "to making",
+        "option_d": "make",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 236,
+        "question_text": "The task proved more complicated than they had ____.",
+        "option_a": "anticipate",
+        "option_b": "anticipated",
+        "option_c": "anticipating",
+        "option_d": "to anticipate",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 237,
+        "question_text": "The report highlighted the importance of employees ____ properly trained.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "be",
+        "option_d": "to being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 238,
+        "question_text": "I regret not ____ the opportunity when I had the chance.",
+        "option_a": "take",
+        "option_b": "to take",
+        "option_c": "taking",
+        "option_d": "to have taken",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 239,
+        "question_text": "They had the machine ____ by a professional.",
+        "option_a": "repair",
+        "option_b": "repaired",
+        "option_c": "to repair",
+        "option_d": "repairing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 240,
+        "question_text": "She claimed ____ the document before the deadline.",
+        "option_a": "sending",
+        "option_b": "to send",
+        "option_c": "to have sent",
+        "option_d": "sent",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 241,
+        "question_text": "They resented ____ excluded from the decision-making process.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "to being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 242,
+        "question_text": "You shouldn’t have risked ____ the confidential file.",
+        "option_a": "opening",
+        "option_b": "to open",
+        "option_c": "open",
+        "option_d": "having opened",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 243,
+        "question_text": "The instructions were too complex for the new interns ____.",
+        "option_a": "understand",
+        "option_b": "to understand",
+        "option_c": "understanding",
+        "option_d": "to be understood",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 244,
+        "question_text": "The project appears ____ more funding than initially estimated.",
+        "option_a": "requiring",
+        "option_b": "to require",
+        "option_c": "require",
+        "option_d": "to requiring",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 245,
+        "question_text": "He refused ____ any responsibility for the error.",
+        "option_a": "taking",
+        "option_b": "to take",
+        "option_c": "take",
+        "option_d": "taken",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 246,
+        "question_text": "I couldn't help ____ when I heard the news.",
+        "option_a": "smile",
+        "option_b": "smiling",
+        "option_c": "to smile",
+        "option_d": "being smiled",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 247,
+        "question_text": "They seem ____ the issue before submitting the report.",
+        "option_a": "have missed",
+        "option_b": "to have missed",
+        "option_c": "missing",
+        "option_d": "to miss",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 248,
+        "question_text": "Her parents insisted on her ____ her degree first.",
+        "option_a": "to finish",
+        "option_b": "finish",
+        "option_c": "finishing",
+        "option_d": "to be finished",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 249,
+        "question_text": "The company aims ____ its carbon emissions by 2030.",
+        "option_a": "reduce",
+        "option_b": "to reduce",
+        "option_c": "reducing",
+        "option_d": "to be reduced",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 250,
+        "question_text": "He apologized for not ____ back sooner.",
+        "option_a": "reply",
+        "option_b": "to reply",
+        "option_c": "replying",
+        "option_d": "to have replied",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 251,
+        "question_text": "I completely forgot ____ her message.",
+        "option_a": "answer",
+        "option_b": "to answer",
+        "option_c": "answering",
+        "option_d": "to have answered",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 252,
+        "question_text": "The changes need ____ before the final approval.",
+        "option_a": "implement",
+        "option_b": "to implement",
+        "option_c": "implementing",
+        "option_d": "to be implemented",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 253,
+        "question_text": "His explanation was too confusing for anyone ____ seriously.",
+        "option_a": "take",
+        "option_b": "to take",
+        "option_c": "taking",
+        "option_d": "to be taken",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 254,
+        "question_text": "We regret ____ you that your application has been declined.",
+        "option_a": "inform",
+        "option_b": "to inform",
+        "option_c": "informing",
+        "option_d": "to have informed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 255,
+        "question_text": "She admitted ____ the instructions incorrectly.",
+        "option_a": "interpreting",
+        "option_b": "to interpret",
+        "option_c": "interpreted",
+        "option_d": "to be interpreted",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 256,
+        "question_text": "He was reported ____ the meeting without permission.",
+        "option_a": "to have left",
+        "option_b": "leaving",
+        "option_c": "left",
+        "option_d": "to leaving",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 257,
+        "question_text": "She appears ____ much progress since last year.",
+        "option_a": "to make",
+        "option_b": "to have made",
+        "option_c": "making",
+        "option_d": "made",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 258,
+        "question_text": "They persuaded him ____ the team.",
+        "option_a": "join",
+        "option_b": "to join",
+        "option_c": "joining",
+        "option_d": "to joining",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 259,
+        "question_text": "I can’t imagine ____ abroad at such short notice.",
+        "option_a": "travel",
+        "option_b": "travelled",
+        "option_c": "travelling",
+        "option_d": "to travel",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 260,
+        "question_text": "The lecture was so dull that I couldn’t help ____ asleep.",
+        "option_a": "fall",
+        "option_b": "falling",
+        "option_c": "to fall",
+        "option_d": "fallen",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 261,
+        "question_text": "I’d prefer you ____ this matter with anyone else.",
+        "option_a": "don’t discuss",
+        "option_b": "not discuss",
+        "option_c": "didn’t discuss",
+        "option_d": "not to discuss",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 262,
+        "question_text": "He tends ____ distracted when working under pressure.",
+        "option_a": "to get",
+        "option_b": "getting",
+        "option_c": "get",
+        "option_d": "to getting",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 263,
+        "question_text": "They denied ____ anything suspicious that day.",
+        "option_a": "seeing",
+        "option_b": "to see",
+        "option_c": "seen",
+        "option_d": "to have seen",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 264,
+        "question_text": "The manager had us ____ the schedule again.",
+        "option_a": "review",
+        "option_b": "to review",
+        "option_c": "reviewing",
+        "option_d": "reviewed",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 265,
+        "question_text": "Her dedication contributed to the project ____ a success.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "to being",
+        "option_d": "becoming",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 266,
+        "question_text": "She’s not accustomed to ____ in such noisy environments.",
+        "option_a": "work",
+        "option_b": "to work",
+        "option_c": "working",
+        "option_d": "having worked",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 267,
+        "question_text": "The results appear ____ our initial assumptions.",
+        "option_a": "contradict",
+        "option_b": "to contradict",
+        "option_c": "contradicting",
+        "option_d": "to have contradicted",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 268,
+        "question_text": "He advised me ____ patient with the process.",
+        "option_a": "be",
+        "option_b": "being",
+        "option_c": "to be",
+        "option_d": "been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 269,
+        "question_text": "They failed ____ the necessary documents on time.",
+        "option_a": "submit",
+        "option_b": "to submit",
+        "option_c": "submitting",
+        "option_d": "to submitting",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 270,
+        "question_text": "Had we known earlier, we could have prevented the issue ____ worse.",
+        "option_a": "from becoming",
+        "option_b": "to become",
+        "option_c": "becoming",
+        "option_d": "to becoming",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 271,
+        "question_text": "I appreciate your ____ to help despite being busy.",
+        "option_a": "offer",
+        "option_b": "offering",
+        "option_c": "to offer",
+        "option_d": "having offered",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 272,
+        "question_text": "He refused to comment, claiming not ____ the full details.",
+        "option_a": "know",
+        "option_b": "to know",
+        "option_c": "knowing",
+        "option_d": "to have known",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 273,
+        "question_text": "We’re considering ____ our operations overseas.",
+        "option_a": "expand",
+        "option_b": "expanded",
+        "option_c": "to expand",
+        "option_d": "expanding",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 274,
+        "question_text": "She appears ____ the principles clearly now.",
+        "option_a": "understand",
+        "option_b": "to understand",
+        "option_c": "to have understood",
+        "option_d": "understanding",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 275,
+        "question_text": "They don’t allow food ____ inside the lab.",
+        "option_a": "bring",
+        "option_b": "to bring",
+        "option_c": "bringing",
+        "option_d": "to be brought",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 276,
+        "question_text": "He ended up ____ everything himself.",
+        "option_a": "do",
+        "option_b": "doing",
+        "option_c": "to do",
+        "option_d": "done",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 277,
+        "question_text": "We can’t afford ____ another mistake.",
+        "option_a": "make",
+        "option_b": "making",
+        "option_c": "to make",
+        "option_d": "to making",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 278,
+        "question_text": "She reminded me ____ the documents before the deadline.",
+        "option_a": "submit",
+        "option_b": "to submit",
+        "option_c": "submitting",
+        "option_d": "to be submitted",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 279,
+        "question_text": "They apologized for ____ late to the appointment.",
+        "option_a": "come",
+        "option_b": "to come",
+        "option_c": "coming",
+        "option_d": "having come",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 280,
+        "question_text": "The team expects the report ____ by Friday.",
+        "option_a": "completing",
+        "option_b": "to complete",
+        "option_c": "completed",
+        "option_d": "to be completed",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 281,
+        "question_text": "He admitted ____ unprepared for the interview.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "been",
+        "option_d": "to being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 282,
+        "question_text": "She pretended ____ the message even though she had.",
+        "option_a": "not see",
+        "option_b": "to not see",
+        "option_c": "not to see",
+        "option_d": "not seeing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 283,
+        "question_text": "We risk ____ the contract if we delay further.",
+        "option_a": "lose",
+        "option_b": "losing",
+        "option_c": "to lose",
+        "option_d": "to losing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 284,
+        "question_text": "He seems ____ confident than before.",
+        "option_a": "be",
+        "option_b": "being",
+        "option_c": "to be",
+        "option_d": "been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 285,
+        "question_text": "There’s no point ____ over something we can’t change.",
+        "option_a": "worry",
+        "option_b": "to worry",
+        "option_c": "worrying",
+        "option_d": "to be worried",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 286,
+        "question_text": "She apologized for ____ to send the updated proposal.",
+        "option_a": "forgetting",
+        "option_b": "to forget",
+        "option_c": "forget",
+        "option_d": "having forgot",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 287,
+        "question_text": "They were accused of ____ sensitive information to the press.",
+        "option_a": "leak",
+        "option_b": "to leak",
+        "option_c": "leaking",
+        "option_d": "to leaking",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 288,
+        "question_text": "The new policy allows employees ____ from home twice a week.",
+        "option_a": "work",
+        "option_b": "to working",
+        "option_c": "to work",
+        "option_d": "working",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 289,
+        "question_text": "I regret not ____ the opportunity to apply earlier.",
+        "option_a": "take",
+        "option_b": "to take",
+        "option_c": "taking",
+        "option_d": "to have taken",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 290,
+        "question_text": "She claimed ____ the report long before the deadline.",
+        "option_a": "having finished",
+        "option_b": "to finish",
+        "option_c": "to have finished",
+        "option_d": "finished",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 291,
+        "question_text": "The team was praised for ____ such remarkable progress.",
+        "option_a": "make",
+        "option_b": "making",
+        "option_c": "to make",
+        "option_d": "having made",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 292,
+        "question_text": "He doesn’t seem ____ the instructions properly.",
+        "option_a": "understand",
+        "option_b": "to understand",
+        "option_c": "understanding",
+        "option_d": "to be understanding",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 293,
+        "question_text": "The director encouraged us ____ for additional funding.",
+        "option_a": "to apply",
+        "option_b": "apply",
+        "option_c": "applying",
+        "option_d": "to applying",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 294,
+        "question_text": "I couldn’t help ____ at his unexpected reaction.",
+        "option_a": "laugh",
+        "option_b": "to laugh",
+        "option_c": "laughing",
+        "option_d": "being laughed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 295,
+        "question_text": "They appear ____ their targets consistently this year.",
+        "option_a": "meet",
+        "option_b": "to meet",
+        "option_c": "meeting",
+        "option_d": "to have met",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 296,
+        "question_text": "The new software is expected ____ productivity across departments.",
+        "option_a": "boost",
+        "option_b": "to boost",
+        "option_c": "boosting",
+        "option_d": "to boosting",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 297,
+        "question_text": "He avoided ____ the matter directly.",
+        "option_a": "address",
+        "option_b": "to address",
+        "option_c": "addressing",
+        "option_d": "having addressed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 298,
+        "question_text": "She reminded me ____ the forms before the deadline.",
+        "option_a": "to sign",
+        "option_b": "sign",
+        "option_c": "signing",
+        "option_d": "to be signed",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 299,
+        "question_text": "The meeting had to be postponed due to several members ____ absent.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 300,
+        "question_text": "They refused ____ any comment on the ongoing investigation.",
+        "option_a": "to make",
+        "option_b": "make",
+        "option_c": "making",
+        "option_d": "to making",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 301,
+        "question_text": "His remarks were too ambiguous for anyone ____ clearly.",
+        "option_a": "to interpret",
+        "option_b": "interpret",
+        "option_c": "interpreting",
+        "option_d": "to be interpreted",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 302,
+        "question_text": "We hope ____ more volunteers for the upcoming event.",
+        "option_a": "recruit",
+        "option_b": "to recruit",
+        "option_c": "recruiting",
+        "option_d": "to be recruited",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 303,
+        "question_text": "I can't imagine ____ such an important decision alone.",
+        "option_a": "make",
+        "option_b": "to make",
+        "option_c": "making",
+        "option_d": "having made",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 304,
+        "question_text": "The manager warned us against ____ unnecessary risks.",
+        "option_a": "take",
+        "option_b": "taking",
+        "option_c": "to take",
+        "option_d": "taken",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 305,
+        "question_text": "They persuaded her ____ for the leadership program.",
+        "option_a": "apply",
+        "option_b": "to apply",
+        "option_c": "applying",
+        "option_d": "to applying",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 306,
+        "question_text": "He admitted ____ the figures incorrectly.",
+        "option_a": "to calculate",
+        "option_b": "calculating",
+        "option_c": "having calculated",
+        "option_d": "calculate",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 307,
+        "question_text": "The researchers aim ____ how the virus spreads.",
+        "option_a": "to understand",
+        "option_b": "understanding",
+        "option_c": "understand",
+        "option_d": "to be understood",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 308,
+        "question_text": "She resented ____ overlooked for the promotion.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 309,
+        "question_text": "We expect the report ____ by tomorrow afternoon.",
+        "option_a": "to complete",
+        "option_b": "complated",
+        "option_c": "to be completed",
+        "option_d": "completing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 310,
+        "question_text": "He tends ____ impatient when things don’t go as planned.",
+        "option_a": "getting",
+        "option_b": "to get",
+        "option_c": "get",
+        "option_d": "to getting",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 311,
+        "question_text": "The machine needs ____ before it can be used again.",
+        "option_a": "to repair",
+        "option_b": "repairing",
+        "option_c": "to be repaired",
+        "option_d": "repair",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 312,
+        "question_text": "I appreciate your ____ me complete the project.",
+        "option_a": "help",
+        "option_b": "helping",
+        "option_c": "to help",
+        "option_d": "having helped",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 313,
+        "question_text": "They postponed ____ a decision until further notice.",
+        "option_a": "make",
+        "option_b": "to make",
+        "option_c": "making",
+        "option_d": "to be made",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 314,
+        "question_text": "He is believed ____ the youngest person ever elected to the council.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "to have been",
+        "option_d": "be",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 315,
+        "question_text": "She insisted on ____ compensated for the damage.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 316,
+        "question_text": "We can’t risk ____ everything again.",
+        "option_a": "to lose",
+        "option_b": "lose",
+        "option_c": "losing",
+        "option_d": "having lost",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 317,
+        "question_text": "The director expects the changes ____ by next quarter.",
+        "option_a": "to implement",
+        "option_b": "implemented",
+        "option_c": "to be implemented",
+        "option_d": "implementing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 318,
+        "question_text": "I didn’t mean ____ your feelings.",
+        "option_a": "hurt",
+        "option_b": "hurting",
+        "option_c": "to hurt",
+        "option_d": "to be hurt",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 319,
+        "question_text": "They admitted ____ the warning signs.",
+        "option_a": "to ignore",
+        "option_b": "ignoring",
+        "option_c": "having ignored",
+        "option_d": "ignore",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 320,
+        "question_text": "He seems ____ the procedure better now.",
+        "option_a": "to understand",
+        "option_b": "understanding",
+        "option_c": "to be understanding",
+        "option_d": "understood",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 321,
+        "question_text": "We encouraged the staff ____ new ideas.",
+        "option_a": "submitting",
+        "option_b": "to submit",
+        "option_c": "submit",
+        "option_d": "to be submitted",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 322,
+        "question_text": "She ended up ____ the entire project alone.",
+        "option_a": "complete",
+        "option_b": "to complete",
+        "option_c": "completing",
+        "option_d": "having completed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 323,
+        "question_text": "They warned us not ____ any suspicious emails.",
+        "option_a": "open",
+        "option_b": "to open",
+        "option_c": "opening",
+        "option_d": "opened",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 324,
+        "question_text": "I regret ____ him about the issue earlier.",
+        "option_a": "not tell",
+        "option_b": "to not tell",
+        "option_c": "not to tell",
+        "option_d": "not telling",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 325,
+        "question_text": "He seems ____ progress despite the difficult conditions.",
+        "option_a": "to be making",
+        "option_b": "make",
+        "option_c": "making",
+        "option_d": "to make",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 326,
+        "question_text": "We hope ____ the matter as soon as possible.",
+        "option_a": "resolve",
+        "option_b": "resolving",
+        "option_c": "to resolve",
+        "option_d": "to be resolved",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 327,
+        "question_text": "They denied ____ involved in the decision.",
+        "option_a": "be",
+        "option_b": "being",
+        "option_c": "to be",
+        "option_d": "to being",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 328,
+        "question_text": "I appreciate ____ your time on this.",
+        "option_a": "you spending",
+        "option_b": "your spending",
+        "option_c": "you to spend",
+        "option_d": "you having spent",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 329,
+        "question_text": "The company aims ____ its presence in Asia.",
+        "option_a": "expand",
+        "option_b": "to expand",
+        "option_c": "expanding",
+        "option_d": "to be expanded",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 330,
+        "question_text": "She admitted ____ too quickly.",
+        "option_a": "judging",
+        "option_b": "to judge",
+        "option_c": "having judged",
+        "option_d": "judge",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 331,
+        "question_text": "They recommended ____ the old software.",
+        "option_a": "to replace",
+        "option_b": "replace",
+        "option_c": "replacing",
+        "option_d": "to have replaced",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 332,
+        "question_text": "The professor expects the paper ____ thoroughly.",
+        "option_a": "to review",
+        "option_b": "reviewing",
+        "option_c": "reviewed",
+        "option_d": "to be reviewed",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 333,
+        "question_text": "He avoided ____ the truth during the interview.",
+        "option_a": "reveal",
+        "option_b": "revealing",
+        "option_c": "to reveal",
+        "option_d": "revealed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 334,
+        "question_text": "We can't afford ____ any more delays.",
+        "option_a": "having",
+        "option_b": "to have",
+        "option_c": "have",
+        "option_d": "to having",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 335,
+        "question_text": "His behaviour contributed to the team ____ confidence.",
+        "option_a": "losing",
+        "option_b": "to lose",
+        "option_c": "to losing",
+        "option_d": "lost",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 336,
+        "question_text": "She pretended ____ the announcement.",
+        "option_a": "not hear",
+        "option_b": "to not hear",
+        "option_c": "not to hear",
+        "option_d": "not hearing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 337,
+        "question_text": "We regret ____ you that your application wasn’t successful.",
+        "option_a": "inform",
+        "option_b": "to inform",
+        "option_c": "informing",
+        "option_d": "to have informed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 338,
+        "question_text": "The team is committed to ____ the best possible outcome.",
+        "option_a": "achieve",
+        "option_b": "to achieve",
+        "option_c": "achieving",
+        "option_d": "to be achieved",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 339,
+        "question_text": "He apologized for ____ such short notice.",
+        "option_a": "cancelling on",
+        "option_b": "having cancelled on",
+        "option_c": "cancel",
+        "option_d": "to cancel on",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 340,
+        "question_text": "She reminded us ____ our ID cards at all times.",
+        "option_a": "carry",
+        "option_b": "carrying",
+        "option_c": "to carry",
+        "option_d": "to be carried",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 341,
+        "question_text": "They don’t allow phones ____ during the meeting.",
+        "option_a": "use",
+        "option_b": "to use",
+        "option_c": "using",
+        "option_d": "to be used",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 342,
+        "question_text": "We risk ____ key data if we ignore the warnings.",
+        "option_a": "lose",
+        "option_b": "losing",
+        "option_c": "to lose",
+        "option_d": "to losing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 343,
+        "question_text": "I regret ____ earlier about the plan.",
+        "option_a": "not telling",
+        "option_b": "not to tell",
+        "option_c": "to not tell",
+        "option_d": "not to have told",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 344,
+        "question_text": "The changes appear ____ the process significantly.",
+        "option_a": "to be improving",
+        "option_b": "improve",
+        "option_c": "to improve",
+        "option_d": "improving",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 345,
+        "question_text": "They urged us ____ the instructions carefully.",
+        "option_a": "read",
+        "option_b": "to read",
+        "option_c": "reading",
+        "option_d": "to be read",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 346,
+        "question_text": "She resented ____ told what to do.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 347,
+        "question_text": "The instructor encouraged the students ____ questions.",
+        "option_a": "asking",
+        "option_b": "ask",
+        "option_c": "to ask",
+        "option_d": "to be asked",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 348,
+        "question_text": "He appears ____ the concept well now.",
+        "option_a": "to grasp",
+        "option_b": "grasping",
+        "option_c": "to have grasped",
+        "option_d": "grasp",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 349,
+        "question_text": "They postponed ____ the final results.",
+        "option_a": "announce",
+        "option_b": "announcing",
+        "option_c": "to announce",
+        "option_d": "to be announced",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 350,
+        "question_text": "We regret ____ you that your payment was unsuccessful.",
+        "option_a": "inform",
+        "option_b": "to inform",
+        "option_c": "informing",
+        "option_d": "to have informed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 351,
+        "question_text": "Despite ____ extensive evidence, the committee remained unconvinced.",
+        "option_a": "presented",
+        "option_b": "having been presented",
+        "option_c": "being presented",
+        "option_d": "to have presented",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 352,
+        "question_text": "Her proposal was dismissed as impractical, which she found difficult ____ .",
+        "option_a": "to accept",
+        "option_b": "accepting",
+        "option_c": "to be accepted",
+        "option_d": "to have accepted",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 353,
+        "question_text": "He narrowly avoided ____ held responsible for the incident.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "having been",
+        "option_d": "to have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 354,
+        "question_text": "The report is believed ____ several inaccuracies that need urgent correction.",
+        "option_a": "to contain",
+        "option_b": "containing",
+        "option_c": "to have contained",
+        "option_d": "contain",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 355,
+        "question_text": "The more complex the issue becomes, the harder it is ____ an effective solution.",
+        "option_a": "formulate",
+        "option_b": "to be formulated",
+        "option_c": "to formulate",
+        "option_d": "formulating",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 356,
+        "question_text": "He appeared genuinely surprised, which made it hard ____ whether he was sincere.",
+        "option_a": "determining",
+        "option_b": "to determine",
+        "option_c": "determine",
+        "option_d": "to be determined",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 357,
+        "question_text": "She resented ____ treated as though she were inexperienced.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "been",
+        "option_d": "to being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 358,
+        "question_text": "The CEO demanded that the figures ____ verified again before publication.",
+        "option_a": "are",
+        "option_b": "be",
+        "option_c": "were",
+        "option_d": "being",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 359,
+        "question_text": "The company discouraged employees from ____ personal devices for work.",
+        "option_a": "use",
+        "option_b": "using",
+        "option_c": "to use",
+        "option_d": "having used",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 360,
+        "question_text": "She denied ____ any responsibility for the project’s failure.",
+        "option_a": "having",
+        "option_b": "to have",
+        "option_c": "having had",
+        "option_d": "to having",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 361,
+        "question_text": "The proposal led to the budget ____ thoroughly.",
+        "option_a": "reconsidered",
+        "option_b": "being reconsidered",
+        "option_c": "to be reconsidered",
+        "option_d": "reconsidering",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 362,
+        "question_text": "We’d prefer you ____ any decisions until we’ve reviewed all the data.",
+        "option_a": "don’t make",
+        "option_b": "not make",
+        "option_c": "didn’t make",
+        "option_d": "not to make",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 363,
+        "question_text": "The policy is likely ____ significant changes next year.",
+        "option_a": "undergoing",
+        "option_b": "to undergo",
+        "option_c": "to be undergone",
+        "option_d": "undergo",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 364,
+        "question_text": "He objected to the terms ____ in the agreement.",
+        "option_a": "being outlined",
+        "option_b": "outlined",
+        "option_c": "to outline",
+        "option_d": "having outlined",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 365,
+        "question_text": "Few people expected the negotiations ____ so abruptly.",
+        "option_a": "ending",
+        "option_b": "end",
+        "option_c": "to end",
+        "option_d": "to have ended",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 366,
+        "question_text": "Her contribution was essential to the project ____ completed on time.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "to being",
+        "option_d": "being to",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 367,
+        "question_text": "The suspect admitted ____ at the scene but denied any involvement.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "having been",
+        "option_d": "to have been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 368,
+        "question_text": "If he had paid more attention, he might have avoided ____ misled.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "to being",
+        "option_d": "been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 369,
+        "question_text": "The system turned out ____ far more complex than anticipated.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "to have been",
+        "option_d": "be",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 370,
+        "question_text": "He appeared ____ no intention of reconsidering his decision.",
+        "option_a": "to have",
+        "option_b": "having",
+        "option_c": "to having",
+        "option_d": "have",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 371,
+        "question_text": "We regret ____ you that your application cannot be processed further.",
+        "option_a": "inform",
+        "option_b": "informing",
+        "option_c": "to inform",
+        "option_d": "to have informed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 372,
+        "question_text": "The report highlighted the need for the guidelines ____ immediately.",
+        "option_a": "to revise",
+        "option_b": "revising",
+        "option_c": "to be revised",
+        "option_d": "revised",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 373,
+        "question_text": "She couldn’t help ____ the impression that something was wrong.",
+        "option_a": "have",
+        "option_b": "having",
+        "option_c": "to have",
+        "option_d": "to having",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 374,
+        "question_text": "Despite ____ several times, he still failed to follow the instructions.",
+        "option_a": "explaining",
+        "option_b": "to explain",
+        "option_c": "having been explained",
+        "option_d": "being explained",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 375,
+        "question_text": "The board questioned the feasibility of the plan ____ so quickly.",
+        "option_a": "being implemented",
+        "option_b": "to implement",
+        "option_c": "implementing",
+        "option_d": "to be implementing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 376,
+        "question_text": "He accused them of ____ him without valid justification.",
+        "option_a": "to suspend",
+        "option_b": "suspend",
+        "option_c": "suspending",
+        "option_d": "having suspended",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 377,
+        "question_text": "They expect the transition ____ smoothly if all departments cooperate.",
+        "option_a": "runs",
+        "option_b": "to running",
+        "option_c": "to run",
+        "option_d": "running",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 378,
+        "question_text": "The matter is too urgent for us ____ further.",
+        "option_a": "to delay",
+        "option_b": "delay",
+        "option_c": "delaying",
+        "option_d": "to be delayed",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 379,
+        "question_text": "He couldn't justify ____ so much time on a minor issue.",
+        "option_a": "spend",
+        "option_b": "to spend",
+        "option_c": "spending",
+        "option_d": "to have spent",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 380,
+        "question_text": "Her explanation was too vague for anyone ____ conclusions.",
+        "option_a": "to draw",
+        "option_b": "draw",
+        "option_c": "drawing",
+        "option_d": "to be drawn",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 381,
+        "question_text": "The department encouraged staff ____ courses to improve their skills.",
+        "option_a": "take",
+        "option_b": "taking",
+        "option_c": "to take",
+        "option_d": "to be taken",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 382,
+        "question_text": "I found it impossible ____ the data without proper context.",
+        "option_a": "analyse",
+        "option_b": "analysing",
+        "option_c": "to analyse",
+        "option_d": "to be analysed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 383,
+        "question_text": "They seem ____ the consequences of their decision.",
+        "option_a": "to underestimate",
+        "option_b": "underestimating",
+        "option_c": "underestimate",
+        "option_d": "to have underestimated",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 384,
+        "question_text": "He avoided ____ too much information during the negotiation.",
+        "option_a": "to reveal",
+        "option_b": "revealing",
+        "option_c": "reveal",
+        "option_d": "to revealing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 385,
+        "question_text": "The manager insisted on the figures ____ once again.",
+        "option_a": "checking",
+        "option_b": "to check",
+        "option_c": "to be checked",
+        "option_d": "being checked",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 386,
+        "question_text": "She admits ____ too quickly without reviewing all the facts.",
+        "option_a": "to judge",
+        "option_b": "judging",
+        "option_c": "having judged",
+        "option_d": "judge",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 387,
+        "question_text": "The company is committed to ____ the highest ethical standards.",
+        "option_a": "maintain",
+        "option_b": "to maintain",
+        "option_c": "maintaining",
+        "option_d": "to maintaining",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 388,
+        "question_text": "He appears ____ little interest in resolving the dispute.",
+        "option_a": "to show",
+        "option_b": "show",
+        "option_c": "showing",
+        "option_d": "to have shown",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 389,
+        "question_text": "They postponed ____ the announcement until all details were confirmed.",
+        "option_a": "make",
+        "option_b": "to be made",
+        "option_c": "making",
+        "option_d": "to make",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 390,
+        "question_text": "He couldn’t help ____ that something was being concealed.",
+        "option_a": "suspect",
+        "option_b": "suspecting",
+        "option_c": "to suspect",
+        "option_d": "having suspected",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 391,
+        "question_text": "The document is too sensitive for us ____ without authorization.",
+        "option_a": "sharing",
+        "option_b": "to share",
+        "option_c": "share",
+        "option_d": "to be shared",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 392,
+        "question_text": "They objected to the plan ____ without proper consultation.",
+        "option_a": "approve",
+        "option_b": "to approving",
+        "option_c": "being approved",
+        "option_d": "to be approved",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 393,
+        "question_text": "The situation calls for the problem ____ as soon as possible.",
+        "option_a": "address",
+        "option_b": "to address",
+        "option_c": "being addressed",
+        "option_d": "to be addressed",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 394,
+        "question_text": "He admitted ____ insufficient data for a firm conclusion.",
+        "option_a": "having collected",
+        "option_b": "to collect",
+        "option_c": "collecting",
+        "option_d": "to have collecting",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 395,
+        "question_text": "The committee expressed concern about the findings ____ prematurely.",
+        "option_a": "publish",
+        "option_b": "being published",
+        "option_c": "to publish",
+        "option_d": "to be publishing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 396,
+        "question_text": "Her intervention prevented the situation ____ worse.",
+        "option_a": "from becoming",
+        "option_b": "to become",
+        "option_c": "becoming",
+        "option_d": "to becoming",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 397,
+        "question_text": "The team acknowledged ____ underestimated the task.",
+        "option_a": "having",
+        "option_b": "to have",
+        "option_c": "having had",
+        "option_d": "to having",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 398,
+        "question_text": "He appears ____ no effort to correct the mistake.",
+        "option_a": "to make",
+        "option_b": "making",
+        "option_c": "to have made",
+        "option_d": "make",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 399,
+        "question_text": "The ambassador suggested the agreement ____ immediately.",
+        "option_a": "renegotiated",
+        "option_b": "to renegotiate",
+        "option_c": "to be renegotiated",
+        "option_d": "renegotiating",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 400,
+        "question_text": "She risked ____ her credibility by making such bold claims.",
+        "option_a": "losing",
+        "option_b": "to lose",
+        "option_c": "lose",
+        "option_d": "to losing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 401,
+        "question_text": "We anticipated the results ____ similar to last year’s.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "to have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 402,
+        "question_text": "The professor discouraged students ____ overly simplistic arguments.",
+        "option_a": "make",
+        "option_b": "from making",
+        "option_c": "to make",
+        "option_d": "to be made",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 403,
+        "question_text": "They admitted ____ several key details during the discussion.",
+        "option_a": "having overlooked",
+        "option_b": "to overlook",
+        "option_c": "overlooking",
+        "option_d": "to have overlooking",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 404,
+        "question_text": "She appears ____ the implications more fully now.",
+        "option_a": "to understand",
+        "option_b": "understanding",
+        "option_c": "to have understood",
+        "option_d": "to be understanding",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 405,
+        "question_text": "The task demanded the data ____ meticulously.",
+        "option_a": "to analyse",
+        "option_b": "analysed",
+        "option_c": "being analysed",
+        "option_d": "to be analysed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 406,
+        "question_text": "I found it impossible ____ what he truly meant.",
+        "option_a": "grasp",
+        "option_b": "to grasp",
+        "option_c": "grasping",
+        "option_d": "to be grasped",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 407,
+        "question_text": "They objected to the findings ____ without clear evidence.",
+        "option_a": "to publish",
+        "option_b": "published",
+        "option_c": "being published",
+        "option_d": "having been published",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 408,
+        "question_text": "He couldn’t justify ____ so much money on unnecessary upgrades.",
+        "option_a": "spend",
+        "option_b": "to spend",
+        "option_c": "spending",
+        "option_d": "to have spent",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 409,
+        "question_text": "She denied ____ aware of the consequences.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "having been",
+        "option_d": "to having been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 410,
+        "question_text": "The policy requires all complaints ____ in writing within seven days.",
+        "option_a": "submitting",
+        "option_b": "to submit",
+        "option_c": "to be submitted",
+        "option_d": "submitted",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 411,
+        "question_text": "The lawyer objected to evidence ____ without prior disclosure.",
+        "option_a": "to be introduced",
+        "option_b": "introduced",
+        "option_c": "being introduced",
+        "option_d": "to introducing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 412,
+        "question_text": "The management acknowledged ____ too heavily on outdated data.",
+        "option_a": "to rely",
+        "option_b": "relying",
+        "option_c": "having relied",
+        "option_d": "to have relied",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 413,
+        "question_text": "Her remarks were subtle enough ____ offence but clear enough to be understood.",
+        "option_a": "not causing",
+        "option_b": "to not cause",
+        "option_c": "not to cause",
+        "option_d": "not having caused",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 414,
+        "question_text": "We considered the option ____ the launch rather than cancelling it.",
+        "option_a": "delay",
+        "option_b": "delaying",
+        "option_c": "to delay",
+        "option_d": "to have delayed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 415,
+        "question_text": "The contract obliges both parties ____ confidentiality at all times.",
+        "option_a": "maintain",
+        "option_b": "to maintain",
+        "option_c": "maintaining",
+        "option_d": "to be maintaining",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 416,
+        "question_text": "The witness admitted ____ parts of the story to protect a colleague.",
+        "option_a": "to invent",
+        "option_b": "inventing",
+        "option_c": "having invented",
+        "option_d": "to having invented",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 417,
+        "question_text": "The board could not justify the risks ____ with the investment.",
+        "option_a": "associate",
+        "option_b": "to associate",
+        "option_c": "associating",
+        "option_d": "associated",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 418,
+        "question_text": "The schedule is tight, but the team is confident about ____ the deadline.",
+        "option_a": "meet",
+        "option_b": "meeting",
+        "option_c": "to meet",
+        "option_d": "to have met",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 419,
+        "question_text": "There is little chance of the proposal ____ in its current form.",
+        "option_a": "to be accepted",
+        "option_b": "being accepted",
+        "option_c": "accepting",
+        "option_d": "to accept",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 420,
+        "question_text": "Her research focuses on factors ____ consumer behaviour.",
+        "option_a": "influencing",
+        "option_b": "to influence",
+        "option_c": "influenced",
+        "option_d": "to be influencing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 421,
+        "question_text": "The committee debated whether the rule ____ more strictly.",
+        "option_a": "should enforce",
+        "option_b": "should be enforced",
+        "option_c": "be enforcing",
+        "option_d": "enforced",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 422,
+        "question_text": "We cannot risk confidential files ____ on unsecured devices.",
+        "option_a": "to store",
+        "option_b": "storing",
+        "option_c": "to be stored",
+        "option_d": "being stored",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 423,
+        "question_text": "He was found ____ in breach of several internal regulations.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "to have been",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 424,
+        "question_text": "The professor expects all essays ____ to the highest academic standard.",
+        "option_a": "written",
+        "option_b": "to write",
+        "option_c": "to be written",
+        "option_d": "writing",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 425,
+        "question_text": "They reported the incident ____ within minutes of it occurring.",
+        "option_a": "to handle",
+        "option_b": "handled",
+        "option_c": "being handled",
+        "option_d": "having been handled",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 426,
+        "question_text": "Her careful wording prevented the email ____ as confrontational.",
+        "option_a": "to be interpreted",
+        "option_b": "being interpreted",
+        "option_c": "interpreting",
+        "option_d": "to interpret",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 427,
+        "question_text": "The team regretted ____ user feedback earlier in the design process.",
+        "option_a": "not collect",
+        "option_b": "to not collect",
+        "option_c": "not collecting",
+        "option_d": "not to have collected",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 428,
+        "question_text": "The coach acknowledged ____ the players under excessive pressure.",
+        "option_a": "having put",
+        "option_b": "to put",
+        "option_c": "putting",
+        "option_d": "to have putting",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 429,
+        "question_text": "We regarded the terms ____ fundamentally unfair to smaller suppliers.",
+        "option_a": "as being",
+        "option_b": "to be",
+        "option_c": "being",
+        "option_d": "to have been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 430,
+        "question_text": "The new regulation aims at ____ transparency in the banking sector.",
+        "option_a": "to increase",
+        "option_b": "increasing",
+        "option_c": "increase",
+        "option_d": "to be increasing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 431,
+        "question_text": "The supervisor found the explanation ____ details she considered crucial.",
+        "option_a": "lacking",
+        "option_b": "to lack",
+        "option_c": "lacked",
+        "option_d": "to have lacked",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 432,
+        "question_text": "The journalist was criticized for ____ to verify the sources properly.",
+        "option_a": "failing",
+        "option_b": "to fail",
+        "option_c": "having failed",
+        "option_d": "fail",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 433,
+        "question_text": "He fully intends ____ the claim if no settlement is offered.",
+        "option_a": "pursuing",
+        "option_b": "to pursue",
+        "option_c": "pursue",
+        "option_d": "to have pursued",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 434,
+        "question_text": "The delay in delivery was blamed on equipment ____ unexpectedly.",
+        "option_a": "to fail",
+        "option_b": "failed",
+        "option_c": "failing",
+        "option_d": "to have failed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 435,
+        "question_text": "We considered his actions ____ incompatible with our code of conduct.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "as being",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 436,
+        "question_text": "Her comments risked ____ the already tense situation.",
+        "option_a": "to escalate",
+        "option_b": "escalated",
+        "option_c": "escalating",
+        "option_d": "to have escalated",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 437,
+        "question_text": "The manager regarded the complaint ____ trivial and dismissed it.",
+        "option_a": "to be",
+        "option_b": "as",
+        "option_c": "being",
+        "option_d": "as being",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 438,
+        "question_text": "They acknowledged the policy ____ unclear in several respects.",
+        "option_a": "to be",
+        "option_b": "being",
+        "option_c": "as being",
+        "option_d": "been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 439,
+        "question_text": "The auditors found several transactions ____ without proper documentation.",
+        "option_a": "processing",
+        "option_b": "to process",
+        "option_c": "processed",
+        "option_d": "to have processed",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 440,
+        "question_text": "The company now admits ____ insufficient safeguards against data leaks.",
+        "option_a": "to have",
+        "option_b": "having",
+        "option_c": "to having",
+        "option_d": "have",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 441,
+        "question_text": "She could not bear the thought of the plan ____ without her input.",
+        "option_a": "to proceed",
+        "option_b": "proceeding",
+        "option_c": "to be proceeded",
+        "option_d": "proceeded",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 442,
+        "question_text": "We regarded his refusal ____ a serious breach of trust.",
+        "option_a": "as",
+        "option_b": "to be",
+        "option_c": "being",
+        "option_d": "as being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 443,
+        "question_text": "The spokesperson avoided ____ any direct promises about future funding.",
+        "option_a": "to make",
+        "option_b": "make",
+        "option_c": "making",
+        "option_d": "to be making",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 444,
+        "question_text": "The board now concedes ____ the risks at the outset.",
+        "option_a": "underestimating",
+        "option_b": "to underestimate",
+        "option_c": "having underestimated",
+        "option_d": "to having underestimated",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 445,
+        "question_text": "Her strategy depends on the rival company ____ first.",
+        "option_a": "to react",
+        "option_b": "reacted",
+        "option_c": "reacting",
+        "option_d": "to have reacted",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 446,
+        "question_text": "The lawyer objected to the witness ____ leading questions.",
+        "option_a": "being asked",
+        "option_b": "to ask",
+        "option_c": "asked",
+        "option_d": "to being asked",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 447,
+        "question_text": "They discovered the lock ____ from the inside.",
+        "option_a": "to be tampered",
+        "option_b": "tampered",
+        "option_c": "to have been tampered",
+        "option_d": "having tampered",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 448,
+        "question_text": "The consultant warned us about the figures ____ overly optimistic.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "been",
+        "option_d": "as being",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 449,
+        "question_text": "The teacher cannot tolerate assignments ____ at the last minute.",
+        "option_a": "submitting",
+        "option_b": "to submit",
+        "option_c": "submitted",
+        "option_d": "to be submitted",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 450,
+        "question_text": "We expect the updated guidelines ____ far clearer than the previous version.",
+        "option_a": "being",
+        "option_b": "to be",
+        "option_c": "be",
+        "option_d": "to have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 451,
+        "question_text": "Not only ____ the deadline, but they also exceeded the budget.",
+        "option_a": "did they miss",
+        "option_b": "they missed",
+        "option_c": "they have missed",
+        "option_d": "missed they",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 452,
+        "question_text": "It is imperative that the contract ____ signed by tomorrow morning.",
+        "option_a": "is",
+        "option_b": "be",
+        "option_c": "will be",
+        "option_d": "must be",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 453,
+        "question_text": "Had I realized the complexity of the task, I ____ it.",
+        "option_a": "would not accept",
+        "option_b": "would not have accepted",
+        "option_c": "will not accept",
+        "option_d": "did not accept",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 454,
+        "question_text": "____ for the heavy traffic, we would have arrived on time.",
+        "option_a": "If it wasn't",
+        "option_b": "Were it not",
+        "option_c": "Had it not been",
+        "option_d": "Unless it was",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 455,
+        "question_text": "Under no circumstances ____ the emergency exit be blocked.",
+        "option_a": "should",
+        "option_b": "must",
+        "option_c": "can",
+        "option_d": "shall",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 456,
+        "question_text": "Rarely ____ such a magnificent display of talent.",
+        "option_a": "one sees",
+        "option_b": "does one see",
+        "option_c": "has one seen",
+        "option_d": "one has seen",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 457,
+        "question_text": "The sheer size of the project was ____ that we had to hire extra staff.",
+        "option_a": "so",
+        "option_b": "such",
+        "option_c": "too",
+        "option_d": "very",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 458,
+        "question_text": "Whatever ____, we must remain united.",
+        "option_a": "happens",
+        "option_b": "happen",
+        "option_c": "happening",
+        "option_d": "to happen",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 459,
+        "question_text": "____ he is rich, he is not happy.",
+        "option_a": "Despite",
+        "option_b": "In spite of",
+        "option_c": "Albeit",
+        "option_d": "Much as",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 460,
+        "question_text": "No sooner had the meeting started ____ the fire alarm went off.",
+        "option_a": "when",
+        "option_b": "than",
+        "option_c": "before",
+        "option_d": "after",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 461,
+        "question_text": "I would rather you ____ me the truth right now.",
+        "option_a": "tell",
+        "option_b": "told",
+        "option_c": "had told",
+        "option_d": "telling",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 462,
+        "question_text": "It's high time we ____ home.",
+        "option_a": "go",
+        "option_b": "went",
+        "option_c": "gone",
+        "option_d": "going",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 463,
+        "question_text": "Only by working extra hours ____ the project on time.",
+        "option_a": "we could finish",
+        "option_b": "could we finish",
+        "option_c": "we finish",
+        "option_d": "finished we",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 464,
+        "question_text": "Little ____ that he was being watched.",
+        "option_a": "he knew",
+        "option_b": "did he know",
+        "option_c": "he knows",
+        "option_d": "does he know",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 465,
+        "question_text": "We are looking forward to ____ from you soon.",
+        "option_a": "hear",
+        "option_b": "hearing",
+        "option_c": "heard",
+        "option_d": "having heard",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 466,
+        "question_text": "The judge recommended that he ____ for at least five years.",
+        "option_a": "be imprisoned",
+        "option_b": "is imprisoned",
+        "option_c": "imprisoned",
+        "option_d": "was imprisoned",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 467,
+        "question_text": "She acts as if she ____ the Queen.",
+        "option_a": "is",
+        "option_b": "were",
+        "option_c": "has been",
+        "option_d": "had been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 468,
+        "question_text": "Unless you ____ hard, you will fail the exam.",
+        "option_a": "study",
+        "option_b": "studied",
+        "option_c": "don't study",
+        "option_d": "didn't study",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 469,
+        "question_text": "Suppose you ____ the lottery, what would you do?",
+        "option_a": "win",
+        "option_b": "won",
+        "option_c": "had won",
+        "option_d": "have won",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 470,
+        "question_text": "____ of the two sisters is the more intelligent?",
+        "option_a": "Who",
+        "option_b": "Which",
+        "option_c": "Whom",
+        "option_d": "What",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 471,
+        "question_text": "Scarcely had I entered the room ____ the phone rang.",
+        "option_a": "when",
+        "option_b": "than",
+        "option_c": "before",
+        "option_d": "after",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 472,
+        "question_text": "In no way ____ responsible for the accident.",
+        "option_a": "am I",
+        "option_b": "I am",
+        "option_c": "was I",
+        "option_d": "I was",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 473,
+        "question_text": "We objected to ____ treated like children.",
+        "option_a": "be",
+        "option_b": "being",
+        "option_c": "been",
+        "option_d": "have been",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 474,
+        "question_text": "It was ____ late that we missed the last bus.",
+        "option_a": "so",
+        "option_b": "such",
+        "option_c": "too",
+        "option_d": "very",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 475,
+        "question_text": "Hardly ever ____ such a rude person.",
+        "option_a": "I have met",
+        "option_b": "have I met",
+        "option_c": "I met",
+        "option_d": "did I meet",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 476,
+        "question_text": "____ you need any help, please do not hesitate to ask.",
+        "option_a": "Should",
+        "option_b": "Would",
+        "option_c": "Could",
+        "option_d": "Might",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 477,
+        "question_text": "The police are investigating the mystery ____ the disappearance.",
+        "option_a": "surrounding",
+        "option_b": "surrounded",
+        "option_c": "surrounds",
+        "option_d": "to surround",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 478,
+        "question_text": "If only I ____ the answer!",
+        "option_a": "know",
+        "option_b": "knew",
+        "option_c": "have known",
+        "option_d": "knowing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 479,
+        "question_text": "I wish I ____ to the party last night.",
+        "option_a": "went",
+        "option_b": "had gone",
+        "option_c": "have gone",
+        "option_d": "go",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 480,
+        "question_text": "____ tired, he continued to work.",
+        "option_a": "Despite",
+        "option_b": "Although",
+        "option_c": "In spite",
+        "option_d": "Even though",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 481,
+        "question_text": "It is essential that he ____ informed immediately.",
+        "option_a": "is",
+        "option_b": "be",
+        "option_c": "was",
+        "option_d": "were",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 482,
+        "question_text": "____ you to change your mind, let me know.",
+        "option_a": "If",
+        "option_b": "Were",
+        "option_c": "Had",
+        "option_d": "Should",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 483,
+        "question_text": "He denied ____ the money.",
+        "option_a": "steal",
+        "option_b": "stealing",
+        "option_c": "to steal",
+        "option_d": "stolen",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 484,
+        "question_text": "She regrets ____ school so young.",
+        "option_a": "leaving",
+        "option_b": "to leave",
+        "option_c": "left",
+        "option_d": "leave",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 485,
+        "question_text": "Don't forget ____ the door when you leave.",
+        "option_a": "locking",
+        "option_b": "to lock",
+        "option_c": "lock",
+        "option_d": "locked",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 486,
+        "question_text": "I remember ____ him at the conference last year.",
+        "option_a": "meeting",
+        "option_b": "to meet",
+        "option_c": "meet",
+        "option_d": "met",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 487,
+        "question_text": "We stopped ____ some coffee on the way.",
+        "option_a": "drinking",
+        "option_b": "to drink",
+        "option_c": "drink",
+        "option_d": "drank",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 488,
+        "question_text": "Try ____ this new software; it might solve the problem.",
+        "option_a": "using",
+        "option_b": "to use",
+        "option_c": "use",
+        "option_d": "used",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 489,
+        "question_text": "The car needs ____.",
+        "option_a": "wash",
+        "option_b": "washing",
+        "option_c": "to wash",
+        "option_d": "washed",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 490,
+        "question_text": "I'm not used to ____ up so early.",
+        "option_a": "get",
+        "option_b": "getting",
+        "option_c": "got",
+        "option_d": "gotten",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 491,
+        "question_text": "It's no use ____ over spilt milk.",
+        "option_a": "cry",
+        "option_b": "crying",
+        "option_c": "to cry",
+        "option_d": "cried",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 492,
+        "question_text": "There's no point ____ him; he won't listen.",
+        "option_a": "ask",
+        "option_b": "asking",
+        "option_c": "to ask",
+        "option_d": "asked",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 493,
+        "question_text": "He was accused of ____ the documents.",
+        "option_a": "falsify",
+        "option_b": "falsifying",
+        "option_c": "to falsify",
+        "option_d": "falsified",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 494,
+        "question_text": "She insisted on ____ for the meal.",
+        "option_a": "pay",
+        "option_b": "paying",
+        "option_c": "to pay",
+        "option_d": "paid",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 495,
+        "question_text": "I'm looking forward to ____ on holiday.",
+        "option_a": "go",
+        "option_b": "going",
+        "option_c": "to go",
+        "option_d": "went",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 496,
+        "question_text": "Do you mind ____ the window?",
+        "option_a": "open",
+        "option_b": "opening",
+        "option_c": "to open",
+        "option_d": "opened",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 497,
+        "question_text": "Would you mind ____ the window?",
+        "option_a": "open",
+        "option_b": "opening",
+        "option_c": "to open",
+        "option_d": "opened",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 498,
+        "question_text": "I'd rather you ____ smoke in here.",
+        "option_a": "don't",
+        "option_b": "didn't",
+        "option_c": "not",
+        "option_d": "won't",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 499,
+        "question_text": "I'd better ____ now.",
+        "option_a": "go",
+        "option_b": "going",
+        "option_c": "to go",
+        "option_d": "gone",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 500,
+        "question_text": "You had better ____ a doctor.",
+        "option_a": "see",
+        "option_b": "seeing",
+        "option_c": "to see",
+        "option_d": "saw",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 501,
+        "question_text": "Not until the damage was done ____ the magnitude of his error.",
+        "option_a": "did he realize",
+        "option_b": "he realized",
+        "option_c": "he has realized",
+        "option_d": "realized he",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 502,
+        "question_text": "Little ____ that the conversation was being recorded.",
+        "option_a": "they suspect",
+        "option_b": "did they suspect",
+        "option_c": "they suspected",
+        "option_d": "have they suspected",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 503,
+        "question_text": "Rarely ____ visited by such distinguished guests.",
+        "option_a": "we are",
+        "option_b": "are we",
+        "option_c": "we have been",
+        "option_d": "have we",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 504,
+        "question_text": "____ had I closed my eyes than I fell asleep.",
+        "option_a": "No sooner",
+        "option_b": "Hardly",
+        "option_c": "Scarcely",
+        "option_d": "Barely",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 505,
+        "question_text": "Only when you grow up ____ you understand.",
+        "option_a": "will",
+        "option_b": "do",
+        "option_c": "can",
+        "option_d": "are",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 506,
+        "question_text": "Whatever the outcome ____, we are proud of you.",
+        "option_a": "is",
+        "option_b": "be",
+        "option_c": "will be",
+        "option_d": "may be",
+        "correct_option": "d",
+        "level": "Advanced"
+    },
+    {
+        "id": 507,
+        "question_text": "Difficult ____ the task was, they managed to complete it.",
+        "option_a": "although",
+        "option_b": "though",
+        "option_c": "as",
+        "option_d": "however",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 508,
+        "question_text": "____ hard he tried, he couldn't open the door.",
+        "option_a": "However",
+        "option_b": "Whatever",
+        "option_c": "Whenever",
+        "option_d": "Wherever",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 509,
+        "question_text": "Strange ____ it may seem, I actually like him.",
+        "option_a": "as",
+        "option_b": "though",
+        "option_c": "although",
+        "option_d": "however",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 510,
+        "question_text": "____ you be interested, I have a proposal for you.",
+        "option_a": "If",
+        "option_b": "Should",
+        "option_c": "Had",
+        "option_d": "Were",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 511,
+        "question_text": "____ I known you were coming, I would have baked a cake.",
+        "option_a": "If",
+        "option_b": "Had",
+        "option_c": "Should",
+        "option_d": "Were",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 512,
+        "question_text": "____ I in your position, I would accept the offer.",
+        "option_a": "If",
+        "option_b": "Were",
+        "option_c": "Had",
+        "option_d": "Should",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 513,
+        "question_text": "But for your help, I ____ failed.",
+        "option_a": "would have",
+        "option_b": "would",
+        "option_c": "will have",
+        "option_d": "might",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 514,
+        "question_text": "If it ____ for the rain, we would have gone to the beach.",
+        "option_a": "wasn't",
+        "option_b": "weren't",
+        "option_c": "hadn't been",
+        "option_d": "isn't",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 515,
+        "question_text": "I suggest that she ____ the matter with her lawyer.",
+        "option_a": "discuss",
+        "option_b": "discusses",
+        "option_c": "discussed",
+        "option_d": "discussing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 516,
+        "question_text": "It is necessary that everyone ____ present at the meeting.",
+        "option_a": "is",
+        "option_b": "be",
+        "option_c": "was",
+        "option_d": "were",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 517,
+        "question_text": "The doctor insisted that he ____ smoking immediately.",
+        "option_a": "stop",
+        "option_b": "stops",
+        "option_c": "stopped",
+        "option_d": "stopping",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 518,
+        "question_text": "Far ____ it from me to criticize your work.",
+        "option_a": "be",
+        "option_b": "is",
+        "option_c": "was",
+        "option_d": "were",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 519,
+        "question_text": "Be that as it ____, we still have a deadline to meet.",
+        "option_a": "may",
+        "option_b": "might",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 520,
+        "question_text": "Suffice it to ____ that I was not impressed.",
+        "option_a": "say",
+        "option_b": "said",
+        "option_c": "saying",
+        "option_d": "says",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 521,
+        "question_text": "All ____ is a little more time.",
+        "option_a": "I need",
+        "option_b": "what I need",
+        "option_c": "that I need",
+        "option_d": "which I need",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 522,
+        "question_text": "It was in London ____ we first met.",
+        "option_a": "where",
+        "option_b": "that",
+        "option_c": "which",
+        "option_d": "when",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 523,
+        "question_text": "What happened ____ that he lost his keys.",
+        "option_a": "was",
+        "option_b": "is",
+        "option_c": "were",
+        "option_d": "has been",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 524,
+        "question_text": "The reason ____ he left is still unknown.",
+        "option_a": "why",
+        "option_b": "that",
+        "option_c": "because",
+        "option_d": "for",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 525,
+        "question_text": "The place ____ we stayed was beautiful.",
+        "option_a": "where",
+        "option_b": "that",
+        "option_c": "which",
+        "option_d": "in which",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 526,
+        "question_text": "He is the man ____ car was stolen.",
+        "option_a": "who",
+        "option_b": "whose",
+        "option_c": "whom",
+        "option_d": "that",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 527,
+        "question_text": "The woman to ____ I spoke was very helpful.",
+        "option_a": "who",
+        "option_b": "whom",
+        "option_c": "that",
+        "option_d": "which",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 528,
+        "question_text": "This is the house in ____ I was born.",
+        "option_a": "that",
+        "option_b": "which",
+        "option_c": "where",
+        "option_d": "what",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 529,
+        "question_text": "____ of the students has their own book.",
+        "option_a": "Each",
+        "option_b": "Every",
+        "option_c": "All",
+        "option_d": "Some",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 530,
+        "question_text": "____ of the two options is acceptable.",
+        "option_a": "Neither",
+        "option_b": "None",
+        "option_c": "Both",
+        "option_d": "All",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 531,
+        "question_text": "I have ____ money left.",
+        "option_a": "no",
+        "option_b": "none",
+        "option_c": "not",
+        "option_d": "nothing",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 532,
+        "question_text": "There is ____ waiting for you outside.",
+        "option_a": "someone",
+        "option_b": "anyone",
+        "option_c": "everyone",
+        "option_d": "no one",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 533,
+        "question_text": "Is there ____ I can do to help?",
+        "option_a": "something",
+        "option_b": "anything",
+        "option_c": "everything",
+        "option_d": "nothing",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 534,
+        "question_text": "He managed to finish the race ____ his injury.",
+        "option_a": "despite",
+        "option_b": "in spite",
+        "option_c": "although",
+        "option_d": "even though",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 535,
+        "question_text": "____ it was raining, we went for a walk.",
+        "option_a": "Although",
+        "option_b": "Despite",
+        "option_c": "In spite of",
+        "option_d": "However",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 536,
+        "question_text": "He is ____ a good teacher but also a great friend.",
+        "option_a": "not only",
+        "option_b": "as well as",
+        "option_c": "both",
+        "option_d": "either",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 537,
+        "question_text": "You can ____ stay here or come with us.",
+        "option_a": "either",
+        "option_b": "neither",
+        "option_c": "both",
+        "option_d": "nor",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 538,
+        "question_text": "Neither John ____ Mary was at the party.",
+        "option_a": "or",
+        "option_b": "nor",
+        "option_c": "and",
+        "option_d": "but",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 539,
+        "question_text": "____ knowing the truth, he lied to us.",
+        "option_a": "Despite",
+        "option_b": "In spite",
+        "option_c": "Although",
+        "option_d": "Even",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 540,
+        "question_text": "Having ____ his work, he went home.",
+        "option_a": "finish",
+        "option_b": "finished",
+        "option_c": "finishing",
+        "option_d": "finishes",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 541,
+        "question_text": "____ by the noise, I woke up.",
+        "option_a": "Disturbing",
+        "option_b": "Disturbed",
+        "option_c": "Disturb",
+        "option_d": "To disturb",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 542,
+        "question_text": "Not ____ what to do, I called the police.",
+        "option_a": "knowing",
+        "option_b": "known",
+        "option_c": "know",
+        "option_d": "knew",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 543,
+        "question_text": "Seen from a distance, the mountain ____ like a giant.",
+        "option_a": "looks",
+        "option_b": "looking",
+        "option_c": "looked",
+        "option_d": "look",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 544,
+        "question_text": "The book, ____ in 1990, is still popular.",
+        "option_a": "writing",
+        "option_b": "written",
+        "option_c": "wrote",
+        "option_d": "writes",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 545,
+        "question_text": "I'll have the report ____ by tomorrow.",
+        "option_a": "finish",
+        "option_b": "finished",
+        "option_c": "finishing",
+        "option_d": "to finish",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 546,
+        "question_text": "He got his hair ____ yesterday.",
+        "option_a": "cut",
+        "option_b": "cutting",
+        "option_c": "to cut",
+        "option_d": "cuts",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 547,
+        "question_text": "I made him ____ the truth.",
+        "option_a": "tell",
+        "option_b": "to tell",
+        "option_c": "telling",
+        "option_d": "told",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 548,
+        "question_text": "She let her children ____ up late.",
+        "option_a": "stay",
+        "option_b": "to stay",
+        "option_c": "staying",
+        "option_d": "stayed",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 549,
+        "question_text": "We saw him ____ the street.",
+        "option_a": "cross",
+        "option_b": "to cross",
+        "option_c": "crossed",
+        "option_d": "crosses",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 550,
+        "question_text": "I heard someone ____ at the door.",
+        "option_a": "knock",
+        "option_b": "to knock",
+        "option_c": "knocked",
+        "option_d": "knocks",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 551,
+        "question_text": "I can smell something ____.",
+        "option_a": "burn",
+        "option_b": "burning",
+        "option_c": "to burn",
+        "option_d": "burned",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 552,
+        "question_text": "We found the house ____.",
+        "option_a": "desert",
+        "option_b": "deserting",
+        "option_c": "deserted",
+        "option_d": "to desert",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 553,
+        "question_text": "He kept me ____ for an hour.",
+        "option_a": "wait",
+        "option_b": "waiting",
+        "option_c": "to wait",
+        "option_d": "waited",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 554,
+        "question_text": "I consider him ____ the best candidate.",
+        "option_a": "be",
+        "option_b": "being",
+        "option_c": "to be",
+        "option_d": "been",
+        "correct_option": "c",
+        "level": "Advanced"
+    },
+    {
+        "id": 555,
+        "question_text": "She imagined herself ____ on a beach.",
+        "option_a": "lie",
+        "option_b": "lying",
+        "option_c": "to lie",
+        "option_d": "lay",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 556,
+        "question_text": "I won't have you ____ to me like that.",
+        "option_a": "speak",
+        "option_b": "speaking",
+        "option_c": "to speak",
+        "option_d": "spoke",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 557,
+        "question_text": "There is no point in ____ about it.",
+        "option_a": "worry",
+        "option_b": "worrying",
+        "option_c": "to worry",
+        "option_d": "worried",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 558,
+        "question_text": "It's worth ____ the museum.",
+        "option_a": "visit",
+        "option_b": "visiting",
+        "option_c": "to visit",
+        "option_d": "visited",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 559,
+        "question_text": "I have difficulty ____ names.",
+        "option_a": "remember",
+        "option_b": "remembering",
+        "option_c": "to remember",
+        "option_d": "remembered",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 560,
+        "question_text": "We spent the whole day ____.",
+        "option_a": "clean",
+        "option_b": "cleaning",
+        "option_c": "to clean",
+        "option_d": "cleaned",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 561,
+        "question_text": "He was busy ____ his report.",
+        "option_a": "write",
+        "option_b": "writing",
+        "option_c": "to write",
+        "option_d": "wrote",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 562,
+        "question_text": "I look forward to ____ you.",
+        "option_a": "see",
+        "option_b": "seeing",
+        "option_c": "to see",
+        "option_d": "seen",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 563,
+        "question_text": "She is opposed to ____ animals in circuses.",
+        "option_a": "use",
+        "option_b": "using",
+        "option_c": "to use",
+        "option_d": "used",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 564,
+        "question_text": "He admitted to ____ the mistake.",
+        "option_a": "make",
+        "option_b": "making",
+        "option_c": "to make",
+        "option_d": "made",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 565,
+        "question_text": "I prefer tea ____ coffee.",
+        "option_a": "than",
+        "option_b": "to",
+        "option_c": "from",
+        "option_d": "over",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 566,
+        "question_text": "He is capable ____ doing it.",
+        "option_a": "of",
+        "option_b": "to",
+        "option_c": "for",
+        "option_d": "in",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 567,
+        "question_text": "She is interested ____ learning French.",
+        "option_a": "on",
+        "option_b": "in",
+        "option_c": "at",
+        "option_d": "for",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 568,
+        "question_text": "I am good ____ playing chess.",
+        "option_a": "in",
+        "option_b": "at",
+        "option_c": "on",
+        "option_d": "with",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 569,
+        "question_text": "He is afraid ____ spiders.",
+        "option_a": "from",
+        "option_b": "of",
+        "option_c": "with",
+        "option_d": "at",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 570,
+        "question_text": "She is responsible ____ the project.",
+        "option_a": "for",
+        "option_b": "of",
+        "option_c": "to",
+        "option_d": "with",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 571,
+        "question_text": "I am accustomed ____ living alone.",
+        "option_a": "to",
+        "option_b": "with",
+        "option_c": "for",
+        "option_d": "at",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 572,
+        "question_text": "He was accused ____ theft.",
+        "option_a": "for",
+        "option_b": "of",
+        "option_c": "with",
+        "option_d": "from",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 573,
+        "question_text": "She insisted ____ paying.",
+        "option_a": "on",
+        "option_b": "in",
+        "option_c": "at",
+        "option_d": "for",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 574,
+        "question_text": "He succeeded ____ passing the exam.",
+        "option_a": "on",
+        "option_b": "in",
+        "option_c": "at",
+        "option_d": "to",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 575,
+        "question_text": "I apologized ____ being late.",
+        "option_a": "of",
+        "option_b": "for",
+        "option_c": "to",
+        "option_d": "with",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 576,
+        "question_text": "He prevented me ____ entering.",
+        "option_a": "to",
+        "option_b": "from",
+        "option_c": "of",
+        "option_d": "against",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 577,
+        "question_text": "She is famous ____ her paintings.",
+        "option_a": "with",
+        "option_b": "for",
+        "option_c": "of",
+        "option_d": "by",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 578,
+        "question_text": "The room was full ____ people.",
+        "option_a": "with",
+        "option_b": "of",
+        "option_c": "by",
+        "option_d": "from",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 579,
+        "question_text": "He is married ____ a doctor.",
+        "option_a": "with",
+        "option_b": "to",
+        "option_c": "for",
+        "option_d": "by",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 580,
+        "question_text": "I am tired ____ waiting.",
+        "option_a": "from",
+        "option_b": "of",
+        "option_c": "with",
+        "option_d": "by",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 581,
+        "question_text": "By the time we arrive, the film ____ started.",
+        "option_a": "will be",
+        "option_b": "will have",
+        "option_c": "has",
+        "option_d": "had",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 582,
+        "question_text": "He will be working here ____ ten years next month.",
+        "option_a": "since",
+        "option_b": "for",
+        "option_c": "by",
+        "option_d": "in",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 583,
+        "question_text": "At this time tomorrow, I ____ flying to Paris.",
+        "option_a": "will be",
+        "option_b": "will have been",
+        "option_c": "am",
+        "option_d": "would be",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 584,
+        "question_text": "I ____ for you at the station.",
+        "option_a": "will wait",
+        "option_b": "will be waiting",
+        "option_c": "wait",
+        "option_d": "have waited",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 585,
+        "question_text": "The train ____ to leave.",
+        "option_a": "is about",
+        "option_b": "will be",
+        "option_c": "is due",
+        "option_d": "goes",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 586,
+        "question_text": "He is bound ____ fail.",
+        "option_a": "to",
+        "option_b": "of",
+        "option_c": "for",
+        "option_d": "in",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 587,
+        "question_text": "She is likely ____ win.",
+        "option_a": "to",
+        "option_b": "that",
+        "option_c": "of",
+        "option_d": "for",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 588,
+        "question_text": "It is sure ____ rain.",
+        "option_a": "to",
+        "option_b": "that",
+        "option_c": "of",
+        "option_d": "for",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 589,
+        "question_text": "No matter where you go, I ____ find you.",
+        "option_a": "will",
+        "option_b": "would",
+        "option_c": "can",
+        "option_d": "could",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 590,
+        "question_text": "Wherever you ____, I will follow.",
+        "option_a": "go",
+        "option_b": "went",
+        "option_c": "gone",
+        "option_d": "going",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 591,
+        "question_text": "____ you like some coffee?",
+        "option_a": "Would",
+        "option_b": "Do",
+        "option_c": "Can",
+        "option_d": "Will",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 592,
+        "question_text": "____ you mind closing the door?",
+        "option_a": "Would",
+        "option_b": "Do",
+        "option_c": "Can",
+        "option_d": "Will",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 593,
+        "question_text": "I used to smoke, but I ____ anymore.",
+        "option_a": "don't",
+        "option_b": "didn't",
+        "option_c": "not",
+        "option_d": "won't",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 594,
+        "question_text": "I am getting used to ____ on the left.",
+        "option_a": "drive",
+        "option_b": "driving",
+        "option_c": "drove",
+        "option_d": "driven",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 595,
+        "question_text": "He prefers walking to ____.",
+        "option_a": "drive",
+        "option_b": "driving",
+        "option_c": "drove",
+        "option_d": "driven",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 596,
+        "question_text": "I would rather ____ home than go out.",
+        "option_a": "stay",
+        "option_b": "staying",
+        "option_c": "to stay",
+        "option_d": "stayed",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 597,
+        "question_text": "He had his car ____.",
+        "option_a": "repair",
+        "option_b": "repaired",
+        "option_c": "repairing",
+        "option_d": "to repair",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 598,
+        "question_text": "She got him ____ the house.",
+        "option_a": "paint",
+        "option_b": "to paint",
+        "option_c": "painting",
+        "option_d": "painted",
+        "correct_option": "b",
+        "level": "Advanced"
+    },
+    {
+        "id": 599,
+        "question_text": "Need I ____ any more?",
+        "option_a": "say",
+        "option_b": "saying",
+        "option_c": "to say",
+        "option_d": "said",
+        "correct_option": "a",
+        "level": "Advanced"
+    },
+    {
+        "id": 600,
+        "question_text": "How dare you ____ to me like that!",
+        "option_a": "speak",
+        "option_b": "speaking",
+        "option_c": "to speak",
+        "option_d": "spoke",
+        "correct_option": "a",
+        "level": "Advanced"
+    }
+]

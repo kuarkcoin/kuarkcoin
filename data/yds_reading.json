@@ -1,0 +1,472 @@
+[
+  {
+    "passageId": 1,
+    "title": "The Impact of Microplastics",
+    "text": "Microplastics are tiny plastic particles, less than five millimeters in diameter, that have become a ubiquitous pollutant in our environment. Originated from the breakdown of larger plastic debris or manufactured as microbeads in personal care products, these particles have infiltrated the most remote corners of the planet, from the depths of the Mariana Trench to the peaks of Mount Everest. The primary concern regarding microplastics is their persistence; they do not biodegrade but rather fragment into smaller pieces, making them easily ingestible by marine life. This ingestion introduces plastics into the food chain, eventually reaching humans. While the long-term health effects on humans remain under investigation, preliminary studies suggest potential risks including hormonal disruption and cellular damage. Furthermore, microplastics act as vectors for other pollutants, absorbing harmful chemicals from the surrounding water and releasing them upon ingestion.",
+    "questions": [
+      {
+        "prompt": "According to the passage, microplastics are particularly concerning because ___.",
+        "A": "they are found only in the deepest parts of the oceans",
+        "B": "they are primarily manufactured for use in personal care products",
+        "C": "they decompose rapidly into harmless natural substances",
+        "D": "they persist in the environment and enter the food chain",
+        "E": "they are visible to the naked eye and disturb the landscape",
+        "correct": "D",
+        "explanation": "The passage states the primary concern is their persistence; they don't biodegrade but enter the food chain."
+      },
+      {
+        "prompt": "It can be inferred from the passage that microplastics ___.",
+        "A": "are limited to marine environments only",
+        "B": "have no direct impact on human health",
+        "C": "can carry toxic substances into the bodies of organisms",
+        "D": "are mostly larger than five millimeters in diameter",
+        "E": "have been successfully removed from Mount Everest",
+        "correct": "C",
+        "explanation": "The text mentions they act as vectors, absorbing harmful chemicals and releasing them upon ingestion."
+      },
+      {
+        "prompt": "The author points out that the full extent of the impact of microplastics on humans ___.",
+        "A": "is already fully understood and documented",
+        "B": "is not yet completely known but potentially harmful",
+        "C": "is negligible compared to their impact on marine life",
+        "D": "has been exaggerated by preliminary studies",
+        "E": "is restricted to those who consume seafood",
+        "correct": "B",
+        "explanation": "The text says 'long-term health effects on humans remain under investigation' but suggests 'potential risks'."
+      },
+      {
+        "prompt": "The primary purpose of this passage is to ___.",
+        "A": "advocate for a ban on all plastic production",
+        "B": "describe the chemical composition of plastic microbeads",
+        "C": "highlight the widespread nature and potential dangers of microplastics",
+        "D": "compare the pollution levels of the Mariana Trench and Mount Everest",
+        "E": "explain how to clean up plastic debris from the ocean",
+        "correct": "C",
+        "explanation": "The passage focuses on defining microplastics, their spread (ubiquity), and the risks they pose."
+      }
+    ]
+  },
+  {
+    "passageId": 2,
+    "title": "The Circadian Rhythm",
+    "text": "The circadian rhythm is an internal, natural process that regulates the sleep-wake cycle and repeats roughly every 24 hours. Often referred to as the 'body clock', it is driven by a master clock in the brain known as the suprachiasmatic nucleus (SCN). This system is highly sensitive to environmental cues, the most potent of which is light. When light enters the eye, it signals the SCN to suppress the production of melatonin, the hormone that facilitates sleep, thereby promoting wakefulness. Conversely, as darkness falls, melatonin production increases. In modern society, however, this delicate balance is often disrupted. Exposure to artificial blue light from screens—phones, tablets, and computers—during the evening can trick the brain into thinking it is still daytime. This disruption is linked to a host of health issues, including insomnia, obesity, and even mood disorders, highlighting the critical link between our biological rhythms and overall well-being.",
+    "questions": [
+      {
+        "prompt": "The passage emphasizes that the circadian rhythm ___.",
+        "A": "is independent of environmental factors",
+        "B": "operates on a cycle significantly longer than 24 hours",
+        "C": "is primarily controlled by the hormone melatonin",
+        "D": "relies heavily on light signals to regulate sleep and wakefulness",
+        "E": "is a modern concept developed to explain insomnia",
+        "correct": "D",
+        "explanation": "The text states the system is 'highly sensitive to environmental cues, the most potent of which is light'."
+      },
+      {
+        "prompt": "According to the text, the function of melatonin is to ___.",
+        "A": "stimulate the suprachiasmatic nucleus",
+        "B": "help the body prepare for sleep",
+        "C": "enhance the brightness of light entering the eye",
+        "D": "prevent the body from gaining weight",
+        "E": "block the effects of artificial blue light",
+        "correct": "B",
+        "explanation": "Melatonin is described as 'the hormone that facilitates sleep'."
+      },
+      {
+        "prompt": "One of the negative consequences of modern technology mentioned in the text is that ___.",
+        "A": "it has eliminated the need for a circadian rhythm",
+        "B": "it reduces the amount of blue light we are exposed to",
+        "C": "it can interfere with the body's natural sleep signals",
+        "D": "it causes the suprachiasmatic nucleus to shrink",
+        "E": "it increases the natural production of melatonin at night",
+        "correct": "C",
+        "explanation": "Blue light from screens 'can trick the brain,' suppressing melatonin and causing sleep disruption."
+      },
+      {
+        "prompt": "What is the main idea of the passage?",
+        "A": "The biological and health significance of the circadian rhythm and factors disrupting it.",
+        "B": "How to cure insomnia using artificial lighting.",
+        "C": "The anatomy of the human eye and its reaction to darkness.",
+        "D": "The evolutionary history of the suprachiasmatic nucleus.",
+        "E": "Why people should stop using smartphones entirely.",
+        "correct": "A",
+        "explanation": "The passage defines the rhythm, explains its mechanism (light/melatonin), and discusses disruptions and health impacts."
+      }
+    ]
+  },
+  {
+    "passageId": 3,
+    "title": "The Silk Road",
+    "text": "The Silk Road was not a single paved road but a vast network of trade routes connecting the East and West, stretching from China to the Mediterranean Sea. Established during the Han Dynasty of China, it facilitated not only the exchange of goods like silk, spices, and precious metals but also the transmission of culture, religion, and technology. Buddhism, for instance, spread from India to China along these routes, while papermaking technology traveled from China to the Islamic world and later to Europe. Despite its name, silk was just one of many commodities traded. The route was fraught with danger; merchants faced bandits, harsh deserts, and treacherous mountain passes. Consequently, few traveled the entire length. Instead, goods were handled in a relay system, passing through many hands before reaching their final destination. The rise of maritime trade routes in the 15th century eventually led to the decline of the overland Silk Road.",
+    "questions": [
+      {
+        "prompt": "According to the passage, the Silk Road ___.",
+        "A": "was a single, well-paved highway constructed by the Han Dynasty",
+        "B": "was used exclusively for the trading of Chinese silk",
+        "C": "served as a conduit for both material goods and cultural ideas",
+        "D": "prevented the spread of religion due to the language barrier",
+        "E": "was the safest route for travel between India and China",
+        "correct": "C",
+        "explanation": "It facilitated the exchange of goods 'but also the transmission of culture, religion, and technology'."
+      },
+      {
+        "prompt": "Why did few merchants travel the entire length of the Silk Road?",
+        "A": "Because there were strict visa regulations between countries.",
+        "B": "Because the journey was extremely dangerous and physically demanding.",
+        "C": "Because the road was blocked by the Great Wall of China.",
+        "D": "Because maritime routes were already faster and cheaper at that time.",
+        "E": "Because there was no demand for Eastern goods in the West.",
+        "correct": "B",
+        "explanation": "The text mentions merchants faced 'bandits, harsh deserts, and treacherous mountain passes'."
+      },
+      {
+        "prompt": "The passage suggests that the decline of the Silk Road was caused by ___.",
+        "A": "the depletion of silk resources in China",
+        "B": "a lack of interest in spices and precious metals",
+        "C": "the emergence of alternative sea-based trade routes",
+        "D": "the spread of Buddhism throughout Asia",
+        "E": "the collapse of the Han Dynasty",
+        "correct": "C",
+        "explanation": "The text states: 'The rise of maritime trade routes... eventually led to the decline of the overland Silk Road.'"
+      },
+      {
+        "prompt": "Which of the following is true about the trade system on the Silk Road?",
+        "A": "Goods were usually carried by one merchant from start to finish.",
+        "B": "It operated like a relay system with goods changing hands multiple times.",
+        "C": "Paper was the only technology that was not allowed to be traded.",
+        "D": "Merchants preferred to travel alone to avoid drawing attention.",
+        "E": "The Mediterranean Sea was the starting point for all silk traders.",
+        "correct": "B",
+        "explanation": "Goods were 'handled in a relay system, passing through many hands'."
+      }
+    ]
+  },
+  {
+    "passageId": 4,
+    "title": "Cognitive Dissonance",
+    "text": "Cognitive dissonance is a psychological theory proposed by Leon Festinger in 1957. It describes the mental discomfort experienced by a person who holds two or more contradictory beliefs, ideas, or values. This discomfort is triggered when a person's behavior conflicts with their beliefs, or when they are presented with new information that contradicts existing beliefs. Humans have an inner drive to hold all their attitudes and beliefs in harmony and avoid disharmony (or dissonance). To reduce this discomfort, individuals may alter their existing beliefs, change their behavior, or rationalize the contradiction. For example, a smoker who knows smoking causes cancer experiences dissonance. To resolve this, they might quit smoking (changing behavior) or convince themselves that the research is inconclusive (rationalization). This theory explains why it is often so difficult to change people's minds, even with factual evidence.",
+    "questions": [
+      {
+        "prompt": "According to the passage, cognitive dissonance occurs when ___.",
+        "A": "a person completely lacks any beliefs or values",
+        "B": "an individual's beliefs are in alignment with their actions",
+        "C": "there is a conflict between a person's beliefs and their actions or new information",
+        "D": "a person refuses to learn about new psychological theories",
+        "E": "someone is forced to change their behavior by external laws",
+        "correct": "C",
+        "explanation": "It describes discomfort when a person 'holds two or more contradictory beliefs' or behavior conflicts with beliefs."
+      },
+      {
+        "prompt": "The author implies that to alleviate the mental discomfort of dissonance, people often ___.",
+        "A": "seek out more contradictory information to confuse themselves",
+        "B": "immediately accept they were wrong and apologize",
+        "C": "engage in mental strategies like rationalization or behavior modification",
+        "D": "stop believing in psychology altogether",
+        "E": "consult with Leon Festinger for advice",
+        "correct": "C",
+        "explanation": "Individuals may 'alter their existing beliefs, change their behavior, or rationalize the contradiction'."
+      },
+      {
+        "prompt": "The example of the smoker is used to illustrate ___.",
+        "A": "the physical dangers of nicotine addiction",
+        "B": "how cognitive dissonance can lead to rationalization of harmful habits",
+        "C": "why smoking laws have become stricter in recent years",
+        "D": "that changing behavior is the only way to resolve conflict",
+        "E": "that research on cancer is generally inconclusive",
+        "correct": "B",
+        "explanation": "The smoker example shows how one resolves the conflict between the habit and the knowledge of danger (rationalization)."
+      },
+      {
+        "prompt": "Based on the passage, why might presenting facts be insufficient to change someone's mind?",
+        "A": "Because people are generally unintelligent.",
+        "B": "Because facts are often boring and hard to understand.",
+        "C": "Because the drive to maintain internal harmony leads people to reject conflicting evidence.",
+        "D": "Because cognitive dissonance is a rare phenomenon.",
+        "E": "Because facts are usually less important than feelings.",
+        "correct": "C",
+        "explanation": "The theory explains difficulty in changing minds because humans have an inner drive to avoid disharmony/dissonance."
+      }
+    ]
+  },
+  {
+    "passageId": 5,
+    "title": "The Gig Economy",
+    "text": "The 'gig economy' refers to a labor market characterized by the prevalence of short-term contracts or freelance work as opposed to permanent jobs. In this economy, workers get paid for the 'gigs' they do, such as a food delivery or a car ride, rather than a regular salary. Facilitated largely by mobile apps and digital platforms, the gig economy offers flexibility and independence, allowing workers to choose when and how much they work. For consumers, it provides cheap and convenient services. However, this shift in the workforce has sparked intense debate regarding workers' rights. Critics argue that gig workers often lack the benefits associated with traditional employment, such as health insurance, paid leave, and job security. As the gig economy continues to expand, governments globally are grappling with how to regulate this new form of employment to ensure fair treatment without stifling innovation.",
+    "questions": [
+      {
+        "prompt": "The definition of the 'gig economy' provided in the text focuses on ___.",
+        "A": "the manufacturing of digital platforms and mobile phones",
+        "B": "a shift towards temporary, flexible jobs instead of permanent employment",
+        "C": "the rise of permanent salary-based positions in the tech sector",
+        "D": "the total ban on freelance work by governments",
+        "E": "the economy of organizing music concerts and gigs",
+        "correct": "B",
+        "explanation": "It is characterized by 'short-term contracts or freelance work as opposed to permanent jobs'."
+      },
+      {
+        "prompt": "One of the main advantages of the gig economy for workers is ___.",
+        "A": "guaranteed health insurance and retirement plans",
+        "B": "a fixed monthly salary regardless of work done",
+        "C": "the ability to control their own working schedule",
+        "D": "complete protection from job loss",
+        "E": "having a single employer for their entire career",
+        "correct": "C",
+        "explanation": "It offers 'flexibility and independence, allowing workers to choose when and how much they work'."
+      },
+      {
+        "prompt": "Critics of the gig economy are primarily concerned about ___.",
+        "A": "the high cost of services for consumers",
+        "B": "the lack of innovation in digital apps",
+        "C": "the absence of traditional employment protections and benefits",
+        "D": "the excessive amount of paid leave given to freelancers",
+        "E": "the difficulty of finding food delivery services",
+        "correct": "C",
+        "explanation": "Critics argue workers lack benefits like 'health insurance, paid leave, and job security'."
+      },
+      {
+        "prompt": "It can be concluded from the passage that the future of the gig economy ___.",
+        "A": "depends solely on the decisions of mobile app developers",
+        "B": "will likely involve legal and regulatory adjustments by governments",
+        "C": "will result in the complete disappearance of traditional jobs",
+        "D": "is doomed to fail due to lack of consumer interest",
+        "E": "is entirely unrelated to workers' rights issues",
+        "correct": "B",
+        "explanation": "Governments are 'grappling with how to regulate this new form of employment'."
+      }
+    ]
+  },
+  {
+    "passageId": 6,
+    "title": "Artificial Intelligence and Ethics",
+    "text": "Artificial Intelligence (AI) has transcended the realm of science fiction to become a fundamental part of our daily lives, influencing everything from the way we shop to how medical diagnoses are made. While the potential benefits of AI are immense, ranging from increased efficiency to solving complex global challenges like climate change, its rapid advancement raises profound ethical questions. One major concern is algorithmic bias; since AI systems learn from data created by humans, they can inadvertently perpetuate existing social prejudices. Furthermore, the automation of jobs currently performed by humans threatens to disrupt the global workforce, potentially widening the economic gap between the skilled and unskilled. As AI systems become more autonomous, the question of accountability becomes critical: if an AI makes a mistake that causes harm, who is responsible—the developer, the user, or the machine itself? Addressing these ethical dilemmas is essential to ensuring that AI serves humanity's best interests.",
+    "questions": [
+      {
+        "prompt": "The primary focus of the passage is on ___.",
+        "A": "the technical specifications of modern AI systems",
+        "B": "how AI can help solve climate change",
+        "C": "the ethical challenges and concerns associated with the rise of AI",
+        "D": "the history of artificial intelligence in science fiction",
+        "E": "the economic benefits of replacing humans with machines",
+        "correct": "C",
+        "explanation": "The passage discusses benefits briefly but focuses mainly on 'profound ethical questions' like bias, job loss, and accountability."
+      },
+      {
+        "prompt": "According to the text, algorithmic bias occurs because ___.",
+        "A": "AI systems are inherently evil and want to harm humans",
+        "B": "developers intentionally program prejudices into the software",
+        "C": "AI systems learn from human-generated data which contains existing prejudices",
+        "D": "computers cannot process large amounts of data accurately",
+        "E": "AI systems are not capable of learning from data",
+        "correct": "C",
+        "explanation": "It states: 'since AI systems learn from data created by humans, they can inadvertently perpetuate existing social prejudices'."
+      },
+      {
+        "prompt": "The author implies that the automation of jobs by AI could lead to ___.",
+        "A": "a decrease in the global unemployment rate",
+        "B": "greater economic inequality between different skill levels of workers",
+        "C": "an increase in the number of unskilled jobs available",
+        "D": "a complete collapse of the global economy",
+        "E": "no significant change in the workforce structure",
+        "correct": "B",
+        "explanation": "The text mentions it threatens to disrupt the workforce, 'potentially widening the economic gap between the skilled and unskilled'."
+      },
+      {
+        "prompt": "The question of accountability mentioned in the passage refers to ___.",
+        "A": "determining who pays for the electricity AI uses",
+        "B": "deciding which jobs should be automated first",
+        "C": "identifying liability when an autonomous AI causes harm",
+        "D": "calculating the cost of developing new AI models",
+        "E": "figuring out how to make AI run faster",
+        "correct": "C",
+        "explanation": "The text asks: 'if an AI makes a mistake that causes harm, who is responsible?'"
+      }
+    ]
+  },
+  {
+    "passageId": 7,
+    "title": "The Industrial Revolution",
+    "text": "The Industrial Revolution, which began in Britain in the late 18th century, marked a major turning point in history. It was characterized by a transition from hand production methods to machines, new chemical manufacturing and iron production processes, and the rise of the factory system. This era saw a massive shift from an agrarian economy to an industrial one, leading to rapid urbanization as people flocked to cities in search of work. While the revolution brought about significant economic growth and an increase in the standard of living for the middle and upper classes, it also resulted in grim working conditions for the working class. Long hours, low wages, and unsafe environments were commonplace, and child labor was rampant. These conditions eventually led to the rise of labor unions and the implementation of laws designed to protect workers' rights.",
+    "questions": [
+      {
+        "prompt": "According to the passage, the Industrial Revolution was characterized by ___.",
+        "A": "a return to traditional hand-crafting methods",
+        "B": "a shift from machine-based production to agriculture",
+        "C": "the decline of the factory system in Britain",
+        "D": "the replacement of hand production with machine-based manufacturing",
+        "E": "a decrease in iron and chemical production",
+        "correct": "D",
+        "explanation": "It was characterized by a 'transition from hand production methods to machines'."
+      },
+      {
+        "prompt": "One of the major social consequences of the Industrial Revolution mentioned is ___.",
+        "A": "the migration of people from cities back to the countryside",
+        "B": "rapid urbanization as people moved to cities for jobs",
+        "C": "a significant reduction in the total population of Britain",
+        "D": "the complete disappearance of the middle class",
+        "E": "an immediate improvement in working conditions for everyone",
+        "correct": "B",
+        "explanation": "The text mentions a shift 'leading to rapid urbanization as people flocked to cities'."
+      },
+      {
+        "prompt": "It can be inferred from the passage that labor unions emerged ___.",
+        "A": "as a response to the poor working conditions and exploitation of workers",
+        "B": "to help factory owners increase their profits",
+        "C": "before the Industrial Revolution began",
+        "D": "because workers wanted to work longer hours",
+        "E": "to encourage the use of child labor in factories",
+        "correct": "A",
+        "explanation": "Grim conditions, low wages, and unsafe environments 'eventually led to the rise of labor unions'."
+      },
+      {
+        "prompt": "The passage suggests that the economic benefits of the Industrial Revolution ___.",
+        "A": "were distributed equally among all social classes",
+        "B": "were enjoyed primarily by the working class",
+        "C": "did not reach the middle and upper classes initially",
+        "D": "were nonexistent during the 18th century",
+        "E": "came with negative social costs for the working class",
+        "correct": "E",
+        "explanation": "While it brought growth for the upper classes, it 'resulted in grim working conditions for the working class'."
+      }
+    ]
+  },
+  {
+    "passageId": 8,
+    "title": "The Placebo Effect",
+    "text": "The placebo effect is a fascinating phenomenon in medicine where a patient's condition improves after taking a 'dummy' treatment—such as a sugar pill—that has no therapeutic effect. This improvement is not due to the treatment itself but rather the patient's belief that it will work. The mechanisms behind the placebo effect are complex and involve a combination of psychological and biological factors. Expectations play a crucial role; when a person expects to feel better, their brain may release endorphins, the body's natural painkillers, or alter brain activity in regions associated with symptom perception. This effect poses a significant challenge in clinical trials for new drugs, as researchers must distinguish between the actual effects of the medication and the psychological benefits of simply receiving care. Understanding the placebo effect highlights the powerful connection between the mind and the body in the healing process.",
+    "questions": [
+      {
+        "prompt": "The placebo effect is best defined as ___.",
+        "A": "a negative reaction to a new medical drug",
+        "B": "an improvement in health caused by the patient's belief in a treatment",
+        "C": "the use of sugar pills to cure serious diseases",
+        "D": "a surgical procedure to remove brain tumors",
+        "E": "a psychological disorder that causes imaginary pain",
+        "correct": "B",
+        "explanation": "It is an improvement after a dummy treatment due to 'the patient's belief that it will work'."
+      },
+      {
+        "prompt": "According to the text, one biological explanation for the placebo effect is ___.",
+        "A": "the shrinkage of the brain's frontal lobe",
+        "B": "the release of natural painkillers called endorphins by the brain",
+        "C": "the rapid digestion of sugar pills in the stomach",
+        "D": "the blockage of nerve signals in the spine",
+        "E": "the increase of artificial chemicals in the blood",
+        "correct": "B",
+        "explanation": "The brain may 'release endorphins, the body's natural painkillers'."
+      },
+      {
+        "prompt": "Why does the placebo effect complicate clinical drug trials?",
+        "A": "Because patients refuse to take sugar pills.",
+        "B": "Because it makes it difficult to separate the drug's real effect from psychological factors.",
+        "C": "Because placebo pills are too expensive to manufacture.",
+        "D": "Because doctors cannot tell the difference between real and fake drugs.",
+        "E": "Because it causes dangerous side effects in all participants.",
+        "correct": "B",
+        "explanation": "Researchers must 'distinguish between the actual effects of the medication and the psychological benefits'."
+      },
+      {
+        "prompt": "The main conclusion of the passage is that ___.",
+        "A": "medicine is generally ineffective compared to positive thinking",
+        "B": "doctors should stop prescribing real medication",
+        "C": "the mind plays a significant role in physical healing",
+        "D": "clinical trials are no longer necessary in modern medicine",
+        "E": "sugar is a potent medicine for most illnesses",
+        "correct": "C",
+        "explanation": "It highlights the 'powerful connection between the mind and the body in the healing process'."
+      }
+    ]
+  },
+  {
+    "passageId": 9,
+    "title": "Biodiversity Loss",
+    "text": "Biodiversity, the variety of life on Earth, is essential for the healthy functioning of ecosystems. It boosts ecosystem productivity where each species, no matter how small, has an important role to play. For example, a larger number of plant species means a greater variety of crops; greater species diversity ensures natural sustainability for all life forms; and healthy ecosystems can better withstand and recover from a variety of disasters. However, we are currently witnessing a rapid loss of biodiversity, primarily driven by human activities such as habitat destruction, pollution, and climate change. The destruction of rainforests, often called the 'lungs of the Earth', is particularly devastating. If this trend continues, we risk the collapse of vital ecosystems that provide us with food, clean water, and air, ultimately threatening the survival of humanity itself.",
+    "questions": [
+      {
+        "prompt": "The passage states that biodiversity is important because ___.",
+        "A": "it prevents the evolution of new species",
+        "B": "it increases the cost of agricultural production",
+        "C": "it allows ecosystems to be productive and resilient",
+        "D": "it ensures that all species are of the same size",
+        "E": "it reduces the need for clean water and air",
+        "correct": "C",
+        "explanation": "It 'boosts ecosystem productivity' and helps ecosystems 'withstand and recover from a variety of disasters'."
+      },
+      {
+        "prompt": "According to the text, the primary cause of the current loss of biodiversity is ___.",
+        "A": "natural disasters like earthquakes",
+        "B": "the natural aging process of the planet",
+        "C": "human activities such as habitat destruction and pollution",
+        "D": "competition between animal species",
+        "E": "the decrease in global temperatures",
+        "correct": "C",
+        "explanation": "It is 'primarily driven by human activities such as habitat destruction, pollution, and climate change'."
+      },
+      {
+        "prompt": "The author refers to rainforests as 'lungs of the Earth' to highlight ___.",
+        "A": "their shape on the world map",
+        "B": "their vital role in producing oxygen and maintaining life",
+        "C": "the fact that they are difficult to breathe in",
+        "D": "the respiratory diseases found in tropical regions",
+        "E": "their capacity to hold large amounts of water",
+        "correct": "B",
+        "explanation": "This is a metaphorical phrase implying their critical role in the planet's health (air/oxygen), making their destruction devastating."
+      },
+      {
+        "prompt": "The passage warns that if biodiversity loss continues, ___.",
+        "A": "humans will simply adapt to a new environment",
+        "B": "food and water will become more abundant",
+        "C": "it could lead to ecosystem collapse and threaten human survival",
+        "D": "cities will expand into the rainforests without consequence",
+        "E": "technology will replace the need for natural ecosystems",
+        "correct": "C",
+        "explanation": "We risk 'collapse of vital ecosystems... ultimately threatening the survival of humanity itself'."
+      }
+    ]
+  },
+  {
+    "passageId": 10,
+    "title": "The Rosetta Stone",
+    "text": "Discovered in 1799 by French soldiers in Egypt, the Rosetta Stone is one of the most important archaeological finds in history. It is a granodiorite stele inscribed with a decree issued at Memphis in 196 BC. The key to its significance lies in the fact that the same decree is written in three different scripts: the top in Ancient Egyptian hieroglyphs, the middle in Demotic script, and the bottom in Ancient Greek. Before this discovery, the meaning of hieroglyphs had been lost for centuries, making the history of ancient Egypt largely inaccessible. Because scholars could still read Ancient Greek, they were able to use the Greek text as a key to decipher the hieroglyphs. This breakthrough, primarily achieved by Jean-François Champollion, unlocked the secrets of an entire civilization, allowing us to read the history recorded on temples and tombs across Egypt.",
+    "questions": [
+      {
+        "prompt": "The Rosetta Stone is considered extremely important because ___.",
+        "A": "it was made of a very rare type of stone",
+        "B": "it provided the key to understanding Ancient Egyptian hieroglyphs",
+        "C": "it was discovered by Napoleon Bonaparte himself",
+        "D": "it contained a map to hidden treasure in Memphis",
+        "E": "it is the oldest object ever found in Egypt",
+        "correct": "B",
+        "explanation": "It allowed scholars to 'decipher the hieroglyphs', unlocking the secrets of the civilization."
+      },
+      {
+        "prompt": "According to the passage, the stone contains ___.",
+        "A": "three different decrees written in one language",
+        "B": "the same text written in three different scripts",
+        "C": "a list of all the pharaohs of Egypt",
+        "D": "directions to the Pyramids of Giza",
+        "E": "poems written by Jean-François Champollion",
+        "correct": "B",
+        "explanation": "It is inscribed with 'the same decree... written in three different scripts'."
+      },
+      {
+        "prompt": "Scholars were able to decipher the hieroglyphs because ___.",
+        "A": "they had found a dictionary in a nearby tomb",
+        "B": "Ancient Egyptian was still spoken in 1799",
+        "C": "they used the Ancient Greek text on the stone as a reference",
+        "D": "the hieroglyphs were very similar to French",
+        "E": "computer technology helped them translate the symbols",
+        "correct": "C",
+        "explanation": "They were able to 'use the Greek text as a key to decipher the hieroglyphs' since they could read Greek."
+      },
+      {
+        "prompt": "It can be inferred that before the discovery of the Rosetta Stone, ___.",
+        "A": "historians knew everything about Ancient Egypt",
+        "B": "Ancient Greek was a dead language that no one understood",
+        "C": "the writings on Egyptian temples and tombs could not be read",
+        "D": "French soldiers were not interested in archaeology",
+        "E": "the city of Memphis had not yet been discovered",
+        "correct": "C",
+        "explanation": "Before this, 'the meaning of hieroglyphs had been lost... making the history... largely inaccessible'."
+      }
+    ]
+  }
+]

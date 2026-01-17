@@ -1,0 +1,4352 @@
+[
+    {
+        "word": "Abandon",
+        "synonym": "Forsake",
+        "meaning": "Terk etmek, vazgeçmek",
+        "distractors": [
+            "Keep",
+            "Maintain",
+            "Support"
+        ]
+    },
+    {
+        "word": "Accelerate",
+        "synonym": "Speed up",
+        "meaning": "Hızlandırmak",
+        "distractors": [
+            "Slow down",
+            "Hinder",
+            "Postpone"
+        ]
+    },
+    {
+        "word": "Accomplish",
+        "synonym": "Achieve",
+        "meaning": "Başarmak",
+        "distractors": [
+            "Fail",
+            "Give up",
+            "Abandon"
+        ]
+    },
+    {
+        "word": "Accumulate",
+        "synonym": "Gather",
+        "meaning": "Biriktirmek, toplamak",
+        "distractors": [
+            "Disperse",
+            "Distribute",
+            "Waste"
+        ]
+    },
+    {
+        "word": "Accurate",
+        "synonym": "Precise",
+        "meaning": "Doğru, kesin",
+        "distractors": [
+            "Wrong",
+            "Vague",
+            "Ambiguous"
+        ]
+    },
+    {
+        "word": "Accuse",
+        "synonym": "Blame",
+        "meaning": "Suçlamak",
+        "distractors": [
+            "Praise",
+            "Approve",
+            "Defend"
+        ]
+    },
+    {
+        "word": "Acquire",
+        "synonym": "Obtain",
+        "meaning": "Elde etmek, kazanmak",
+        "distractors": [
+            "Lose",
+            "Forfeit",
+            "Give up"
+        ]
+    },
+    {
+        "word": "Adequate",
+        "synonym": "Sufficient",
+        "meaning": "Yeterli",
+        "distractors": [
+            "Scarce",
+            "Lacking",
+            "Useless"
+        ]
+    },
+    {
+        "word": "Adverse",
+        "synonym": "Unfavorable",
+        "meaning": "Olumsuz, ters",
+        "distractors": [
+            "Beneficial",
+            "Helpful",
+            "Positive"
+        ]
+    },
+    {
+        "word": "Advocate",
+        "synonym": "Support",
+        "meaning": "Savunmak, desteklemek",
+        "distractors": [
+            "Oppose",
+            "Reject",
+            "Deny"
+        ]
+    },
+    {
+        "word": "Affluent",
+        "synonym": "Wealthy",
+        "meaning": "Zengin, varlıklı",
+        "distractors": [
+            "Poor",
+            "Destitute",
+            "Needy"
+        ]
+    },
+    {
+        "word": "Allocate",
+        "synonym": "Assign",
+        "meaning": "Tahsis etmek, ayırmak",
+        "distractors": [
+            "Keep",
+            "Withhold",
+            "Retain"
+        ]
+    },
+    {
+        "word": "Alter",
+        "synonym": "Change",
+        "meaning": "Değiştirmek",
+        "distractors": [
+            "Preserve",
+            "Keep",
+            "Maintain"
+        ]
+    },
+    {
+        "word": "Ambiguous",
+        "synonym": "Vague",
+        "meaning": "Belirsiz, muğlak",
+        "distractors": [
+            "Clear",
+            "Explicit",
+            "Definite"
+        ]
+    },
+    {
+        "word": "Amend",
+        "synonym": "Modify",
+        "meaning": "Değiştirmek (yasa/kural)",
+        "distractors": [
+            "Damage",
+            "Worsen",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Amplify",
+        "synonym": "Increase",
+        "meaning": "Artırmak, yükseltmek",
+        "distractors": [
+            "Decrease",
+            "Reduce",
+            "Diminish"
+        ]
+    },
+    {
+        "word": "Annul",
+        "synonym": "Cancel",
+        "meaning": "İptal etmek, geçersiz kılmak",
+        "distractors": [
+            "Ratify",
+            "Approve",
+            "Valid"
+        ]
+    },
+    {
+        "word": "Anticipate",
+        "synonym": "Expect",
+        "meaning": "Ummak, beklemek",
+        "distractors": [
+            "Ignore",
+            "Doubt",
+            "Neglect"
+        ]
+    },
+    {
+        "word": "Apparent",
+        "synonym": "Obvious",
+        "meaning": "Açık, bariz",
+        "distractors": [
+            "Hidden",
+            "Obscure",
+            "Secret"
+        ]
+    },
+    {
+        "word": "Appreciate",
+        "synonym": "Value",
+        "meaning": "Değerini bilmek, takdir etmek",
+        "distractors": [
+            "Ignore",
+            "Scorn",
+            "Criticize"
+        ]
+    },
+    {
+        "word": "Appropriate",
+        "synonym": "Suitable",
+        "meaning": "Uygun, yerinde",
+        "distractors": [
+            "Improper",
+            "Wrong",
+            "Unfitting"
+        ]
+    },
+    {
+        "word": "Arduous",
+        "synonym": "Difficult",
+        "meaning": "Çetin, zorlu",
+        "distractors": [
+            "Easy",
+            "Simple",
+            "Effortless"
+        ]
+    },
+    {
+        "word": "Arrogant",
+        "synonym": "Haughty",
+        "meaning": "Kibirli",
+        "distractors": [
+            "Humble",
+            "Modest",
+            "Shy"
+        ]
+    },
+    {
+        "word": "Artificial",
+        "synonym": "Synthetic",
+        "meaning": "Yapay",
+        "distractors": [
+            "Natural",
+            "Real",
+            "Genuine"
+        ]
+    },
+    {
+        "word": "Assess",
+        "synonym": "Evaluate",
+        "meaning": "Değerlendirmek",
+        "distractors": [
+            "Ignore",
+            "Neglect",
+            "Guess"
+        ]
+    },
+    {
+        "word": "Asset",
+        "synonym": "Benefit",
+        "meaning": "Varlık, kazanç",
+        "distractors": [
+            "Liability",
+            "Debt",
+            "Disadvantage"
+        ]
+    },
+    {
+        "word": "Astonishing",
+        "synonym": "Surprising",
+        "meaning": "Şaşırtıcı",
+        "distractors": [
+            "Boring",
+            "Ordinary",
+            "Expected"
+        ]
+    },
+    {
+        "word": "Attach",
+        "synonym": "Fasten",
+        "meaning": "Bağlamak, iliştirmek",
+        "distractors": [
+            "Detach",
+            "Separate",
+            "Remove"
+        ]
+    },
+    {
+        "word": "Attain",
+        "synonym": "Reach",
+        "meaning": "Ulaşmak, elde etmek",
+        "distractors": [
+            "Fail",
+            "Miss",
+            "Lose"
+        ]
+    },
+    {
+        "word": "Attribute",
+        "synonym": "Ascribe",
+        "meaning": "Atfetmek, bağlamak",
+        "distractors": [
+            "Disconnect",
+            "Separate",
+            "Deny"
+        ]
+    },
+    {
+        "word": "Augment",
+        "synonym": "Enhance",
+        "meaning": "Artırmak, çoğaltmak",
+        "distractors": [
+            "Decrease",
+            "Lessen",
+            "Deteriorate"
+        ]
+    },
+    {
+        "word": "Available",
+        "synonym": "Accessible",
+        "meaning": "Mevcut, ulaşılabilir",
+        "distractors": [
+            "Occupied",
+            "Taken",
+            "Unavailable"
+        ]
+    },
+    {
+        "word": "Avert",
+        "synonym": "Prevent",
+        "meaning": "Önlemek, kaçınmak",
+        "distractors": [
+            "Cause",
+            "Allow",
+            "Help"
+        ]
+    },
+    {
+        "word": "Baffle",
+        "synonym": "Confuse",
+        "meaning": "Şaşırtmak, kafasını karıştırmak",
+        "distractors": [
+            "Clarify",
+            "Explain",
+            "Enlighten"
+        ]
+    },
+    {
+        "word": "Barren",
+        "synonym": "Infertile",
+        "meaning": "Çorak, verimsiz",
+        "distractors": [
+            "Productive",
+            "Fruitful",
+            "Lush"
+        ]
+    },
+    {
+        "word": "Barrier",
+        "synonym": "Obstacle",
+        "meaning": "Engel",
+        "distractors": [
+            "Aid",
+            "Help",
+            "Advantage"
+        ]
+    },
+    {
+        "word": "Belligerent",
+        "synonym": "Aggressive",
+        "meaning": "Saldırgan, kavgacı",
+        "distractors": [
+            "Peaceful",
+            "Friendly",
+            "Calm"
+        ]
+    },
+    {
+        "word": "Beneficial",
+        "synonym": "Helpful",
+        "meaning": "Yararlı",
+        "distractors": [
+            "Harmful",
+            "Detrimental",
+            "Useless"
+        ]
+    },
+    {
+        "word": "Bewilder",
+        "synonym": "Perplex",
+        "meaning": "Şaşırtmak",
+        "distractors": [
+            "Clarify",
+            "Soothe",
+            "Expect"
+        ]
+    },
+    {
+        "word": "Bias",
+        "synonym": "Prejudice",
+        "meaning": "Önyargı",
+        "distractors": [
+            "Fairness",
+            "Objectivity",
+            "Justice"
+        ]
+    },
+    {
+        "word": "Bizarre",
+        "synonym": "Strange",
+        "meaning": "Tuhaf",
+        "distractors": [
+            "Normal",
+            "Common",
+            "Ordinary"
+        ]
+    },
+    {
+        "word": "Boost",
+        "synonym": "Increase",
+        "meaning": "Artırmak, yükseltmek",
+        "distractors": [
+            "Decrease",
+            "Hinder",
+            "Reduce"
+        ]
+    },
+    {
+        "word": "Breach",
+        "synonym": "Violation",
+        "meaning": "İhlal",
+        "distractors": [
+            "Observance",
+            "Compliance",
+            "Obedience"
+        ]
+    },
+    {
+        "word": "Brief",
+        "synonym": "Concise",
+        "meaning": "Kısa, öz",
+        "distractors": [
+            "Lengthy",
+            "Wordy",
+            "Prolonged"
+        ]
+    },
+    {
+        "word": "Brilliant",
+        "synonym": "Bright",
+        "meaning": "Parlak, zeki",
+        "distractors": [
+            "Dull",
+            "Stupid",
+            "Dark"
+        ]
+    },
+    {
+        "word": "Calamity",
+        "synonym": "Disaster",
+        "meaning": "Felaket",
+        "distractors": [
+            "Blessing",
+            "Fortune",
+            "Success"
+        ]
+    },
+    {
+        "word": "Candid",
+        "synonym": "Honest",
+        "meaning": "Samimi, açık sözlü",
+        "distractors": [
+            "Deceitful",
+            "Secretive",
+            "Dishonest"
+        ]
+    },
+    {
+        "word": "Capable",
+        "synonym": "Competent",
+        "meaning": "Yetenekli, muktedir",
+        "distractors": [
+            "Inept",
+            "Unable",
+            "Useless"
+        ]
+    },
+    {
+        "word": "Captivate",
+        "synonym": "Fascinate",
+        "meaning": "Büyülemek",
+        "distractors": [
+            "Bore",
+            "Repel",
+            "Disgust"
+        ]
+    },
+    {
+        "word": "Caution",
+        "synonym": "Warning",
+        "meaning": "Uyarı, dikkat",
+        "distractors": [
+            "Carelessness",
+            "Neglect",
+            "Risk"
+        ]
+    },
+    {
+        "word": "Cease",
+        "synonym": "Stop",
+        "meaning": "Durdurmak",
+        "distractors": [
+            "Begin",
+            "Continue",
+            "Initiate"
+        ]
+    },
+    {
+        "word": "Challenge",
+        "synonym": "Defy",
+        "meaning": "Meydan okumak",
+        "distractors": [
+            "Accept",
+            "Agree",
+            "Obey"
+        ]
+    },
+    {
+        "word": "Chaos",
+        "synonym": "Turmoil",
+        "meaning": "Kargaşa",
+        "distractors": [
+            "Order",
+            "Peace",
+            "Harmony"
+        ]
+    },
+    {
+        "word": "Chronic",
+        "synonym": "Constant",
+        "meaning": "Kronik, sürekli",
+        "distractors": [
+            "Temporary",
+            "Acute",
+            "Brief"
+        ]
+    },
+    {
+        "word": "Circulate",
+        "synonym": "Distribute",
+        "meaning": "Dolaşmak, dağıtmak",
+        "distractors": [
+            "Collect",
+            "Gather",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Cite",
+        "synonym": "Quote",
+        "meaning": "Alıntı yapmak, bahsetmek",
+        "distractors": [
+            "Ignore",
+            "Conceal",
+            "Forget"
+        ]
+    },
+    {
+        "word": "Clarify",
+        "synonym": "Explain",
+        "meaning": "Açıklığa kavuşturmak",
+        "distractors": [
+            "Confuse",
+            "Obscure",
+            "Complicate"
+        ]
+    },
+    {
+        "word": "Coherent",
+        "synonym": "Consistent",
+        "meaning": "Tutarlı",
+        "distractors": [
+            "Illogical",
+            "Confusing",
+            "Chaotic"
+        ]
+    },
+    {
+        "word": "Coincide",
+        "synonym": "Correspond",
+        "meaning": "Denk gelmek, uyuşmak",
+        "distractors": [
+            "Differ",
+            "Diverge",
+            "Clash"
+        ]
+    },
+    {
+        "word": "Collapse",
+        "synonym": "Fall down",
+        "meaning": "Çökmek",
+        "distractors": [
+            "Rise",
+            "Stand",
+            "Build"
+        ]
+    },
+    {
+        "word": "Collide",
+        "synonym": "Crash",
+        "meaning": "Çarpışmak",
+        "distractors": [
+            "Miss",
+            "Avoid",
+            "Dodge"
+        ]
+    },
+    {
+        "word": "Commence",
+        "synonym": "Start",
+        "meaning": "Başlamak",
+        "distractors": [
+            "Finish",
+            "End",
+            "Conclude"
+        ]
+    },
+    {
+        "word": "Communicate",
+        "synonym": "Convey",
+        "meaning": "İletmek, haberleşmek",
+        "distractors": [
+            "Conceal",
+            "Hide",
+            "Suppress"
+        ]
+    },
+    {
+        "word": "Compel",
+        "synonym": "Force",
+        "meaning": "Zorlamak",
+        "distractors": [
+            "Request",
+            "Ask",
+            "Prevent"
+        ]
+    },
+    {
+        "word": "Compensate",
+        "synonym": "Make up for",
+        "meaning": "Telafi etmek",
+        "distractors": [
+            "Lose",
+            "Penalize",
+            "Damage"
+        ]
+    },
+    {
+        "word": "Compile",
+        "synonym": "Assemble",
+        "meaning": "Derlemek, toplamak",
+        "distractors": [
+            "Disperse",
+            "Scatter",
+            "Separate"
+        ]
+    },
+    {
+        "word": "Complex",
+        "synonym": "Complicated",
+        "meaning": "Karmaşık",
+        "distractors": [
+            "Simple",
+            "Easy",
+            "Plain"
+        ]
+    },
+    {
+        "word": "Comply",
+        "synonym": "Obey",
+        "meaning": "Uymak, itaat etmek",
+        "distractors": [
+            "Disobey",
+            "Ignore",
+            "Reject"
+        ]
+    },
+    {
+        "word": "Component",
+        "synonym": "Part",
+        "meaning": "Bileşen, parça",
+        "distractors": [
+            "Whole",
+            "Total",
+            "Entirety"
+        ]
+    },
+    {
+        "word": "Compose",
+        "synonym": "Create",
+        "meaning": "Oluşturmak, bestelemek",
+        "distractors": [
+            "Destroy",
+            "Ruin",
+            "Break"
+        ]
+    },
+    {
+        "word": "Comprehend",
+        "synonym": "Understand",
+        "meaning": "Kavramak, anlamak",
+        "distractors": [
+            "Misunderstand",
+            "Mistake",
+            "Miss"
+        ]
+    },
+    {
+        "word": "Comprehensive",
+        "synonym": "Extensive",
+        "meaning": "Kapsamlı",
+        "distractors": [
+            "Limited",
+            "Narrow",
+            "Partial"
+        ]
+    },
+    {
+        "word": "Conceal",
+        "synonym": "Hide",
+        "meaning": "Gizlemek",
+        "distractors": [
+            "Reveal",
+            "Show",
+            "Expose"
+        ]
+    },
+    {
+        "word": "Concede",
+        "synonym": "Admit",
+        "meaning": "Kabul etmek",
+        "distractors": [
+            "Deny",
+            "Refuse",
+            "Reject"
+        ]
+    },
+    {
+        "word": "Concentrate",
+        "synonym": "Focus",
+        "meaning": "Odaklanmak",
+        "distractors": [
+            "Distract",
+            "Scatter",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Concur",
+        "synonym": "Agree",
+        "meaning": "Aynı fikirde olmak",
+        "distractors": [
+            "Disagree",
+            "Argue",
+            "Oppose"
+        ]
+    },
+    {
+        "word": "Condemn",
+        "synonym": "Criticize",
+        "meaning": "Kınamak, ayıplamak",
+        "distractors": [
+            "Praise",
+            "Approve",
+            "Laud"
+        ]
+    },
+    {
+        "word": "Confess",
+        "synonym": "Admit",
+        "meaning": "İtiraf etmek",
+        "distractors": [
+            "Deny",
+            "Conceal",
+            "Hide"
+        ]
+    },
+    {
+        "word": "Confine",
+        "synonym": "Restrict",
+        "meaning": "Sınırlandırmak, hapsetmek",
+        "distractors": [
+            "Free",
+            "Release",
+            "Liberate"
+        ]
+    },
+    {
+        "word": "Confirm",
+        "synonym": "Verify",
+        "meaning": "Doğrulamak, onaylamak",
+        "distractors": [
+            "Deny",
+            "Refute",
+            "Reject"
+        ]
+    },
+    {
+        "word": "Conflict",
+        "synonym": "Dispute",
+        "meaning": "Çatışma, anlaşmazlık",
+        "distractors": [
+            "Agreement",
+            "Peace",
+            "Harmony"
+        ]
+    },
+    {
+        "word": "Confront",
+        "synonym": "Face",
+        "meaning": "Yüzleşmek",
+        "distractors": [
+            "Avoid",
+            "Evade",
+            "Dodge"
+        ]
+    },
+    {
+        "word": "Confuse",
+        "synonym": "Puzzle",
+        "meaning": "Kafasını karıştırmak",
+        "distractors": [
+            "Clarify",
+            "Explain",
+            "Clear up"
+        ]
+    },
+    {
+        "word": "Congested",
+        "synonym": "Crowded",
+        "meaning": "Sıkışık, kalabalık",
+        "distractors": [
+            "Empty",
+            "Clear",
+            "Open"
+        ]
+    },
+    {
+        "word": "Connect",
+        "synonym": "Link",
+        "meaning": "Bağlamak",
+        "distractors": [
+            "Separate",
+            "Disconnect",
+            "Divide"
+        ]
+    },
+    {
+        "word": "Conquer",
+        "synonym": "Defeat",
+        "meaning": "Fethetmek, yenmek",
+        "distractors": [
+            "Lose",
+            "Surrender",
+            "Yield"
+        ]
+    },
+    {
+        "word": "Conscious",
+        "synonym": "Aware",
+        "meaning": "Bilinçli, farkında",
+        "distractors": [
+            "Unaware",
+            "Ignorant",
+            "Unconscious"
+        ]
+    },
+    {
+        "word": "Consecutive",
+        "synonym": "Successive",
+        "meaning": "Ardışık",
+        "distractors": [
+            "Interrupted",
+            "Random",
+            "Discontinuous"
+        ]
+    },
+    {
+        "word": "Consent",
+        "synonym": "Permission",
+        "meaning": "Rıza, izin",
+        "distractors": [
+            "Refusal",
+            "Denial",
+            "Prohibition"
+        ]
+    },
+    {
+        "word": "Consequence",
+        "synonym": "Result",
+        "meaning": "Sonuç",
+        "distractors": [
+            "Cause",
+            "Origin",
+            "Source"
+        ]
+    },
+    {
+        "word": "Conserve",
+        "synonym": "Preserve",
+        "meaning": "Korumak",
+        "distractors": [
+            "Waste",
+            "Destroy",
+            "Spend"
+        ]
+    },
+    {
+        "word": "Considerable",
+        "synonym": "Substantial",
+        "meaning": "Önemli ölçüde, büyük",
+        "distractors": [
+            "Insignificant",
+            "Tiny",
+            "Minor"
+        ]
+    },
+    {
+        "word": "Consist",
+        "synonym": "Comprise",
+        "meaning": "-den oluşmak",
+        "distractors": [
+            "Exclude",
+            "Lack",
+            "Omit"
+        ]
+    },
+    {
+        "word": "Constant",
+        "synonym": "Steady",
+        "meaning": "Sürekli, sabit",
+        "distractors": [
+            "Variable",
+            "Unstable",
+            "Changing"
+        ]
+    },
+    {
+        "word": "Construct",
+        "synonym": "Build",
+        "meaning": "İnşa etmek",
+        "distractors": [
+            "Destroy",
+            "Demolish",
+            "Ruin"
+        ]
+    },
+    {
+        "word": "Consult",
+        "synonym": "Ask",
+        "meaning": "Danışmak",
+        "distractors": [
+            "Ignore",
+            "Tell",
+            "Order"
+        ]
+    },
+    {
+        "word": "Consume",
+        "synonym": "Use up",
+        "meaning": "Tüketmek",
+        "distractors": [
+            "Save",
+            "Create",
+            "Produce"
+        ]
+    },
+    {
+        "word": "Contain",
+        "synonym": "Hold",
+        "meaning": "İçermek, kapsamak",
+        "distractors": [
+            "Release",
+            "Exclude",
+            "Free"
+        ]
+    },
+    {
+        "word": "Contaminate",
+        "synonym": "Pollute",
+        "meaning": "Kirletmek",
+        "distractors": [
+            "Clean",
+            "Purify",
+            "Filter"
+        ]
+    },
+    {
+        "word": "Contemporary",
+        "synonym": "Modern",
+        "meaning": "Çağdaş",
+        "distractors": [
+            "Old",
+            "Ancient",
+            "Traditional"
+        ]
+    },
+    {
+        "word": "Contend",
+        "synonym": "Argue",
+        "meaning": "İddia etmek, uğraşmak",
+        "distractors": [
+            "Agree",
+            "Yield",
+            "Give up"
+        ]
+    },
+    {
+        "word": "Content",
+        "synonym": "Satisfied",
+        "meaning": "Memnun",
+        "distractors": [
+            "Unhappy",
+            "Dissatisfied",
+            "Upset"
+        ]
+    },
+    {
+        "word": "Continue",
+        "synonym": "Proceed",
+        "meaning": "Devam etmek",
+        "distractors": [
+            "Stop",
+            "Halt",
+            "Cease"
+        ]
+    },
+    {
+        "word": "Continuous",
+        "synonym": "Incessant",
+        "meaning": "Sürekli",
+        "distractors": [
+            "Intermittent",
+            "Broken",
+            "Occasional"
+        ]
+    },
+    {
+        "word": "Contract",
+        "synonym": "Agreement",
+        "meaning": "Sözleşme; Küçülmek",
+        "distractors": [
+            "Disagreement",
+            "Expansion",
+            "Growth"
+        ]
+    },
+    {
+        "word": "Contradict",
+        "synonym": "Counter",
+        "meaning": "Çelişmek, karşı çıkmak",
+        "distractors": [
+            "Confirm",
+            "Verify",
+            "Agree"
+        ]
+    },
+    {
+        "word": "Contribute",
+        "synonym": "Give",
+        "meaning": "Katkıda bulunmak",
+        "distractors": [
+            "Take",
+            "Receive",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Control",
+        "synonym": "Manage",
+        "meaning": "Kontrol etmek, yönetmek",
+        "distractors": [
+            "Neglect",
+            "Ignore",
+            "Release"
+        ]
+    },
+    {
+        "word": "Convenient",
+        "synonym": "Handy",
+        "meaning": "Uygun, kullanışlı",
+        "distractors": [
+            "Inconvenient",
+            "Useless",
+            "Awkward"
+        ]
+    },
+    {
+        "word": "Convert",
+        "synonym": "Transform",
+        "meaning": "Dönüştürmek",
+        "distractors": [
+            "Maintain",
+            "Keep",
+            "Preserve"
+        ]
+    },
+    {
+        "word": "Convey",
+        "synonym": "Transmit",
+        "meaning": "İletmek",
+        "distractors": [
+            "Keep",
+            "Hide",
+            "Retain"
+        ]
+    },
+    {
+        "word": "Convince",
+        "synonym": "Persuade",
+        "meaning": "İkna etmek",
+        "distractors": [
+            "Dissuade",
+            "Discourage",
+            "Deter"
+        ]
+    },
+    {
+        "word": "Cooperate",
+        "synonym": "Collaborate",
+        "meaning": "İşbirliği yapmak",
+        "distractors": [
+            "Compete",
+            "Oppose",
+            "Fight"
+        ]
+    },
+    {
+        "word": "Correspond",
+        "synonym": "Match",
+        "meaning": "Uymak, denk gelmek",
+        "distractors": [
+            "Differ",
+            "Disagree",
+            "Clash"
+        ]
+    },
+    {
+        "word": "Counter",
+        "synonym": "Oppose",
+        "meaning": "Karşı çıkmak",
+        "distractors": [
+            "Support",
+            "Aid",
+            "Back"
+        ]
+    },
+    {
+        "word": "Counterfeit",
+        "synonym": "Fake",
+        "meaning": "Sahte",
+        "distractors": [
+            "Genuine",
+            "Real",
+            "Authentic"
+        ]
+    },
+    {
+        "word": "Courtesy",
+        "synonym": "Politeness",
+        "meaning": "Nezaket",
+        "distractors": [
+            "Rudeness",
+            "Impoliteness",
+            "Crudeness"
+        ]
+    },
+    {
+        "word": "Credible",
+        "synonym": "Believable",
+        "meaning": "İnanılır, güvenilir",
+        "distractors": [
+            "Incredible",
+            "Unreliable",
+            "Doubtful"
+        ]
+    },
+    {
+        "word": "Crisis",
+        "synonym": "Emergency",
+        "meaning": "Kriz, buhran",
+        "distractors": [
+            "Calm",
+            "Peace",
+            "Stability"
+        ]
+    },
+    {
+        "word": "Crucial",
+        "synonym": "Vital",
+        "meaning": "Çok önemli, hayati",
+        "distractors": [
+            "Trivial",
+            "Unimportant",
+            "Optional"
+        ]
+    },
+    {
+        "word": "Cruel",
+        "synonym": "Ruthless",
+        "meaning": "Zalim, acımasız",
+        "distractors": [
+            "Kind",
+            "Merciful",
+            "Gentle"
+        ]
+    },
+    {
+        "word": "Cultivate",
+        "synonym": "Grow",
+        "meaning": "Ekip biçmek, geliştirmek",
+        "distractors": [
+            "Destroy",
+            "Neglect",
+            "Abandon"
+        ]
+    },
+    {
+        "word": "Cure",
+        "synonym": "Heal",
+        "meaning": "İyileştirmek, tedavi",
+        "distractors": [
+            "Injure",
+            "Hurt",
+            "Harm"
+        ]
+    },
+    {
+        "word": "Curious",
+        "synonym": "Inquisitive",
+        "meaning": "Meraklı",
+        "distractors": [
+            "Indifferent",
+            "Uninterested",
+            "Bored"
+        ]
+    },
+    {
+        "word": "Custom",
+        "synonym": "Habit",
+        "meaning": "Gelenek, alışkanlık",
+        "distractors": [
+            "Exception",
+            "Irregularity",
+            "Change"
+        ]
+    },
+    {
+        "word": "Damage",
+        "synonym": "Harm",
+        "meaning": "Zarar vermek",
+        "distractors": [
+            "Repair",
+            "Fix",
+            "Benefit"
+        ]
+    },
+    {
+        "word": "Daring",
+        "synonym": "Bold",
+        "meaning": "Cüretkar, cesur",
+        "distractors": [
+            "Cowardly",
+            "Timid",
+            "Fearful"
+        ]
+    },
+    {
+        "word": "Deadly",
+        "synonym": "Lethal",
+        "meaning": "Ölümcül",
+        "distractors": [
+            "Harmless",
+            "Safe",
+            "Mild"
+        ]
+    },
+    {
+        "word": "Decay",
+        "synonym": "Rot",
+        "meaning": "Çürümek",
+        "distractors": [
+            "Flourish",
+            "Grow",
+            "Thrive"
+        ]
+    },
+    {
+        "word": "Decide",
+        "synonym": "Determine",
+        "meaning": "Karar vermek",
+        "distractors": [
+            "Hesitate",
+            "Waver",
+            "Delay"
+        ]
+    },
+    {
+        "word": "Decline",
+        "synonym": "Refuse",
+        "meaning": "Reddetmek; Azalmak",
+        "distractors": [
+            "Accept",
+            "Increase",
+            "Rise"
+        ]
+    },
+    {
+        "word": "Dedicate",
+        "synonym": "Devote",
+        "meaning": "Adamak",
+        "distractors": [
+            "Neglect",
+            "Ignore",
+            "Waste"
+        ]
+    },
+    {
+        "word": "Deficient",
+        "synonym": "Lacking",
+        "meaning": "Eksik, yetersiz",
+        "distractors": [
+            "Sufficient",
+            "Adequate",
+            "Perfect"
+        ]
+    },
+    {
+        "word": "Defy",
+        "synonym": "Resist",
+        "meaning": "Karşı gelmek, meydan okumak",
+        "distractors": [
+            "Obey",
+            "Submit",
+            "Yield"
+        ]
+    },
+    {
+        "word": "Deliberate",
+        "synonym": "Intentional",
+        "meaning": "Kasıtlı",
+        "distractors": [
+            "Accidental",
+            "Random",
+            "Unplanned"
+        ]
+    },
+    {
+        "word": "Delicate",
+        "synonym": "Fragile",
+        "meaning": "Hassas, narin",
+        "distractors": [
+            "Strong",
+            "Tough",
+            "Robust"
+        ]
+    },
+    {
+        "word": "Demand",
+        "synonym": "Request",
+        "meaning": "Talep etmek",
+        "distractors": [
+            "Offer",
+            "Give",
+            "Supply"
+        ]
+    },
+    {
+        "word": "Demolish",
+        "synonym": "Destroy",
+        "meaning": "Yıkmak",
+        "distractors": [
+            "Build",
+            "Construct",
+            "Create"
+        ]
+    },
+    {
+        "word": "Demonstrate",
+        "synonym": "Show",
+        "meaning": "Göstermek, kanıtlamak",
+        "distractors": [
+            "Hide",
+            "Conceal",
+            "Cover"
+        ]
+    },
+    {
+        "word": "Depart",
+        "synonym": "Leave",
+        "meaning": "Ayrılmak",
+        "distractors": [
+            "Arrive",
+            "Stay",
+            "Come"
+        ]
+    },
+    {
+        "word": "Depend",
+        "synonym": "Rely",
+        "meaning": "Güvenmek, bağlı olmak",
+        "distractors": [
+            "Doubt",
+            "Distrust",
+            "Lead"
+        ]
+    },
+    {
+        "word": "Deplete",
+        "synonym": "Exhaust",
+        "meaning": "Tüketmek",
+        "distractors": [
+            "Replenish",
+            "Fill",
+            "Save"
+        ]
+    },
+    {
+        "word": "Depict",
+        "synonym": "Portray",
+        "meaning": "Tasvir etmek, betimlemek",
+        "distractors": [
+            "Confuse",
+            "Hide",
+            "Obscure"
+        ]
+    },
+    {
+        "word": "Deplore",
+        "synonym": "Regret",
+        "meaning": "Derin üzüntü duymak",
+        "distractors": [
+            "Rejoice",
+            "Approve",
+            "Celebrate"
+        ]
+    },
+    {
+        "word": "Deprive",
+        "synonym": "Strip",
+        "meaning": "Mahrum bırakmak",
+        "distractors": [
+            "Give",
+            "Supply",
+            "Provide"
+        ]
+    },
+    {
+        "word": "Despair",
+        "synonym": "Hopelessness",
+        "meaning": "Umutsuzluk",
+        "distractors": [
+            "Hope",
+            "Optimism",
+            "Joy"
+        ]
+    },
+    {
+        "word": "Despise",
+        "synonym": "Scorn",
+        "meaning": "Aşağılamak, hor görmek",
+        "distractors": [
+            "Admire",
+            "Respect",
+            "Praise"
+        ]
+    },
+    {
+        "word": "Destroy",
+        "synonym": "Ruin",
+        "meaning": "Yok etmek",
+        "distractors": [
+            "Create",
+            "Build",
+            "Construct"
+        ]
+    },
+    {
+        "word": "Detach",
+        "synonym": "Separate",
+        "meaning": "Ayırmak",
+        "distractors": [
+            "Attach",
+            "Connect",
+            "Join"
+        ]
+    },
+    {
+        "word": "Detect",
+        "synonym": "Discover",
+        "meaning": "Tespit etmek",
+        "distractors": [
+            "Miss",
+            "Overlook",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Deter",
+        "synonym": "Discourage",
+        "meaning": "Caydırmak",
+        "distractors": [
+            "Encourage",
+            "Motivate",
+            "Incite"
+        ]
+    },
+    {
+        "word": "Deteriorate",
+        "synonym": "Worsen",
+        "meaning": "Kötüleşmek",
+        "distractors": [
+            "Improve",
+            "Get better",
+            "Recover"
+        ]
+    },
+    {
+        "word": "Detrimental",
+        "synonym": "Harmful",
+        "meaning": "Zararlı",
+        "distractors": [
+            "Beneficial",
+            "Useful",
+            "Good"
+        ]
+    },
+    {
+        "word": "Devastate",
+        "synonym": "Wreck",
+        "meaning": "Harap etmek",
+        "distractors": [
+            "Build",
+            "Construct",
+            "Repair"
+        ]
+    },
+    {
+        "word": "Deviate",
+        "synonym": "Stray",
+        "meaning": "Sapmak",
+        "distractors": [
+            "Follow",
+            "Stay",
+            "Confirm"
+        ]
+    },
+    {
+        "word": "Device",
+        "synonym": "Gadget",
+        "meaning": "Alet, cihaz",
+        "distractors": [
+            "Concept",
+            "Idea",
+            "Theory"
+        ]
+    },
+    {
+        "word": "Devise",
+        "synonym": "Invent",
+        "meaning": "Tasarlamak, icat etmek",
+        "distractors": [
+            "Imitate",
+            "Copy",
+            "Duplicate"
+        ]
+    },
+    {
+        "word": "Diagnose",
+        "synonym": "Identify",
+        "meaning": "Teşhis etmek",
+        "distractors": [
+            "Misinterpret",
+            "Miss",
+            "Overlook"
+        ]
+    },
+    {
+        "word": "Differ",
+        "synonym": "Vary",
+        "meaning": "Farklılık göstermek",
+        "distractors": [
+            "Match",
+            "Agree",
+            "Coincide"
+        ]
+    },
+    {
+        "word": "Dilemma",
+        "synonym": "Predicament",
+        "meaning": "İkilem, çıkmaz",
+        "distractors": [
+            "Solution",
+            "Answer",
+            "Resolution"
+        ]
+    },
+    {
+        "word": "Diligent",
+        "synonym": "Hardworking",
+        "meaning": "Çalışkan, gayretli",
+        "distractors": [
+            "Lazy",
+            "Idle",
+            "Sluggish"
+        ]
+    },
+    {
+        "word": "Diminish",
+        "synonym": "Decrease",
+        "meaning": "Azalmak",
+        "distractors": [
+            "Increase",
+            "Grow",
+            "Expand"
+        ]
+    },
+    {
+        "word": "Disappear",
+        "synonym": "Vanish",
+        "meaning": "Gözden kaybolmak",
+        "distractors": [
+            "Appear",
+            "Emerge",
+            "Show"
+        ]
+    },
+    {
+        "word": "Disaster",
+        "synonym": "Catastrophe",
+        "meaning": "Felaket",
+        "distractors": [
+            "Success",
+            "Triumph",
+            "Victory"
+        ]
+    },
+    {
+        "word": "Discard",
+        "synonym": "Throw away",
+        "meaning": "Atmak, elden çıkarmak",
+        "distractors": [
+            "Keep",
+            "Retain",
+            "Save"
+        ]
+    },
+    {
+        "word": "Discharge",
+        "synonym": "Release",
+        "meaning": "Taburcu etmek, salmak",
+        "distractors": [
+            "Keep",
+            "Hold",
+            "Retain"
+        ]
+    },
+    {
+        "word": "Disclose",
+        "synonym": "Reveal",
+        "meaning": "İfşa etmek",
+        "distractors": [
+            "Hide",
+            "Conceal",
+            "Cover"
+        ]
+    },
+    {
+        "word": "Discover",
+        "synonym": "Find",
+        "meaning": "Keşfetmek",
+        "distractors": [
+            "Lose",
+            "Miss",
+            "Hide"
+        ]
+    },
+    {
+        "word": "Discuss",
+        "synonym": "Talk over",
+        "meaning": "Tartışmak, konuşmak",
+        "distractors": [
+            "Ignore",
+            "Silence",
+            "Suppress"
+        ]
+    },
+    {
+        "word": "Dismiss",
+        "synonym": "Fire",
+        "meaning": "Kovmak; Göz ardı etmek",
+        "distractors": [
+            "Hire",
+            "Employ",
+            "Accept"
+        ]
+    },
+    {
+        "word": "Display",
+        "synonym": "Show",
+        "meaning": "Göstermek",
+        "distractors": [
+            "Hide",
+            "Conceal",
+            "Cover"
+        ]
+    },
+    {
+        "word": "Dispute",
+        "synonym": "Argument",
+        "meaning": "Tartışma",
+        "distractors": [
+            "Agreement",
+            "Accord",
+            "Harmony"
+        ]
+    },
+    {
+        "word": "Disrupt",
+        "synonym": "Interrupt",
+        "meaning": "Bozmak, aksatmak",
+        "distractors": [
+            "Organize",
+            "Arrange",
+            "Order"
+        ]
+    },
+    {
+        "word": "Distinct",
+        "synonym": "Clear",
+        "meaning": "Belirgin, farklı",
+        "distractors": [
+            "Vague",
+            "Blurry",
+            "Similar"
+        ]
+    },
+    {
+        "word": "Distinguish",
+        "synonym": "Differentiate",
+        "meaning": "Ayırt etmek",
+        "distractors": [
+            "Confuse",
+            "Mix up",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Distort",
+        "synonym": "Twist",
+        "meaning": "Çarpıtmak",
+        "distractors": [
+            "Straighten",
+            "Clarify",
+            "Correct"
+        ]
+    },
+    {
+        "word": "Distract",
+        "synonym": "Divert",
+        "meaning": "Dikkatini dağıtmak",
+        "distractors": [
+            "Focus",
+            "Concentrate",
+            "Attract"
+        ]
+    },
+    {
+        "word": "Distribute",
+        "synonym": "Hand out",
+        "meaning": "Dağıtmak",
+        "distractors": [
+            "Collect",
+            "Gather",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Diverse",
+        "synonym": "Varied",
+        "meaning": "Çeşitli",
+        "distractors": [
+            "Similar",
+            "Identical",
+            "Uniform"
+        ]
+    },
+    {
+        "word": "Divide",
+        "synonym": "Split",
+        "meaning": "Bölmek",
+        "distractors": [
+            "Join",
+            "Unite",
+            "Combine"
+        ]
+    },
+    {
+        "word": "Dominate",
+        "synonym": "Control",
+        "meaning": "Hakim olmak",
+        "distractors": [
+            "Submit",
+            "Yield",
+            "Follow"
+        ]
+    },
+    {
+        "word": "Donate",
+        "synonym": "Give",
+        "meaning": "Bağışlamak",
+        "distractors": [
+            "Take",
+            "Receive",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Doubt",
+        "synonym": "Uncertainty",
+        "meaning": "Şüphe",
+        "distractors": [
+            "Certainty",
+            "Confidence",
+            "Belief"
+        ]
+    },
+    {
+        "word": "Drastic",
+        "synonym": "Radical",
+        "meaning": "Köklü, sert",
+        "distractors": [
+            "Mild",
+            "Slight",
+            "Gentle"
+        ]
+    },
+    {
+        "word": "Dread",
+        "synonym": "Fear",
+        "meaning": "Korkmak, ürkmek",
+        "distractors": [
+            "Welcome",
+            "Look forward to",
+            "Enjoy"
+        ]
+    },
+    {
+        "word": "Drive",
+        "synonym": "Urge",
+        "meaning": "Sürmek; Dürtü",
+        "distractors": [
+            "Discourage",
+            "Halt",
+            "Stop"
+        ]
+    },
+    {
+        "word": "Drop",
+        "synonym": "Fall",
+        "meaning": "Düşmek; Bırakmak",
+        "distractors": [
+            "Rise",
+            "Lift",
+            "Pick up"
+        ]
+    },
+    {
+        "word": "Dull",
+        "synonym": "Boring",
+        "meaning": "Sıkıcı; Mat",
+        "distractors": [
+            "Interesting",
+            "Exciting",
+            "Bright"
+        ]
+    },
+    {
+        "word": "Duplicate",
+        "synonym": "Copy",
+        "meaning": "Kopyalamak",
+        "distractors": [
+            "Original",
+            "Invent",
+            "Create"
+        ]
+    },
+    {
+        "word": "Durable",
+        "synonym": "Long-lasting",
+        "meaning": "Dayanıklı",
+        "distractors": [
+            "Fragile",
+            "Weak",
+            "Temporary"
+        ]
+    },
+    {
+        "word": "Dwell",
+        "synonym": "Reside",
+        "meaning": "İkamet etmek, yaşamak",
+        "distractors": [
+            "Leave",
+            "Move",
+            "Visit"
+        ]
+    },
+    {
+        "word": "Dwindle",
+        "synonym": "Diminish",
+        "meaning": "Giderek azalmak",
+        "distractors": [
+            "Increase",
+            "Grow",
+            "Expand"
+        ]
+    },
+    {
+        "word": "Dynamic",
+        "synonym": "Active",
+        "meaning": "Dinamik, hareketli",
+        "distractors": [
+            "Static",
+            "Passive",
+            "Inactive"
+        ]
+    },
+    {
+        "word": "Eager",
+        "synonym": "Keen",
+        "meaning": "İstekli",
+        "distractors": [
+            "Reluctant",
+            "Unwilling",
+            "Indifferent"
+        ]
+    },
+    {
+        "word": "Eliminate",
+        "synonym": "Remove",
+        "meaning": "Ortadan kaldırmak",
+        "distractors": [
+            "Add",
+            "Include",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Emit",
+        "synonym": "Release",
+        "meaning": "Yaymak (gaz/ısı)",
+        "distractors": [
+            "Absorb",
+            "Take in",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Enable",
+        "synonym": "Allow",
+        "meaning": "Olanak sağlamak",
+        "distractors": [
+            "Prevent",
+            "Stop",
+            "Block"
+        ]
+    },
+    {
+        "word": "Endure",
+        "synonym": "Bear",
+        "meaning": "Katlanmak, dayanmak",
+        "distractors": [
+            "Give up",
+            "Quit",
+            "Surrender"
+        ]
+    },
+    {
+        "word": "Enhance",
+        "synonym": "Improve",
+        "meaning": "Geliştirmek",
+        "distractors": [
+            "Worsen",
+            "Damage",
+            "Reduce"
+        ]
+    },
+    {
+        "word": "Enormous",
+        "synonym": "Huge",
+        "meaning": "Kocaman",
+        "distractors": [
+            "Tiny",
+            "Small",
+            "Minute"
+        ]
+    },
+    {
+        "word": "Ensure",
+        "synonym": "Guarantee",
+        "meaning": "Garantiye almak",
+        "distractors": [
+            "Risk",
+            "Endanger",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Establish",
+        "synonym": "Set up",
+        "meaning": "Kurmak",
+        "distractors": [
+            "Destroy",
+            "Demolish",
+            "End"
+        ]
+    },
+    {
+        "word": "Evaluate",
+        "synonym": "Assess",
+        "meaning": "Değerlendirmek",
+        "distractors": [
+            "Guess",
+            "Ignore",
+            "Neglect"
+        ]
+    },
+    {
+        "word": "Evident",
+        "synonym": "Clear",
+        "meaning": "Açık, belli",
+        "distractors": [
+            "Unclear",
+            "Hidden",
+            "Obscure"
+        ]
+    },
+    {
+        "word": "Excessive",
+        "synonym": "Extreme",
+        "meaning": "Aşırı",
+        "distractors": [
+            "Moderate",
+            "Insufficient",
+            "Little"
+        ]
+    },
+    {
+        "word": "Exhausted",
+        "synonym": "Tired",
+        "meaning": "Tükenmiş, yorgun",
+        "distractors": [
+            "Energetic",
+            "Fresh",
+            "Strong"
+        ]
+    },
+    {
+        "word": "Exhibit",
+        "synonym": "Display",
+        "meaning": "Sergilemek",
+        "distractors": [
+            "Hide",
+            "Conceal",
+            "Cover"
+        ]
+    },
+    {
+        "word": "Expand",
+        "synonym": "Enlarge",
+        "meaning": "Genişlemek",
+        "distractors": [
+            "Shrink",
+            "Contract",
+            "Reduce"
+        ]
+    },
+    {
+        "word": "Explicit",
+        "synonym": "Clear",
+        "meaning": "Açık, net",
+        "distractors": [
+            "Implicit",
+            "Vague",
+            "Hidden"
+        ]
+    },
+    {
+        "word": "Exploit",
+        "synonym": "Utilize",
+        "meaning": "Faydalanmak; Sömürmek",
+        "distractors": [
+            "Help",
+            "Support",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Extensive",
+        "synonym": "Widespread",
+        "meaning": "Kapsamlı, yaygın",
+        "distractors": [
+            "Limited",
+            "Narrow",
+            "Restricted"
+        ]
+    },
+    {
+        "word": "Facilitate",
+        "synonym": "Ease",
+        "meaning": "Kolaylaştırmak",
+        "distractors": [
+            "Hinder",
+            "Complicate",
+            "Block"
+        ]
+    },
+    {
+        "word": "Fatal",
+        "synonym": "Deadly",
+        "meaning": "Ölümcül",
+        "distractors": [
+            "Harmless",
+            "Safe",
+            "Mild"
+        ]
+    },
+    {
+        "word": "Fluctuate",
+        "synonym": "Vary",
+        "meaning": "Dalgalanmak",
+        "distractors": [
+            "Stabilize",
+            "Stay",
+            "Remain"
+        ]
+    },
+    {
+        "word": "Forbid",
+        "synonym": "Prohibit",
+        "meaning": "Yasaklamak",
+        "distractors": [
+            "Allow",
+            "Permit",
+            "Let"
+        ]
+    },
+    {
+        "word": "Fundamental",
+        "synonym": "Basic",
+        "meaning": "Temel",
+        "distractors": [
+            "Advanced",
+            "Secondary",
+            "Minor"
+        ]
+    },
+    {
+        "word": "Futile",
+        "synonym": "Useless",
+        "meaning": "Nafile",
+        "distractors": [
+            "Effective",
+            "Useful",
+            "Fruitful"
+        ]
+    },
+    {
+        "word": "Gather",
+        "synonym": "Collect",
+        "meaning": "Toplamak",
+        "distractors": [
+            "Scatter",
+            "Spread",
+            "Distribute"
+        ]
+    },
+    {
+        "word": "Generate",
+        "synonym": "Produce",
+        "meaning": "Üretmek",
+        "distractors": [
+            "Destroy",
+            "Consume",
+            "Stop"
+        ]
+    },
+    {
+        "word": "Genuine",
+        "synonym": "Authentic",
+        "meaning": "Gerçek",
+        "distractors": [
+            "Fake",
+            "False",
+            "Artificial"
+        ]
+    },
+    {
+        "word": "Gradual",
+        "synonym": "Slow",
+        "meaning": "Kademeli",
+        "distractors": [
+            "Sudden",
+            "Abrupt",
+            "Fast"
+        ]
+    },
+    {
+        "word": "Hamper",
+        "synonym": "Hinder",
+        "meaning": "Engellemek",
+        "distractors": [
+            "Help",
+            "Facilitate",
+            "Assist"
+        ]
+    },
+    {
+        "word": "Hazardous",
+        "synonym": "Dangerous",
+        "meaning": "Tehlikeli",
+        "distractors": [
+            "Safe",
+            "Secure",
+            "Harmless"
+        ]
+    },
+    {
+        "word": "Hesitate",
+        "synonym": "Pause",
+        "meaning": "Tereddüt etmek",
+        "distractors": [
+            "Rush",
+            "Proceed",
+            "Go ahead"
+        ]
+    },
+    {
+        "word": "Hostile",
+        "synonym": "Unfriendly",
+        "meaning": "Düşmanca",
+        "distractors": [
+            "Friendly",
+            "Welcoming",
+            "Kind"
+        ]
+    },
+    {
+        "word": "Huge",
+        "synonym": "Massive",
+        "meaning": "Devasa",
+        "distractors": [
+            "Tiny",
+            "Small",
+            "Little"
+        ]
+    },
+    {
+        "word": "Identify",
+        "synonym": "Recognize",
+        "meaning": "Tanımlamak",
+        "distractors": [
+            "Ignore",
+            "Overlook",
+            "Forget"
+        ]
+    },
+    {
+        "word": "Ignite",
+        "synonym": "Kindle",
+        "meaning": "Ateşlemek",
+        "distractors": [
+            "Extinguish",
+            "Put out",
+            "Dampen"
+        ]
+    },
+    {
+        "word": "Illusion",
+        "synonym": "Delusion",
+        "meaning": "Yanılsama",
+        "distractors": [
+            "Reality",
+            "Fact",
+            "Truth"
+        ]
+    },
+    {
+        "word": "Immediate",
+        "synonym": "Instant",
+        "meaning": "Derhal",
+        "distractors": [
+            "Delayed",
+            "Late",
+            "Slow"
+        ]
+    },
+    {
+        "word": "Impact",
+        "synonym": "Effect",
+        "meaning": "Etki",
+        "distractors": [
+            "Cause",
+            "Origin",
+            "Source"
+        ]
+    },
+    {
+        "word": "Impair",
+        "synonym": "Damage",
+        "meaning": "Bozmak, zarar vermek",
+        "distractors": [
+            "Repair",
+            "Fix",
+            "Improve"
+        ]
+    },
+    {
+        "word": "Implement",
+        "synonym": "Execute",
+        "meaning": "Uygulamak",
+        "distractors": [
+            "Cancel",
+            "Stop",
+            "Delay"
+        ]
+    },
+    {
+        "word": "Imply",
+        "synonym": "Insinuate",
+        "meaning": "İma etmek",
+        "distractors": [
+            "State",
+            "Declare",
+            "Announce"
+        ]
+    },
+    {
+        "word": "Incessant",
+        "synonym": "Constant",
+        "meaning": "Aralıksız",
+        "distractors": [
+            "Intermittent",
+            "Occasional",
+            "Rare"
+        ]
+    },
+    {
+        "word": "Incident",
+        "synonym": "Event",
+        "meaning": "Olay",
+        "distractors": [
+            "Plan",
+            "Idea",
+            "Theory"
+        ]
+    },
+    {
+        "word": "Indicate",
+        "synonym": "Show",
+        "meaning": "Göstermek",
+        "distractors": [
+            "Hide",
+            "Conceal",
+            "Mask"
+        ]
+    },
+    {
+        "word": "Indifferent",
+        "synonym": "Unconcerned",
+        "meaning": "Kaygısız, umursamaz",
+        "distractors": [
+            "Caring",
+            "Interested",
+            "Concerned"
+        ]
+    },
+    {
+        "word": "Inevitable",
+        "synonym": "Unavoidable",
+        "meaning": "Kaçınılmaz",
+        "distractors": [
+            "Avoidable",
+            "Preventable",
+            "Unlikely"
+        ]
+    },
+    {
+        "word": "Infer",
+        "synonym": "Deduce",
+        "meaning": "Sonuç çıkarmak",
+        "distractors": [
+            "Guess",
+            "Ignore",
+            "State"
+        ]
+    },
+    {
+        "word": "Inhibit",
+        "synonym": "Restrain",
+        "meaning": "Engel olmak",
+        "distractors": [
+            "Allow",
+            "Permit",
+            "Encourage"
+        ]
+    },
+    {
+        "word": "Initial",
+        "synonym": "First",
+        "meaning": "İlk",
+        "distractors": [
+            "Final",
+            "Last",
+            "Ultimate"
+        ]
+    },
+    {
+        "word": "Initiate",
+        "synonym": "Start",
+        "meaning": "Başlatmak",
+        "distractors": [
+            "Stop",
+            "End",
+            "Finish"
+        ]
+    },
+    {
+        "word": "Innovative",
+        "synonym": "Creative",
+        "meaning": "Yenilikçi",
+        "distractors": [
+            "Traditional",
+            "Old-fashioned",
+            "Stale"
+        ]
+    },
+    {
+        "word": "Inspect",
+        "synonym": "Examine",
+        "meaning": "İncelemek",
+        "distractors": [
+            "Ignore",
+            "Overlook",
+            "Neglect"
+        ]
+    },
+    {
+        "word": "Integrate",
+        "synonym": "Combine",
+        "meaning": "Bütünleştirmek",
+        "distractors": [
+            "Separate",
+            "Divide",
+            "Segregate"
+        ]
+    },
+    {
+        "word": "Intense",
+        "synonym": "Severe",
+        "meaning": "Yoğun, şiddetli",
+        "distractors": [
+            "Mild",
+            "Weak",
+            "Gentle"
+        ]
+    },
+    {
+        "word": "Intentional",
+        "synonym": "Deliberate",
+        "meaning": "Kasıtlı",
+        "distractors": [
+            "Accidental",
+            "Unintended",
+            "Random"
+        ]
+    },
+    {
+        "word": "Interfere",
+        "synonym": "Meddle",
+        "meaning": "Karışmak",
+        "distractors": [
+            "Assist",
+            "Help",
+            "Support"
+        ]
+    },
+    {
+        "word": "Interpret",
+        "synonym": "Understand",
+        "meaning": "Yorumlamak",
+        "distractors": [
+            "Misunderstand",
+            "Confuse",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Investigate",
+        "synonym": "Examine",
+        "meaning": "Araştırmak",
+        "distractors": [
+            "Ignore",
+            "Overlook",
+            "Neglect"
+        ]
+    },
+    {
+        "word": "Jeopardize",
+        "synonym": "Endanger",
+        "meaning": "Tehlikeye atmak",
+        "distractors": [
+            "Protect",
+            "Save",
+            "Guard"
+        ]
+    },
+    {
+        "word": "Keen",
+        "synonym": "Eager",
+        "meaning": "İstekli, hevesli",
+        "distractors": [
+            "Indifferent",
+            "Reluctant",
+            "Bored"
+        ]
+    },
+    {
+        "word": "Lament",
+        "synonym": "Mourn",
+        "meaning": "Yas tutmak, üzülmek",
+        "distractors": [
+            "Celebrate",
+            "Rejoice",
+            "Cheer"
+        ]
+    },
+    {
+        "word": "Legitimate",
+        "synonym": "Legal",
+        "meaning": "Yasal, meşru",
+        "distractors": [
+            "Illegal",
+            "Invalid",
+            "Illicit"
+        ]
+    },
+    {
+        "word": "Lethal",
+        "synonym": "Deadly",
+        "meaning": "Ölümcül",
+        "distractors": [
+            "Safe",
+            "Harmless",
+            "Vital"
+        ]
+    },
+    {
+        "word": "Loathe",
+        "synonym": "Hate",
+        "meaning": "Nefret etmek",
+        "distractors": [
+            "Love",
+            "Admire",
+            "Adore"
+        ]
+    },
+    {
+        "word": "Lucrative",
+        "synonym": "Profitable",
+        "meaning": "Karlı, kazançlı",
+        "distractors": [
+            "Loss-making",
+            "Unproductive",
+            "Worthless"
+        ]
+    },
+    {
+        "word": "Magnify",
+        "synonym": "Enlarge",
+        "meaning": "Büyütmek",
+        "distractors": [
+            "Shrink",
+            "Reduce",
+            "Minimize"
+        ]
+    },
+    {
+        "word": "Maintain",
+        "synonym": "Preserve",
+        "meaning": "Sürdürmek, korumak",
+        "distractors": [
+            "Abandon",
+            "Neglect",
+            "Destroy"
+        ]
+    },
+    {
+        "word": "Mandatory",
+        "synonym": "Compulsory",
+        "meaning": "Zorunlu",
+        "distractors": [
+            "Optional",
+            "Voluntary",
+            "Unnecessary"
+        ]
+    },
+    {
+        "word": "Mediocre",
+        "synonym": "Average",
+        "meaning": "Vasat, sıradan",
+        "distractors": [
+            "Excellent",
+            "Outstanding",
+            "Superior"
+        ]
+    },
+    {
+        "word": "Merge",
+        "synonym": "Unite",
+        "meaning": "Birleşmek",
+        "distractors": [
+            "Separate",
+            "Divide",
+            "Split"
+        ]
+    },
+    {
+        "word": "Meticulous",
+        "synonym": "Careful",
+        "meaning": "Titiz, özenli",
+        "distractors": [
+            "Careless",
+            "Sloppy",
+            "Messy"
+        ]
+    },
+    {
+        "word": "Migrate",
+        "synonym": "Move",
+        "meaning": "Göç etmek",
+        "distractors": [
+            "Stay",
+            "Remain",
+            "Settle"
+        ]
+    },
+    {
+        "word": "Mitigate",
+        "synonym": "Alleviate",
+        "meaning": "Hafifletmek, yatıştırmak",
+        "distractors": [
+            "Aggravate",
+            "Worsen",
+            "Intensify"
+        ]
+    },
+    {
+        "word": "Modify",
+        "synonym": "Alter",
+        "meaning": "Değiştirmek",
+        "distractors": [
+            "Keep",
+            "Preserve",
+            "Maintain"
+        ]
+    },
+    {
+        "word": "Mutual",
+        "synonym": "Reciprocal",
+        "meaning": "Karşılıklı",
+        "distractors": [
+            "One-sided",
+            "Unilateral",
+            "Individual"
+        ]
+    },
+    {
+        "word": "Neglect",
+        "synonym": "Ignore",
+        "meaning": "İhmal etmek",
+        "distractors": [
+            "Care",
+            "Attend",
+            "Nurture"
+        ]
+    },
+    {
+        "word": "Negligible",
+        "synonym": "Insignificant",
+        "meaning": "Önemsiz",
+        "distractors": [
+            "Significant",
+            "Important",
+            "Major"
+        ]
+    },
+    {
+        "word": "Notorious",
+        "synonym": "Infamous",
+        "meaning": "Kötü şöhretli",
+        "distractors": [
+            "Famous",
+            "Respected",
+            "Unknown"
+        ]
+    },
+    {
+        "word": "Nullify",
+        "synonym": "Cancel",
+        "meaning": "Geçersiz kılmak",
+        "distractors": [
+            "Validate",
+            "Confirm",
+            "Ratify"
+        ]
+    },
+    {
+        "word": "Objective",
+        "synonym": "Unbiased",
+        "meaning": "Nesnel, tarafsız",
+        "distractors": [
+            "Subjective",
+            "Biased",
+            "Partial"
+        ]
+    },
+    {
+        "word": "Obligatory",
+        "synonym": "Mandatory",
+        "meaning": "Mecburi",
+        "distractors": [
+            "Optional",
+            "Voluntary",
+            "Free"
+        ]
+    },
+    {
+        "word": "Obscure",
+        "synonym": "Unclear",
+        "meaning": "Belirsiz, gizli",
+        "distractors": [
+            "Clear",
+            "Obvious",
+            "Evident"
+        ]
+    },
+    {
+        "word": "Obsolete",
+        "synonym": "Outdated",
+        "meaning": "Modası geçmiş",
+        "distractors": [
+            "Modern",
+            "Current",
+            "New"
+        ]
+    },
+    {
+        "word": "Obstacle",
+        "synonym": "Barrier",
+        "meaning": "Engel",
+        "distractors": [
+            "Help",
+            "Aid",
+            "Advantage"
+        ]
+    },
+    {
+        "word": "Obtain",
+        "synonym": "Get",
+        "meaning": "Elde etmek",
+        "distractors": [
+            "Lose",
+            "Give",
+            "Donate"
+        ]
+    },
+    {
+        "word": "Obvious",
+        "synonym": "Evident",
+        "meaning": "Açık, bariz",
+        "distractors": [
+            "Hidden",
+            "Unclear",
+            "Vague"
+        ]
+    },
+    {
+        "word": "Occur",
+        "synonym": "Happen",
+        "meaning": "Meydana gelmek",
+        "distractors": [
+            "Stop",
+            "Cease",
+            "Prevent"
+        ]
+    },
+    {
+        "word": "Omit",
+        "synonym": "Exclude",
+        "meaning": "Çıkarmak, dahil etmemek",
+        "distractors": [
+            "Include",
+            "Add",
+            "Insert"
+        ]
+    },
+    {
+        "word": "Oppress",
+        "synonym": "Suppress",
+        "meaning": "Baskı yapmak, ezmek",
+        "distractors": [
+            "Liberate",
+            "Free",
+            "Encourage"
+        ]
+    },
+    {
+        "word": "Ordinary",
+        "synonym": "Common",
+        "meaning": "Sıradan",
+        "distractors": [
+            "Extraordinary",
+            "Rare",
+            "Unique"
+        ]
+    },
+    {
+        "word": "Origin",
+        "synonym": "Source",
+        "meaning": "Köken, kaynak",
+        "distractors": [
+            "End",
+            "Conclusion",
+            "Result"
+        ]
+    },
+    {
+        "word": "Outrageous",
+        "synonym": "Shocking",
+        "meaning": "Rezillik, şok edici",
+        "distractors": [
+            "Acceptable",
+            "Normal",
+            "Mild"
+        ]
+    },
+    {
+        "word": "Overcome",
+        "synonym": "Conquer",
+        "meaning": "Üstesinden gelmek",
+        "distractors": [
+            "Fail",
+            "Surrender",
+            "Yield"
+        ]
+    },
+    {
+        "word": "Overlook",
+        "synonym": "Ignore",
+        "meaning": "Gözden kaçırmak",
+        "distractors": [
+            "Notice",
+            "Observe",
+            "Scrutinize"
+        ]
+    },
+    {
+        "word": "Paradox",
+        "synonym": "Contradiction",
+        "meaning": "Çelişki",
+        "distractors": [
+            "Consistency",
+            "Fact",
+            "Agreement"
+        ]
+    },
+    {
+        "word": "Partial",
+        "synonym": "Incomplete",
+        "meaning": "Kısmi",
+        "distractors": [
+            "Complete",
+            "Whole",
+            "Total"
+        ]
+    },
+    {
+        "word": "Participate",
+        "synonym": "Take part",
+        "meaning": "Katılmak",
+        "distractors": [
+            "Observe",
+            "Avoid",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Peculiar",
+        "synonym": "Strange",
+        "meaning": "Tuhaf, kendine has",
+        "distractors": [
+            "Normal",
+            "Common",
+            "Ordinary"
+        ]
+    },
+    {
+        "word": "Penetrate",
+        "synonym": "Pierce",
+        "meaning": "Nüfuz etmek, delmek",
+        "distractors": [
+            "Repel",
+            "Bounce",
+            "Reflect"
+        ]
+    },
+    {
+        "word": "Peril",
+        "synonym": "Danger",
+        "meaning": "Büyük tehlike",
+        "distractors": [
+            "Safety",
+            "Security",
+            "Protection"
+        ]
+    },
+    {
+        "word": "Permanent",
+        "synonym": "Lasting",
+        "meaning": "Kalıcı",
+        "distractors": [
+            "Temporary",
+            "Brief",
+            "Fleeting"
+        ]
+    },
+    {
+        "word": "Permit",
+        "synonym": "Allow",
+        "meaning": "İzin vermek",
+        "distractors": [
+            "Forbid",
+            "Prohibit",
+            "Ban"
+        ]
+    },
+    {
+        "word": "Perplex",
+        "synonym": "Confuse",
+        "meaning": "Kafasını karıştırmak",
+        "distractors": [
+            "Clarify",
+            "Explain",
+            "Soothe"
+        ]
+    },
+    {
+        "word": "Persist",
+        "synonym": "Continue",
+        "meaning": "Israr etmek, sürdürmek",
+        "distractors": [
+            "Stop",
+            "Quit",
+            "Give up"
+        ]
+    },
+    {
+        "word": "Persuade",
+        "synonym": "Convince",
+        "meaning": "İkna etmek",
+        "distractors": [
+            "Dissuade",
+            "Discourage",
+            "Deter"
+        ]
+    },
+    {
+        "word": "Plausible",
+        "synonym": "Reasonable",
+        "meaning": "Makul, akla yatkın",
+        "distractors": [
+            "Impossible",
+            "Unbelievable",
+            "Absurd"
+        ]
+    },
+    {
+        "word": "Plentiful",
+        "synonym": "Abundant",
+        "meaning": "Bol",
+        "distractors": [
+            "Scarce",
+            "Rare",
+            "Few"
+        ]
+    },
+    {
+        "word": "Postpone",
+        "synonym": "Delay",
+        "meaning": "Ertelemek",
+        "distractors": [
+            "Advance",
+            "Hasten",
+            "Accelerate"
+        ]
+    },
+    {
+        "word": "Precise",
+        "synonym": "Exact",
+        "meaning": "Kesin, tam",
+        "distractors": [
+            "Vague",
+            "Approximate",
+            "Rough"
+        ]
+    },
+    {
+        "word": "Predict",
+        "synonym": "Forecast",
+        "meaning": "Tahmin etmek",
+        "distractors": [
+            "Ignore",
+            "Doubt",
+            "Neglect"
+        ]
+    },
+    {
+        "word": "Preserve",
+        "synonym": "Protect",
+        "meaning": "Korumak",
+        "distractors": [
+            "Destroy",
+            "Ruine",
+            "Damage"
+        ]
+    },
+    {
+        "word": "Prevalent",
+        "synonym": "Common",
+        "meaning": "Yaygın",
+        "distractors": [
+            "Rare",
+            "Uncommon",
+            "Scarce"
+        ]
+    },
+    {
+        "word": "Prevent",
+        "synonym": "Stop",
+        "meaning": "Önlemek",
+        "distractors": [
+            "Allow",
+            "Permit",
+            "Encourage"
+        ]
+    },
+    {
+        "word": "Previous",
+        "synonym": "Earlier",
+        "meaning": "Önceki",
+        "distractors": [
+            "Later",
+            "Subsequent",
+            "Future"
+        ]
+    },
+    {
+        "word": "Primary",
+        "synonym": "Main",
+        "meaning": "Birincil, temel",
+        "distractors": [
+            "Secondary",
+            "Minor",
+            "Last"
+        ]
+    },
+    {
+        "word": "Prior",
+        "synonym": "Previous",
+        "meaning": "Önceki",
+        "distractors": [
+            "Later",
+            "After",
+            "Subsequent"
+        ]
+    },
+    {
+        "word": "Profound",
+        "synonym": "Deep",
+        "meaning": "Derin",
+        "distractors": [
+            "Superficial",
+            "Shallow",
+            "Trivial"
+        ]
+    },
+    {
+        "word": "Prohibit",
+        "synonym": "Ban",
+        "meaning": "Yasaklamak",
+        "distractors": [
+            "Allow",
+            "Permit",
+            "Authorize"
+        ]
+    },
+    {
+        "word": "Prolific",
+        "synonym": "Productive",
+        "meaning": "Üretken",
+        "distractors": [
+            "Barren",
+            "Unfruitful",
+            "Lazy"
+        ]
+    },
+    {
+        "word": "Prominent",
+        "synonym": "Famous",
+        "meaning": "Öne çıkan, ünlü",
+        "distractors": [
+            "Unknown",
+            "Obscure",
+            "Ordinary"
+        ]
+    },
+    {
+        "word": "Promote",
+        "synonym": "Encourage",
+        "meaning": "Desteklemek, terfi",
+        "distractors": [
+            "Discourage",
+            "Hinder",
+            "Demote"
+        ]
+    },
+    {
+        "word": "Prompt",
+        "synonym": "Immediate",
+        "meaning": "Çabuk, ivedi",
+        "distractors": [
+            "Slow",
+            "Delayed",
+            "Late"
+        ]
+    },
+    {
+        "word": "Proper",
+        "synonym": "Appropriate",
+        "meaning": "Uygun",
+        "distractors": [
+            "Improper",
+            "Wrong",
+            "Incorrect"
+        ]
+    },
+    {
+        "word": "Prosper",
+        "synonym": "Flourish",
+        "meaning": "Zenginleşmek, gelişmek",
+        "distractors": [
+            "Fail",
+            "Decline",
+            "Wither"
+        ]
+    },
+    {
+        "word": "Protect",
+        "synonym": "Defend",
+        "meaning": "Korumak",
+        "distractors": [
+            "Attack",
+            "Harm",
+            "Injure"
+        ]
+    },
+    {
+        "word": "Provide",
+        "synonym": "Supply",
+        "meaning": "Sağlamak",
+        "distractors": [
+            "Take",
+            "Refuse",
+            "Withhold"
+        ]
+    },
+    {
+        "word": "Provoke",
+        "synonym": "Incite",
+        "meaning": "Kışkırtmak",
+        "distractors": [
+            "Calm",
+            "Soothe",
+            "Pacify"
+        ]
+    },
+    {
+        "word": "Prudent",
+        "synonym": "Cautious",
+        "meaning": "Tedbirli, akıllıca",
+        "distractors": [
+            "Reckless",
+            "Careless",
+            "Rash"
+        ]
+    },
+    {
+        "word": "Purchase",
+        "synonym": "Buy",
+        "meaning": "Satın almak",
+        "distractors": [
+            "Sell",
+            "Vend",
+            "Market"
+        ]
+    },
+    {
+        "word": "Purpose",
+        "synonym": "Goal",
+        "meaning": "Amaç",
+        "distractors": [
+            "Accident",
+            "Chance",
+            "Result"
+        ]
+    },
+    {
+        "word": "Pursue",
+        "synonym": "Chase",
+        "meaning": "Peşinden gitmek",
+        "distractors": [
+            "Flee",
+            "Avoid",
+            "Retreat"
+        ]
+    },
+    {
+        "word": "Quaint",
+        "synonym": "Old-fashioned",
+        "meaning": "Eski moda ama hoş",
+        "distractors": [
+            "Modern",
+            "New",
+            "Ugly"
+        ]
+    },
+    {
+        "word": "Queer",
+        "synonym": "Strange",
+        "meaning": "Garip",
+        "distractors": [
+            "Normal",
+            "Ordinary",
+            "Common"
+        ]
+    },
+    {
+        "word": "Radiant",
+        "synonym": "Bright",
+        "meaning": "Parlak, ışıldayan",
+        "distractors": [
+            "Dull",
+            "Dark",
+            "Gloomy"
+        ]
+    },
+    {
+        "word": "Radical",
+        "synonym": "Extreme",
+        "meaning": "Radikal, köklü",
+        "distractors": [
+            "Moderate",
+            "Conservative",
+            "Minor"
+        ]
+    },
+    {
+        "word": "Random",
+        "synonym": "Arbitrary",
+        "meaning": "Rastgele",
+        "distractors": [
+            "Planned",
+            "Deliberate",
+            "Specific"
+        ]
+    },
+    {
+        "word": "Rare",
+        "synonym": "Scarce",
+        "meaning": "Nadir",
+        "distractors": [
+            "Common",
+            "Frequent",
+            "Abundant"
+        ]
+    },
+    {
+        "word": "Ratify",
+        "synonym": "Approve",
+        "meaning": "Onaylamak (resmen)",
+        "distractors": [
+            "Reject",
+            "Veto",
+            "Deny"
+        ]
+    },
+    {
+        "word": "Rational",
+        "synonym": "Logical",
+        "meaning": "Mantıklı",
+        "distractors": [
+            "Irrational",
+            "Crazy",
+            "Absurd"
+        ]
+    },
+    {
+        "word": "Recollect",
+        "synonym": "Remember",
+        "meaning": "Hatırlamak",
+        "distractors": [
+            "Forget",
+            "Ignore",
+            "Lose"
+        ]
+    },
+    {
+        "word": "Reduce",
+        "synonym": "Decrease",
+        "meaning": "Azaltmak",
+        "distractors": [
+            "Increase",
+            "Enlarge",
+            "Expand"
+        ]
+    },
+    {
+        "word": "Refute",
+        "synonym": "Disprove",
+        "meaning": "Çürütmek (tezi)",
+        "distractors": [
+            "Prove",
+            "Confirm",
+            "Verify"
+        ]
+    },
+    {
+        "word": "Regulate",
+        "synonym": "Control",
+        "meaning": "Düzenlemek",
+        "distractors": [
+            "Disorder",
+            "Neglect",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Reject",
+        "synonym": "Refuse",
+        "meaning": "Reddetmek",
+        "distractors": [
+            "Accept",
+            "Admit",
+            "Agree"
+        ]
+    },
+    {
+        "word": "Release",
+        "synonym": "Free",
+        "meaning": "Serbest bırakmak",
+        "distractors": [
+            "Hold",
+            "Keep",
+            "Imprison"
+        ]
+    },
+    {
+        "word": "Reliable",
+        "synonym": "Trustworthy",
+        "meaning": "Güvenilir",
+        "distractors": [
+            "Unreliable",
+            "Deceptive",
+            "False"
+        ]
+    },
+    {
+        "word": "Reluctant",
+        "synonym": "Unwilling",
+        "meaning": "İsteksiz",
+        "distractors": [
+            "Eager",
+            "Willing",
+            "Keen"
+        ]
+    },
+    {
+        "word": "Remarkable",
+        "synonym": "Extraordinary",
+        "meaning": "Dikkat çekici",
+        "distractors": [
+            "Ordinary",
+            "Common",
+            "Normal"
+        ]
+    },
+    {
+        "word": "Remedy",
+        "synonym": "Cure",
+        "meaning": "Çare, ilaç",
+        "distractors": [
+            "Disease",
+            "Harm",
+            "Injury"
+        ]
+    },
+    {
+        "word": "Remote",
+        "synonym": "Distant",
+        "meaning": "Uzak",
+        "distractors": [
+            "Near",
+            "Close",
+            "Adjacent"
+        ]
+    },
+    {
+        "word": "Remove",
+        "synonym": "Eliminate",
+        "meaning": "Kaldırmak",
+        "distractors": [
+            "Add",
+            "Keep",
+            "Place"
+        ]
+    },
+    {
+        "word": "Renown",
+        "synonym": "Fame",
+        "meaning": "Ün, şöhret",
+        "distractors": [
+            "Obscurity",
+            "Disgrace",
+            "Shame"
+        ]
+    },
+    {
+        "word": "Replenish",
+        "synonym": "Refill",
+        "meaning": "Yeniden doldurmak",
+        "distractors": [
+            "Empty",
+            "Drain",
+            "Deplete"
+        ]
+    },
+    {
+        "word": "Reprimand",
+        "synonym": "Scold",
+        "meaning": "Azarlamak",
+        "distractors": [
+            "Praise",
+            "Compliment",
+            "Reward"
+        ]
+    },
+    {
+        "word": "Rescind",
+        "synonym": "Cancel",
+        "meaning": "İptal etmek (kararı)",
+        "distractors": [
+            "Enforce",
+            "Validate",
+            "Keep"
+        ]
+    },
+    {
+        "word": "Rescue",
+        "synonym": "Save",
+        "meaning": "Kurtarmak",
+        "distractors": [
+            "Abandon",
+            "Danger",
+            "Harm"
+        ]
+    },
+    {
+        "word": "Reside",
+        "synonym": "Dwell",
+        "meaning": "İkamet etmek",
+        "distractors": [
+            "Leave",
+            "Move",
+            "Vacate"
+        ]
+    },
+    {
+        "word": "Resist",
+        "synonym": "Oppose",
+        "meaning": "Direnmek",
+        "distractors": [
+            "Yield",
+            "Submit",
+            "Accept"
+        ]
+    },
+    {
+        "word": "Resolve",
+        "synonym": "Solve",
+        "meaning": "Çözmek",
+        "distractors": [
+            "Complicate",
+            "Worsen",
+            "Ignore"
+        ]
+    },
+    {
+        "word": "Retain",
+        "synonym": "Keep",
+        "meaning": "Muhafaza etmek",
+        "distractors": [
+            "Lose",
+            "Release",
+            "Discard"
+        ]
+    },
+    {
+        "word": "Reveal",
+        "synonym": "Disclose",
+        "meaning": "Açığa çıkarmak",
+        "distractors": [
+            "Hide",
+            "Conceal",
+            "Cover"
+        ]
+    },
+    {
+        "word": "Revive",
+        "synonym": "Restore",
+        "meaning": "Canlandırmak",
+        "distractors": [
+            "Kill",
+            "Destroy",
+            "Suppress"
+        ]
+    },
+    {
+        "word": "Rigid",
+        "synonym": "Stiff",
+        "meaning": "Sert, katı",
+        "distractors": [
+            "Flexible",
+            "Soft",
+            "Pliable"
+        ]
+    },
+    {
+        "word": "Robust",
+        "synonym": "Strong",
+        "meaning": "Sağlam, güçlü",
+        "distractors": [
+            "Weak",
+            "Fragile",
+            "Frail"
+        ]
+    },
+    {
+        "word": "Rough",
+        "synonym": "Coarse",
+        "meaning": "Kaba, pürüzlü",
+        "distractors": [
+            "Smooth",
+            "Soft",
+            "Fine"
+        ]
+    },
+    {
+        "word": "Sanction",
+        "synonym": "Authorize",
+        "meaning": "Onaylamak; Yaptırım",
+        "distractors": [
+            "Prohibit",
+            "Ban",
+            "Reject"
+        ]
+    },
+    {
+        "word": "Scarce",
+        "synonym": "Rare",
+        "meaning": "Kıt, nadir",
+        "distractors": [
+            "Abundant",
+            "Plentiful",
+            "Common"
+        ]
+    },
+    {
+        "word": "Scrutinize",
+        "synonym": "Examine",
+        "meaning": "Dikkatle incelemek",
+        "distractors": [
+            "Glance",
+            "Ignore",
+            "Overlook"
+        ]
+    },
+    {
+        "word": "Secure",
+        "synonym": "Safe",
+        "meaning": "Güvenli",
+        "distractors": [
+            "Insecure",
+            "Dangerous",
+            "Risky"
+        ]
+    },
+    {
+        "word": "Segregate",
+        "synonym": "Separate",
+        "meaning": "Ayırmak",
+        "distractors": [
+            "Integrate",
+            "Mix",
+            "Combine"
+        ]
+    },
+    {
+        "word": "Sever",
+        "synonym": "Cut",
+        "meaning": "Kesmek (ilişkiyi/bağı)",
+        "distractors": [
+            "Join",
+            "Connect",
+            "Link"
+        ]
+    },
+    {
+        "word": "Severe",
+        "synonym": "Harsh",
+        "meaning": "Sert, şiddetli",
+        "distractors": [
+            "Mild",
+            "Gentle",
+            "Soft"
+        ]
+    },
+    {
+        "word": "Significant",
+        "synonym": "Important",
+        "meaning": "Önemli",
+        "distractors": [
+            "Trivial",
+            "Minor",
+            "Insignificant"
+        ]
+    },
+    {
+        "word": "Simultaneous",
+        "synonym": "Concurrent",
+        "meaning": "Eş zamanlı",
+        "distractors": [
+            "Separate",
+            "Successive",
+            "Sequential"
+        ]
+    },
+    {
+        "word": "Skeptical",
+        "synonym": "Doubtful",
+        "meaning": "Şüpheci",
+        "distractors": [
+            "Certain",
+            "Convinced",
+            "Trusting"
+        ]
+    },
+    {
+        "word": "Slender",
+        "synonym": "Slim",
+        "meaning": "İnce, narin",
+        "distractors": [
+            "Fat",
+            "Thick",
+            "Wide"
+        ]
+    },
+    {
+        "word": "Solitary",
+        "synonym": "Alone",
+        "meaning": "Yalnız",
+        "distractors": [
+            "Social",
+            "Crowded",
+            "Together"
+        ]
+    },
+    {
+        "word": "Soothe",
+        "synonym": "Calm",
+        "meaning": "Yatıştırmak",
+        "distractors": [
+            "Agitate",
+            "Upset",
+            "Provoke"
+        ]
+    },
+    {
+        "word": "Sophisticated",
+        "synonym": "Advanced",
+        "meaning": "Gelişmiş, karmaşık",
+        "distractors": [
+            "Simple",
+            "Primitive",
+            "Naive"
+        ]
+    },
+    {
+        "word": "Specific",
+        "synonym": "Particular",
+        "meaning": "Belirli, özel",
+        "distractors": [
+            "General",
+            "Vague",
+            "Common"
+        ]
+    },
+    {
+        "word": "Sporadic",
+        "synonym": "Intermittent",
+        "meaning": "Ara sıra olan",
+        "distractors": [
+            "Constant",
+            "Continuous",
+            "Regular"
+        ]
+    },
+    {
+        "word": "Stable",
+        "synonym": "Steady",
+        "meaning": "İstikrarlı",
+        "distractors": [
+            "Unstable",
+            "Shaky",
+            "Variable"
+        ]
+    },
+    {
+        "word": "Stagnant",
+        "synonym": "Still",
+        "meaning": "Durgun (su/ekonomi)",
+        "distractors": [
+            "Flowing",
+            "Moving",
+            "Dynamic"
+        ]
+    },
+    {
+        "word": "Stationary",
+        "synonym": "Motionless",
+        "meaning": "Hareketsiz",
+        "distractors": [
+            "Moving",
+            "Mobile",
+            "Active"
+        ]
+    },
+    {
+        "word": "Stimulate",
+        "synonym": "Encourage",
+        "meaning": "Teşvik etmek, uyarmak",
+        "distractors": [
+            "Discourage",
+            "Hinder",
+            "Dampen"
+        ]
+    },
+    {
+        "word": "Strenuous",
+        "synonym": "Arduous",
+        "meaning": "Yorucu, gayretli",
+        "distractors": [
+            "Easy",
+            "Effortless",
+            "Light"
+        ]
+    },
+    {
+        "word": "Subsequent",
+        "synonym": "Following",
+        "meaning": "Sonraki",
+        "distractors": [
+            "Previous",
+            "Prior",
+            "Earlier"
+        ]
+    },
+    {
+        "word": "Substantial",
+        "synonym": "Significant",
+        "meaning": "Önemli, büyük",
+        "distractors": [
+            "Tiny",
+            "Insignificant",
+            "Small"
+        ]
+    },
+    {
+        "word": "Succinct",
+        "synonym": "Concise",
+        "meaning": "Kısa ve öz",
+        "distractors": [
+            "Wordy",
+            "Lengthy",
+            "Verbose"
+        ]
+    },
+    {
+        "word": "Sufficient",
+        "synonym": "Enough",
+        "meaning": "Yeterli",
+        "distractors": [
+            "Insufficient",
+            "Lacking",
+            "Short"
+        ]
+    },
+    {
+        "word": "Summit",
+        "synonym": "Peak",
+        "meaning": "Zirve",
+        "distractors": [
+            "Bottom",
+            "Base",
+            "Nadir"
+        ]
+    },
+    {
+        "word": "Superficial",
+        "synonym": "Shallow",
+        "meaning": "Yüzeysel",
+        "distractors": [
+            "Deep",
+            "Profound",
+            "Thorough"
+        ]
+    },
+    {
+        "word": "Surpass",
+        "synonym": "Exceed",
+        "meaning": "Aşmak, geçmek",
+        "distractors": [
+            "Fail",
+            "Fall behind",
+            "Lose"
+        ]
+    },
+    {
+        "word": "Susceptible",
+        "synonym": "Vulnerable",
+        "meaning": "Duyarlı, savunmasız",
+        "distractors": [
+            "Immune",
+            "Resistant",
+            "Strong"
+        ]
+    },
+    {
+        "word": "Suspend",
+        "synonym": "Postpone",
+        "meaning": "Askıya almak",
+        "distractors": [
+            "Continue",
+            "Start",
+            "Begin"
+        ]
+    },
+    {
+        "word": "Sustain",
+        "synonym": "Maintain",
+        "meaning": "Sürdürmek",
+        "distractors": [
+            "Stop",
+            "Quit",
+            "Cease"
+        ]
+    },
+    {
+        "word": "Tangible",
+        "synonym": "Concrete",
+        "meaning": "Somut, elle tutulur",
+        "distractors": [
+            "Abstract",
+            "Intangible",
+            "Imaginary"
+        ]
+    },
+    {
+        "word": "Tedious",
+        "synonym": "Boring",
+        "meaning": "Sıkıcı, bıktırıcı",
+        "distractors": [
+            "Exciting",
+            "Interesting",
+            "Fun"
+        ]
+    },
+    {
+        "word": "Temporary",
+        "synonym": "Brief",
+        "meaning": "Geçici",
+        "distractors": [
+            "Permanent",
+            "Lasting",
+            "Forever"
+        ]
+    },
+    {
+        "word": "Terminate",
+        "synonym": "End",
+        "meaning": "Sonlandırmak",
+        "distractors": [
+            "Start",
+            "Begin",
+            "Initiate"
+        ]
+    },
+    {
+        "word": "Thrive",
+        "synonym": "Flourish",
+        "meaning": "Gelişmek, serpilmek",
+        "distractors": [
+            "Fail",
+            "Wither",
+            "Die"
+        ]
+    },
+    {
+        "word": "Tolerate",
+        "synonym": "Endure",
+        "meaning": "Tahammül etmek",
+        "distractors": [
+            "Forbid",
+            "Prohibit",
+            "Reject"
+        ]
+    },
+    {
+        "word": "Toxic",
+        "synonym": "Poisonous",
+        "meaning": "Zehirli",
+        "distractors": [
+            "Safe",
+            "Harmless",
+            "Healthy"
+        ]
+    },
+    {
+        "word": "Tranquil",
+        "synonym": "Peaceful",
+        "meaning": "Sakin, huzurlu",
+        "distractors": [
+            "Noisy",
+            "Chaotic",
+            "Turbulent"
+        ]
+    },
+    {
+        "word": "Transform",
+        "synonym": "Change",
+        "meaning": "Dönüştürmek",
+        "distractors": [
+            "Keep",
+            "Maintain",
+            "Preserve"
+        ]
+    },
+    {
+        "word": "Transient",
+        "synonym": "Temporary",
+        "meaning": "Geçici",
+        "distractors": [
+            "Permanent",
+            "Lasting",
+            "Eternal"
+        ]
+    },
+    {
+        "word": "Transparent",
+        "synonym": "Clear",
+        "meaning": "Şeffaf",
+        "distractors": [
+            "Opaque",
+            "Cloudy",
+            "Hidden"
+        ]
+    },
+    {
+        "word": "Trigger",
+        "synonym": "Cause",
+        "meaning": "Tetiklemek",
+        "distractors": [
+            "Stop",
+            "Prevent",
+            "Block"
+        ]
+    },
+    {
+        "word": "Trivial",
+        "synonym": "Insignificant",
+        "meaning": "Önemsiz",
+        "distractors": [
+            "Important",
+            "Crucial",
+            "Vital"
+        ]
+    },
+    {
+        "word": "Turbulent",
+        "synonym": "Chaotic",
+        "meaning": "Çalkantılı",
+        "distractors": [
+            "Calm",
+            "Peaceful",
+            "Quiet"
+        ]
+    },
+    {
+        "word": "Ultimate",
+        "synonym": "Final",
+        "meaning": "Nihai, son",
+        "distractors": [
+            "Initial",
+            "First",
+            "Beginning"
+        ]
+    },
+    {
+        "word": "Underline",
+        "synonym": "Emphasize",
+        "meaning": "Vurgulamak",
+        "distractors": [
+            "Ignore",
+            "Neglect",
+            "Hide"
+        ]
+    },
+    {
+        "word": "Undermine",
+        "synonym": "Weaken",
+        "meaning": "Zayıflatmak, baltalamak",
+        "distractors": [
+            "Strengthen",
+            "Support",
+            "Reinforce"
+        ]
+    },
+    {
+        "word": "Uniform",
+        "synonym": "Consistent",
+        "meaning": "Tek tip, istikrarlı",
+        "distractors": [
+            "Varied",
+            "Different",
+            "Diverse"
+        ]
+    },
+    {
+        "word": "Unique",
+        "synonym": "Distinctive",
+        "meaning": "Eşsiz",
+        "distractors": [
+            "Common",
+            "Ordinary",
+            "Typical"
+        ]
+    },
+    {
+        "word": "Urgent",
+        "synonym": "Pressing",
+        "meaning": "Acil",
+        "distractors": [
+            "Unimportant",
+            "Trivial",
+            "Optional"
+        ]
+    },
+    {
+        "word": "Utilize",
+        "synonym": "Use",
+        "meaning": "Kullanmak, yararlanmak",
+        "distractors": [
+            "Waste",
+            "Ignore",
+            "Discard"
+        ]
+    },
+    {
+        "word": "Vacant",
+        "synonym": "Empty",
+        "meaning": "Boş",
+        "distractors": [
+            "Full",
+            "Occupied",
+            "Busy"
+        ]
+    },
+    {
+        "word": "Vague",
+        "synonym": "Unclear",
+        "meaning": "Belirsiz",
+        "distractors": [
+            "Clear",
+            "Definite",
+            "Precise"
+        ]
+    },
+    {
+        "word": "Valid",
+        "synonym": "Legitimate",
+        "meaning": "Geçerli",
+        "distractors": [
+            "Invalid",
+            "False",
+            "Void"
+        ]
+    },
+    {
+        "word": "Valuable",
+        "synonym": "Precious",
+        "meaning": "Değerli",
+        "distractors": [
+            "Worthless",
+            "Cheap",
+            "Useless"
+        ]
+    },
+    {
+        "word": "Vanish",
+        "synonym": "Disappear",
+        "meaning": "Yok olmak",
+        "distractors": [
+            "Appear",
+            "Emerge",
+            "Stay"
+        ]
+    },
+    {
+        "word": "Vary",
+        "synonym": "Differ",
+        "meaning": "Çeşitlilik göstermek",
+        "distractors": [
+            "Agree",
+            "Match",
+            "Conform"
+        ]
+    },
+    {
+        "word": "Vast",
+        "synonym": "Huge",
+        "meaning": "Geniş, büyük",
+        "distractors": [
+            "Small",
+            "Tiny",
+            "Narrow"
+        ]
+    },
+    {
+        "word": "Verify",
+        "synonym": "Confirm",
+        "meaning": "Doğrulamak",
+        "distractors": [
+            "Deny",
+            "Refute",
+            "Reject"
+        ]
+    },
+    {
+        "word": "Versatile",
+        "synonym": "Flexible",
+        "meaning": "Çok yönlü",
+        "distractors": [
+            "Rigid",
+            "Limited",
+            "Inflexible"
+        ]
+    },
+    {
+        "word": "Viable",
+        "synonym": "Feasible",
+        "meaning": "Uygulanabilir",
+        "distractors": [
+            "Impossible",
+            "Impractical",
+            "Useless"
+        ]
+    },
+    {
+        "word": "Vibrant",
+        "synonym": "Lively",
+        "meaning": "Canlı, hareketli",
+        "distractors": [
+            "Dull",
+            "Lifeless",
+            "Boring"
+        ]
+    },
+    {
+        "word": "Vigilant",
+        "synonym": "Watchful",
+        "meaning": "Tetikte, uyanık",
+        "distractors": [
+            "Careless",
+            "Negligent",
+            "Asleep"
+        ]
+    },
+    {
+        "word": "Vigorous",
+        "synonym": "Energetic",
+        "meaning": "Güçlü, enerjik",
+        "distractors": [
+            "Weak",
+            "Lethargic",
+            "Feeble"
+        ]
+    },
+    {
+        "word": "Violate",
+        "synonym": "Breach",
+        "meaning": "İhlal etmek",
+        "distractors": [
+            "Obey",
+            "Respect",
+            "Follow"
+        ]
+    },
+    {
+        "word": "Vital",
+        "synonym": "Crucial",
+        "meaning": "Hayati",
+        "distractors": [
+            "Unimportant",
+            "Optional",
+            "Trivial"
+        ]
+    },
+    {
+        "word": "Volatile",
+        "synonym": "Unstable",
+        "meaning": "İstikrarsız, uçucu",
+        "distractors": [
+            "Stable",
+            "Constant",
+            "Steady"
+        ]
+    },
+    {
+        "word": "Wane",
+        "synonym": "Decrease",
+        "meaning": "Azalmak (güç/ay)",
+        "distractors": [
+            "Increase",
+            "Grow",
+            "Wax"
+        ]
+    },
+    {
+        "word": "Wary",
+        "synonym": "Cautious",
+        "meaning": "Temkinli",
+        "distractors": [
+            "Trusting",
+            "Careless",
+            "Rash"
+        ]
+    },
+    {
+        "word": "Wealthy",
+        "synonym": "Rich",
+        "meaning": "Zengin",
+        "distractors": [
+            "Poor",
+            "Needy",
+            "Destitute"
+        ]
+    },
+    {
+        "word": "Weird",
+        "synonym": "Strange",
+        "meaning": "Tuhaf",
+        "distractors": [
+            "Normal",
+            "Common",
+            "Ordinary"
+        ]
+    },
+    {
+        "word": "Widespread",
+        "synonym": "Common",
+        "meaning": "Yaygın",
+        "distractors": [
+            "Rare",
+            "Local",
+            "Limited"
+        ]
+    },
+    {
+        "word": "Withdraw",
+        "synonym": "Retreat",
+        "meaning": "Geri çekilmek",
+        "distractors": [
+            "Advance",
+            "Enter",
+            "Engage"
+        ]
+    },
+    {
+        "word": "Withstand",
+        "synonym": "Resist",
+        "meaning": "Dayanmak, karşı koymak",
+        "distractors": [
+            "Surrender",
+            "Yield",
+            "Collapse"
+        ]
+    },
+    {
+        "word": "Yield",
+        "synonym": "Produce",
+        "meaning": "Ürün vermek; Teslim olmak",
+        "distractors": [
+            "Resist",
+            "Keep",
+            "Retain"
+        ]
+    },
+    {
+        "word": "Zenith",
+        "synonym": "Peak",
+        "meaning": "Zirve",
+        "distractors": [
+            "Bottom",
+            "Nadir",
+            "Base"
+        ]
+    }
+]

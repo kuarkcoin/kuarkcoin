@@ -1,0 +1,2306 @@
+[
+    {
+        "id": "vs-a2-001",
+        "level": "A2",
+        "sentence": "I'll ___ you later.",
+        "options": [
+            "say",
+            "call",
+            "speak"
+        ],
+        "correct": 1,
+        "explanation": "In spoken English, we say 'call you later'. 'Say' and 'speak' are not natural here."
+    },
+    {
+        "id": "vs-a2-002",
+        "level": "A2",
+        "sentence": "Can you ___ me a hand?",
+        "options": [
+            "give",
+            "take",
+            "do"
+        ],
+        "correct": 0,
+        "explanation": "'Give someone a hand' means to help someone."
+    },
+    {
+        "id": "vs-b1-003",
+        "level": "B1",
+        "sentence": "Let’s ___ a break.",
+        "options": [
+            "do",
+            "take",
+            "make"
+        ],
+        "correct": 1,
+        "explanation": "'Take a break' is a fixed collocation in daily English."
+    },
+    {
+        "id": "vs-b1-004",
+        "level": "B1",
+        "sentence": "I usually ___ coffee in the morning.",
+        "options": [
+            "drink",
+            "take",
+            "eat"
+        ],
+        "correct": 0,
+        "explanation": "We 'drink' coffee. 'Take coffee' is not natural in this context."
+    },
+    {
+        "id": "vs-b2-005",
+        "level": "B2",
+        "sentence": "I can’t ___ it anymore.",
+        "options": [
+            "keep",
+            "hold",
+            "take"
+        ],
+        "correct": 2,
+        "explanation": "'I can't take it anymore' means tolerance has ended."
+    },
+    {
+        "id": "vs-b2-006",
+        "level": "B2",
+        "sentence": "Do you ___ mind if I sit here?",
+        "options": [
+            "have",
+            "take",
+            "mind"
+        ],
+        "correct": 2,
+        "explanation": "'Do you mind if…?' is a common polite spoken structure."
+    },
+    {
+        "id": "vs-c1-007",
+        "level": "C1",
+        "sentence": "We need to ___ a decision quickly.",
+        "options": [
+            "do",
+            "take",
+            "make"
+        ],
+        "correct": 2,
+        "explanation": "'Make a decision' is the correct collocation."
+    },
+    {
+        "id": "vs-c1-008",
+        "level": "C1",
+        "sentence": "Let’s ___ out tonight.",
+        "options": [
+            "go",
+            "get",
+            "take"
+        ],
+        "correct": 0,
+        "explanation": "'Go out' is a common spoken phrase meaning socialize."
+    },
+    {
+        "id": "vs-a2-017",
+        "level": "A2",
+        "sentence": "Can you ___ me a favor?",
+        "options": [
+            "make",
+            "do",
+            "give"
+        ],
+        "correct": 1,
+        "explanation": "'Do me a favor' birinden ricada bulunurken kullanılan kalıplaşmış bir ifadedir."
+    },
+    {
+        "id": "vs-a2-018",
+        "level": "A2",
+        "sentence": "I'm ___ tired today.",
+        "options": [
+            "very",
+            "much",
+            "so"
+        ],
+        "correct": 0,
+        "explanation": "Sıfatlarla birlikte yoğunluk belirtirken en yaygın kullanım 'very' dir."
+    },
+    {
+        "id": "vs-b1-019",
+        "level": "B1",
+        "sentence": "Let's ___ a break and continue later.",
+        "options": [
+            "do",
+            "take",
+            "make"
+        ],
+        "correct": 1,
+        "explanation": "'Take a break' (ara vermek) günlük İngilizcede çok sık kullanılan bir ifadedir."
+    },
+    {
+        "id": "vs-b1-020",
+        "level": "B1",
+        "sentence": "She is really good ___ solving problems.",
+        "options": [
+            "at",
+            "in",
+            "on"
+        ],
+        "correct": 0,
+        "explanation": "'Good at' bir konuda yetenekli olmayı ifade eder."
+    },
+    {
+        "id": "vs-b1-021",
+        "level": "B1",
+        "sentence": "I don't ___ like going out on weekdays.",
+        "options": [
+            "much",
+            "very",
+            "really"
+        ],
+        "correct": 2,
+        "explanation": "'Don't really like' konuşma dilinde tercih edilmediğini yumuşak şekilde ifade eder."
+    },
+    {
+        "id": "vs-b2-022",
+        "level": "B2",
+        "sentence": "She apologized ___ being late.",
+        "options": [
+            "for",
+            "about",
+            "to"
+        ],
+        "correct": 0,
+        "explanation": "'Apologize for' bir şeyden dolayı özür dilemek anlamında kullanılır."
+    },
+    {
+        "id": "vs-b2-023",
+        "level": "B2",
+        "sentence": "This problem is harder than I ___ expected.",
+        "options": [
+            "have",
+            "had",
+            "was"
+        ],
+        "correct": 1,
+        "explanation": "Geçmişteki beklentiyi ifade ederken 'had expected' kullanılır."
+    },
+    {
+        "id": "vs-b2-024",
+        "level": "B2",
+        "sentence": "He refused to take ___ the responsibility.",
+        "options": [
+            "up",
+            "over",
+            "on"
+        ],
+        "correct": 2,
+        "explanation": "'Take on responsibility' sorumluluk üstlenmek anlamına gelir."
+    },
+    {
+        "id": "vs-c1-025",
+        "level": "C1",
+        "sentence": "Her explanation was clear and easy to ___.",
+        "options": [
+            "understand",
+            "follow",
+            "catch"
+        ],
+        "correct": 1,
+        "explanation": "'Follow' özellikle konuşma veya açıklamaları anlayabilmek anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-026",
+        "level": "C1",
+        "sentence": "The project was completed ___ schedule.",
+        "options": [
+            "in",
+            "on",
+            "at"
+        ],
+        "correct": 1,
+        "explanation": "'On schedule' zamanında, planlandığı şekilde anlamına gelir."
+    },
+    {
+        "id": "vs-c1-027",
+        "level": "C1",
+        "sentence": "I find it difficult to keep ___ with all these changes.",
+        "options": [
+            "up",
+            "on",
+            "out"
+        ],
+        "correct": 0,
+        "explanation": "'Keep up with' gelişmeleri yakalayabilmek anlamına gelir."
+    },
+    {
+        "id": "vs-c1-028",
+        "level": "C1",
+        "sentence": "His argument doesn't really hold ___.",
+        "options": [
+            "on",
+            "up",
+            "out"
+        ],
+        "correct": 1,
+        "explanation": "'Hold up' mantıklı veya geçerli olmak anlamında kullanılır."
+    },
+    {
+        "id": "vs-a2-029",
+        "level": "A2",
+        "sentence": "Please ___ me know when you arrive.",
+        "options": [
+            "say",
+            "tell",
+            "let"
+        ],
+        "correct": 2,
+        "explanation": "'Let me know' (haber ver) günlük konuşmada çok yaygın bir kalıptır."
+    },
+    {
+        "id": "vs-a2-030",
+        "level": "A2",
+        "sentence": "I'm ___ a bit cold.",
+        "options": [
+            "feeling",
+            "making",
+            "doing"
+        ],
+        "correct": 0,
+        "explanation": "Duygular ve fiziksel durumlar için 'feel / feeling' kullanılır."
+    },
+    {
+        "id": "vs-a2-031",
+        "level": "A2",
+        "sentence": "Can I ___ you a question?",
+        "options": [
+            "ask",
+            "say",
+            "tell"
+        ],
+        "correct": 0,
+        "explanation": "'Ask a question' doğru ve kalıplaşmış kullanımdır."
+    },
+    {
+        "id": "vs-a2-032",
+        "level": "A2",
+        "sentence": "I ___ agree with you.",
+        "options": [
+            "am",
+            "do",
+            "very"
+        ],
+        "correct": 1,
+        "explanation": "'I do agree' vurgulu şekilde katıldığını belirtir."
+    },
+    {
+        "id": "vs-b1-033",
+        "level": "B1",
+        "sentence": "He ___ me of my brother.",
+        "options": [
+            "remembers",
+            "reminds",
+            "thinks"
+        ],
+        "correct": 1,
+        "explanation": "'Remind someone of someone/something' benzetme anlamı verir."
+    },
+    {
+        "id": "vs-b1-034",
+        "level": "B1",
+        "sentence": "We ran ___ time before the exam.",
+        "options": [
+            "out of",
+            "away",
+            "over"
+        ],
+        "correct": 0,
+        "explanation": "'Run out of time' sürenin bitmesi anlamına gelir."
+    },
+    {
+        "id": "vs-b1-035",
+        "level": "B1",
+        "sentence": "She picked ___ English very quickly.",
+        "options": [
+            "up",
+            "out",
+            "on"
+        ],
+        "correct": 0,
+        "explanation": "'Pick up' dili/alışkanlığı hızlıca öğrenmek anlamında kullanılır."
+    },
+    {
+        "id": "vs-b1-036",
+        "level": "B1",
+        "sentence": "I wasn't aware ___ that rule.",
+        "options": [
+            "of",
+            "about",
+            "for"
+        ],
+        "correct": 0,
+        "explanation": "'Be aware of' bir şeyin farkında olmak demektir."
+    },
+    {
+        "id": "vs-b2-037",
+        "level": "B2",
+        "sentence": "He tends to ___ things too personally.",
+        "options": [
+            "get",
+            "take",
+            "make"
+        ],
+        "correct": 1,
+        "explanation": "'Take something personally' alınganlık göstermek anlamına gelir."
+    },
+    {
+        "id": "vs-b2-038",
+        "level": "B2",
+        "sentence": "The meeting was called ___ due to the storm.",
+        "options": [
+            "off",
+            "out",
+            "away"
+        ],
+        "correct": 0,
+        "explanation": "'Call off' iptal etmek anlamına gelen phrasal verb’dür."
+    },
+    {
+        "id": "vs-b2-039",
+        "level": "B2",
+        "sentence": "I'm not used to ___ up so early.",
+        "options": [
+            "get",
+            "getting",
+            "got"
+        ],
+        "correct": 1,
+        "explanation": "'Be used to' yapısından sonra fiil -ing alır."
+    },
+    {
+        "id": "vs-b2-040",
+        "level": "B2",
+        "sentence": "She managed to ___ the situation under control.",
+        "options": [
+            "take",
+            "get",
+            "put"
+        ],
+        "correct": 1,
+        "explanation": "'Get something under control' durumu kontrol altına almak demektir."
+    },
+    {
+        "id": "vs-c1-041",
+        "level": "C1",
+        "sentence": "His excuse doesn't quite add ___.",
+        "options": [
+            "up",
+            "on",
+            "to"
+        ],
+        "correct": 0,
+        "explanation": "'Add up' mantıklı olmak / tutarlı olmak anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-042",
+        "level": "C1",
+        "sentence": "She has a strong ___ for detail.",
+        "options": [
+            "eye",
+            "view",
+            "sight"
+        ],
+        "correct": 0,
+        "explanation": "'Have an eye for detail' detaylara dikkat etmek anlamındadır."
+    },
+    {
+        "id": "vs-c1-043",
+        "level": "C1",
+        "sentence": "The plan was abandoned ___ lack of funding.",
+        "options": [
+            "because",
+            "due to",
+            "since"
+        ],
+        "correct": 1,
+        "explanation": "'Due to' isimle kullanılır ve resmi anlatımda yaygındır."
+    },
+    {
+        "id": "vs-c1-044",
+        "level": "C1",
+        "sentence": "He is widely regarded ___ an expert.",
+        "options": [
+            "as",
+            "like",
+            "for"
+        ],
+        "correct": 0,
+        "explanation": "'Regarded as' bir şey olarak görülmek anlamındadır."
+    },
+    {
+        "id": "vs-c1-045",
+        "level": "C1",
+        "sentence": "She spoke ___ behalf of the whole team.",
+        "options": [
+            "in",
+            "on",
+            "at"
+        ],
+        "correct": 1,
+        "explanation": "'On behalf of' başkası adına konuşmak anlamına gelir."
+    },
+    {
+        "id": "vs-c1-046",
+        "level": "C1",
+        "sentence": "His comment was taken out of ___.",
+        "options": [
+            "context",
+            "meaning",
+            "sense"
+        ],
+        "correct": 0,
+        "explanation": "'Out of context' bağlamından koparılmış anlamına gelir."
+    },
+    {
+        "id": "vs-c1-047",
+        "level": "C1",
+        "sentence": "She has difficulty ___ decisions under pressure.",
+        "options": [
+            "make",
+            "to make",
+            "making"
+        ],
+        "correct": 2,
+        "explanation": "'Have difficulty' yapısından sonra fiil -ing alır."
+    },
+    {
+        "id": "vs-c1-048",
+        "level": "C1",
+        "sentence": "The issue needs to be dealt ___ immediately.",
+        "options": [
+            "with",
+            "by",
+            "to"
+        ],
+        "correct": 0,
+        "explanation": "'Deal with' bir problemle ilgilenmek anlamına gelir."
+    },
+    {
+        "id": "vs-c1-049",
+        "level": "C1",
+        "sentence": "He came ___ with a brilliant solution.",
+        "options": [
+            "up",
+            "out",
+            "over"
+        ],
+        "correct": 0,
+        "explanation": "'Come up with' fikir/çözüm üretmek demektir."
+    },
+    {
+        "id": "vs-c1-050",
+        "level": "C1",
+        "sentence": "Her reaction caught everyone ___ surprise.",
+        "options": [
+            "in",
+            "by",
+            "at"
+        ],
+        "correct": 1,
+        "explanation": "'Catch someone by surprise' beklenmedik şekilde şaşırtmak anlamına gelir."
+    },
+    {
+        "id": "vs-c1-051",
+        "level": "C1",
+        "sentence": "I need to brush ___ my Spanish before our trip to Madrid.",
+        "options": [
+            "up on",
+            "out on",
+            "down on"
+        ],
+        "correct": 0,
+        "explanation": "'Brush up on' bir konudaki paslanmış bilgileri tazelemek/çalışmak anlamına gelir."
+    },
+    {
+        "id": "vs-c1-052",
+        "level": "C1",
+        "sentence": "The deal fell ___ at the last minute due to a lack of funding.",
+        "options": [
+            "down",
+            "through",
+            "out"
+        ],
+        "correct": 1,
+        "explanation": "'Fall through' bir planın veya anlaşmanın gerçekleşmemesi, suya düşmesi demektir."
+    },
+    {
+        "id": "vs-c1-053",
+        "level": "C1",
+        "sentence": "Stop beating around the ___ and tell me what you really think.",
+        "options": [
+            "tree",
+            "bush",
+            "corner"
+        ],
+        "correct": 1,
+        "explanation": "'Beat around the bush' sadede gelmemek, konuyu dolandırmak demektir."
+    },
+    {
+        "id": "vs-c1-054",
+        "level": "C1",
+        "sentence": "I'm afraid I can't make it tonight; I'm a bit snowed ___ with work.",
+        "options": [
+            "under",
+            "in",
+            "up"
+        ],
+        "correct": 0,
+        "explanation": "'Snowed under' işe gömülmek, çok yoğun olmak anlamında kullanılan bir deyimdir."
+    },
+    {
+        "id": "vs-c1-055",
+        "level": "C1",
+        "sentence": "It's time to ___ the music and admit we made a mistake.",
+        "options": [
+            "hear",
+            "face",
+            "play"
+        ],
+        "correct": 1,
+        "explanation": "'Face the music' yapılan bir hatanın sonuçlarına katlanmak veya gerçeklerle yüzleşmek demektir."
+    },
+    {
+        "id": "vs-c1-056",
+        "level": "C1",
+        "sentence": "That name rings a ___, but I can't quite place where I've heard it.",
+        "options": [
+            "bell",
+            "phone",
+            "sound"
+        ],
+        "correct": 0,
+        "explanation": "'Ring a bell' tanıdık gelmek ama tam olarak hatırlayamamak durumunda kullanılır."
+    },
+    {
+        "id": "vs-c1-057",
+        "level": "C1",
+        "sentence": "We need to iron ___ a few details before signing the contract.",
+        "options": [
+            "up",
+            "out",
+            "on"
+        ],
+        "correct": 1,
+        "explanation": "'Iron out' pürüzleri gidermek, sorunları çözüme kavuşturmak demektir."
+    },
+    {
+        "id": "vs-c1-058",
+        "level": "C1",
+        "sentence": "I'm sorry, I just blanked ___ for a second. What was I saying?",
+        "options": [
+            "out",
+            "off",
+            "away"
+        ],
+        "correct": 0,
+        "explanation": "'Blank out' anlık olarak zihnin boşalması, ne söyleyeceğini unutmak demektir."
+    },
+    {
+        "id": "vs-c1-059",
+        "level": "C1",
+        "sentence": "You should take what he says with a grain of ___.",
+        "options": [
+            "sugar",
+            "pepper",
+            "salt"
+        ],
+        "correct": 2,
+        "explanation": "'Take something with a grain of salt' bir şeye şüpheyle yaklaşmak, hemen inanmamak demektir."
+    },
+    {
+        "id": "vs-c1-060",
+        "level": "C1",
+        "sentence": "Let's play it by ___ and see how the situation develops.",
+        "options": [
+            "eye",
+            "ear",
+            "hand"
+        ],
+        "correct": 1,
+        "explanation": "'Play it by ear' önceden plan yapmadan, gidişata göre hareket etmek demektir."
+    },
+    {
+        "id": "vs-c1-061",
+        "level": "C1",
+        "sentence": "I'm totally ___ after that ten-mile hike.",
+        "options": [
+            "spent",
+            "done",
+            "used"
+        ],
+        "correct": 0,
+        "explanation": "Advanced seviyede 'spent', 'exhausted' (bitkin) anlamında yaygın kullanılır."
+    },
+    {
+        "id": "vs-c1-062",
+        "level": "C1",
+        "sentence": "The news of the merger came out of the ___.",
+        "options": [
+            "red",
+            "blue",
+            "white"
+        ],
+        "correct": 1,
+        "explanation": "'Out of the blue' aniden ve beklenmedik bir şekilde gerçekleşen olaylar için kullanılır."
+    },
+    {
+        "id": "vs-c1-063",
+        "level": "C1",
+        "sentence": "I'll try to ___ some time for our meeting tomorrow.",
+        "options": [
+            "cut",
+            "make",
+            "take"
+        ],
+        "correct": 1,
+        "explanation": "'Make time' yoğunluk arasında vakit yaratmak/ayırmak demektir."
+    },
+    {
+        "id": "vs-c1-064",
+        "level": "C1",
+        "sentence": "He really hit the nail on the ___ with that observation.",
+        "options": [
+            "head",
+            "top",
+            "point"
+        ],
+        "correct": 0,
+        "explanation": "'Hit the nail on the head' tam üstüne basmak, bir durumu tam isabetle özetlemek demektir."
+    },
+    {
+        "id": "vs-c1-065",
+        "level": "C1",
+        "sentence": "Don't jump to ___ before you hear the whole story.",
+        "options": [
+            "decisions",
+            "results",
+            "conclusions"
+        ],
+        "correct": 2,
+        "explanation": "'Jump to conclusions' detayları bilmeden hemen sonuca varmak, peşin hükümlü olmak demektir."
+    },
+    {
+        "id": "vs-c1-066",
+        "level": "C1",
+        "sentence": "I've been feeling a bit under the ___ lately.",
+        "options": [
+            "weather",
+            "cloud",
+            "rain"
+        ],
+        "correct": 0,
+        "explanation": "'Under the weather' kendini biraz halsiz veya keyifsiz hissetmek demektir."
+    },
+    {
+        "id": "vs-c1-067",
+        "level": "C1",
+        "sentence": "The price of the house was a bit of a ___ point.",
+        "options": [
+            "sticking",
+            "hitting",
+            "holding"
+        ],
+        "correct": 0,
+        "explanation": "'Sticking point' bir anlaşmazlığa yol açan veya ilerlemeyi durduran hassas nokta demektir."
+    },
+    {
+        "id": "vs-c1-068",
+        "level": "C1",
+        "sentence": "You need to pull yourself ___ and focus on the task.",
+        "options": [
+            "up",
+            "together",
+            "away"
+        ],
+        "correct": 1,
+        "explanation": "'Pull yourself together' kendini toplamak, duygularını kontrol altına almak demektir."
+    },
+    {
+        "id": "vs-c1-069",
+        "level": "C1",
+        "sentence": "It's not rocket ___, you just have to follow the instructions.",
+        "options": [
+            "art",
+            "math",
+            "science"
+        ],
+        "correct": 2,
+        "explanation": "'Not rocket science' bir şeyin o kadar da zor veya karmaşık olmadığını belirtmek için kullanılır."
+    },
+    {
+        "id": "vs-c1-070",
+        "level": "C1",
+        "sentence": "I’m going to ___ it a day and go home.",
+        "options": [
+            "name",
+            "call",
+            "make"
+        ],
+        "correct": 1,
+        "explanation": "'Call it a day' çalışmayı bırakmak, günü sonlandırmak anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-071",
+        "level": "C1",
+        "sentence": "I'm still on the ___ about whether to take the job or not.",
+        "options": [
+            "wall",
+            "fence",
+            "road"
+        ],
+        "correct": 1,
+        "explanation": "'On the fence' iki seçenek arasında kararsız kalmak demektir."
+    },
+    {
+        "id": "vs-c1-072",
+        "level": "C1",
+        "sentence": "She has a knack ___ finding the best bargains.",
+        "options": [
+            "for",
+            "to",
+            "at"
+        ],
+        "correct": 0,
+        "explanation": "'Have a knack for' bir şeye karşı doğal bir yeteneği/yatkınlığı olmak demektir."
+    },
+    {
+        "id": "vs-c1-073",
+        "level": "C1",
+        "sentence": "We are on the same ___ regarding the new strategy.",
+        "options": [
+            "line",
+            "page",
+            "paper"
+        ],
+        "correct": 1,
+        "explanation": "'On the same page' aynı fikirde olmak, mutabık kalmak demektir."
+    },
+    {
+        "id": "vs-c1-074",
+        "level": "C1",
+        "sentence": "The boss decided to give us the green ___ for the project.",
+        "options": [
+            "light",
+            "sign",
+            "flag"
+        ],
+        "correct": 0,
+        "explanation": "'Give the green light' bir şeyin başlaması için onay vermek demektir."
+    },
+    {
+        "id": "vs-c1-075",
+        "level": "C1",
+        "sentence": "I don't want to step on your ___ , but can I suggest something?",
+        "options": [
+            "feet",
+            "toes",
+            "shoes"
+        ],
+        "correct": 1,
+        "explanation": "'Step on someone's toes' birinin görev alanına müdahale edip onu gücendirmek demektir."
+    },
+    {
+        "id": "vs-c1-076",
+        "level": "C1",
+        "sentence": "Let's keep this under ___ for now; it's a secret.",
+        "options": [
+            "wraps",
+            "covers",
+            "hats"
+        ],
+        "correct": 0,
+        "explanation": "'Keep something under wraps' bir şeyi gizli tutmak, açığa vurmamak demektir."
+    },
+    {
+        "id": "vs-c1-077",
+        "level": "C1",
+        "sentence": "He's always trying to ___ corners to save money.",
+        "options": [
+            "cut",
+            "turn",
+            "break"
+        ],
+        "correct": 0,
+        "explanation": "'Cut corners' maliyeti veya vakti azaltmak için işin kolayına kaçmak, kaliteden ödün vermek demektir."
+    },
+    {
+        "id": "vs-c1-078",
+        "level": "C1",
+        "sentence": "I've got a lot on my ___ at the moment.",
+        "options": [
+            "head",
+            "plate",
+            "hand"
+        ],
+        "correct": 1,
+        "explanation": "'Have a lot on one's plate' halletmesi gereken çok fazla işi/sorumluğu olmak demektir."
+    },
+    {
+        "id": "vs-c1-079",
+        "level": "C1",
+        "sentence": "That’s a tall ___ , but I’ll see what I can do.",
+        "options": [
+            "order",
+            "ask",
+            "call"
+        ],
+        "correct": 0,
+        "explanation": "'A tall order' yerine getirilmesi zor, büyük bir istek/beklenti demektir."
+    },
+    {
+        "id": "vs-c1-080",
+        "level": "C1",
+        "sentence": "You should stand your ___ and not let them intimidate you.",
+        "options": [
+            "place",
+            "ground",
+            "position"
+        ],
+        "correct": 1,
+        "explanation": "'Stand your ground' geri adım atmamak, düşüncesini veya konumunu savunmak demektir."
+    },
+    {
+        "id": "vs-c1-081",
+        "level": "C1",
+        "sentence": "The conversation took a turn ___ the worse.",
+        "options": [
+            "to",
+            "for",
+            "with"
+        ],
+        "correct": 1,
+        "explanation": "'Take a turn for the worse' işlerin daha kötüye gitmeye başlaması demektir."
+    },
+    {
+        "id": "vs-c1-082",
+        "level": "C1",
+        "sentence": "I’ll get back to you ___ due course.",
+        "options": [
+            "at",
+            "on",
+            "in"
+        ],
+        "correct": 2,
+        "explanation": "'In due course' vakti gelince, uygun zamanda anlamına gelen resmi/yarı-resmi bir kalıptır."
+    },
+    {
+        "id": "vs-c1-083",
+        "level": "C1",
+        "sentence": "The results were ___ contrast to what we expected.",
+        "options": [
+            "stark",
+            "high",
+            "deep"
+        ],
+        "correct": 0,
+        "explanation": "'In stark contrast' taban tabana zıt, keskin bir tezat içinde olmak demektir."
+    },
+    {
+        "id": "vs-c1-084",
+        "level": "C1",
+        "sentence": "He has a vested ___ in the outcome of the trial.",
+        "options": [
+            "interest",
+            "benefit",
+            "profit"
+        ],
+        "correct": 0,
+        "explanation": "'Vested interest' bir durumdan kişisel çıkarı veya kazancı olmak demektir."
+    },
+    {
+        "id": "vs-c1-085",
+        "level": "C1",
+        "sentence": "I’m not sure I quite follow your ___ of thought.",
+        "options": [
+            "chain",
+            "line",
+            "train"
+        ],
+        "correct": 2,
+        "explanation": "'Train of thought' düşünce silsilesi, akıl yürütme yolu demektir."
+    },
+    {
+        "id": "vs-c1-086",
+        "level": "C1",
+        "sentence": "It's important to strike a ___ between work and life.",
+        "options": [
+            "balance",
+            "match",
+            "middle"
+        ],
+        "correct": 0,
+        "explanation": "'Strike a balance' dengeyi kurmak/bulmak anlamına gelir."
+    },
+    {
+        "id": "vs-c1-087",
+        "level": "C1",
+        "sentence": "The company is on the ___ of bankruptcy.",
+        "options": [
+            "edge",
+            "verge",
+            "side"
+        ],
+        "correct": 1,
+        "explanation": "'On the verge of' bir şeyin (genellikle olumsuz) eşiğinde olmak demektir."
+    },
+    {
+        "id": "vs-c1-088",
+        "level": "C1",
+        "sentence": "She certainly has a way ___ words.",
+        "options": [
+            "with",
+            "of",
+            "for"
+        ],
+        "correct": 0,
+        "explanation": "'Have a way with words' güzel ve etkileyici konuşma yeteneğine sahip olmak demektir."
+    },
+    {
+        "id": "vs-c1-089",
+        "level": "C1",
+        "sentence": "I'm going to take a leap of ___ and quit my job.",
+        "options": [
+            "faith",
+            "hope",
+            "trust"
+        ],
+        "correct": 0,
+        "explanation": "'Take a leap of faith' sonunu tam bilmeden, sadece güvenerek büyük bir adım atmak demektir."
+    },
+    {
+        "id": "vs-c1-090",
+        "level": "C1",
+        "sentence": "The project is still in its ___.",
+        "options": [
+            "birth",
+            "infancy",
+            "start"
+        ],
+        "correct": 1,
+        "explanation": "'In its infancy' bir şeyin henüz çok başında, emekleme aşamasında olduğunu belirtir."
+    },
+    {
+        "id": "vs-c1-091",
+        "level": "C1",
+        "sentence": "He really knows how to pull some ___ to get things done.",
+        "options": [
+            "ropes",
+            "wires",
+            "strings"
+        ],
+        "correct": 2,
+        "explanation": "'Pull strings' nüfuzunu kullanmak, iş yaptırmak için araya birilerini sokmak (torpil vb.) demektir."
+    },
+    {
+        "id": "vs-c1-092",
+        "level": "C1",
+        "sentence": "We'll have to put our plans on the back ___ for now.",
+        "options": [
+            "burner",
+            "shelf",
+            "seat"
+        ],
+        "correct": 0,
+        "explanation": "'On the back burner' bir konuyu şimdilik geri plana atmak, askıya almak demektir."
+    },
+    {
+        "id": "vs-c1-093",
+        "level": "C1",
+        "sentence": "She was late, but at ___ she arrived safely.",
+        "options": [
+            "last",
+            "least",
+            "end"
+        ],
+        "correct": 1,
+        "explanation": "'At least' en azından anlamına gelir; 'at last' ise nihayet/sonunda demektir."
+    },
+    {
+        "id": "vs-c1-094",
+        "level": "C1",
+        "sentence": "You should keep an ___ on the stock market today.",
+        "options": [
+            "eye",
+            "ear",
+            "arm"
+        ],
+        "correct": 0,
+        "explanation": "'Keep an eye on' bir şeyi gözlemek, takip etmek demektir."
+    },
+    {
+        "id": "vs-c1-095",
+        "level": "C1",
+        "sentence": "He finally came to ___ with his father's death.",
+        "options": [
+            "peace",
+            "terms",
+            "minds"
+        ],
+        "correct": 1,
+        "explanation": "'Come to terms with' acı bir durumu kabullenmek, onunla yaşamayı öğrenmek demektir."
+    },
+    {
+        "id": "vs-c1-096",
+        "level": "C1",
+        "sentence": "I'm not going to sit on the ___ and do nothing.",
+        "options": [
+            "sidelines",
+            "border",
+            "edge"
+        ],
+        "correct": 0,
+        "explanation": "'Sit on the sidelines' olaylara müdahale etmeden kenardan izlemek demektir."
+    },
+    {
+        "id": "vs-c1-097",
+        "level": "C1",
+        "sentence": "His behavior was beyond the ___.",
+        "options": [
+            "limit",
+            "line",
+            "pale"
+        ],
+        "correct": 2,
+        "explanation": "'Beyond the pale' kabul edilemez, sınırları aşan davranışlar için kullanılan bir deyimdir."
+    },
+    {
+        "id": "vs-c1-098",
+        "level": "C1",
+        "sentence": "Let's touch ___ next week to discuss the progress.",
+        "options": [
+            "base",
+            "ground",
+            "hand"
+        ],
+        "correct": 0,
+        "explanation": "'Touch base' birisiyle kısa bir görüşme yapmak, irtibata geçmek demektir."
+    },
+    {
+        "id": "vs-c1-099",
+        "level": "C1",
+        "sentence": "I'm afraid that's out of my ___.",
+        "options": [
+            "reach",
+            "hands",
+            "control"
+        ],
+        "correct": 1,
+        "explanation": "'Out of my hands' benim kontrolümde değil, yapabileceğim bir şey yok anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-100",
+        "level": "C1",
+        "sentence": "Everything is still up in the ___.",
+        "options": [
+            "sky",
+            "air",
+            "cloud"
+        ],
+        "correct": 1,
+        "explanation": "'Up in the air' henüz belirsiz, netleşmemiş durumlar için kullanılır."
+    },
+    {
+        "id": "vs-c1-101",
+        "level": "C1",
+        "sentence": "You need to read between the ___ to understand what he really means.",
+        "options": [
+            "lines",
+            "words",
+            "pages"
+        ],
+        "correct": 0,
+        "explanation": "'Read between the lines' satır aralarını okumak, söylenmeyeni anlamak demektir."
+    },
+    {
+        "id": "vs-c1-102",
+        "level": "C1",
+        "sentence": "I'm sorry, I didn't mean to ___ your bubble, but the party is cancelled.",
+        "options": [
+            "pop",
+            "burst",
+            "break"
+        ],
+        "correct": 1,
+        "explanation": "'Burst someone's bubble' birinin hayallerini suya düşürmek veya hevesini kırmak demektir."
+    },
+    {
+        "id": "vs-c1-103",
+        "level": "C1",
+        "sentence": "If you think he did it, you are barking up the wrong ___.",
+        "options": [
+            "tree",
+            "dog",
+            "wall"
+        ],
+        "correct": 0,
+        "explanation": "'Barking up the wrong tree' yanlış kapıyı çalmak veya yanlış yönde çaba sarf etmek demektir."
+    },
+    {
+        "id": "vs-c1-104",
+        "level": "C1",
+        "sentence": "I think I've bitten off more than I can ___ with this new project.",
+        "options": [
+            "eat",
+            "swallow",
+            "chew"
+        ],
+        "correct": 2,
+        "explanation": "'Bite off more than one can chew' boyundan büyük işe kalkışmak demektir."
+    },
+    {
+        "id": "vs-c1-105",
+        "level": "C1",
+        "sentence": "The plan failed, so it's back to the drawing ___.",
+        "options": [
+            "table",
+            "board",
+            "room"
+        ],
+        "correct": 1,
+        "explanation": "'Back to the drawing board' bir işe en baştan, planlama aşamasından tekrar başlamak demektir."
+    },
+    {
+        "id": "vs-c1-106",
+        "level": "C1",
+        "sentence": "He's been burning the candle at both ___ to finish his thesis.",
+        "options": [
+            "sides",
+            "ends",
+            "tips"
+        ],
+        "correct": 1,
+        "explanation": "'Burn the candle at both ends' çok geç yatıp çok erken kalkarak kendini çok yormak demektir."
+    },
+    {
+        "id": "vs-c1-107",
+        "level": "C1",
+        "sentence": "We need to address the elephant in the ___.",
+        "options": [
+            "room",
+            "house",
+            "closet"
+        ],
+        "correct": 0,
+        "explanation": "'Elephant in the room' herkesin bildiği ama kimsenin konuşmak istemediği büyük sorun demektir."
+    },
+    {
+        "id": "vs-c1-108",
+        "level": "C1",
+        "sentence": "Keep your ___ up; things will get better soon.",
+        "options": [
+            "head",
+            "chin",
+            "face"
+        ],
+        "correct": 1,
+        "explanation": "'Keep your chin up' başını dik tut, moralini bozma anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-109",
+        "level": "C1",
+        "sentence": "She's really on the ___ when it comes to market trends.",
+        "options": [
+            "ball",
+            "game",
+            "spot"
+        ],
+        "correct": 0,
+        "explanation": "'On the ball' işini iyi takip eden, her şeyden haberdar ve tetikte olan kişi için kullanılır."
+    },
+    {
+        "id": "vs-c1-110",
+        "level": "C1",
+        "sentence": "Who spilled the ___ about the surprise party?",
+        "options": [
+            "coffee",
+            "beans",
+            "tea"
+        ],
+        "correct": 1,
+        "explanation": "'Spill the beans' bir sırrı ağzından kaçırmak veya ifşa etmek demektir."
+    },
+    {
+        "id": "vs-c1-111",
+        "level": "C1",
+        "sentence": "I'm going to take a rain ___ on that dinner invitation.",
+        "options": [
+            "check",
+            "ticket",
+            "card"
+        ],
+        "correct": 0,
+        "explanation": "'Take a rain check' bir teklifi nazikçe reddedip başka bir zaman yapmak üzere ertelemek demektir."
+    },
+    {
+        "id": "vs-c1-112",
+        "level": "C1",
+        "sentence": "He's a bit of a loose ___ , you never know what he'll do next.",
+        "options": [
+            "wire",
+            "cannon",
+            "gun"
+        ],
+        "correct": 1,
+        "explanation": "'Loose cannon' ne yapacağı belli olmayan, kontrolsüz ve tehlikeli kişi demektir."
+    },
+    {
+        "id": "vs-c1-113",
+        "level": "C1",
+        "sentence": "The law was passed to ___ down on tax evasion.",
+        "options": [
+            "break",
+            "crack",
+            "push"
+        ],
+        "correct": 1,
+        "explanation": "'Crack down on' bir şeyi önlemek için çok daha sıkı önlemler almak, üzerine gitmek demektir."
+    },
+    {
+        "id": "vs-c1-114",
+        "level": "C1",
+        "sentence": "I managed to get the job by the ___ of my teeth.",
+        "options": [
+            "skin",
+            "edge",
+            "front"
+        ],
+        "correct": 0,
+        "explanation": "'By the skin of one's teeth' kıl payı, ucu ucuna başarmak demektir."
+    },
+    {
+        "id": "vs-c1-115",
+        "level": "C1",
+        "sentence": "Stop pulling my ___! I know you're joking.",
+        "options": [
+            "arm",
+            "leg",
+            "hair"
+        ],
+        "correct": 1,
+        "explanation": "'Pull someone's leg' biriyle kafa bulmak, şaka yollu kandırmak demektir."
+    },
+    {
+        "id": "vs-c1-116",
+        "level": "C1",
+        "sentence": "She has a real ___ to grind with the management.",
+        "options": [
+            "knife",
+            "axe",
+            "sword"
+        ],
+        "correct": 1,
+        "explanation": "'Have an axe to grind' birinden alacağı/hesabı olmak veya gizli bir çıkarı/şikayeti olmak demektir."
+    },
+    {
+        "id": "vs-c1-117",
+        "level": "C1",
+        "sentence": "The news was a bitter ___ to swallow.",
+        "options": [
+            "pill",
+            "medicine",
+            "food"
+        ],
+        "correct": 0,
+        "explanation": "'A bitter pill to swallow' kabullenmesi zor, acı gerçek demektir."
+    },
+    {
+        "id": "vs-c1-118",
+        "level": "C1",
+        "sentence": "It's time to get your ___ in a row before the audit.",
+        "options": [
+            "ducks",
+            "birds",
+            "pens"
+        ],
+        "correct": 0,
+        "explanation": "'Get your ducks in a row' işlerini yoluna koymak, organize olmak demektir."
+    },
+    {
+        "id": "vs-c1-119",
+        "level": "C1",
+        "sentence": "I'm feeling a bit out of my ___ in this advanced math class.",
+        "options": [
+            "depth",
+            "head",
+            "mind"
+        ],
+        "correct": 0,
+        "explanation": "'Out of one's depth' bir konunun/durumun kendi bilgi veya beceri seviyesini aşması demektir."
+    },
+    {
+        "id": "vs-c1-120",
+        "level": "C1",
+        "sentence": "Let's cut to the ___ and discuss the budget.",
+        "options": [
+            "point",
+            "chase",
+            "end"
+        ],
+        "correct": 1,
+        "explanation": "'Cut to the chase' lafı uzatmadan sadede gelmek demektir."
+    },
+    {
+        "id": "vs-c1-121",
+        "level": "C1",
+        "sentence": "He's always trying to ___ favor with the boss.",
+        "options": [
+            "get",
+            "curry",
+            "make"
+        ],
+        "correct": 1,
+        "explanation": "'Curry favor' yaltaklanmak, birinin gözüne girmeye çalışmak demektir."
+    },
+    {
+        "id": "vs-c1-122",
+        "level": "C1",
+        "sentence": "I'm just playing devil's ___ to see all sides of the issue.",
+        "options": [
+            "advocate",
+            "lawyer",
+            "friend"
+        ],
+        "correct": 0,
+        "explanation": "'Play devil's advocate' (şeytanın avukatlığını yapmak) bir fikre karşı çıkarak konuyu derinleştirmek demektir."
+    },
+    {
+        "id": "vs-c1-123",
+        "level": "C1",
+        "sentence": "The project is on the ___ track to completion.",
+        "options": [
+            "fast",
+            "quick",
+            "hot"
+        ],
+        "correct": 0,
+        "explanation": "'Fast track' bir sürecin normalden daha hızlı ilerlemesi/sonuçlanması demektir."
+    },
+    {
+        "id": "vs-c1-124",
+        "level": "C1",
+        "sentence": "Her success was a ___ in the pan.",
+        "options": [
+            "light",
+            "flash",
+            "fire"
+        ],
+        "correct": 1,
+        "explanation": "'Flash in the pan' gelip geçici başarı, bir anlık parlayıp sönen başarı demektir."
+    },
+    {
+        "id": "vs-c1-125",
+        "level": "C1",
+        "sentence": "You should take the ___ by the horns and solve the problem.",
+        "options": [
+            "bull",
+            "cow",
+            "beast"
+        ],
+        "correct": 0,
+        "explanation": "'Take the bull by the horns' bir problemi cesaretle ve doğrudan göğüslemek demektir."
+    },
+    {
+        "id": "vs-c1-126",
+        "level": "C1",
+        "sentence": "The situation is a double-edged ___.",
+        "options": [
+            "sword",
+            "knife",
+            "blade"
+        ],
+        "correct": 0,
+        "explanation": "'Double-edged sword' iki ucu keskin bıçak; hem avantajı hem dezavantajı olan durum demektir."
+    },
+    {
+        "id": "vs-c1-127",
+        "level": "C1",
+        "sentence": "He decided to ___ the whistle on the corruption.",
+        "options": [
+            "blow",
+            "sound",
+            "push"
+        ],
+        "correct": 0,
+        "explanation": "'Blow the whistle' bir yolsuzluğu veya yanlışı ihbar etmek, açığa çıkarmak demektir."
+    },
+    {
+        "id": "vs-c1-128",
+        "level": "C1",
+        "sentence": "I'll keep you in the ___ regarding any new updates.",
+        "options": [
+            "circle",
+            "loop",
+            "line"
+        ],
+        "correct": 1,
+        "explanation": "'Keep someone in the loop' birini gelişmelerden haberdar etmek demektir."
+    },
+    {
+        "id": "vs-c1-129",
+        "level": "C1",
+        "sentence": "That’s a ___ point, we’ll talk about it later.",
+        "options": [
+            "dead",
+            "moot",
+            "soft"
+        ],
+        "correct": 1,
+        "explanation": "'Moot point' tartışmalı veya artık önemi kalmamış, pratik bir değeri olmayan konu demektir."
+    },
+    {
+        "id": "vs-c1-130",
+        "level": "C1",
+        "sentence": "He's the spitting ___ of his grandfather.",
+        "options": [
+            "image",
+            "face",
+            "look"
+        ],
+        "correct": 0,
+        "explanation": "'Spitting image' birinin tıpkısının aynısı olmak, çok benzemek demektir."
+    },
+    {
+        "id": "vs-c1-131",
+        "level": "C1",
+        "sentence": "I'm going to ___ my brains to remember where I left my keys.",
+        "options": [
+            "rack",
+            "search",
+            "hit"
+        ],
+        "correct": 0,
+        "explanation": "'Rack one's brains' bir şeyi hatırlamak için kafayı patlatmak, çok düşünmek demektir."
+    },
+    {
+        "id": "vs-c1-132",
+        "level": "C1",
+        "sentence": "She really ___ the boat by refusing to cooperate.",
+        "options": [
+            "hit",
+            "rocked",
+            "moved"
+        ],
+        "correct": 1,
+        "explanation": "'Rock the boat' kurulu düzeni bozmak, ortalığı karıştırmak demektir."
+    },
+    {
+        "id": "vs-c1-133",
+        "level": "C1",
+        "sentence": "The exam was a ___ in the park.",
+        "options": [
+            "run",
+            "walk",
+            "jump"
+        ],
+        "correct": 1,
+        "explanation": "'A walk in the park' çok kolay, çocuk oyuncağı anlamına gelir."
+    },
+    {
+        "id": "vs-c1-134",
+        "level": "C1",
+        "sentence": "He has a lot of ___ in the fire right now.",
+        "options": [
+            "irons",
+            "sticks",
+            "woods"
+        ],
+        "correct": 0,
+        "explanation": "'Have many irons in the fire' aynı anda birçok işle uğraşmak demektir."
+    },
+    {
+        "id": "vs-c1-135",
+        "level": "C1",
+        "sentence": "I'm just trying to keep my head above ___.",
+        "options": [
+            "water",
+            "clouds",
+            "waves"
+        ],
+        "correct": 0,
+        "explanation": "'Keep one's head above water' zorluklarla boğuşurken ayakta kalmaya çalışmak demektir."
+    },
+    {
+        "id": "vs-c1-136",
+        "level": "C1",
+        "sentence": "The price of the car was a steal; it's practically ___ dirt.",
+        "options": [
+            "low",
+            "cheap",
+            "dirt"
+        ],
+        "correct": 2,
+        "explanation": "'Cheap as dirt' veya 'dirt cheap' çok ucuz, sudan ucuz demektir."
+    },
+    {
+        "id": "vs-c1-137",
+        "level": "C1",
+        "sentence": "He's a chip off the old ___.",
+        "options": [
+            "block",
+            "tree",
+            "stone"
+        ],
+        "correct": 0,
+        "explanation": "'Chip off the old block' babasına (veya ailesine) çok benzeyen çocuk demektir."
+    },
+    {
+        "id": "vs-c1-138",
+        "level": "C1",
+        "sentence": "I'm going to ___ the hay now, I'm exhausted.",
+        "options": [
+            "hit",
+            "get",
+            "push"
+        ],
+        "correct": 0,
+        "explanation": "'Hit the hay' veya 'hit the sack' yatıp uyumak demektir."
+    },
+    {
+        "id": "vs-c1-139",
+        "level": "C1",
+        "sentence": "She has a memory like a ___.",
+        "options": [
+            "sieve",
+            "drain",
+            "filter"
+        ],
+        "correct": 0,
+        "explanation": "'Memory like a sieve' (elek gibi hafıza) çok unutkan olmak demektir."
+    },
+    {
+        "id": "vs-c1-140",
+        "level": "C1",
+        "sentence": "It's not my cup of ___.",
+        "options": [
+            "coffee",
+            "tea",
+            "water"
+        ],
+        "correct": 1,
+        "explanation": "'Not my cup of tea' benim tarzım değil, bana göre değil demektir."
+    },
+    {
+        "id": "vs-c1-141",
+        "level": "C1",
+        "sentence": "He's always looking for a ___ lining in every situation.",
+        "options": [
+            "gold",
+            "silver",
+            "bright"
+        ],
+        "correct": 1,
+        "explanation": "'Silver lining' kötü bir durumun içindeki iyi taraf, umut ışığı demektir."
+    },
+    {
+        "id": "vs-c1-142",
+        "level": "C1",
+        "sentence": "I'm caught between a rock and a ___ place.",
+        "options": [
+            "hard",
+            "soft",
+            "tough"
+        ],
+        "correct": 0,
+        "explanation": "'Between a rock and a hard place' iki kötü seçenek arasında kalmak, aşağı tükürsen sakal yukarı tükürsen bıyık durumu."
+    },
+    {
+        "id": "vs-c1-143",
+        "level": "C1",
+        "sentence": "She's crying ___ tears; she's not really sad.",
+        "options": [
+            "fake",
+            "crocodile",
+            "false"
+        ],
+        "correct": 1,
+        "explanation": "'Crocodile tears' (timsah gözyaşları) sahte üzüntü demektir."
+    },
+    {
+        "id": "vs-c1-144",
+        "level": "C1",
+        "sentence": "That’s the last ___! I'm leaving.",
+        "options": [
+            "straw",
+            "stick",
+            "piece"
+        ],
+        "correct": 0,
+        "explanation": "'The last straw' sabrı taşıran son damla demektir."
+    },
+    {
+        "id": "vs-c1-145",
+        "level": "C1",
+        "sentence": "We'll cross that ___ when we come to it.",
+        "options": [
+            "road",
+            "bridge",
+            "river"
+        ],
+        "correct": 1,
+        "explanation": "'Cross that bridge when one comes to it' bir sorunu vaktinden önce dert etmemek, sırası gelince bakmak demektir."
+    },
+    {
+        "id": "vs-c1-146",
+        "level": "C1",
+        "sentence": "He's a dark ___ ; no one expected him to win.",
+        "options": [
+            "horse",
+            "cat",
+            "dog"
+        ],
+        "correct": 0,
+        "explanation": "'Dark horse' (kapalı kutu) yetenekleri bilinmeyen ama şaşırtıcı başarı kazanan kişi demektir."
+    },
+    {
+        "id": "vs-c1-147",
+        "level": "C1",
+        "sentence": "You should bite the ___ and just do it.",
+        "options": [
+            "bullet",
+            "metal",
+            "stone"
+        ],
+        "correct": 0,
+        "explanation": "'Bite the bullet' acı verici veya zor bir duruma göğüs germek, kaçınılmazı kabul etmek demektir."
+    },
+    {
+        "id": "vs-c1-148",
+        "level": "C1",
+        "sentence": "I'm all ___! Tell me what happened.",
+        "options": [
+            "eyes",
+            "ears",
+            "hands"
+        ],
+        "correct": 1,
+        "explanation": "'I'm all ears' can kulağıyla seni dinliyorum demektir."
+    },
+    {
+        "id": "vs-c1-149",
+        "level": "C1",
+        "sentence": "That cost an arm and a ___.",
+        "options": [
+            "leg",
+            "hand",
+            "foot"
+        ],
+        "correct": 0,
+        "explanation": "'Cost an arm and a leg' çok pahalıya patlamak demektir."
+    },
+    {
+        "id": "vs-c1-150",
+        "level": "C1",
+        "sentence": "Let's bury the ___ and be friends again.",
+        "options": [
+            "axe",
+            "hatchet",
+            "knife"
+        ],
+        "correct": 1,
+        "explanation": "'Bury the hatchet' düşmanlığı sona erdirmek, barışmak demektir."
+    },
+    {
+        "id": "vs-c1-151",
+        "level": "C1",
+        "sentence": "I can't tell you the exact figure off the top of my ___.",
+        "options": [
+            "mind",
+            "head",
+            "brain"
+        ],
+        "correct": 1,
+        "explanation": "'Off the top of my head' ezbere, hemen o anda düşünmeden söylenen bilgiler için kullanılır."
+    },
+    {
+        "id": "vs-c1-152",
+        "level": "C1",
+        "sentence": "To cut a long story ___ , we ended up staying at a hostel.",
+        "options": [
+            "short",
+            "brief",
+            "quick"
+        ],
+        "correct": 0,
+        "explanation": "'To cut a long story short' (uzun lafın kısası) bir olayı özetlemek için kullanılır."
+    },
+    {
+        "id": "vs-c1-153",
+        "level": "C1",
+        "sentence": "It took me a while to get the ___ of this new software.",
+        "options": [
+            "hand",
+            "hang",
+            "hold"
+        ],
+        "correct": 1,
+        "explanation": "'Get the hang of something' bir şeyin nasıl yapıldığını kavramak, el alışkanlığı kazanmak demektir."
+    },
+    {
+        "id": "vs-c1-154",
+        "level": "C1",
+        "sentence": "Don't worry, it'll all work out in the long ___.",
+        "options": [
+            "run",
+            "time",
+            "way"
+        ],
+        "correct": 0,
+        "explanation": "'In the long run' uzun vadede, eninde sonunda anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-155",
+        "level": "C1",
+        "sentence": "They are struggling to make ends ___ since he lost his job.",
+        "options": [
+            "meet",
+            "join",
+            "close"
+        ],
+        "correct": 0,
+        "explanation": "'Make ends meet' (ay sonunu getirmek) geçimini güçlükle sağlamak demektir."
+    },
+    {
+        "id": "vs-c1-156",
+        "level": "C1",
+        "sentence": "Changing the deadline is out of the ___.",
+        "options": [
+            "order",
+            "mind",
+            "question"
+        ],
+        "correct": 2,
+        "explanation": "'Out of the question' imkansız, söz konusu bile olamaz anlamındadır."
+    },
+    {
+        "id": "vs-c1-157",
+        "level": "C1",
+        "sentence": "They have stayed together through thick and ___.",
+        "options": [
+            "thin",
+            "hard",
+            "deep"
+        ],
+        "correct": 0,
+        "explanation": "'Through thick and thin' iyi günde kötü günde, her türlü zorluğa rağmen demektir."
+    },
+    {
+        "id": "vs-c1-158",
+        "level": "C1",
+        "sentence": "His performance wasn't quite up to ___.",
+        "options": [
+            "level",
+            "mark",
+            "scratch"
+        ],
+        "correct": 2,
+        "explanation": "'Up to scratch' beklenen standartta veya yeterli seviyede olmak demektir."
+    },
+    {
+        "id": "vs-c1-159",
+        "level": "C1",
+        "sentence": "Most of our new clients come to us by word of ___.",
+        "options": [
+            "mouth",
+            "speech",
+            "talk"
+        ],
+        "correct": 0,
+        "explanation": "'Word of mouth' kulaktan kulağa, tavsiye yoluyla yayılan bilgi demektir."
+    },
+    {
+        "id": "vs-c1-160",
+        "level": "C1",
+        "sentence": "I can't quite wrap my ___ around this concept.",
+        "options": [
+            "mind",
+            "head",
+            "brain"
+        ],
+        "correct": 1,
+        "explanation": "'Wrap one's head around something' karmaşık bir şeyi anlamak, kavramak demektir."
+    },
+    {
+        "id": "vs-c1-161",
+        "level": "C1",
+        "sentence": "I'm sure he'll come ___ to our way of thinking eventually.",
+        "options": [
+            "around",
+            "across",
+            "over"
+        ],
+        "correct": 0,
+        "explanation": "'Come around' fikrini değiştirmek veya sonunda ikna olmak anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-162",
+        "level": "C1",
+        "sentence": "The news of his resignation took me completely ___ guard.",
+        "options": [
+            "off",
+            "out of",
+            "away"
+        ],
+        "correct": 0,
+        "explanation": "'Take someone off guard' birini hazırlıksız yakalamak, şaşırtmak demektir."
+    },
+    {
+        "id": "vs-c1-163",
+        "level": "C1",
+        "sentence": "He's always trying to ___ responsibility for his mistakes.",
+        "options": [
+            "shirk",
+            "avoid",
+            "miss"
+        ],
+        "correct": 0,
+        "explanation": "'Shirk responsibility' sorumluluktan kaçmak, kaytarmak anlamında gelişmiş bir kelimedir."
+    },
+    {
+        "id": "vs-c1-164",
+        "level": "C1",
+        "sentence": "The deal is as good as ___.",
+        "options": [
+            "made",
+            "done",
+            "fixed"
+        ],
+        "correct": 1,
+        "explanation": "'As good as done' (olmuş bil) neredeyse tamamlanmış, bitmiş sayılır demektir."
+    },
+    {
+        "id": "vs-c1-165",
+        "level": "C1",
+        "sentence": "I'm afraid I've lost my ___ of thought.",
+        "options": [
+            "line",
+            "chain",
+            "train"
+        ],
+        "correct": 2,
+        "explanation": "'Train of thought' düşünce silsilesi; ne söyleyeceğini unutmak anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-166",
+        "level": "C1",
+        "sentence": "We should keep a low ___ until the scandal blows over.",
+        "options": [
+            "profile",
+            "level",
+            "image"
+        ],
+        "correct": 0,
+        "explanation": "'Keep a low profile' dikkat çekmemeye çalışmak, göze batmamak demektir."
+    },
+    {
+        "id": "vs-c1-167",
+        "level": "C1",
+        "sentence": "It’s about time you ___ the habit of smoking.",
+        "options": [
+            "broke",
+            "left",
+            "stopped"
+        ],
+        "correct": 0,
+        "explanation": "'Break a habit' bir alışkanlığı terk etmek, bırakmak anlamında doğru kalıptır."
+    },
+    {
+        "id": "vs-c1-168",
+        "level": "C1",
+        "sentence": "He was on the ___ of tears during the speech.",
+        "options": [
+            "verge",
+            "edge",
+            "limit"
+        ],
+        "correct": 0,
+        "explanation": "'On the verge of tears' ağlamak üzere olmak, gözleri dolmak demektir."
+    },
+    {
+        "id": "vs-c1-169",
+        "level": "C1",
+        "sentence": "I'll try to ___ a word in with the manager for you.",
+        "options": [
+            "say",
+            "get",
+            "put"
+        ],
+        "correct": 1,
+        "explanation": "'Get a word in' birinin lehine konuşmak veya kalabalık bir konuşmada araya girmek demektir."
+    },
+    {
+        "id": "vs-c1-170",
+        "level": "C1",
+        "sentence": "Her name is on the ___ of my tongue.",
+        "options": [
+            "end",
+            "tip",
+            "point"
+        ],
+        "correct": 1,
+        "explanation": "'On the tip of my tongue' (dilimin ucunda) hatırlayacak gibi olup hatırlayamamak."
+    },
+    {
+        "id": "vs-c1-171",
+        "level": "C1",
+        "sentence": "You should take his advice with a pinch of ___.",
+        "options": [
+            "salt",
+            "pepper",
+            "sugar"
+        ],
+        "correct": 0,
+        "explanation": "'With a pinch of salt' bir söze şüpheyle yaklaşmak, tamamen inanmamak demektir."
+    },
+    {
+        "id": "vs-c1-172",
+        "level": "C1",
+        "sentence": "The decision was made behind closed ___.",
+        "options": [
+            "walls",
+            "doors",
+            "gates"
+        ],
+        "correct": 1,
+        "explanation": "'Behind closed doors' gizli kapılar ardında, halka kapalı yapılan görüşmeler için kullanılır."
+    },
+    {
+        "id": "vs-c1-173",
+        "level": "C1",
+        "sentence": "I’m not in the right ___ of mind to make a decision now.",
+        "options": [
+            "state",
+            "frame",
+            "mode"
+        ],
+        "correct": 1,
+        "explanation": "'Frame of mind' ruh hali, kafa yapısı anlamında yaygın bir kalıptır."
+    },
+    {
+        "id": "vs-c1-174",
+        "level": "C1",
+        "sentence": "He’s been under a lot of ___ at work lately.",
+        "options": [
+            "strain",
+            "push",
+            "weight"
+        ],
+        "correct": 0,
+        "explanation": "'Under strain' büyük bir baskı veya stres altında olmak demektir."
+    },
+    {
+        "id": "vs-c1-175",
+        "level": "C1",
+        "sentence": "I think we should ___ our losses and move on.",
+        "options": [
+            "cut",
+            "break",
+            "stop"
+        ],
+        "correct": 0,
+        "explanation": "'Cut one's losses' zararın neresinden dönülse kardır diyerek bir işi bırakmak demektir."
+    },
+    {
+        "id": "vs-c1-176",
+        "level": "C1",
+        "sentence": "I'm afraid that's just wishful ___.",
+        "options": [
+            "dreaming",
+            "thinking",
+            "hoping"
+        ],
+        "correct": 1,
+        "explanation": "'Wishful thinking' (züğürt tesellisi / hayalperestlik) gerçekleşmesi zor bir şeyi gerçekmiş gibi düşünmek."
+    },
+    {
+        "id": "vs-c1-177",
+        "level": "C1",
+        "sentence": "The plan is still in a state of ___.",
+        "options": [
+            "flow",
+            "flux",
+            "change"
+        ],
+        "correct": 1,
+        "explanation": "'In a state of flux' sürekli değişen, henüz oturmamış süreçler için kullanılır."
+    },
+    {
+        "id": "vs-c1-178",
+        "level": "C1",
+        "sentence": "It happened right before my very ___.",
+        "options": [
+            "eyes",
+            "sight",
+            "view"
+        ],
+        "correct": 0,
+        "explanation": "'Before my very eyes' (gözlerimin önünde) bir olayın tam önünde gerçekleşmesi."
+    },
+    {
+        "id": "vs-c1-179",
+        "level": "C1",
+        "sentence": "I don't have the ___ idea what you're talking about.",
+        "options": [
+            "smallest",
+            "faintest",
+            "least"
+        ],
+        "correct": 1,
+        "explanation": "'Not have the faintest idea' en ufak bir fikri bile olmamak demektir."
+    },
+    {
+        "id": "vs-c1-180",
+        "level": "C1",
+        "sentence": "He's very set in his ___.",
+        "options": [
+            "ways",
+            "habits",
+            "rules"
+        ],
+        "correct": 0,
+        "explanation": "'Set in one's ways' alışkanlıklarından ödün vermeyen, sabit fikirli kişi demektir."
+    },
+    {
+        "id": "vs-c1-181",
+        "level": "C1",
+        "sentence": "Let’s keep things in ___ ; it’s not the end of the world.",
+        "options": [
+            "balance",
+            "perspective",
+            "focus"
+        ],
+        "correct": 1,
+        "explanation": "'Keep in perspective' bir durumu gerçek önemine göre değerlendirmek, abartmamak."
+    },
+    {
+        "id": "vs-c1-182",
+        "level": "C1",
+        "sentence": "His comments were a bit below the ___.",
+        "options": [
+            "belt",
+            "line",
+            "limit"
+        ],
+        "correct": 0,
+        "explanation": "'Below the belt' (bel altı vurmak) adil olmayan veya kırıcı eleştiri/davranış."
+    },
+    {
+        "id": "vs-c1-183",
+        "level": "C1",
+        "sentence": "I think he’s finally ___ the corner in his recovery.",
+        "options": [
+            "turned",
+            "passed",
+            "rounded"
+        ],
+        "correct": 0,
+        "explanation": "'Turn the corner' kötü bir gidişatın düzelmeye başlaması, kritik eşiği aşmak."
+    },
+    {
+        "id": "vs-c1-184",
+        "level": "C1",
+        "sentence": "She was left high and ___ when her team resigned.",
+        "options": [
+            "dry",
+            "wet",
+            "cold"
+        ],
+        "correct": 0,
+        "explanation": "'Leave high and dry' birini ortada bırakmak, zor durumda terk etmek demektir."
+    },
+    {
+        "id": "vs-c1-185",
+        "level": "C1",
+        "sentence": "It’s a ___ cry from what we originally planned.",
+        "options": [
+            "long",
+            "far",
+            "big"
+        ],
+        "correct": 1,
+        "explanation": "'A far cry from' bir şeyden çok farklı olmak, alakası olmamak demektir."
+    },
+    {
+        "id": "vs-c1-186",
+        "level": "C1",
+        "sentence": "I can’t quite put my ___ on what’s wrong with this car.",
+        "options": [
+            "finger",
+            "hand",
+            "eye"
+        ],
+        "correct": 0,
+        "explanation": "'Put one's finger on' sorunun tam olarak ne olduğunu tespit etmek."
+    },
+    {
+        "id": "vs-c1-187",
+        "level": "C1",
+        "sentence": "He's a man of few ___.",
+        "options": [
+            "talks",
+            "sentences",
+            "words"
+        ],
+        "correct": 2,
+        "explanation": "'A man of few words' az ve öz konuşan kişi demektir."
+    },
+    {
+        "id": "vs-c1-188",
+        "level": "C1",
+        "sentence": "Let’s not make a mountain out of a ___.",
+        "options": [
+            "molehill",
+            "stone",
+            "rock"
+        ],
+        "correct": 0,
+        "explanation": "'Make a mountain out of a molehill' (pireyi deve yapmak) bir şeyi gereksiz büyütmek."
+    },
+    {
+        "id": "vs-c1-189",
+        "level": "C1",
+        "sentence": "I'm afraid that argument doesn't hold ___.",
+        "options": [
+            "water",
+            "air",
+            "truth"
+        ],
+        "correct": 0,
+        "explanation": "'Hold water' bir iddianın veya argümanın tutarlı/mantıklı olması demektir."
+    },
+    {
+        "id": "vs-c1-190",
+        "level": "C1",
+        "sentence": "She’s really in her ___ when she’s teaching.",
+        "options": [
+            "zone",
+            "element",
+            "place"
+        ],
+        "correct": 1,
+        "explanation": "'In one's element' birinin kendini en rahat ve başarılı hissettiği ortamda olması."
+    },
+    {
+        "id": "vs-c1-191",
+        "level": "C1",
+        "sentence": "I think you’ve ___ the point.",
+        "options": [
+            "missed",
+            "lost",
+            "dropped"
+        ],
+        "correct": 0,
+        "explanation": "'Miss the point' asıl meseleyi anlamamak, konuyu kaçırmak demektir."
+    },
+    {
+        "id": "vs-c1-192",
+        "level": "C1",
+        "sentence": "The project is on the ___ of collapse.",
+        "options": [
+            "brink",
+            "edge",
+            "limit"
+        ],
+        "correct": 0,
+        "explanation": "'On the brink of' (eşiğinde) özellikle felaket veya büyük değişimlerin öncesinde kullanılır."
+    },
+    {
+        "id": "vs-c1-193",
+        "level": "C1",
+        "sentence": "You should take it with a light ___.",
+        "options": [
+            "heart",
+            "head",
+            "mind"
+        ],
+        "correct": 0,
+        "explanation": "'With a light heart' endişesiz, neşeli bir şekilde anlamında kullanılır."
+    },
+    {
+        "id": "vs-c1-194",
+        "level": "C1",
+        "sentence": "He's always looking for a quick ___.",
+        "options": [
+            "fix",
+            "mend",
+            "help"
+        ],
+        "correct": 0,
+        "explanation": "'Quick fix' geçici ve hızlı çözüm, köklü olmayan çözüm demektir."
+    },
+    {
+        "id": "vs-c1-195",
+        "level": "C1",
+        "sentence": "She has a lot of ___ in her cap.",
+        "options": [
+            "feathers",
+            "stones",
+            "marks"
+        ],
+        "correct": 0,
+        "explanation": "'A feather in one's cap' övünülecek bir başarı, gurur kaynağı demektir."
+    },
+    {
+        "id": "vs-c1-196",
+        "level": "C1",
+        "sentence": "He’s a bit of a wet ___ , he never wants to have fun.",
+        "options": [
+            "blanket",
+            "towel",
+            "cloth"
+        ],
+        "correct": 0,
+        "explanation": "'Wet blanket' (oyunbozan) başkalarının eğlencesini kaçıran kişi demektir."
+    },
+    {
+        "id": "vs-c1-197",
+        "level": "C1",
+        "sentence": "The news of his death was a bolt from the ___.",
+        "options": [
+            "blue",
+            "sky",
+            "cloud"
+        ],
+        "correct": 0,
+        "explanation": "'A bolt from the blue' beklenmedik, şok edici haber demektir."
+    },
+    {
+        "id": "vs-c1-198",
+        "level": "C1",
+        "sentence": "I’m going to go out on a ___ and say he’s lying.",
+        "options": [
+            "limb",
+            "branch",
+            "leaf"
+        ],
+        "correct": 0,
+        "explanation": "'Go out on a limb' risk alarak bir iddiada bulunmak veya destek vermek."
+    },
+    {
+        "id": "vs-c1-199",
+        "level": "C1",
+        "sentence": "She's been leading him a merry ___.",
+        "options": [
+            "dance",
+            "song",
+            "walk"
+        ],
+        "correct": 0,
+        "explanation": "'Lead someone a merry dance' birini boş yere uğraştırmak, peşinden koşturmak."
+    },
+    {
+        "id": "vs-c1-200",
+        "level": "C1",
+        "sentence": "That’s the way the cookie ___.",
+        "options": [
+            "breaks",
+            "crumbles",
+            "falls"
+        ],
+        "correct": 1,
+        "explanation": "'That's the way the cookie crumbles' (hayat böyle / elden ne gelir) durumu kabullenme ifadesidir."
+    }
+]

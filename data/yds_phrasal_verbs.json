@@ -1,0 +1,2130 @@
+[
+    {
+        "word": "Account for",
+        "meaning": "Sorumlu olmak, açıklamak"
+    },
+    {
+        "word": "Allow for",
+        "meaning": "Hesaba katmak, dikkate almak"
+    },
+    {
+        "word": "Apply to",
+        "meaning": "İlgisi olmak, ilgili olmak"
+    },
+    {
+        "word": "Ask for",
+        "meaning": "İstemek"
+    },
+    {
+        "word": "Back up",
+        "meaning": "Desteklemek, arka çıkmak, yedeklemek"
+    },
+    {
+        "word": "Base on",
+        "meaning": "Dayandırmak, dayamak"
+    },
+    {
+        "word": "Be taken aback",
+        "meaning": "Şok olmak"
+    },
+    {
+        "word": "Bear out",
+        "meaning": "Desteklemek, doğrulamak"
+    },
+    {
+        "word": "Bear up",
+        "meaning": "Sabırlı olmak, tahammül etmek"
+    },
+    {
+        "word": "Beat up",
+        "meaning": "Fena halde dövmek"
+    },
+    {
+        "word": "Beg off",
+        "meaning": "Geri çevirmek"
+    },
+    {
+        "word": "Blow out",
+        "meaning": "Üfleyerek söndürmek"
+    },
+    {
+        "word": "Blow up",
+        "meaning": "Patlamak, havaya uçurmak"
+    },
+    {
+        "word": "Bone up on",
+        "meaning": "Çok çalışmak, ineklemek"
+    },
+    {
+        "word": "Break away",
+        "meaning": "Kaçmak, kirişi kırmak"
+    },
+    {
+        "word": "Break down",
+        "meaning": "Bozulmak"
+    },
+    {
+        "word": "Break in",
+        "meaning": "Zorla girmek"
+    },
+    {
+        "word": "Break into",
+        "meaning": "Dalmak, zorla girmek"
+    },
+    {
+        "word": "Break off",
+        "meaning": "Birdenbire kesilmek, durmak"
+    },
+    {
+        "word": "Break out",
+        "meaning": "Patlak vermek, ortaya çıkmak"
+    },
+    {
+        "word": "Break out of",
+        "meaning": "Firar etmek"
+    },
+    {
+        "word": "Break through",
+        "meaning": "Doğmak, çıkmak"
+    },
+    {
+        "word": "Break up",
+        "meaning": "Ayrılmak, boşanmak"
+    },
+    {
+        "word": "Bring about",
+        "meaning": "Neden olmak, yol açmak"
+    },
+    {
+        "word": "Bring back",
+        "meaning": "Geri getirmek, hatırlatmak"
+    },
+    {
+        "word": "Bring in",
+        "meaning": "Sunmak, getirmek"
+    },
+    {
+        "word": "Bring off",
+        "meaning": "Kurtarmak, başarmak"
+    },
+    {
+        "word": "Bring on",
+        "meaning": "Sebep olmak"
+    },
+    {
+        "word": "Bring out",
+        "meaning": "Yayımlamak, çıkarmak"
+    },
+    {
+        "word": "Bring round",
+        "meaning": "Ayıltmak"
+    },
+    {
+        "word": "Bring up",
+        "meaning": "Yetiştirmek, büyütmek"
+    },
+    {
+        "word": "Brush up",
+        "meaning": "Tekrar etmek"
+    },
+    {
+        "word": "Brush up on",
+        "meaning": "Çalışmak, ilerletmek"
+    },
+    {
+        "word": "Build up",
+        "meaning": "Kurmak, kuvvetlendirmek"
+    },
+    {
+        "word": "Burn up",
+        "meaning": "Yanıp kül olmak"
+    },
+    {
+        "word": "Burst into",
+        "meaning": "Bir yere aniden girmek"
+    },
+    {
+        "word": "Burst into tears",
+        "meaning": "Gözyaşlarına boğulmak"
+    },
+    {
+        "word": "Butt in",
+        "meaning": "Burnunu sokmak, karışmak"
+    },
+    {
+        "word": "Buy off",
+        "meaning": "Rüşvet vererek satın almak"
+    },
+    {
+        "word": "Call at",
+        "meaning": "Uğramak, ziyaret etmek"
+    },
+    {
+        "word": "Call for",
+        "meaning": "Gerektirmek, istemek"
+    },
+    {
+        "word": "Call off",
+        "meaning": "İptal etmek, feshetmek"
+    },
+    {
+        "word": "Call on",
+        "meaning": "Ziyaret etmek, uğramak"
+    },
+    {
+        "word": "Call up",
+        "meaning": "Telefon etmek, askere çağırmak"
+    },
+    {
+        "word": "Came across",
+        "meaning": "Karşılaşmak, rastlamak"
+    },
+    {
+        "word": "Care for",
+        "meaning": "Bakmak"
+    },
+    {
+        "word": "Carry away",
+        "meaning": "Coşturmak, heyecanlandırmak"
+    },
+    {
+        "word": "Carry off",
+        "meaning": "Kazanmak, hakkından gelmek"
+    },
+    {
+        "word": "Carry on",
+        "meaning": "Devam etmek"
+    },
+    {
+        "word": "Carry out",
+        "meaning": "Uygulamak, yerine getirmek"
+    },
+    {
+        "word": "Carry through",
+        "meaning": "Gerçekleştirmek"
+    },
+    {
+        "word": "Cast aside",
+        "meaning": "Bir kenara koymak, terk etmek"
+    },
+    {
+        "word": "Catch on",
+        "meaning": "Tutulmak, moda olmak"
+    },
+    {
+        "word": "Catch up",
+        "meaning": "Aynı seviyeye ulaşmak"
+    },
+    {
+        "word": "Catch up with",
+        "meaning": "Yetişmek, yakalamak"
+    },
+    {
+        "word": "Change over",
+        "meaning": "Yöntem değiştirmek"
+    },
+    {
+        "word": "Check in",
+        "meaning": "Girmek, kaydetmek"
+    },
+    {
+        "word": "Check off",
+        "meaning": "Kontrol işareti koymak"
+    },
+    {
+        "word": "Check out",
+        "meaning": "Çıkış yapmak, ayrılmak"
+    },
+    {
+        "word": "Cheer up",
+        "meaning": "Neşelenmek, neşelendirmek"
+    },
+    {
+        "word": "Chew out",
+        "meaning": "Fırça atmak, Azarlamak"
+    },
+    {
+        "word": "Chicken out",
+        "meaning": "Çekinmek, kaçınmak"
+    },
+    {
+        "word": "Chip in",
+        "meaning": "Katkıda bulunmak"
+    },
+    {
+        "word": "Clam up",
+        "meaning": "Susmak, konuşmayı bırakmak"
+    },
+    {
+        "word": "Clear away",
+        "meaning": "Kaldırmak, toplamak"
+    },
+    {
+        "word": "Clear off",
+        "meaning": "Gözden kaybolmak, toz olmak"
+    },
+    {
+        "word": "Clear up",
+        "meaning": "Açıklamak, gidermek"
+    },
+    {
+        "word": "Close down",
+        "meaning": "Sonlandırmak, kapatmak"
+    },
+    {
+        "word": "Close in",
+        "meaning": "Yaklaşmak"
+    },
+    {
+        "word": "Come about",
+        "meaning": "Meydana gelmek, doğmak"
+    },
+    {
+        "word": "Come across",
+        "meaning": "Karşılaşmak, rastlamak"
+    },
+    {
+        "word": "Come along",
+        "meaning": "Birlikte gelmek, eşlik etmek"
+    },
+    {
+        "word": "Come apart",
+        "meaning": "Dağılmak, parçalanmak"
+    },
+    {
+        "word": "Come around",
+        "meaning": "Kendine gelmek"
+    },
+    {
+        "word": "Come back",
+        "meaning": "Geri dönmek"
+    },
+    {
+        "word": "Come down to",
+        "meaning": "Şeklinde sonuçlanmak"
+    },
+    {
+        "word": "Come down with",
+        "meaning": "Rahatsızlanmak, hastalanmak"
+    },
+    {
+        "word": "Come in",
+        "meaning": "Moda olmak"
+    },
+    {
+        "word": "Come in for",
+        "meaning": "Eleştiri almak"
+    },
+    {
+        "word": "Come into",
+        "meaning": "Mirasa konuvermek"
+    },
+    {
+        "word": "Come off",
+        "meaning": "Planlandığı gibi olmak"
+    },
+    {
+        "word": "Come out",
+        "meaning": "Sonuçlanmak, ortaya çıkmak"
+    },
+    {
+        "word": "Come over",
+        "meaning": "Başına gelmek, olmak"
+    },
+    {
+        "word": "Come to",
+        "meaning": "Kendine gelmek, ayılmak"
+    },
+    {
+        "word": "Come up",
+        "meaning": "Görüşmek, tartışmak"
+    },
+    {
+        "word": "Come up against",
+        "meaning": "Yüzleşmek"
+    },
+    {
+        "word": "Come up to",
+        "meaning": "Ulaşmak, gelmek, denk olmak"
+    },
+    {
+        "word": "Come up with",
+        "meaning": "Üretmek, bulmak (fikir)"
+    },
+    {
+        "word": "Connect with",
+        "meaning": "Bağlamak, bitiştirmek"
+    },
+    {
+        "word": "Cope with",
+        "meaning": "Başa çıkmak, üstesinden gelmek"
+    },
+    {
+        "word": "Count on",
+        "meaning": "Güvenmek"
+    },
+    {
+        "word": "Crack down on",
+        "meaning": "Sıkı tedbirler almak"
+    },
+    {
+        "word": "Crop up",
+        "meaning": "Ortaya çıkmak, boy göstermek"
+    },
+    {
+        "word": "Cross off",
+        "meaning": "Listeden çıkartmak, silmek"
+    },
+    {
+        "word": "Cross out",
+        "meaning": "Üstünü çizmek, silmek"
+    },
+    {
+        "word": "Cut down",
+        "meaning": "Azaltmak"
+    },
+    {
+        "word": "Cut down on",
+        "meaning": "Kısmak, azaltmak"
+    },
+    {
+        "word": "Cut off",
+        "meaning": "Ayırmak, koparmak"
+    },
+    {
+        "word": "Cut out",
+        "meaning": "Kesmek, bırakmak"
+    },
+    {
+        "word": "Deal with",
+        "meaning": "İle ilgilenmek, başa çıkmak"
+    },
+    {
+        "word": "Die out",
+        "meaning": "Nesli tükenmek"
+    },
+    {
+        "word": "Dispose of",
+        "meaning": "Elden çıkarmak"
+    },
+    {
+        "word": "Do away with",
+        "meaning": "Yürürlükten kaldırmak"
+    },
+    {
+        "word": "Do in",
+        "meaning": "Yormak, yok etmek"
+    },
+    {
+        "word": "Do over",
+        "meaning": "Sil baştan yapmak"
+    },
+    {
+        "word": "Do up",
+        "meaning": "Güzelleştirmek, tamir etmek"
+    },
+    {
+        "word": "Do with",
+        "meaning": "İstemek, ihtiyaç duymak"
+    },
+    {
+        "word": "Do without",
+        "meaning": "Olmadan yapmak"
+    },
+    {
+        "word": "Drag on",
+        "meaning": "Bitmek bilmemek, uzamak"
+    },
+    {
+        "word": "Draw out",
+        "meaning": "Para çekmek"
+    },
+    {
+        "word": "Draw up",
+        "meaning": "Düzenlemek, yazmak"
+    },
+    {
+        "word": "Drop by",
+        "meaning": "Şöyle bir uğramak"
+    },
+    {
+        "word": "Drop in",
+        "meaning": "Habersiz ziyaret etmek"
+    },
+    {
+        "word": "Drop out",
+        "meaning": "Ayrılmak, çıkmak"
+    },
+    {
+        "word": "Eat out",
+        "meaning": "Dışarıda yemek yemek"
+    },
+    {
+        "word": "Egg on",
+        "meaning": "Teşvik etmek, kışkırtmak"
+    },
+    {
+        "word": "Embark on",
+        "meaning": "Girişmek, kalkışmak"
+    },
+    {
+        "word": "End up",
+        "meaning": "Sonuçlanmak, kendini bulmak"
+    },
+    {
+        "word": "Face up to",
+        "meaning": "Cesaretle karşılamak"
+    },
+    {
+        "word": "Fall about",
+        "meaning": "Gülmekten kırılmak"
+    },
+    {
+        "word": "Fall apart",
+        "meaning": "Dağılmak, parçalanmak"
+    },
+    {
+        "word": "Fall back",
+        "meaning": "Geri çekilmek, gerilemek"
+    },
+    {
+        "word": "Fall back on",
+        "meaning": "Başvurmak (zor durumda)"
+    },
+    {
+        "word": "Fall for",
+        "meaning": "Aşık olmak; Kanmak"
+    },
+    {
+        "word": "Fall off",
+        "meaning": "Düşmek, azalmak"
+    },
+    {
+        "word": "Fall out",
+        "meaning": "Kavga etmek, bozuşmak"
+    },
+    {
+        "word": "Fall short",
+        "meaning": "Erişememek, yetersiz kalmak"
+    },
+    {
+        "word": "Fall through",
+        "meaning": "Suya düşmek, başarısız olmak"
+    },
+    {
+        "word": "Fed up",
+        "meaning": "Bıkmak, usanmak"
+    },
+    {
+        "word": "Feel for",
+        "meaning": "Acımak, hissetmek"
+    },
+    {
+        "word": "Feel up to",
+        "meaning": "Yapabilir durumda olmak"
+    },
+    {
+        "word": "Fight off",
+        "meaning": "Defetmek, yenmek"
+    },
+    {
+        "word": "Figure out",
+        "meaning": "Anlamak, çözmek"
+    },
+    {
+        "word": "Fill in",
+        "meaning": "Doldurmak (boşluğu)"
+    },
+    {
+        "word": "Fill in for",
+        "meaning": "Yerine bakmak (işte)"
+    },
+    {
+        "word": "Fill in on",
+        "meaning": "Bilgilendirmek"
+    },
+    {
+        "word": "Fill out",
+        "meaning": "Form doldurmak"
+    },
+    {
+        "word": "Find out",
+        "meaning": "Öğrenmek, keşfetmek"
+    },
+    {
+        "word": "Follow through",
+        "meaning": "Sonunu getirmek"
+    },
+    {
+        "word": "Follow up",
+        "meaning": "Takip etmek"
+    },
+    {
+        "word": "Get about",
+        "meaning": "Gezmek, dolaşmak"
+    },
+    {
+        "word": "Get across",
+        "meaning": "Anlatabilmek, açıklamak"
+    },
+    {
+        "word": "Get along with",
+        "meaning": "İyi geçinmek"
+    },
+    {
+        "word": "Get around",
+        "meaning": "Dolaşmak; Üstesinden gelmek"
+    },
+    {
+        "word": "Get at",
+        "meaning": "İma etmek; Ulaşmak"
+    },
+    {
+        "word": "Get away",
+        "meaning": "Kaçmak, uzaklaşmak"
+    },
+    {
+        "word": "Get away with",
+        "meaning": "Yanına kâr kalmak"
+    },
+    {
+        "word": "Get back",
+        "meaning": "Geri dönmek; Geri almak"
+    },
+    {
+        "word": "Get by",
+        "meaning": "Geçinmek, idare etmek"
+    },
+    {
+        "word": "Get down",
+        "meaning": "Moralini bozmak; Yazmak"
+    },
+    {
+        "word": "Get down to",
+        "meaning": "Bir işe ciddiyetle başlamak"
+    },
+    {
+        "word": "Get in",
+        "meaning": "Girmek (araba/bina)"
+    },
+    {
+        "word": "Get into",
+        "meaning": "Binmek; İlgi duymak"
+    },
+    {
+        "word": "Get off",
+        "meaning": "İnmek (otobüs/tren)"
+    },
+    {
+        "word": "Get on",
+        "meaning": "Binmek; İyi geçinmek"
+    },
+    {
+        "word": "Get on with",
+        "meaning": "İyi geçinmek; Devam etmek"
+    },
+    {
+        "word": "Get out of",
+        "meaning": "Kaçınmak, kaytarmak"
+    },
+    {
+        "word": "Get out of hand",
+        "meaning": "Kontrolden çıkmak"
+    },
+    {
+        "word": "Get over",
+        "meaning": "İyileşmek, atlatmak"
+    },
+    {
+        "word": "Get rid of",
+        "meaning": "Kurtulmak"
+    },
+    {
+        "word": "Get through",
+        "meaning": "Telefonla ulaşmak; Bitirmek"
+    },
+    {
+        "word": "Get to",
+        "meaning": "Varmak; Başlamak"
+    },
+    {
+        "word": "Get up",
+        "meaning": "Yataktan kalkmak"
+    },
+    {
+        "word": "Give in",
+        "meaning": "Teslim olmak, pes etmek"
+    },
+    {
+        "word": "Give off",
+        "meaning": "Yaymak (koku/ısı)"
+    },
+    {
+        "word": "Give out",
+        "meaning": "Dağıtmak; Tükenmek"
+    },
+    {
+        "word": "Give up",
+        "meaning": "Vazgeçmek, bırakmak"
+    },
+    {
+        "word": "Go along with",
+        "meaning": "Aynı fikirde olmak"
+    },
+    {
+        "word": "Go around",
+        "meaning": "Yetmek; Dolaşmak"
+    },
+    {
+        "word": "Go away",
+        "meaning": "Çekip gitmek"
+    },
+    {
+        "word": "Go back on",
+        "meaning": "Sözünden dönmek"
+    },
+    {
+        "word": "Go bust",
+        "meaning": "İflas etmek"
+    },
+    {
+        "word": "Go by",
+        "meaning": "Geçmek (zaman); Esas almak"
+    },
+    {
+        "word": "Go down",
+        "meaning": "Batmak; Azalmak"
+    },
+    {
+        "word": "Go for",
+        "meaning": "Saldırmak; Seçmek"
+    },
+    {
+        "word": "Go in for",
+        "meaning": "İlgilenmek (hobi); Katılmak"
+    },
+    {
+        "word": "Go into",
+        "meaning": "İncelemek, girmek"
+    },
+    {
+        "word": "Go off",
+        "meaning": "Patlamak; Bozulmak (gıda)"
+    },
+    {
+        "word": "Go on",
+        "meaning": "Devam etmek; Olmak"
+    },
+    {
+        "word": "Go out",
+        "meaning": "Sönmek; Dışarı çıkmak"
+    },
+    {
+        "word": "Go over",
+        "meaning": "Gözden geçirmek"
+    },
+    {
+        "word": "Go through",
+        "meaning": "Yaşamak (zorluk); İncelemek"
+    },
+    {
+        "word": "Go up",
+        "meaning": "Yükselmek, artmak"
+    },
+    {
+        "word": "Go with",
+        "meaning": "Uymak (kıyafet)"
+    },
+    {
+        "word": "Grow up",
+        "meaning": "Büyümek"
+    },
+    {
+        "word": "Hand in",
+        "meaning": "Teslim etmek"
+    },
+    {
+        "word": "Hang onto",
+        "meaning": "Sıkıca tutmak; Saklamak"
+    },
+    {
+        "word": "Hang up",
+        "meaning": "Telefonu kapatmak"
+    },
+    {
+        "word": "Have to do with",
+        "meaning": "İle alakası olmak"
+    },
+    {
+        "word": "Hit upon",
+        "meaning": "Tesadüfen bulmak/aklına gelmek"
+    },
+    {
+        "word": "Hold on",
+        "meaning": "Beklemek; Tutunmak"
+    },
+    {
+        "word": "Hold out",
+        "meaning": "Dayanmak; Uzatmak"
+    },
+    {
+        "word": "Hold up",
+        "meaning": "Geciktirmek; Soymak"
+    },
+    {
+        "word": "Iron out",
+        "meaning": "Pürüzleri gidermek"
+    },
+    {
+        "word": "Keep away",
+        "meaning": "Uzak durmak"
+    },
+    {
+        "word": "Keep down",
+        "meaning": "Bastırmak, düşük tutmak"
+    },
+    {
+        "word": "Keep off",
+        "meaning": "Uzak durmak (çimler vb.)"
+    },
+    {
+        "word": "Keep on",
+        "meaning": "Yapmaya devam etmek"
+    },
+    {
+        "word": "Keep up",
+        "meaning": "Sürdürmek; Uyanık kalmak"
+    },
+    {
+        "word": "Keep up with",
+        "meaning": "Ayak uydurmak, yetişmek"
+    },
+    {
+        "word": "Kick out",
+        "meaning": "Kovmak"
+    },
+    {
+        "word": "Lay down",
+        "meaning": "Kural koymak; Silah bırakmak"
+    },
+    {
+        "word": "Lay out",
+        "meaning": "Düzenlemek; Harcamak"
+    },
+    {
+        "word": "Lead to",
+        "meaning": "Yol açmak, sebep olmak"
+    },
+    {
+        "word": "Leave out",
+        "meaning": "Dahil etmemek, atlamak"
+    },
+    {
+        "word": "Let down",
+        "meaning": "Hayal kırıklığına uğratmak"
+    },
+    {
+        "word": "Let off",
+        "meaning": "Affetmek; Patlatmak"
+    },
+    {
+        "word": "Let out",
+        "meaning": "Genişletmek (kıyafet); Çıkarmak"
+    },
+    {
+        "word": "Live up to",
+        "meaning": "Beklentiyi karşılamak"
+    },
+    {
+        "word": "Look after",
+        "meaning": "Göz kulak olmak, bakmak"
+    },
+    {
+        "word": "Look back on",
+        "meaning": "Geçmişe bakmak/hatırlamak"
+    },
+    {
+        "word": "Look down on",
+        "meaning": "Küçümsemek, hor görmek"
+    },
+    {
+        "word": "Look for",
+        "meaning": "Aramak"
+    },
+    {
+        "word": "Look forward to",
+        "meaning": "Dört gözle beklemek"
+    },
+    {
+        "word": "Look into",
+        "meaning": "Araştırmak, soruşturmak"
+    },
+    {
+        "word": "Look out",
+        "meaning": "Dikkat etmek"
+    },
+    {
+        "word": "Look over",
+        "meaning": "Gözden geçirmek"
+    },
+    {
+        "word": "Look up",
+        "meaning": "Sözlükte aramak; Ziyaret etmek"
+    },
+    {
+        "word": "Look up to",
+        "meaning": "Hayranlık duymak, örnek almak"
+    },
+    {
+        "word": "Make do",
+        "meaning": "İdare etmek, yetinmek"
+    },
+    {
+        "word": "Make for",
+        "meaning": "...e doğru gitmek"
+    },
+    {
+        "word": "Make fun of",
+        "meaning": "Dalga geçmek"
+    },
+    {
+        "word": "Make off with",
+        "meaning": "Çalıp kaçmak"
+    },
+    {
+        "word": "Make out",
+        "meaning": "Seçebilmek, anlamak"
+    },
+    {
+        "word": "Make up",
+        "meaning": "Uydurmak; Oluşturmak; Barışmak"
+    },
+    {
+        "word": "Make up for",
+        "meaning": "Telafi etmek"
+    },
+    {
+        "word": "Miss out",
+        "meaning": "Fırsatı kaçırmak"
+    },
+    {
+        "word": "Mix up",
+        "meaning": "Karıştırmak (kafası)"
+    },
+    {
+        "word": "Nod off",
+        "meaning": "Uyuklamak"
+    },
+    {
+        "word": "Open up",
+        "meaning": "İçini dökmek; Açmak"
+    },
+    {
+        "word": "Own up",
+        "meaning": "İtiraf etmek"
+    },
+    {
+        "word": "Pass away",
+        "meaning": "Vefat etmek"
+    },
+    {
+        "word": "Pass out",
+        "meaning": "Bayılmak; Dağıtmak"
+    },
+    {
+        "word": "Pay back",
+        "meaning": "Geri ödemek; Öcünü almak"
+    },
+    {
+        "word": "Pick on",
+        "meaning": "Uğraşmak, sataşmak"
+    },
+    {
+        "word": "Pick out",
+        "meaning": "Seçmek"
+    },
+    {
+        "word": "Pick up",
+        "meaning": "Toplamak; Öğrenmek (hızlıca)"
+    },
+    {
+        "word": "Play down",
+        "meaning": "Önemsememek, hafifsemek"
+    },
+    {
+        "word": "Point out",
+        "meaning": "İşaret etmek, belirtmek"
+    },
+    {
+        "word": "Pull off",
+        "meaning": "Başarmak (zor bir şeyi)"
+    },
+    {
+        "word": "Pull through",
+        "meaning": "İyileşmek (ağır hastalıktan)"
+    },
+    {
+        "word": "Put across",
+        "meaning": "Fikrini anlatabilmek"
+    },
+    {
+        "word": "Put away",
+        "meaning": "Yerine koymak; Para biriktirmek"
+    },
+    {
+        "word": "Put down",
+        "meaning": "Yere koymak; Aşağılamak"
+    },
+    {
+        "word": "Put forward",
+        "meaning": "Öne sürmek (fikir)"
+    },
+    {
+        "word": "Put off",
+        "meaning": "Ertelemek"
+    },
+    {
+        "word": "Put on",
+        "meaning": "Giymek; Kilo almak"
+    },
+    {
+        "word": "Put out",
+        "meaning": "Söndürmek (ateş); Rahatsız etmek"
+    },
+    {
+        "word": "Put through",
+        "meaning": "Telefonu bağlamak"
+    },
+    {
+        "word": "Put up",
+        "meaning": "Misafir etmek; İnşa etmek"
+    },
+    {
+        "word": "Put up with",
+        "meaning": "Katlanmak, tahammül etmek"
+    },
+    {
+        "word": "Rely on",
+        "meaning": "Güvenmek, bel bağlamak"
+    },
+    {
+        "word": "Rule out",
+        "meaning": "Göz ardı etmek, imkansız kılmak"
+    },
+    {
+        "word": "Run into",
+        "meaning": "Karşılaşmak; Çarpmak"
+    },
+    {
+        "word": "Run out of",
+        "meaning": "Tükenmek, bitmek"
+    },
+    {
+        "word": "Run over",
+        "meaning": "Ezmek (araba ile); Tekrar etmek"
+    },
+    {
+        "word": "See to",
+        "meaning": "İlgilenmek, halletmek"
+    },
+    {
+        "word": "Send for",
+        "meaning": "Çağırtmak"
+    },
+    {
+        "word": "Set off",
+        "meaning": "Yola çıkmak; Tetiklemek"
+    },
+    {
+        "word": "Set out",
+        "meaning": "Yola koyulmak; Amaçlamak"
+    },
+    {
+        "word": "Set up",
+        "meaning": "Kurmak, düzenlemek"
+    },
+    {
+        "word": "Show off",
+        "meaning": "Hava atmak"
+    },
+    {
+        "word": "Show up",
+        "meaning": "Çıkagelmek, varmak"
+    },
+    {
+        "word": "Sort out",
+        "meaning": "Çözümlemek, ayıklamak"
+    },
+    {
+        "word": "Stand by",
+        "meaning": "Desteklemek; Hazırda beklemek"
+    },
+    {
+        "word": "Stand out",
+        "meaning": "Göze çarpmak"
+    },
+    {
+        "word": "Stand up to",
+        "meaning": "Kafa tutmak"
+    },
+    {
+        "word": "Step down",
+        "meaning": "İstifa etmek, çekilmek"
+    },
+    {
+        "word": "Step up",
+        "meaning": "Artırmak, hızlandırmak"
+    },
+    {
+        "word": "Take after",
+        "meaning": "Benzemek (karakter/görünüş)"
+    },
+    {
+        "word": "Take back",
+        "meaning": "Sözünü geri almak; İade etmek"
+    },
+    {
+        "word": "Take care of",
+        "meaning": "İlgilenmek, bakmak"
+    },
+    {
+        "word": "Take in",
+        "meaning": "Anlamak; Kandırmak; Daraltmak"
+    },
+    {
+        "word": "Take off",
+        "meaning": "Uçak kalkması; Çıkarmak (giysi)"
+    },
+    {
+        "word": "Take on",
+        "meaning": "İşe almak; Sorumluluk almak"
+    },
+    {
+        "word": "Take over",
+        "meaning": "Devralmak, yönetimi almak"
+    },
+    {
+        "word": "Take up",
+        "meaning": "Başlamak (hobi); Yer kaplamak"
+    },
+    {
+        "word": "Talk over",
+        "meaning": "Konuşup tartışmak"
+    },
+    {
+        "word": "Tell off",
+        "meaning": "Azarlamak"
+    },
+    {
+        "word": "Think over",
+        "meaning": "İyice düşünmek"
+    },
+    {
+        "word": "Throw up",
+        "meaning": "Kusmak"
+    },
+    {
+        "word": "Try on",
+        "meaning": "Denemek (giysi)"
+    },
+    {
+        "word": "Try out",
+        "meaning": "Denemek (test etmek)"
+    },
+    {
+        "word": "Turn down",
+        "meaning": "Reddetmek; Sesini kısmak"
+    },
+    {
+        "word": "Turn into",
+        "meaning": "Dönüşmek"
+    },
+    {
+        "word": "Turn off",
+        "meaning": "Kapatmak; Tiksindirmek"
+    },
+    {
+        "word": "Turn on",
+        "meaning": "Açmak"
+    },
+    {
+        "word": "Turn out",
+        "meaning": "Sonuçlanmak; Üretmek"
+    },
+    {
+        "word": "Turn up",
+        "meaning": "Çıkagelmek; Sesini açmak"
+    },
+    {
+        "word": "Use up",
+        "meaning": "Tüketmek"
+    },
+    {
+        "word": "Wait on",
+        "meaning": "Hizmet etmek (garson)"
+    },
+    {
+        "word": "Watch out",
+        "meaning": "Dikkat etmek"
+    },
+    {
+        "word": "Wear out",
+        "meaning": "Eskitmek; Yormak"
+    },
+    {
+        "word": "Work out",
+        "meaning": "Çözmek; Spor yapmak"
+    },
+    {
+        "word": "Write down",
+        "meaning": "Not almak"
+    },
+    {
+        "word": "Abide by",
+        "meaning": "Kurallara uymak, riayet etmek"
+    },
+    {
+        "word": "Act out",
+        "meaning": "Davranışlarla ifade etmek, canlandırmak"
+    },
+    {
+        "word": "Act up",
+        "meaning": "Sorun çıkarmak (makine/vücut), yaramazlık yapmak"
+    },
+    {
+        "word": "Add up",
+        "meaning": "Anlamlı olmak, mantıklı gelmek; Toplamak"
+    },
+    {
+        "word": "Adhere to",
+        "meaning": "Bağlı kalmak, sadık kalmak (kural/plan)"
+    },
+    {
+        "word": "Aim at",
+        "meaning": "Hedeflemek, amaçlamak"
+    },
+    {
+        "word": "Answer back",
+        "meaning": "Kaba bir şekilde karşılık vermek"
+    },
+    {
+        "word": "Ask out",
+        "meaning": "Çıkma teklif etmek (romantik)"
+    },
+    {
+        "word": "Attend to",
+        "meaning": "İlgilenmek, dikkat etmek, bakmak"
+    },
+    {
+        "word": "Back down",
+        "meaning": "Geri adım atmak, iddiasından vazgeçmek"
+    },
+    {
+        "word": "Back out",
+        "meaning": "Sözünden dönmek, vazgeçmek"
+    },
+    {
+        "word": "Bank on",
+        "meaning": "Bel bağlamak, güvenmek"
+    },
+    {
+        "word": "Bargain for",
+        "meaning": "Beklemek, ummak (genelde olumsuz)"
+    },
+    {
+        "word": "Be into",
+        "meaning": "İlgili olmak, sevmek (hobi vb.)"
+    },
+    {
+        "word": "Bear with",
+        "meaning": "Sabretmek, idare etmek"
+    },
+    {
+        "word": "Blow over",
+        "meaning": "Geçip gitmek (fırtına/tartışma), unutulmak"
+    },
+    {
+        "word": "Boil down to",
+        "meaning": "Özetle şu anlama gelmek, şuna dayanmak"
+    },
+    {
+        "word": "Bottle up",
+        "meaning": "Duygularını içine atmak"
+    },
+    {
+        "word": "Bounce back",
+        "meaning": "Çabuk toparlanmak (hastalık/kriz sonrası)"
+    },
+    {
+        "word": "Brush off",
+        "meaning": "Umursamamak, terslemek"
+    },
+    {
+        "word": "Bump into",
+        "meaning": "Rastlamak, çarpışmak"
+    },
+    {
+        "word": "Burn out",
+        "meaning": "Tükenmek (aşırı çalışmaktan)"
+    },
+    {
+        "word": "Call back",
+        "meaning": "Geri aramak"
+    },
+    {
+        "word": "Call in",
+        "meaning": "Yardıma çağırmak (doktor/uzman)"
+    },
+    {
+        "word": "Calm down",
+        "meaning": "Sakinleşmek, sakinleştirmek"
+    },
+    {
+        "word": "Cash in on",
+        "meaning": "Fırsata çevirmek, kâr sağlamak"
+    },
+    {
+        "word": "Catch up on",
+        "meaning": "Telafi etmek, açığı kapatmak"
+    },
+    {
+        "word": "Check up on",
+        "meaning": "Denetlemek, soruşturmak"
+    },
+    {
+        "word": "Clean out",
+        "meaning": "Boşaltmak, temizlemek; Soyup soğana çevirmek"
+    },
+    {
+        "word": "Come by",
+        "meaning": "Elde etmek; Uğramak"
+    },
+    {
+        "word": "Come forward",
+        "meaning": "Ortaya çıkmak (yardım/bilgi için öne atılmak)"
+    },
+    {
+        "word": "Cool down",
+        "meaning": "Serinlemek; Sakinleşmek"
+    },
+    {
+        "word": "Count in",
+        "meaning": "Dahil etmek, hesaba katmak"
+    },
+    {
+        "word": "Crack up",
+        "meaning": "Kahkahaya boğulmak; Ruhen çökmek"
+    },
+    {
+        "word": "Cut back on",
+        "meaning": "Kısmak, tasarruf etmek (harcama vb.)"
+    },
+    {
+        "word": "Dawn on",
+        "meaning": "Dank etmek, kafasına dank etmek"
+    },
+    {
+        "word": "Die down",
+        "meaning": "Yatışmak, sönmek (ateş/ses)"
+    },
+    {
+        "word": "Dig up",
+        "meaning": "Eşip çıkarmak, araştırıp bulmak"
+    },
+    {
+        "word": "Dive into",
+        "meaning": "Dalmak (suya veya işe)"
+    },
+    {
+        "word": "Drag down",
+        "meaning": "Aşağı çekmek, mutsuz etmek"
+    },
+    {
+        "word": "Draw on",
+        "meaning": "Faydalanmak (tecrübeden/kaynaktan)"
+    },
+    {
+        "word": "Dress up",
+        "meaning": "Şık giyinmek; Kılık değiştirmek"
+    },
+    {
+        "word": "Drift apart",
+        "meaning": "Birbirinden kopmak (ilişki)"
+    },
+    {
+        "word": "Drop off",
+        "meaning": "Bırakmak (arabayla); Uyuyakalmak; Azalmak"
+    },
+    {
+        "word": "Dry up",
+        "meaning": "Kurumak, tükenmek"
+    },
+    {
+        "word": "Ease off",
+        "meaning": "Gevşemek, hafiflemek"
+    },
+    {
+        "word": "End in",
+        "meaning": "İle sonuçlanmak"
+    },
+    {
+        "word": "Even out",
+        "meaning": "Dengelemek, eşitlemek"
+    },
+    {
+        "word": "Fall behind",
+        "meaning": "Geride kalmak"
+    },
+    {
+        "word": "Fend off",
+        "meaning": "Savuşturmak, defetmek"
+    },
+    {
+        "word": "Finish off",
+        "meaning": "Bitirmek, son vermek"
+    },
+    {
+        "word": "Fit in",
+        "meaning": "Uyum sağlamak"
+    },
+    {
+        "word": "Fix up",
+        "meaning": "Tamir etmek; Ayarlamak"
+    },
+    {
+        "word": "Flip out",
+        "meaning": "Çılgına dönmek"
+    },
+    {
+        "word": "Freak out",
+        "meaning": "Korkudan çıldırmak, paniklemek"
+    },
+    {
+        "word": "Gear up",
+        "meaning": "Hazırlanmak, vites büyütmek"
+    },
+    {
+        "word": "Get ahead",
+        "meaning": "İlerlemek, başarılı olmak"
+    },
+    {
+        "word": "Get back at",
+        "meaning": "İntikam almak"
+    },
+    {
+        "word": "Get behind with",
+        "meaning": "Ödemeyi/işi geciktirmek"
+    },
+    {
+        "word": "Give away",
+        "meaning": "Hediye etmek; Ele vermek (sırrı)"
+    },
+    {
+        "word": "Gloss over",
+        "meaning": "Örtbas etmek, geçiştirmek"
+    },
+    {
+        "word": "Go after",
+        "meaning": "Peşinden gitmek, elde etmeye çalışmak"
+    },
+    {
+        "word": "Go against",
+        "meaning": "Karşı gelmek, aleyhine olmak"
+    },
+    {
+        "word": "Go ahead",
+        "meaning": "Devam etmek, başlamak"
+    },
+    {
+        "word": "Hand down",
+        "meaning": "Nesilden nesile aktarmak"
+    },
+    {
+        "word": "Hand out",
+        "meaning": "Dağıtmak"
+    },
+    {
+        "word": "Hand over",
+        "meaning": "Teslim etmek, devretmek"
+    },
+    {
+        "word": "Hang around",
+        "meaning": "Oyalanmak, takılmak"
+    },
+    {
+        "word": "Hang out",
+        "meaning": "Vakit geçirmek, takılmak"
+    },
+    {
+        "word": "Head for",
+        "meaning": "Bir yere doğru yönelmek"
+    },
+    {
+        "word": "Hear from",
+        "meaning": "Haber almak"
+    },
+    {
+        "word": "Heat up",
+        "meaning": "Isıtmak; Kızışmak (tartışma)"
+    },
+    {
+        "word": "Hit it off",
+        "meaning": "Hemen kaynaşmak, iyi anlaşmak"
+    },
+    {
+        "word": "Hold back",
+        "meaning": "Tutmak (gözyaşını/kendini), saklamak"
+    },
+    {
+        "word": "Hook up",
+        "meaning": "Bağlamak (cihaz); Buluşmak"
+    },
+    {
+        "word": "Hunt down",
+        "meaning": "Arayıp bulmak, yakalamak"
+    },
+    {
+        "word": "Hurry up",
+        "meaning": "Acele etmek"
+    },
+    {
+        "word": "Hush up",
+        "meaning": "Örtbas etmek, susturmak"
+    },
+    {
+        "word": "Impose on",
+        "meaning": "Yük olmak, dayatmak"
+    },
+    {
+        "word": "Join in",
+        "meaning": "Katılmak, eşlik etmek"
+    },
+    {
+        "word": "Jot down",
+        "meaning": "Hemen not etmek, karalamak"
+    },
+    {
+        "word": "Jump at",
+        "meaning": "Fırsatın üzerine atlamak"
+    },
+    {
+        "word": "Keep at",
+        "meaning": "Israrla sürdürmek"
+    },
+    {
+        "word": "Keep back",
+        "meaning": "Gizlemek; Geri durmak"
+    },
+    {
+        "word": "Kick off",
+        "meaning": "Başlatmak (maç/etkinlik)"
+    },
+    {
+        "word": "Knock down",
+        "meaning": "Yere sermek; Yıkmak; Fiyat kırmak"
+    },
+    {
+        "word": "Knock out",
+        "meaning": "Nakavt etmek; Çok etkilemek"
+    },
+    {
+        "word": "Knuckle down",
+        "meaning": "Sıkı çalışmaya başlamak"
+    },
+    {
+        "word": "Lash out",
+        "meaning": "Saldırmak (sözlü/fiziksel)"
+    },
+    {
+        "word": "Lay off",
+        "meaning": "İşten çıkarmak; Rahat bırakmak"
+    },
+    {
+        "word": "Light up",
+        "meaning": "Aydınlanmak (yüz/ortam); Sigara yakmak"
+    },
+    {
+        "word": "Line up",
+        "meaning": "Sıraya girmek/dizmek; Ayarlamak"
+    },
+    {
+        "word": "Live on",
+        "meaning": "İle geçinmek (para/yemek)"
+    },
+    {
+        "word": "Lock up",
+        "meaning": "Kilitlemek; Hapse atmak"
+    },
+    {
+        "word": "Log in",
+        "meaning": "Sisteme giriş yapmak"
+    },
+    {
+        "word": "Log out",
+        "meaning": "Sistemden çıkış yapmak"
+    },
+    {
+        "word": "Look in on",
+        "meaning": "Kısaca ziyaret etmek, yoklamak"
+    },
+    {
+        "word": "Make off",
+        "meaning": "Sıvışmak, kaçmak"
+    },
+    {
+        "word": "Mess up",
+        "meaning": "Yüzüne gözüne bulaştırmak, bozmak"
+    },
+    {
+        "word": "Mistake for",
+        "meaning": "İle karıştırmak (yanlışlıkla)"
+    },
+    {
+        "word": "Move in",
+        "meaning": "Taşınmak (içeri)"
+    },
+    {
+        "word": "Move out",
+        "meaning": "Taşınmak (dışarı)"
+    },
+    {
+        "word": "Mull over",
+        "meaning": "Üzerinde uzun uzun düşünmek"
+    },
+    {
+        "word": "Name after",
+        "meaning": "İsmini birinden almak"
+    },
+    {
+        "word": "Narrow down",
+        "meaning": "Seçenekleri daraltmak/azaltmak"
+    },
+    {
+        "word": "Note down",
+        "meaning": "Not almak"
+    },
+    {
+        "word": "Opt for",
+        "meaning": "Tercih etmek"
+    },
+    {
+        "word": "Opt out",
+        "meaning": "Çekilmek, katılmamayı seçmek"
+    },
+    {
+        "word": "Pack up",
+        "meaning": "Eşyaları toplamak; Bozulmak (motor)"
+    },
+    {
+        "word": "Pass on",
+        "meaning": "İletmek; Vefat etmek"
+    },
+    {
+        "word": "Pass up",
+        "meaning": "Geri çevirmek (fırsatı)"
+    },
+    {
+        "word": "Pay off",
+        "meaning": "Borcunu kapatmak; Karşılığını almak"
+    },
+    {
+        "word": "Phase in",
+        "meaning": "Aşamalı olarak devreye sokmak"
+    },
+    {
+        "word": "Phase out",
+        "meaning": "Aşamalı olarak kullanımdan kaldırmak"
+    },
+    {
+        "word": "Pile up",
+        "meaning": "Yığılmak, birikmek"
+    },
+    {
+        "word": "Pipe down",
+        "meaning": "Susmak, sesini kesmek"
+    },
+    {
+        "word": "Pitch in",
+        "meaning": "İmece usulü yardım etmek"
+    },
+    {
+        "word": "Play up",
+        "meaning": "Sorun çıkarmak; Abartmak"
+    },
+    {
+        "word": "Plug in",
+        "meaning": "Fişe takmak"
+    },
+    {
+        "word": "Point at",
+        "meaning": "İşaret etmek (parmakla)"
+    },
+    {
+        "word": "Pop in",
+        "meaning": "Habersiz uğramak"
+    },
+    {
+        "word": "Pop up",
+        "meaning": "Aniden belirmek"
+    },
+    {
+        "word": "Pour down",
+        "meaning": "Bardaktan boşanırcasına yağmak"
+    },
+    {
+        "word": "Press on",
+        "meaning": "Azimle devam etmek"
+    },
+    {
+        "word": "Proceed with",
+        "meaning": "Devam etmek, sürdürmek"
+    },
+    {
+        "word": "Pull down",
+        "meaning": "Yıkmak (bina)"
+    },
+    {
+        "word": "Pull out",
+        "meaning": "Yola çıkmak (araç); Çekilmek"
+    },
+    {
+        "word": "Pull over",
+        "meaning": "Kenara çekmek (araç)"
+    },
+    {
+        "word": "Put back",
+        "meaning": "Yerine koymak; Ertelemek"
+    },
+    {
+        "word": "Put together",
+        "meaning": "Birleştirmek, hazırlamak"
+    },
+    {
+        "word": "Quiet down",
+        "meaning": "Sessizleşmek"
+    },
+    {
+        "word": "Read out",
+        "meaning": "Sesli okumak"
+    },
+    {
+        "word": "Reckon with",
+        "meaning": "Hesaba katmak, ciddiye almak"
+    },
+    {
+        "word": "Refrain from",
+        "meaning": "Sakınmak, kaçınmak"
+    },
+    {
+        "word": "Result in",
+        "meaning": "İle sonuçlanmak"
+    },
+    {
+        "word": "Result from",
+        "meaning": "Den kaynaklanmak"
+    },
+    {
+        "word": "Ring up",
+        "meaning": "Telefon etmek"
+    },
+    {
+        "word": "Rip off",
+        "meaning": "Kazıklamak; Çalmak"
+    },
+    {
+        "word": "Roll out",
+        "meaning": "Piyasaya sürmek (yeni ürün)"
+    },
+    {
+        "word": "Round up",
+        "meaning": "Toplamak (insanları/hayvanları)"
+    },
+    {
+        "word": "Rub out",
+        "meaning": "Silmek (yazıyı); Öldürmek (argo)"
+    },
+    {
+        "word": "Run after",
+        "meaning": "Kovalamak"
+    },
+    {
+        "word": "Run away",
+        "meaning": "Kaçmak"
+    },
+    {
+        "word": "Run down",
+        "meaning": "Eleştirmek; Çarpmak; Pili bitmek"
+    },
+    {
+        "word": "Sail through",
+        "meaning": "Başarıyla/kolayca geçmek (sınav)"
+    },
+    {
+        "word": "Save up",
+        "meaning": "Para biriktirmek"
+    },
+    {
+        "word": "Scare off",
+        "meaning": "Korkutup kaçırmak"
+    },
+    {
+        "word": "Scrape through",
+        "meaning": "Zorla geçmek/başarmak"
+    },
+    {
+        "word": "Screw up",
+        "meaning": "Berbat etmek"
+    },
+    {
+        "word": "See off",
+        "meaning": "Yolcu etmek"
+    },
+    {
+        "word": "See through",
+        "meaning": "İç yüzünü görmek; Sonuna kadar götürmek"
+    },
+    {
+        "word": "Sell out",
+        "meaning": "Tükenmek (bilet/mal); Satmak (davasını)"
+    },
+    {
+        "word": "Send out",
+        "meaning": "Göndermek, yaymak"
+    },
+    {
+        "word": "Set aside",
+        "meaning": "Bir kenara ayırmak; İptal etmek (mahkeme)"
+    },
+    {
+        "word": "Set back",
+        "meaning": "Geciktirmek; Mal olmak (para)"
+    },
+    {
+        "word": "Set in",
+        "meaning": "Başlamak ve devam etmek (yağmur/kış)"
+    },
+    {
+        "word": "Settle down",
+        "meaning": "Yerleşmek; Durulmak"
+    },
+    {
+        "word": "Shake off",
+        "meaning": "Kurtulmak, başından savmak"
+    },
+    {
+        "word": "Shoot up",
+        "meaning": "Hızla artmak; Büyümek"
+    },
+    {
+        "word": "Shop around",
+        "meaning": "Fiyat araştırmak"
+    },
+    {
+        "word": "Shut up",
+        "meaning": "Çenesini kapatmak"
+    },
+    {
+        "word": "Sign up",
+        "meaning": "Kaydolmak"
+    },
+    {
+        "word": "Sink in",
+        "meaning": "Tam olarak anlaşılmak, dank etmek"
+    },
+    {
+        "word": "Sit down",
+        "meaning": "Oturmak"
+    },
+    {
+        "word": "Sit out",
+        "meaning": "Katılmamak, kenarda beklemek"
+    },
+    {
+        "word": "Sleep on",
+        "meaning": "Karar vermeden önce düşünmek/uyumak"
+    },
+    {
+        "word": "Slip up",
+        "meaning": "Hata yapmak, yanılmak"
+    },
+    {
+        "word": "Slow down",
+        "meaning": "Yavaşlamak"
+    },
+    {
+        "word": "Snap up",
+        "meaning": "Kapışmak (hemen satın almak)"
+    },
+    {
+        "word": "Speak up",
+        "meaning": "Yüksek sesle konuşmak; Fikrini belirtmek"
+    },
+    {
+        "word": "Speed up",
+        "meaning": "Hızlanmak, hızlandırmak"
+    },
+    {
+        "word": "Spell out",
+        "meaning": "Hecelemek; Açık açık anlatmak"
+    },
+    {
+        "word": "Splash out",
+        "meaning": "Bol keseden harcamak"
+    },
+    {
+        "word": "Split up",
+        "meaning": "Ayrılmak (ilişki/grup)"
+    },
+    {
+        "word": "Spring up",
+        "meaning": "Türemek, aniden ortaya çıkmak"
+    },
+    {
+        "word": "Stamp out",
+        "meaning": "Ortadan kaldırmak, bastırmak"
+    },
+    {
+        "word": "Stand for",
+        "meaning": "Temsil etmek; Katlanmak"
+    },
+    {
+        "word": "Start over",
+        "meaning": "Baştan başlamak"
+    },
+    {
+        "word": "Stay up",
+        "meaning": "Uyumamak, ayakta kalmak"
+    },
+    {
+        "word": "Stick to",
+        "meaning": "Bağlı kalmak (plana/söze)"
+    },
+    {
+        "word": "Stick up for",
+        "meaning": "Savunmak, arka çıkmak"
+    },
+    {
+        "word": "Stir up",
+        "meaning": "Kışkırtmak, karıştırmak (duygu/sorun)"
+    },
+    {
+        "word": "Stop by",
+        "meaning": "Uğramak"
+    },
+    {
+        "word": "Storm out",
+        "meaning": "Hışımla çıkmak"
+    },
+    {
+        "word": "Strike up",
+        "meaning": "Başlatmak (sohbet/arkadaşlık)"
+    },
+    {
+        "word": "Sum up",
+        "meaning": "Özetlemek"
+    },
+    {
+        "word": "Switch off",
+        "meaning": "Kapatmak (elektrik); Dinlemeyi bırakmak"
+    },
+    {
+        "word": "Switch on",
+        "meaning": "Açmak (elektrik)"
+    },
+    {
+        "word": "Take apart",
+        "meaning": "Parçalarına ayırmak"
+    },
+    {
+        "word": "Take away",
+        "meaning": "Götürmek; Çıkarmak (matematik)"
+    },
+    {
+        "word": "Take down",
+        "meaning": "İndirmek; Not almak; Sökmek"
+    },
+    {
+        "word": "Take to",
+        "meaning": "Isınmak, sevmek; Adet edinmek"
+    },
+    {
+        "word": "Talk back",
+        "meaning": "Cevap vermek (saygısızca)"
+    },
+    {
+        "word": "Talk down to",
+        "meaning": "Küçümseyerek konuşmak"
+    },
+    {
+        "word": "Talk into",
+        "meaning": "İkna etmek (yapmaya)"
+    },
+    {
+        "word": "Talk out of",
+        "meaning": "Vazgeçirmek"
+    },
+    {
+        "word": "Tap into",
+        "meaning": "Faydalanmak (kaynak/potansiyel)"
+    },
+    {
+        "word": "Tear apart",
+        "meaning": "Parçalamak; Üzmek"
+    },
+    {
+        "word": "Tear down",
+        "meaning": "Yıkmak (bina)"
+    },
+    {
+        "word": "Tear up",
+        "meaning": "Yırtıp atmak"
+    },
+    {
+        "word": "Tell on",
+        "meaning": "İspiyonlamak"
+    },
+    {
+        "word": "Think back",
+        "meaning": "Geçmişi düşünmek"
+    },
+    {
+        "word": "Think up",
+        "meaning": "Tasarlamak, icat etmek"
+    },
+    {
+        "word": "Throw away",
+        "meaning": "Atmak (çöpe)"
+    },
+    {
+        "word": "Throw out",
+        "meaning": "Atmak; Reddetmek"
+    },
+    {
+        "word": "Tie up",
+        "meaning": "Bağlamak; Meşgul etmek"
+    },
+    {
+        "word": "Tip off",
+        "meaning": "Tüyo vermek, ihbar etmek"
+    },
+    {
+        "word": "Tone down",
+        "meaning": "Yumuşatmak (ifadeyi/rengi)"
+    },
+    {
+        "word": "Touch on",
+        "meaning": "Değinmek (konuya)"
+    },
+    {
+        "word": "Touch up",
+        "meaning": "Rötuş yapmak"
+    },
+    {
+        "word": "Track down",
+        "meaning": "İzini sürüp bulmak"
+    },
+    {
+        "word": "Trade in",
+        "meaning": "Takas etmek (eskiyi verip yeniyi almak)"
+    },
+    {
+        "word": "Try for",
+        "meaning": "Elde etmeye çalışmak"
+    },
+    {
+        "word": "Tune in",
+        "meaning": "Ayarlamak (radyo/TV)"
+    },
+    {
+        "word": "Turn around",
+        "meaning": "Arkasını dönmek; Durumu düzeltmek"
+    },
+    {
+        "word": "Turn away",
+        "meaning": "Geri çevirmek, kapıdan döndürmek"
+    },
+    {
+        "word": "Turn back",
+        "meaning": "Geri dönmek"
+    },
+    {
+        "word": "Turn in",
+        "meaning": "Teslim etmek; Uyumaya gitmek; İhbar etmek"
+    },
+    {
+        "word": "Wake up",
+        "meaning": "Uyanmak"
+    },
+    {
+        "word": "Walk away",
+        "meaning": "Uzaklaşmak; Terk etmek (kazadan)"
+    },
+    {
+        "word": "Walk out",
+        "meaning": "Terk etmek; Grev yapmak"
+    },
+    {
+        "word": "Warm up",
+        "meaning": "Isınmak; Isıtmak"
+    },
+    {
+        "word": "Wash up",
+        "meaning": "Bulaşık yıkamak; El yüz yıkamak"
+    },
+    {
+        "word": "Watch over",
+        "meaning": "Gözetmek, korumak"
+    },
+    {
+        "word": "Wave aside",
+        "meaning": "Elinin tersiyle itmek, önemsememek"
+    },
+    {
+        "word": "Wear down",
+        "meaning": "Yıpratmak, direncini kırmak"
+    },
+    {
+        "word": "Wear off",
+        "meaning": "Etkisini kaybetmek (ilaç/ağrı)"
+    },
+    {
+        "word": "Weigh up",
+        "meaning": "Tartmak, ölçüp biçmek (karar)"
+    },
+    {
+        "word": "While away",
+        "meaning": "Vakit öldürmek"
+    },
+    {
+        "word": "Win over",
+        "meaning": "Kazanmak, tarafına çekmek"
+    },
+    {
+        "word": "Wipe out",
+        "meaning": "Yok etmek, silip süpürmek"
+    },
+    {
+        "word": "Work on",
+        "meaning": "Üzerinde çalışmak"
+    },
+    {
+        "word": "Wrap up",
+        "meaning": "Paketlemek; Bitirmek (toplantı); Sıkı giyinmek"
+    },
+    {
+        "word": "Write off",
+        "meaning": "Gözden çıkarmak; Silmek (borç)"
+    },
+    {
+        "word": "Yield to",
+        "meaning": "Boyun eğmek"
+    },
+    {
+        "word": "Zoom in",
+        "meaning": "Yakınlaştırmak"
+    },
+    {
+        "word": "Zoom out",
+        "meaning": "Uzaklaştırmak"
+    }
+]

@@ -1,0 +1,49 @@
+import React from 'react';
+import Link from 'next/link';
+import dailyEnEs from '@/data/daily_en_es.json';
+
+export default function SpanishHubPage() {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  return (
+    <main className="min-h-screen bg-slate-50 py-16 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-black text-slate-900 mb-4 text-center">
+          Vocabulario de Inglés Diario (A-Z)
+        </h1>
+        <p className="text-slate-600 text-center mb-12 text-xl">
+          Aprende las palabras más comunes con ejemplos y pronunciación.
+        </p>
+
+        {/* Harf Grid'i */}
+        <div className="grid grid-cols-4 md:grid-cols-8 gap-3 mb-16">
+          {alphabet.map(letter => (
+            <Link key={letter} href={`#${letter}`} className="p-4 bg-white border border-slate-200 rounded-2xl text-center font-black text-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+              {letter}
+            </Link>
+          ))}
+        </div>
+
+        {/* Kelime Listesi */}
+        {alphabet.map(letter => {
+          const words = dailyEnEs.filter(w => w.word.startsWith(letter));
+          if (words.length === 0) return null;
+          return (
+            <section key={letter} id={letter} className="mb-12">
+              <h2 className="text-3xl font-black text-slate-800 mb-6 border-b-4 border-blue-500 inline-block">
+                {letter}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {words.map(w => (
+                  <Link key={w.word} href={`/es/vocabulary/${w.word.toLowerCase()}`} className="p-3 bg-white rounded-xl border border-slate-100 hover:shadow-md transition-shadow font-bold text-slate-700">
+                    {w.word} <span className="text-slate-300 font-normal ml-2">→ {w.meaning}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </main>
+  );
+}

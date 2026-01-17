@@ -1,0 +1,15 @@
+# Gereksiz dosyalar
+node_modules/
+.next/
+.env
+.env.local
+.DS_Store
+
+# Loglar
+npm-debug.log*
+yarn-debug.log*
+ts-debug.log*
+
+# Vercel
+.vercel
+scripts/enrich.js

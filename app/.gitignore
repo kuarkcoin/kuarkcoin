@@ -1,0 +1,19 @@
+# Dependencies
+/node_modules
+
+# Next.js Build Output
+/.next
+
+# Environment variables
+.env
+.env.local
+
+# Prisma
+/prisma/migrations
+*.db
+*.sqlite
+*.sqlite-journal
+
+# System Files
+.DS_Store
+Thumbs.db

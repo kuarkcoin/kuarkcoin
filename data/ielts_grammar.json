@@ -1,0 +1,502 @@
+[
+  {
+    "question": "If I ___ more time, I would take an IELTS preparation course.",
+    "options": {
+      "A": "have",
+      "B": "had",
+      "C": "would have",
+      "D": "am having"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "By this time next year, I ___ in London for six months.",
+    "options": {
+      "A": "will live",
+      "B": "am living",
+      "C": "will have been living",
+      "D": "have lived"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "Hardly ___ the classroom when the teacher started the test.",
+    "options": {
+      "A": "I entered",
+      "B": "did I enter",
+      "C": "I had entered",
+      "D": "had I entered"
+    },
+    "correct_option": "D"
+  },
+  {
+    "question": "If she had studied harder, she ___ the exam easily.",
+    "options": {
+      "A": "will pass",
+      "B": "would have passed",
+      "C": "passes",
+      "D": "would pass"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Not only ___ the essay on time, but she also checked it twice.",
+    "options": {
+      "A": "she finished",
+      "B": "did she finish",
+      "C": "finished she",
+      "D": "she did finish"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "You had better ___ your answers before you submit the paper.",
+    "options": {
+      "A": "check",
+      "B": "to check",
+      "C": "checked",
+      "D": "checking"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "If it ___ tomorrow, the speaking exam will be moved online.",
+    "options": {
+      "A": "rains",
+      "B": "rained",
+      "C": "will rain",
+      "D": "is raining"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "I wish I ___ about the test earlier; I would have prepared more.",
+    "options": {
+      "A": "knew",
+      "B": "had known",
+      "C": "know",
+      "D": "have known"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "No sooner ___ reading than the invigilator announced the end of the exam.",
+    "options": {
+      "A": "I had finished",
+      "B": "had I finished",
+      "C": "finished I",
+      "D": "I finished"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "If only he ___ the instructions carefully, he wouldn’t have made so many mistakes.",
+    "options": {
+      "A": "reads",
+      "B": "read",
+      "C": "had read",
+      "D": "would read"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "The more you practise, the ___ your fluency becomes.",
+    "options": {
+      "A": "good",
+      "B": "better",
+      "C": "best",
+      "D": "more better"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Students are required ___ their ID cards during the exam.",
+    "options": {
+      "A": "to show",
+      "B": "show",
+      "C": "showing",
+      "D": "to showing"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "It’s high time the school ___ the outdated listening equipment.",
+    "options": {
+      "A": "replaces",
+      "B": "replaced",
+      "C": "has replaced",
+      "D": "would replace"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Rarely ___ such a challenging writing task.",
+    "options": {
+      "A": "students are given",
+      "B": "are students given",
+      "C": "given are students",
+      "D": "students given are"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Neither the teacher nor the students ___ happy with the new timetable.",
+    "options": {
+      "A": "is",
+      "B": "are",
+      "C": "have been",
+      "D": "were"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "He didn’t remember ___ the payment for the exam fee.",
+    "options": {
+      "A": "to make",
+      "B": "making",
+      "C": "to have made",
+      "D": "make"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "By the time we arrived, the registration desk ___ .",
+    "options": {
+      "A": "closed",
+      "B": "had closed",
+      "C": "has closed",
+      "D": "was closing"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Scarcely ___ the reading section when the power went out.",
+    "options": {
+      "A": "we started",
+      "B": "did we start",
+      "C": "had we started",
+      "D": "we had started"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "If they ___ the deadline, they will have to pay an extra fee.",
+    "options": {
+      "A": "miss",
+      "B": "missed",
+      "C": "had missed",
+      "D": "would miss"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "Supposing you ___ the band score you need, what will you do?",
+    "options": {
+      "A": "don’t get",
+      "B": "didn’t get",
+      "C": "won’t get",
+      "D": "hasn’t got"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "Hardly anyone ___ to finish the listening part on time.",
+    "options": {
+      "A": "manage",
+      "B": "manages",
+      "C": "is managing",
+      "D": "have managed"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "We’re looking forward to ___ the results of our tests.",
+    "options": {
+      "A": "receive",
+      "B": "receiving",
+      "C": "have received",
+      "D": "to receive"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "If I ___ you, I would focus more on academic vocabulary.",
+    "options": {
+      "A": "am",
+      "B": "were",
+      "C": "had been",
+      "D": "would be"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Only after the examiner repeated the question ___ what he meant.",
+    "options": {
+      "A": "I understood",
+      "B": "understood I",
+      "C": "did I understand",
+      "D": "had I understood"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "Not until the practice test ___ how difficult the real exam would be.",
+    "options": {
+      "A": "we realised",
+      "B": "did we realise",
+      "C": "we had realised",
+      "D": "were we realising"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "If she ___ earlier, she wouldn’t have missed the reading test.",
+    "options": {
+      "A": "left",
+      "B": "had left",
+      "C": "would leave",
+      "D": "was leaving"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "No matter how hard he ___, his score never seems to improve.",
+    "options": {
+      "A": "studied",
+      "B": "has studied",
+      "C": "studies",
+      "D": "is studying"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "Were the instructions clearer, fewer students ___ confused.",
+    "options": {
+      "A": "will be",
+      "B": "would be",
+      "C": "are",
+      "D": "were"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Having ___ the passage twice, she still couldn’t answer the last question.",
+    "options": {
+      "A": "read",
+      "B": "reading",
+      "C": "to read",
+      "D": "been read"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "Should you ___ any problems during the exam, raise your hand immediately.",
+    "options": {
+      "A": "have",
+      "B": "had",
+      "C": "having",
+      "D": "to have"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "The examiner spoke so quickly that several candidates ___ follow him.",
+    "options": {
+      "A": "can’t",
+      "B": "couldn’t",
+      "C": "weren’t able",
+      "D": "hadn’t been able to"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "IELTS, as well as other international exams, ___ a good measure of academic English.",
+    "options": {
+      "A": "provide",
+      "B": "provide for",
+      "C": "provides",
+      "D": "is providing"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "No sooner had the results been published ___ the website crashed.",
+    "options": {
+      "A": "when",
+      "B": "than",
+      "C": "that",
+      "D": "then"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "If he ___ his speaking skills regularly, he would sound much more natural.",
+    "options": {
+      "A": "practised",
+      "B": "had practised",
+      "C": "practises",
+      "D": "has practised"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "This time tomorrow, I ___ my listening test.",
+    "options": {
+      "A": "will have taken",
+      "B": "am taking",
+      "C": "will be taking",
+      "D": "have taken"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "Not only ___ extra classes, but he also studies on his own every evening.",
+    "options": {
+      "A": "he attends",
+      "B": "does he attend",
+      "C": "attends he",
+      "D": "he does attend"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "If the exam ___ postponed, the students would be very disappointed.",
+    "options": {
+      "A": "is",
+      "B": "was",
+      "C": "were",
+      "D": "had been"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "By the time you finish this course, you ___ over twenty practice tests.",
+    "options": {
+      "A": "will take",
+      "B": "will have taken",
+      "C": "have taken",
+      "D": "are taking"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Were it not for his strong accent, his speaking score ___ even higher.",
+    "options": {
+      "A": "will be",
+      "B": "would be",
+      "C": "was",
+      "D": "has been"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Barely ___ the hall when the instructions started.",
+    "options": {
+      "A": "we entered",
+      "B": "did we enter",
+      "C": "had we entered",
+      "D": "were we entering"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "If she should ___ any questions, she can email the coordinator.",
+    "options": {
+      "A": "have",
+      "B": "had",
+      "C": "has",
+      "D": "having"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "I’d rather you ___ your essay again before submitting it.",
+    "options": {
+      "A": "check",
+      "B": "checked",
+      "C": "have checked",
+      "D": "would check"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Under no circumstances ___ your mobile phone during the test.",
+    "options": {
+      "A": "you should use",
+      "B": "should you use",
+      "C": "you use",
+      "D": "do you use"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "Not having ___ the task properly, he misunderstood what to do.",
+    "options": {
+      "A": "read",
+      "B": "reading",
+      "C": "to read",
+      "D": "been reading"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "If they ___ the practice tests seriously, they might already have improved.",
+    "options": {
+      "A": "take",
+      "B": "took",
+      "C": "had taken",
+      "D": "have taken"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "Seldom ___ such detailed feedback after a mock exam.",
+    "options": {
+      "A": "students receive",
+      "B": "do students receive",
+      "C": "students are receiving",
+      "D": "are receiving students"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "No longer ___ to register in person; you can sign up online instead.",
+    "options": {
+      "A": "candidates need",
+      "B": "do candidates need",
+      "C": "candidates are needing",
+      "D": "are needing candidates"
+    },
+    "correct_option": "B"
+  },
+  {
+    "question": "If your writing ___ more clearly structured, you would get a higher band score.",
+    "options": {
+      "A": "is",
+      "B": "was",
+      "C": "were",
+      "D": "had been"
+    },
+    "correct_option": "C"
+  },
+  {
+    "question": "Provided that you ___ all parts of the exam, your result will be valid for two years.",
+    "options": {
+      "A": "complete",
+      "B": "completed",
+      "C": "will complete",
+      "D": "had completed"
+    },
+    "correct_option": "A"
+  },
+  {
+    "question": "Hardly ever ___ to resit the test if they meet their target score.",
+    "options": {
+      "A": "candidates choose",
+      "B": "do candidates choose",
+      "C": "candidates are choosing",
+      "D": "are candidates choosing"
+    },
+    "correct_option": "B"
+  }
+]
