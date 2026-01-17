@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://englishmeter.net/sitemap.xml
