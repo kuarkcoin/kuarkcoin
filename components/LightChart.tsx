@@ -15,14 +15,12 @@ type Signal = {
   symbol: string;
   signal: string; // "BUY" | "SELL"
   price: number | null;
-  created_at: string; // ISO string
+  created_at: string; // ISO
 };
 
 type Props = {
   symbol: string;
   signals: Signal[];
-  resolution?: string; // şimdilik kullanılmıyor
-  days?: number;       // şimdilik kullanılmıyor
   selectedSignalId?: number | null;
 };
 
@@ -32,43 +30,42 @@ function toUTCTimestamp(iso: string): UTCTimestamp {
   return Math.floor(ms / 1000) as UTCTimestamp;
 }
 
-export default function LightChart({ symbol, signals, selectedSignalId }: Props) {
+export default function LightChart({ signals, selectedSignalId }: Props) {
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
 
-  // Sinyallerden "dummy" mum üretelim (şimdilik OHLC yoksa bile chart görünsün diye)
-  // Gerçek kullanımda bunu: API'den candle data çekerek değiştireceğiz.
-  const candleData = useMemo<CandlestickData<UTCTimestamp>[]>(() => {
-    const usable = signals
-      .filter((s) => s.price != null && s.created_at)
+  const usableSignals = useMemo(() => {
+    return [...signals]
+      .filter((s) => s.price != null && !!s.created_at)
       .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at));
+  }, [signals]);
 
-    if (usable.length === 0) return [];
+  const candleData = useMemo<CandlestickData<UTCTimestamp>[]>(() => {
+    if (usableSignals.length === 0) return [];
 
-    // aynı timestamp çakışmasın diye gerekirse +i saniye kaydır
-    return usable.map((s, i) => {
-      const base = (s.price ?? 0) as number;
+    return usableSignals.map((s, i) => {
+      const base = Number(s.price ?? 0);
       const t = (toUTCTimestamp(s.created_at) + i) as UTCTimestamp;
 
-      // basit sahte OHLC: grafiğin “boş” durmaması için
-      const open = base * 0.995;
-      const close = base * 1.005;
-      const high = Math.max(open, close) * 1.01;
-      const low = Math.min(open, close) * 0.99;
+      // sahte OHLC (sadece chart boş kalmasın diye)
+      const open = base * 0.999;
+      const close = base * 1.001;
+      const high = Math.max(open, close) * 1.002;
+      const low = Math.min(open, close) * 0.998;
 
       return { time: t, open, high, low, close };
     });
-  }, [signals]);
+  }, [usableSignals]);
 
   const markers = useMemo<SeriesMarker<UTCTimestamp>[]>(() => {
-    const usable = signals
-      .filter((s) => s.price != null && s.created_at)
-      .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at));
+    if (usableSignals.length === 0) return [];
 
-    return usable.map((s, i) => {
+    return usableSignals.map((s, i) => {
       const t = (toUTCTimestamp(s.created_at) + i) as UTCTimestamp;
-      const isBuy = String(s.signal).toUpperCase().includes("BUY");
+      const isBuy = String(s.signal).toUpperCase() === "BUY";
       const isSelected = selectedSignalId != null && s.id === selectedSignalId;
 
       return {
@@ -76,54 +73,55 @@ export default function LightChart({ symbol, signals, selectedSignalId }: Props)
         position: isBuy ? "belowBar" : "aboveBar",
         shape: isBuy ? "arrowUp" : "arrowDown",
         text: `${isBuy ? "BUY" : "SELL"}${isSelected ? " ★" : ""}`,
-        // color belirtmek istersen ekleyebilirsin; şart değil
+        // renk istersen:
+        color: isBuy ? "#22c55e" : "#ef4444",
       };
     });
-  }, [signals, selectedSignalId]);
+  }, [usableSignals, selectedSignalId]);
 
-  // Chart init
+  // Chart init + resize observer
   useEffect(() => {
     if (!containerRef.current) return;
-
-    // Daha önce init olduysa tekrar kurma
     if (chartRef.current) return;
 
     const el = containerRef.current;
 
     const chart = createChart(el, {
-      width: el.clientWidth,
-      height: el.clientHeight || 320, // mobilde h=0 olmasın
+      width: el.clientWidth || 800,
+      height: el.clientHeight || 360,
       layout: {
-        background: { color: "#0b0f19" },
+        background: { color: "#000000" },
         textColor: "#d1d5db",
       },
       grid: {
-        vertLines: { color: "rgba(255,255,255,0.06)" },
-        horzLines: { color: "rgba(255,255,255,0.06)" },
+        vertLines: { color: "rgba(255,255,255,0.08)" },
+        horzLines: { color: "rgba(255,255,255,0.08)" },
       },
-      timeScale: {
-        timeVisible: true,
-        secondsVisible: false,
-      },
-      rightPriceScale: {
-        borderVisible: false,
-      },
-      crosshair: {
-        mode: 1,
-      },
+      rightPriceScale: { borderVisible: false },
+      timeScale: { borderVisible: false, timeVisible: true, secondsVisible: false },
+      crosshair: { mode: 1 },
     });
 
-    const series = chart.addCandlestickSeries();
+    const series = chart.addCandlestickSeries({
+      upColor: "#22c55e",
+      downColor: "#ef4444",
+      borderVisible: false,
+      wickUpColor: "#22c55e",
+      wickDownColor: "#ef4444",
+    });
 
     chartRef.current = chart;
     seriesRef.current = series;
 
-    // responsive resize
     const ro = new ResizeObserver(() => {
-      if (!chartRef.current || !containerRef.current) return;
+      if (!containerRef.current || !chartRef.current) return;
+      const w = containerRef.current.clientWidth;
+      const h = containerRef.current.clientHeight;
+
+      // 🔥 kritik: height 0 gelirse düşmeyelim
       chartRef.current.applyOptions({
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight || 320,
+        width: w || 800,
+        height: (h && h >= 200) ? h : 360,
       });
     });
 
@@ -151,16 +149,20 @@ export default function LightChart({ symbol, signals, selectedSignalId }: Props)
 
     series.setData(candleData);
     series.setMarkers(markers);
-
     chart.timeScale().fitContent();
   }, [candleData, markers]);
 
   return (
-    <div className="w-full h-full min-h-[320px] bg-[#0b0f19] rounded-xl overflow-hidden">
-      <div ref={containerRef} className="w-full h-full" />
-      {signals?.length ? null : (
-        <div className="absolute inset-0 flex items-center justify-center text-white/70">
-          Veri yok
+    <div
+      ref={wrapperRef}
+      className="relative w-full h-full min-h-[360px] bg-black rounded-xl overflow-hidden"
+    >
+      {/* container kesin yükseklik alsın */}
+      <div ref={containerRef} className="absolute inset-0 w-full h-full min-h-[360px]" />
+
+      {candleData.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+          Sinyal verisi bekleniyor...
         </div>
       )}
     </div>
