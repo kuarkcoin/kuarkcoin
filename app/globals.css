@@ -1,9 +1,0 @@
-@tailwind base;
-@tailwind components; 
-@tailwind utilities;
-:root { --container: 960px; }
-body { @apply bg-slate-50 text-slate-900; }
-.container { max-width: var(--container); margin: 0 auto; padding: 1rem; }
-.btn { @apply inline-flex items-center justify-center rounded-2xl border px-4 py-2; }
-.btn-primary { @apply bg-brand text-white hover:bg-brand-dark border-brand; }
-.card { @apply rounded-2xl border border-slate-200 bg-white shadow-sm p-6; }
