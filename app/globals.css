@@ -1,4 +1,8 @@
-/* Tüm elemanlar için box-sizing ayarı (Layout bozulmalarını önler) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* opsiyonel: senin resetlerin */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -7,17 +11,4 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-
-  /* Daha akıcı bir font görünümü için */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Yatay kaydırmayı engellemek için (opsiyonel ama önerilir) */
-  overflow-x: hidden;
-}
-
-/* Next.js'in ana kapsayıcısı için (Full-height layoutlar için kritik) */
-#__next, [data-nextjs-scroll-focus-boundary] {
-  min-height: 100%;
 }
