@@ -1,4 +1,6 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { headers } from "next/headers";
 
 type SignalRow = {
   id: number;
@@ -24,7 +26,7 @@ function symbolToPlain(sym: string) {
   return sym?.split(":")[1] ?? sym;
 }
 
-function Badge({ children }: { children: React.ReactNode }) {
+function Badge({ children }: { children: ReactNode }) {
   return (
     <span className="text-[11px] px-2.5 py-1 rounded-full border border-gray-800 bg-[#0b0f14] text-gray-200">
       {children}
@@ -34,10 +36,15 @@ function Badge({ children }: { children: React.ReactNode }) {
 
 async function getLatestSignals(): Promise<SignalRow[]> {
   try {
-    // local dev/prod fark etmesin diye relative fetch:
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/api/signals`, {
-      cache: "no-store",
-    });
+    // ✅ Server-side absolute URL üret
+    const h = headers();
+    const host = h.get("x-forwarded-host") ?? h.get("host");
+    const proto = h.get("x-forwarded-proto") ?? "https";
+    if (!host) return [];
+
+    const url = `${proto}://${host}/api/signals`;
+
+    const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) return [];
     const json = await res.json();
     const arr: SignalRow[] = json.data ?? [];
@@ -243,7 +250,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-gray-800 bg-[#0b0f14]">
         <div className="mx-auto max-w-6xl px-4 py-8 text-xs text-gray-500 flex items-center justify-between">
           <span>© {new Date().getFullYear()} KUARK</span>
