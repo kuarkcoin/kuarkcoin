@@ -3,14 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
-import {
-  ASSET_LISTS,
-  type AssetCategory,
-  REASON_LABEL,
-  parseReasons,
-  symbolToPlain,
-  timeAgo,
-} from "@/constants/terminal";
+import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 
 // ── UI Bileşenleri ────────────────────────────────
 function HamburgerIcon({ open }: { open: boolean }) {
@@ -79,7 +72,8 @@ function SignalSkeleton() {
 export default function TerminalPage() {
   // ── core state ───────────────────────────────────
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
-  const [activeCategory, setActiveCategory] = useState<AssetCategory>("NASDAQ");
+  const [activeCategory, setActiveCategory] =
+    useState<keyof typeof ASSETS>("NASDAQ");
   const [searchQuery, setSearchQuery] = useState("");
 
   // mobil hamburger
@@ -88,10 +82,10 @@ export default function TerminalPage() {
   // signals panel selection
   const [selectedSignalId, setSelectedSignalId] = useState<number | null>(null);
 
-  // seçili sembole göre filtre toggle
+  // ✅ seçili sembole göre filtre toggle
   const [onlySelectedSymbol, setOnlySelectedSymbol] = useState(false);
 
-  // API + polling hook
+  // ✅ API + polling hook (LightChart iptal, TV var)
   const {
     signals,
     loadingSignals,
@@ -101,22 +95,23 @@ export default function TerminalPage() {
     setOutcome,
   } = useSignals({ pollMs: 10000 });
 
-  // panelde gerçekten son 20
+  // ✅ Limit: panelde gerçekten son 20
   const LIMIT = 20;
 
-  // ✅ prefix seçimi (BIST dahil!)
-  const pickPrefix = useCallback((cat: AssetCategory) => {
-    if (cat === "CRYPTO") return "BINANCE";
-    if (cat === "ETF") return "AMEX";
-    if (cat === "BIST") return "BIST";
-    return "NASDAQ";
+  // ✅ Prefix (BIST dahil)
+  const pickPrefix = useCallback((cat: keyof typeof ASSETS) => {
+    return cat === "CRYPTO"
+      ? "BINANCE"
+      : cat === "ETF"
+      ? "AMEX"
+      : cat === "BIST"
+      ? "BIST"
+      : "NASDAQ";
   }, []);
 
-  // ✅ never/toLowerCase hatası yok: ASSET_LISTS tipli
   const filteredAssets = useMemo(() => {
-    const q = searchQuery.toLowerCase();
-    return ASSET_LISTS[activeCategory].filter((sym) =>
-      sym.toLowerCase().includes(q)
+    return ASSETS[activeCategory].filter((sym) =>
+      sym.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [activeCategory, searchQuery]);
 
@@ -124,9 +119,9 @@ export default function TerminalPage() {
     return new Set(signals.map((r) => symbolToPlain(r.symbol)));
   }, [signals]);
 
-  // Gösterilecek sinyaller: önce limit, sonra opsiyonel sembol filtresi
+  // ✅ Gösterilecek sinyaller: önce limit, sonra opsiyonel sembol filtresi
   const visibleSignals = useMemo(() => {
-    const last = signals.slice(0, LIMIT); // API newest-first varsayımı
+    const last = signals.slice(0, LIMIT); // API newest-first ise doğru
     if (!onlySelectedSymbol) return last;
     const plainSel = symbolToPlain(selectedSymbol);
     return last.filter((s) => symbolToPlain(s.symbol) === plainSel);
@@ -139,17 +134,47 @@ export default function TerminalPage() {
     return Math.round((wins / decided.length) * 100);
   }, [visibleSignals]);
 
-  const totalAssetsCount = useMemo(() => {
-    return (Object.keys(ASSET_LISTS) as AssetCategory[]).reduce(
-      (sum, k) => sum + ASSET_LISTS[k].length,
-      0
-    );
-  }, []);
+  // ✅ total asset count: BIST eklendi
+  const totalAssetsCount =
+    ASSETS.NASDAQ.length +
+    ASSETS.ETF.length +
+    ASSETS.CRYPTO.length +
+    (ASSETS.BIST?.length ?? 0);
 
   const tvUrl = useMemo(() => {
     const s = encodeURIComponent(selectedSymbol);
     return `https://www.tradingview.com/chart/?symbol=${s}`;
   }, [selectedSymbol]);
+
+  // ── 🧠 AI yorum state ────────────────────────────
+  const [aiCommentary, setAiCommentary] = useState<string>("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string>("");
+
+  const runAiCommentary = useCallback(async () => {
+    try {
+      setAiLoading(true);
+      setAiError("");
+
+      const res = await fetch("/api/ai/top-commentary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topBuy: todayTopBuy,
+          topSell: todayTopSell,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json?.ok) throw new Error(json?.error || "AI failed");
+
+      setAiCommentary(json.commentary || "");
+    } catch (err: any) {
+      setAiError(err?.message ?? "AI yorum alınamadı");
+    } finally {
+      setAiLoading(false);
+    }
+  }, [todayTopBuy, todayTopSell]);
 
   const SidebarContent = (
     <div className="h-full flex flex-col bg-[#0d1117]">
@@ -167,15 +192,15 @@ export default function TerminalPage() {
 
       {/* Kategori */}
       <div className="flex p-1.5 border-b border-gray-800">
-        {(Object.keys(ASSET_LISTS) as AssetCategory[]).map((cat) => (
+        {Object.keys(ASSETS).map((cat) => (
           <button
             key={cat}
             onClick={() => {
-              setActiveCategory(cat);
+              setActiveCategory(cat as any);
               setSearchQuery("");
             }}
             className={`flex-1 py-2.5 text-xs font-bold rounded transition-colors ${
-              activeCategory === cat
+              activeCategory === (cat as any)
                 ? "bg-blue-600 text-white shadow-sm"
                 : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/40"
             }`}
@@ -190,7 +215,7 @@ export default function TerminalPage() {
         <div className="relative">
           <input
             type="text"
-            placeholder="Sembol ara (örn. THYAO, TSLA, BTC)..."
+            placeholder="Sembol ara (örn. TSLA, BTC)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-[#161b22] border border-gray-700 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600"
@@ -384,7 +409,45 @@ export default function TerminalPage() {
                   </div>
                 </div>
 
-                {/* Günlük Top 5 BUY/SELL */}
+                {/* 🧠 AI Günlük Yorum */}
+                <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xs font-bold uppercase tracking-wide text-blue-300">
+                      🧠 AI Günlük Yorum (Top 5)
+                    </div>
+
+                    <button
+                      onClick={runAiCommentary}
+                      disabled={aiLoading}
+                      className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                        aiLoading
+                          ? "border-gray-700 text-gray-500"
+                          : "border-gray-700 hover:bg-gray-800 text-gray-200"
+                      }`}
+                      title="Top 5 BUY/SELL verisine göre yorum üret"
+                    >
+                      {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
+                    </button>
+                  </div>
+
+                  {aiError ? (
+                    <div className="text-xs text-red-400">{aiError}</div>
+                  ) : aiCommentary ? (
+                    <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-line">
+                      {aiCommentary}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500">
+                      Top 5 listesi hazır olunca “Yorumla”ya bas.
+                    </div>
+                  )}
+
+                  <div className="text-[10px] text-gray-600 mt-3">
+                    Not: Bu içerik yatırım tavsiyesi değildir; sinyal açıklamalarını özetler.
+                  </div>
+                </div>
+
+                {/* Günlük Top 5 BUY/SELL (DB’den) */}
                 <div className="grid grid-cols-1 gap-3">
                   <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
                     <div className="flex items-center justify-between mb-3">
