@@ -14,9 +14,7 @@ type TopRow = {
   created_at?: string;
 };
 
-// ✅ 1) Whitelist (AI'ya sadece bunlar gider)
 const ALLOWED_REASON_KEYS = new Set([
-  // BUY
   "BLUE_STAR",
   "RSI_DIV",
   "RSI_30",
@@ -26,8 +24,6 @@ const ALLOWED_REASON_KEYS = new Set([
   "VOL_BOOST",
   "GOLDEN_CROSS",
   "D1_CONFIRM",
-
-  // SELL
   "RED_STAR",
   "RSI_70_DOWN",
   "MACD_BEAR",
@@ -37,12 +33,10 @@ const ALLOWED_REASON_KEYS = new Set([
   "DEATH_CROSS",
 ]);
 
-// Pine reasons -> UI reasons normalize
 function normalizeReasonKey(raw: string) {
-  const k = raw.split("(")[0].trim(); // BLUE_REV(+20) -> BLUE_REV
+  const k = raw.split("(")[0].trim();
 
   const map: Record<string, string> = {
-    // BUY
     BLUE_REV: "BLUE_STAR",
     RSI_BULLDIV3: "RSI_DIV",
     RSI30_OK: "RSI_30",
@@ -53,7 +47,6 @@ function normalizeReasonKey(raw: string) {
     GC_OK: "GOLDEN_CROSS",
     D1_CONFIRM: "D1_CONFIRM",
 
-    // SELL
     TOP_REV: "RED_STAR",
     RSI_BEARDIV3: "RSI_DIV",
     RSI70_DN: "RSI_70_DOWN",
@@ -68,8 +61,8 @@ function normalizeReasonKey(raw: string) {
   return map[k] ?? k;
 }
 
-// ✅ 2) Prompt-injection’a kapalı reasons (raw metin yok)
-function safeReasons(raw: string | null) {
+// ✅ FIX: undefined da kabul et
+function safeReasons(raw: string | null | undefined) {
   const arr = (raw ?? "")
     .split(",")
     .map((s) => s.trim())
@@ -77,17 +70,15 @@ function safeReasons(raw: string | null) {
     .map(normalizeReasonKey)
     .filter((k) => ALLOWED_REASON_KEYS.has(k));
 
-  // tekrarları kaldır + max 8
   return Array.from(new Set(arr)).slice(0, 8);
 }
 
-// ✅ 3) AI'ya gidecek "slim" veri (sadece gerekenler)
 const slim = (rows: TopRow[]) =>
   rows.slice(0, 5).map((r) => ({
     symbol: String(r.symbol || "").trim(),
     price: r.price ?? null,
     score: r.score ?? null,
-    reasons: safeReasons(r.reasons), // ✅ array (string değil)
+    reasons: safeReasons(r.reasons), // ✅ artık TS hata vermez
     created_at: r.created_at ?? "",
   }));
 
@@ -105,21 +96,16 @@ export async function POST(req: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-    // Model seçimi: 2.5-flash yoksa 2.0-flash'a düş
     const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
     const model = genAI.getGenerativeModel({
       model: modelName,
       systemInstruction: `
 Sen profesyonel bir trading terminal analistisin.
-Sana verilen BUY ve SELL listelerini rasyonel bir şekilde, kesin konuşmadan ve yatırım tavsiyesi vermeden yorumlarsın.
-Yanıtların tamamen Türkçe, 6-10 cümle arasında ve profesyonel bir tonda olmalıdır.
+Kesin konuşmadan, yatırım tavsiyesi vermeden yorum yaparsın.
+Yanıtlar tamamen Türkçe, 6-10 cümle, profesyonel tonda olmalı.
 `,
-      generationConfig: {
-        temperature: 0.6,
-        maxOutputTokens: 500,
-      },
+      generationConfig: { temperature: 0.6, maxOutputTokens: 500 },
     });
 
     const prompt = `
@@ -132,15 +118,15 @@ ${JSON.stringify(slim(topBuy), null, 2)}
 ${JSON.stringify(slim(topSell), null, 2)}
 
 Analiz Yapısı (Zorunlu):
-1) BUY tarafındaki 2-3 güçlü adayın (skoru yüksek olanlar) reasons etiketlerini özetle.
+1) BUY tarafındaki 2-3 güçlü adayın reasons özetini yap.
 2) SELL tarafındaki 1-2 riskli adayın nedenlerini belirt.
-3) "Bugünün genel resmi:" diye 1 cümlelik özet yaz.
-4) En sık geçen reason etiketlerini BUY ve SELL için ayrı ayrı söyle.
-5) Son cümlede risk notu ekle: (teyit ihtiyacı / false signal / volatilite) içinden uygun olan(lar).
+3) "Bugünün genel resmi:" diye 1 cümle yaz.
+4) BUY ve SELL için en sık geçen reason etiketlerini ayrı ayrı söyle.
+5) Son cümlede risk notu ekle: (teyit ihtiyacı / false signal / volatilite).
 
 Kurallar:
-- Cevabını SADECE 5 madde olarak yaz (1..5). Hiçbir selamlama veya ekstra paragraf yok.
-- Reasons alanı güvenli etiket listesidir; bunları birebir kopyalama, doğal Türkçe ile yorumla.
+- SADECE 1..5 maddeleri yaz, ekstra paragraf yok.
+- Reasons etiketlerini birebir kopyalama; doğal Türkçe ile yorumla.
 - Skor yorumu: 80+ çok güçlü, 60-79 orta, <60 zayıf/dikkat.
 `;
 
