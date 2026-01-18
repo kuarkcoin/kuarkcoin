@@ -7,25 +7,26 @@ export type SignalRow = {
   id: number;
   created_at: string;
   symbol: string;
-  signal: string;
+  signal: string; // BUY/SELL
   price: number | null;
   score: number | null;
   reasons: string | null;
   outcome: "WIN" | "LOSS" | null;
 };
 
-type Options = {
+type UseSignalsOpts = {
   pollMs?: number;
 };
 
-export function useSignals(opts: Options = {}) {
+export function useSignals(opts: UseSignalsOpts = {}) {
   const pollMs = opts.pollMs ?? 10000;
 
   const [signals, setSignals] = useState<SignalRow[]>([]);
   const [loadingSignals, setLoadingSignals] = useState(true);
-
   const [todayTopBuy, setTodayTopBuy] = useState<SignalRow[]>([]);
   const [todayTopSell, setTodayTopSell] = useState<SignalRow[]>([]);
+
+  const snapshotRef = useRef<SignalRow[]>([]);
 
   const loadSignals = useCallback(async () => {
     try {
@@ -33,7 +34,7 @@ export function useSignals(opts: Options = {}) {
       const res = await fetch("/api/signals", { cache: "no-store" });
       if (!res.ok) throw new Error("Signals fetch failed");
       const json = await res.json();
-      setSignals(json.data ?? []);
+      setSignals((json.data ?? []) as SignalRow[]);
     } catch (e) {
       console.error("Signals yüklenemedi:", e);
     } finally {
@@ -46,8 +47,8 @@ export function useSignals(opts: Options = {}) {
       const res = await fetch("/api/signals?scope=todayTop", { cache: "no-store" });
       if (!res.ok) throw new Error("Top fetch failed");
       const json = await res.json();
-      setTodayTopBuy(json.topBuy ?? []);
-      setTodayTopSell(json.topSell ?? []);
+      setTodayTopBuy((json.topBuy ?? []) as SignalRow[]);
+      setTodayTopSell((json.topSell ?? []) as SignalRow[]);
     } catch (e) {
       console.error("Günlük Top listesi alınamadı:", e);
     }
@@ -57,11 +58,10 @@ export function useSignals(opts: Options = {}) {
     await Promise.all([loadSignals(), loadTodayTop()]);
   }, [loadSignals, loadTodayTop]);
 
-  // Optimistic update helper
-  const snapshotRef = useRef<SignalRow[]>([]);
   const setOutcome = useCallback(
     async (id: number, outcome: "WIN" | "LOSS" | null) => {
       snapshotRef.current = signals;
+
       setSignals((prev) => prev.map((r) => (r.id === id ? { ...r, outcome } : r)));
 
       try {
@@ -72,7 +72,7 @@ export function useSignals(opts: Options = {}) {
         });
         if (!res.ok) throw new Error("Update failed");
         await refreshAll();
-      } catch (e) {
+      } catch (err) {
         setSignals(snapshotRef.current);
         alert("Durum güncellenemedi.");
       }
@@ -82,7 +82,7 @@ export function useSignals(opts: Options = {}) {
 
   useEffect(() => {
     refreshAll();
-    const t = setInterval(refreshAll, pollMs);
+    const t = setInterval(() => refreshAll(), pollMs);
     return () => clearInterval(t);
   }, [refreshAll, pollMs]);
 
