@@ -98,9 +98,16 @@ export default function TerminalPage() {
   // ✅ Limit: panelde gerçekten son 20
   const LIMIT = 20;
 
- const pickPrefix = useCallback((cat: keyof typeof ASSETS) => {
-  return cat === "CRYPTO" ? "BINANCE" : cat === "ETF" ? "AMEX" : cat === "BIST" ? "BIST" : "NASDAQ";
-}, []);
+  // ✅ Prefix (BIST dahil)
+  const pickPrefix = useCallback((cat: keyof typeof ASSETS) => {
+    return cat === "CRYPTO"
+      ? "BINANCE"
+      : cat === "ETF"
+      ? "AMEX"
+      : cat === "BIST"
+      ? "BIST"
+      : "NASDAQ";
+  }, []);
 
   const filteredAssets = useMemo(() => {
     return ASSETS[activeCategory].filter((sym) =>
@@ -127,13 +134,47 @@ export default function TerminalPage() {
     return Math.round((wins / decided.length) * 100);
   }, [visibleSignals]);
 
+  // ✅ total asset count: BIST eklendi
   const totalAssetsCount =
-    ASSETS.NASDAQ.length + ASSETS.ETF.length + ASSETS.CRYPTO.length;
+    ASSETS.NASDAQ.length +
+    ASSETS.ETF.length +
+    ASSETS.CRYPTO.length +
+    (ASSETS.BIST?.length ?? 0);
 
   const tvUrl = useMemo(() => {
     const s = encodeURIComponent(selectedSymbol);
     return `https://www.tradingview.com/chart/?symbol=${s}`;
   }, [selectedSymbol]);
+
+  // ── 🧠 AI yorum state ────────────────────────────
+  const [aiCommentary, setAiCommentary] = useState<string>("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string>("");
+
+  const runAiCommentary = useCallback(async () => {
+    try {
+      setAiLoading(true);
+      setAiError("");
+
+      const res = await fetch("/api/ai/top-commentary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topBuy: todayTopBuy,
+          topSell: todayTopSell,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json?.ok) throw new Error(json?.error || "AI failed");
+
+      setAiCommentary(json.commentary || "");
+    } catch (err: any) {
+      setAiError(err?.message ?? "AI yorum alınamadı");
+    } finally {
+      setAiLoading(false);
+    }
+  }, [todayTopBuy, todayTopSell]);
 
   const SidebarContent = (
     <div className="h-full flex flex-col bg-[#0d1117]">
@@ -365,6 +406,44 @@ export default function TerminalPage() {
                   </div>
                   <div className="text-[10px] text-gray-500 mt-2">
                     (Bu panel, şu an ekranda görünen sinyallere göre hesaplar)
+                  </div>
+                </div>
+
+                {/* 🧠 AI Günlük Yorum */}
+                <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xs font-bold uppercase tracking-wide text-blue-300">
+                      🧠 AI Günlük Yorum (Top 5)
+                    </div>
+
+                    <button
+                      onClick={runAiCommentary}
+                      disabled={aiLoading}
+                      className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                        aiLoading
+                          ? "border-gray-700 text-gray-500"
+                          : "border-gray-700 hover:bg-gray-800 text-gray-200"
+                      }`}
+                      title="Top 5 BUY/SELL verisine göre yorum üret"
+                    >
+                      {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
+                    </button>
+                  </div>
+
+                  {aiError ? (
+                    <div className="text-xs text-red-400">{aiError}</div>
+                  ) : aiCommentary ? (
+                    <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-line">
+                      {aiCommentary}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500">
+                      Top 5 listesi hazır olunca “Yorumla”ya bas.
+                    </div>
+                  )}
+
+                  <div className="text-[10px] text-gray-600 mt-3">
+                    Not: Bu içerik yatırım tavsiyesi değildir; sinyal açıklamalarını özetler.
                   </div>
                 </div>
 
