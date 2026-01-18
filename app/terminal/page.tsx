@@ -98,9 +98,9 @@ export default function TerminalPage() {
   // ✅ Limit: panelde gerçekten son 20
   const LIMIT = 20;
 
-  const pickPrefix = useCallback((cat: keyof typeof ASSETS) => {
-    return cat === "CRYPTO" ? "BINANCE" : cat === "ETF" ? "AMEX" : "NASDAQ";
-  }, []);
+ const pickPrefix = useCallback((cat: keyof typeof ASSETS) => {
+  return cat === "CRYPTO" ? "BINANCE" : cat === "ETF" ? "AMEX" : cat === "BIST" ? "BIST" : "NASDAQ";
+}, []);
 
   const filteredAssets = useMemo(() => {
     return ASSETS[activeCategory].filter((sym) =>
