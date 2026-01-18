@@ -1,131 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
-import LightChart from "@/components/LightChart";
-
-// ── Tipler ────────────────────────────────────────
-type SignalRow = {
-  id: number;
-  created_at: string;
-  symbol: string; // "NASDAQ:AAPL", "BINANCE:BTCUSDT", ...
-  signal: string; // "BUY" | "SELL"
-  price: number | null;
-  score: number | null;
-  reasons: string | null; // Pine: "BLUE_REV(+20),RSI_BULLDIV3(+15),..."
-  outcome: "WIN" | "LOSS" | null;
-};
-
-// ── Asset listeleri ───────────────────────────────
-const ASSETS = {
-  NASDAQ: [
-    "AAPL","MSFT","TSLA","NVDA","AMZN","GOOGL","META","AVGO","PEP","COST",
-    "ADBE","CSCO","AMD","NFLX","INTC","TMUS","CMCSA","TXN","AMGN","HON",
-    "SBUX","INTU","GILD","MDLZ","ISRG","BKNG","ADI","ADP","VRTX","REGN",
-    "PYPL","PANW","LRCX","MU","SNPS","CDNS","CSX","MAR","ORLY","KLAC",
-    "MNST","ASML","MELI","CHTR","KDP","CTAS","ADSK","PAYX","PCAR","MCHC",
-    "LULU","ON","MRVL","EXC","BKR","AEP","DXCM","IDXX","AZN","CPRT",
-    "GFS","FAST","MCHP","ROST","CTSH","ODFL","TEAM","ILMN","ALGN","WBD",
-    "JD","ZM","PDD","LCID","DDOG","ENPH","ABNB","WDAY","CEG","ANSS",
-    "BIIB","MDB","DASH","ZS","KLA","EA","CTRA","VRSK","EBAY","DLTR",
-    "ANET","CSGP","FTNT","MTCH","VRSN","SWKS","STX","WDC","TER","QRVO",
-    "SEDG","AKAM","FSLR","ALNY","RIVN","OKTA","DBX","SPLK","NTES","BIDU",
-    "PTON","DOCU","CRWD","NET","PATH","SNOW","U","AFRM","UPST","DKNG",
-    "SHOP","SE","TME","BILI","FUTU","LI","XPEV","NIO","GRAB","GME",
-    "AMC","PLTR","SOFI","COIN","HOOD","DNA","SQ","MQ","MARA","RIOT",
-    "MSTR","CLSK","HUT","CAN","BTBT","TSM","BABA","IQ","EDU","TAL",
-    "GOTU","DQ","JKS","CSIQ","SOL","SPI","SUNW","RUN","NOVA","HAS",
-    "MAT","PARA","FOXA","DIS","RBLX","TTD","MGNI","PUBM","PERI","APPS",
-    "STNE","PAGS","NU","DLO","XP","ITUB","BBD","BSBR","SAN","VALE"
-  ],
-  ETF: [
-    "SPY","QQQ","IVV","VOO","GLD","VTI","VEA","VWO","IEFA","AGG",
-    "BND","IJR","IWM","VTV","VUG","VXUS","IWF","IWD","VIG","IJH"
-  ],
-  CRYPTO: [
-    "BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","ADAUSDT","AVAXUSDT",
-    "DOGEUSDT","DOTUSDT","LINKUSDT","MATICUSDT","LTCUSDT","UNIUSDT","SHIBUSDT"
-  ],
-} as const;
-
-// ✅ UI rozet metinleri (normalize edilmiş key’ler)
-const REASON_LABEL: Record<string, string> = {
-  // BUY
-  BLUE_STAR: "⭐ Mavi Yıldız",
-  RSI_DIV: "🟤 RSI Uyumsuzluk",
-  RSI_30: "🟣 RSI 30 Üstü",
-  MACD_BULL: "📈 MACD Bull Cross",
-  MA5_20_UP: "📊 MA5>MA20",
-  VWAP_UP: "🟦 VWAP Üstü",
-  VOL_BOOST: "📊 Hacim Artışı",
-  GOLDEN_CROSS: "🟡 Golden Cross",
-  D1_CONFIRM: "🟩 Günlük Onay",
-
-  // SELL
-  RED_STAR: "🔻 Kırmızı Yıldız",
-  RSI_70_DOWN: "🔴 RSI 70 Altı",
-  MACD_BEAR: "📉 MACD Bear Cross",
-  MA5_20_DOWN: "⚠️ MA5<MA20",
-  VWAP_DOWN: "🔻 VWAP Altı",
-  SELL_PRESSURE: "⚡ Satış Baskısı (Vol)",
-  DEATH_CROSS: "⚫ Death Cross",
-
-  // backward compat
-  VWAP_DOWN_OLD: "🔻 VWAP Down",
-};
-
-// ── Yardımcılar ───────────────────────────────────
-function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "şimdi";
-  if (m < 60) return `${m}dk`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}sa`;
-  return `${Math.floor(h / 24)}g`;
-}
-
-function symbolToPlain(sym: string) {
-  return sym?.split(":")[1] ?? sym;
-}
-
-// Pine reasons -> UI reasons normalize
-function normalizeReasonKey(raw: string) {
-  const k = raw.split("(")[0].trim(); // BLUE_REV(+20) -> BLUE_REV
-
-  const map: Record<string, string> = {
-    // BUY
-    BLUE_REV: "BLUE_STAR",
-    RSI_BULLDIV3: "RSI_DIV",
-    RSI30_OK: "RSI_30",
-    MACD_OK: "MACD_BULL",
-    "MA5/20_OK": "MA5_20_UP",
-    VWAP_UP: "VWAP_UP",
-    VOL_UP: "VOL_BOOST",
-    GC_OK: "GOLDEN_CROSS",
-    D1_CONFIRM: "D1_CONFIRM",
-
-    // SELL
-    TOP_REV: "RED_STAR",
-    RSI_BEARDIV3: "RSI_DIV",
-    RSI70_DN: "RSI_70_DOWN",
-    MACD_DN: "MACD_BEAR",
-    VWAP_DN: "VWAP_DOWN",
-    "MA5/20_DN": "MA5_20_DOWN",
-    BEAR_CANDLE: "SELL_PRESSURE",
-    VOL_DUMP: "SELL_PRESSURE",
-    DEATH_CROSS: "DEATH_CROSS",
-  };
-
-  return map[k] ?? k;
-}
-
-function parseReasons(reasons: string | null) {
-  return (reasons || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map(normalizeReasonKey);
-}
+import { useCallback, useMemo, useState } from "react";
+import TradingViewWidget from "@/components/TradingViewWidget";
+import { useSignals, type SignalRow } from "@/hooks/useSignals";
+import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 
 // ── UI Bileşenleri ────────────────────────────────
 function HamburgerIcon({ open }: { open: boolean }) {
@@ -169,7 +47,30 @@ function ReasonBadges({ reasons }: { reasons: string | null }) {
   );
 }
 
+function SignalSkeleton() {
+  return (
+    <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117] animate-pulse">
+      <div className="flex justify-between items-start mb-3">
+        <div className="h-5 w-14 bg-gray-800 rounded" />
+        <div className="h-3 w-10 bg-gray-800 rounded" />
+      </div>
+      <div className="h-3 w-48 bg-gray-800 rounded mb-2" />
+      <div className="h-3 w-24 bg-gray-800 rounded" />
+      <div className="flex gap-2 mt-3">
+        <div className="h-5 w-20 bg-gray-800 rounded-full" />
+        <div className="h-5 w-24 bg-gray-800 rounded-full" />
+      </div>
+      <div className="flex gap-2 mt-4">
+        <div className="h-8 flex-1 bg-gray-800 rounded" />
+        <div className="h-8 flex-1 bg-gray-800 rounded" />
+        <div className="h-8 flex-1 bg-gray-800 rounded" />
+      </div>
+    </div>
+  );
+}
+
 export default function TerminalPage() {
+  // ── core state ───────────────────────────────────
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
   const [activeCategory, setActiveCategory] =
     useState<keyof typeof ASSETS>("NASDAQ");
@@ -178,17 +79,21 @@ export default function TerminalPage() {
   // mobil hamburger
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // signals
-  const [signals, setSignals] = useState<SignalRow[]>([]);
-  const [loadingSignals, setLoadingSignals] = useState(true);
+  // signals panel selection
   const [selectedSignalId, setSelectedSignalId] = useState<number | null>(null);
 
-  // ✅ Yeni: seçili sembole göre filtre toggle
+  // ✅ seçili sembole göre filtre toggle
   const [onlySelectedSymbol, setOnlySelectedSymbol] = useState(false);
 
-  // ✅ Günlük Top 5 (DB’den)
-  const [todayTopBuy, setTodayTopBuy] = useState<SignalRow[]>([]);
-  const [todayTopSell, setTodayTopSell] = useState<SignalRow[]>([]);
+  // ✅ API + polling hook (LightChart iptal, TV var)
+  const {
+    signals,
+    loadingSignals,
+    todayTopBuy,
+    todayTopSell,
+    refreshAll,
+    setOutcome,
+  } = useSignals({ pollMs: 10000 });
 
   // ✅ Limit: panelde gerçekten son 20
   const LIMIT = 20;
@@ -202,72 +107,6 @@ export default function TerminalPage() {
       sym.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [activeCategory, searchQuery]);
-
-  const loadSignals = useCallback(async () => {
-    try {
-      setLoadingSignals(true);
-      const res = await fetch("/api/signals", { cache: "no-store" });
-      if (!res.ok) throw new Error("Signals fetch failed");
-      const json = await res.json();
-      const arr: SignalRow[] = json.data ?? [];
-      setSignals(arr);
-    } catch (e) {
-      console.error("Signals yüklenemedi:", e);
-    } finally {
-      setLoadingSignals(false);
-    }
-  }, []);
-
-  const loadTodayTop = useCallback(async () => {
-    try {
-      const res = await fetch("/api/signals?scope=todayTop", { cache: "no-store" });
-      if (!res.ok) throw new Error("Top fetch failed");
-      const json = await res.json();
-      setTodayTopBuy(json.topBuy ?? []);
-      setTodayTopSell(json.topSell ?? []);
-    } catch (e) {
-      console.error("Günlük Top listesi alınamadı:", e);
-    }
-  }, []);
-
-  // ✅ Optimistic + rollback + başarılı olunca refresh
-  const snapshotRef = useRef<SignalRow[]>([]);
-  const setOutcome = useCallback(
-    async (id: number, outcome: "WIN" | "LOSS" | null) => {
-      snapshotRef.current = signals;
-
-      setSignals((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, outcome } : r))
-      );
-
-      try {
-        const res = await fetch("/api/signals", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, outcome }),
-        });
-        if (!res.ok) throw new Error("Update failed");
-        await loadSignals();
-        await loadTodayTop();
-      } catch (err) {
-        setSignals(snapshotRef.current);
-        alert("Durum güncellenemedi.");
-      }
-    },
-    [signals, loadSignals, loadTodayTop]
-  );
-
-  useEffect(() => {
-    loadSignals();
-    loadTodayTop();
-
-    const timer = setInterval(() => {
-      loadSignals();
-      loadTodayTop();
-    }, 10000);
-
-    return () => clearInterval(timer);
-  }, [loadSignals, loadTodayTop]);
 
   const signaledSymbols = useMemo(() => {
     return new Set(signals.map((r) => symbolToPlain(r.symbol)));
@@ -291,6 +130,11 @@ export default function TerminalPage() {
   const totalAssetsCount =
     ASSETS.NASDAQ.length + ASSETS.ETF.length + ASSETS.CRYPTO.length;
 
+  const tvUrl = useMemo(() => {
+    const s = encodeURIComponent(selectedSymbol);
+    return `https://www.tradingview.com/chart/?symbol=${s}`;
+  }, [selectedSymbol]);
+
   const SidebarContent = (
     <div className="h-full flex flex-col bg-[#0d1117]">
       <div className="p-5 border-b border-gray-800 bg-[#161b22]">
@@ -301,7 +145,7 @@ export default function TerminalPage() {
           <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/40" />
         </div>
         <p className="text-[10px] text-gray-500 mt-1 font-mono uppercase tracking-widest">
-          {totalAssetsCount} Assets • Live Alerts → Custom Chart
+          {totalAssetsCount} Assets • Live Alerts → TradingView
         </p>
       </div>
 
@@ -461,6 +305,16 @@ export default function TerminalPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              <a
+                href={tvUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors"
+                title="TradingView’de yeni sekmede aç"
+              >
+                TradingView’de Aç
+              </a>
+
               <button
                 onClick={() => setOnlySelectedSymbol((v) => !v)}
                 className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
@@ -474,10 +328,7 @@ export default function TerminalPage() {
               </button>
 
               <button
-                onClick={() => {
-                  loadSignals();
-                  loadTodayTop();
-                }}
+                onClick={refreshAll}
                 className="text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors"
               >
                 Yenile
@@ -487,16 +338,9 @@ export default function TerminalPage() {
 
           {/* Ana İçerik */}
           <div className="flex-1 flex flex-col md:flex-row min-h-0">
-            {/* Grafik */}
+            {/* Grafik (TradingView) */}
             <div className="flex-1 relative bg-black min-w-0">
-              <LightChart
-                symbol={selectedSymbol}
-                signals={signals}
-                resolution="15"
-                days={10}
-                // Eğer LightChart destekliyorsa:
-                // selectedSignalId={selectedSignalId}
-              />
+              <TradingViewWidget symbol={selectedSymbol} interval="15" theme="dark" />
             </div>
 
             {/* Sinyaller Paneli */}
@@ -524,7 +368,7 @@ export default function TerminalPage() {
                   </div>
                 </div>
 
-                {/* ✅ Günlük Top 5 BUY/SELL (DB’den) */}
+                {/* Günlük Top 5 BUY/SELL (DB’den) */}
                 <div className="grid grid-cols-1 gap-3">
                   <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
                     <div className="flex items-center justify-between mb-3">
@@ -537,7 +381,9 @@ export default function TerminalPage() {
                     </div>
 
                     {todayTopBuy.length === 0 ? (
-                      <div className="text-xs text-gray-500">Bugün BUY yok.</div>
+                      <div className="text-xs text-gray-500">
+                        {loadingSignals ? "Yükleniyor..." : "Bugün BUY yok."}
+                      </div>
                     ) : (
                       <div className="space-y-2">
                         {todayTopBuy.map((r) => (
@@ -582,7 +428,9 @@ export default function TerminalPage() {
                     </div>
 
                     {todayTopSell.length === 0 ? (
-                      <div className="text-xs text-gray-500">Bugün SELL yok.</div>
+                      <div className="text-xs text-gray-500">
+                        {loadingSignals ? "Yükleniyor..." : "Bugün SELL yok."}
+                      </div>
                     ) : (
                       <div className="space-y-2">
                         {todayTopSell.map((r) => (
@@ -617,14 +465,20 @@ export default function TerminalPage() {
                   </div>
                 </div>
 
-                {/* Signals list (tıklayınca chart seçilir) */}
-                {visibleSignals.length === 0 && !loadingSignals ? (
+                {/* Signals list */}
+                {loadingSignals ? (
+                  <div className="space-y-3">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <SignalSkeleton key={i} />
+                    ))}
+                  </div>
+                ) : visibleSignals.length === 0 ? (
                   <div className="p-6 text-center text-gray-500 text-sm">
                     Henüz sinyal yok.
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {visibleSignals.map((r) => {
+                    {visibleSignals.map((r: SignalRow) => {
                       const sig = String(r.signal || "").toUpperCase();
                       const isBuy = sig === "BUY";
                       const isSell = sig === "SELL";
