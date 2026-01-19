@@ -7,6 +7,22 @@ import { reasonsToTechSentences } from "@/lib/reasonTranslator";
 import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 
 // ── UI Bileşenleri ────────────────────────────────
+function scoreBadge(
+  signal: string | null | undefined,
+  score: number | null | undefined
+) {
+  const s = String(signal ?? "").toUpperCase();
+  const sc = Number(score ?? 0);
+
+  const strength =
+    sc >= 25 ? "ÇOK GÜÇLÜ" :
+    sc >= 18 ? "GÜÇLÜ" :
+    sc >= 12 ? "ORTA" : "ZAYIF";
+
+  if (s === "BUY") return `BUY • ${strength}`;
+  if (s === "SELL") return `SELL • ${strength}`;
+  return `${strength}`;
+}
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
     <div className="w-6 h-6 relative">
