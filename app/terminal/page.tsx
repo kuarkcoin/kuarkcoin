@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
+import { reasonsToTechSentences } from "@/lib/reasonTranslator";
 import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 
 // ── UI Bileşenleri ────────────────────────────────
