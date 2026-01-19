@@ -12,18 +12,8 @@ type SignalRow = {
   reasons: string | null;
 };
 
-function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "şimdi";
-  if (m < 60) return `${m}dk`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}sa`;
-  return `${Math.floor(h / 24)}g`;
-}
-
 function symbolToPlain(sym: string) {
-  return sym?.split(":")[1] ?? sym;
+  return sym?.includes(":") ? sym.split(":")[1] : sym;
 }
 
 function Badge({ children }: { children: ReactNode }) {
@@ -34,9 +24,41 @@ function Badge({ children }: { children: ReactNode }) {
   );
 }
 
+function parseReasons(reasons: string | null): string[] {
+  if (!reasons) return [];
+  // Virgül, noktalı virgül, pipe veya satır sonu ile ayrılmış olabilir
+  return reasons
+    .split(/[,;|\n]+/g)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 8); // kartı şişirmemek için
+}
+
+function formatPrice(n: number | null) {
+  if (n === null || Number.isNaN(n)) return "—";
+  const abs = Math.abs(n);
+  const decimals = abs >= 100 ? 2 : abs >= 1 ? 4 : 6; // crypto küçük fiyatlara daha çok ondalık
+  return new Intl.NumberFormat("tr-TR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+  }).format(n);
+}
+
+function formatDateTR(iso: string) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  // Server-side stabil gösterim: "18 Oca 2026 • 18:10"
+  return new Intl.DateTimeFormat("tr-TR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
+
 async function getLatestSignals(): Promise<SignalRow[]> {
   try {
-    // ✅ Server-side absolute URL üret
     const h = headers();
     const host = h.get("x-forwarded-host") ?? h.get("host");
     const proto = h.get("x-forwarded-proto") ?? "https";
@@ -44,12 +66,14 @@ async function getLatestSignals(): Promise<SignalRow[]> {
 
     const url = `${proto}://${host}/api/signals`;
 
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
     if (!res.ok) return [];
     const json = await res.json();
     const arr: SignalRow[] = json.data ?? [];
     return arr.slice(0, 6);
-  } catch {
+  } catch (e) {
+    // Dev’de faydalı; prod’da da Vercel logs’a düşer
+    console.error("getLatestSignals error:", e);
     return [];
   }
 }
@@ -157,6 +181,7 @@ export default async function HomePage() {
         {latest.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
             Henüz sinyal yok (veya <code className="text-gray-300">/api/signals</code> erişilemiyor).
+            <div className="mt-2 text-xs text-gray-600">Son kontrol: {formatDateTR(new Date().toISOString())}</div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -164,27 +189,38 @@ export default async function HomePage() {
               const sig = String(r.signal || "").toUpperCase();
               const isBuy = sig === "BUY";
               const isSell = sig === "SELL";
+              const plain = symbolToPlain(r.symbol);
+              const reasons = parseReasons(r.reasons);
+              const scoreNum = typeof r.score === "number" ? r.score : null;
+
+              const scoreClass =
+                scoreNum !== null && scoreNum >= 80
+                  ? "text-green-400"
+                  : scoreNum !== null && scoreNum >= 60
+                  ? "text-blue-300"
+                  : "text-white";
+
               return (
                 <Link
                   key={r.id}
-                  href="/terminal"
+                  href={`/terminal?focus=${encodeURIComponent(String(r.id))}`}
                   className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors"
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-xs text-gray-500">Sembol</div>
-                      <div className="text-base font-black truncate">{r.symbol}</div>
-                      <div className="text-xs text-gray-600 mt-0.5">
-                        {timeAgo(r.created_at)} • {symbolToPlain(r.symbol)}
+                      <div className="text-base font-black truncate">{plain}</div>
+                      <div className="text-xs text-gray-600 mt-0.5 truncate">
+                        {formatDateTR(r.created_at)} • {r.symbol}
                       </div>
                     </div>
 
                     <div
-                      className={`text-xs font-black px-2.5 py-1 rounded-lg border ${
+                      className={`shrink-0 text-xs font-black px-2.5 py-1 rounded-lg border ${
                         isBuy
-                          ? "border-green-700 text-green-300 bg-green-950/20"
+                          ? "border-green-600 text-green-300 bg-green-950/30"
                           : isSell
-                          ? "border-red-700 text-red-300 bg-red-950/20"
+                          ? "border-red-600 text-red-300 bg-red-950/30"
                           : "border-gray-700 text-gray-300 bg-gray-900/30"
                       }`}
                     >
@@ -194,16 +230,30 @@ export default async function HomePage() {
 
                   <div className="mt-3 flex items-center justify-between">
                     <div className="text-sm text-gray-200">
-                      Fiyat: <span className="font-bold text-white">{r.price ?? "—"}</span>
+                      Fiyat: <span className="font-bold text-white">{formatPrice(r.price)}</span>
                     </div>
                     <div className="text-sm text-gray-200">
-                      Skor: <span className="font-black text-white">{r.score ?? "—"}</span>
+                      Skor:{" "}
+                      <span className={`font-black ${scoreClass}`}>
+                        {scoreNum ?? "—"}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="mt-3 text-[11px] text-gray-500 line-clamp-2">
-                    {r.reasons || "—"}
-                  </div>
+                  {reasons.length > 0 ? (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {reasons.map((x) => (
+                        <span
+                          key={x}
+                          className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
+                        >
+                          {x}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-3 text-[11px] text-gray-500">—</div>
+                  )}
                 </Link>
               );
             })}
