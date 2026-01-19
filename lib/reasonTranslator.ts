@@ -3,95 +3,55 @@ import { REASON_META, type ReasonMeta } from "./reasonMap";
 
 export type ParsedReason = {
   key: string;
-  value?: string; // "+10" gibi
+  value?: string;
   meta: ReasonMeta;
 };
 
-export function parseReasonDetails(
-  details: string | null | undefined
-): ParsedReason[] {
+// "VOL_DUMP(+5)" -> { key:"VOL_DUMP", value:"+5" }
+function parseOne(part: string): ParsedReason | null {
+  const p = part.trim();
+  if (!p) return null;
+
+  // KEY veya KEY(VAL) formatını yakala
+  const m = p.match(/^([A-Z0-9_\/]+)(?:\(([^)]*)\))?$/);
+  if (!m) return null;
+
+  const key = m[1]?.trim();
+  const value = (m[2] ?? "").trim() || undefined;
+
+  const meta = REASON_META[key];
+  if (!meta) return null;
+
+  return { key, value, meta };
+}
+
+export function parseReasonDetails(details: string | null | undefined): ParsedReason[] {
   const raw = (details ?? "").trim();
   if (!raw) return [];
 
   return raw
     .split(",")
-    .flatMap((part): ParsedReason[] => {
-      const p = part.trim();
-      if (!p) return [];
-
-      // KEY(+10) veya KEY(anything)
-      const match = p.match(/^([A-Z0-9_\/]+)(?:\((.*)\))?$/);
-      if (!match) return [];
-
-      const key = (match[1] ?? "").trim();
-      const valueRaw = (match[2] ?? "").trim();
-      const meta = REASON_META[key];
-      if (!meta) return [];
-
-      const value = valueRaw.length ? valueRaw : undefined;
-      return [{ key, value, meta }];
-    })
-    .sort((a, b) => b.meta.priority - a.meta.priority);
+    .map(parseOne)
+    .filter((x): x is ParsedReason => x !== null) // ✅ null temizle (TS hatası çözülür)
+    .sort((a, b) => b.meta.priority - a.meta.priority); // ✅ öncelik
 }
 
-export function getTechnicalSummary(
+// ✅ Terminal’de gördüğün "teknik yorum" buradan üretilsin
+export function reasonsToTechSentences(
   details: string | null | undefined,
   limit = 4
-): string {
+) {
   const parsed = parseReasonDetails(details);
 
-  const seen = new Set<string>();
-  const out: string[] = [];
-
+  // Aynı key tekrarını tekle
+  const map = new Map<string, string>();
   for (const p of parsed) {
-    if (seen.has(p.key)) continue;
-    seen.add(p.key);
-
-    const sentence = p.meta.template(p.value);
-    if (sentence) out.push(sentence);
-
-    if (out.length >= limit) break;
+    if (!map.has(p.key)) {
+      map.set(p.key, p.meta.template(p.value));
+    }
   }
 
-  return out.join(" ").replace(/\s{2,}/g, " ").trim();
-}
+  const sentences = Array.from(map.values()).filter(Boolean);
 
-// Eski isimle uyumluluk (TerminalPage import'u kırılmasın)
-export function reasonsToTechSentences(details: string | null | undefined) {
-  const s = getTechnicalSummary(details, 4);
-  return s ? s : "";
-}
-
-export function scoreBadge(
-  signal: string | null | undefined,
-  score: number | null | undefined
-) {
-  const s = (signal ?? "").toUpperCase();
-  const sc = typeof score === "number" ? score : null;
-  if (sc == null) return "";
-
-  const level = sc >= 25 ? "ÇOK GÜÇLÜ" : sc >= 18 ? "ORTA" : "ZAYIF / TEYİT";
-  if (s === "BUY") return `BUY • ${level}`;
-  if (s === "SELL") return `SELL • ${level}`;
-  return `${level}`;
-}
-
-export function getSignalUI(
-  signal: string | null | undefined,
-  score: number | null | undefined
-) {
-  const s = (signal ?? "").toUpperCase();
-  const sc = typeof score === "number" ? score : 0;
-
-  const strength = sc >= 25 ? "GÜÇLÜ" : sc >= 18 ? "STANDART" : "ZAYIF";
-  const isBuy = s === "BUY";
-  const isSell = s === "SELL";
-
-  return {
-    strength,
-    icon: isBuy ? "↑" : isSell ? "↓" : "•",
-    color: isBuy ? "text-green-200" : isSell ? "text-red-200" : "text-gray-200",
-    bg: isBuy ? "bg-green-950/30" : isSell ? "bg-red-950/30" : "bg-gray-900/30",
-    border: isBuy ? "border-green-700" : isSell ? "border-red-700" : "border-gray-700",
-  };
+  return sentences.slice(0, limit).join(" ");
 }
