@@ -18,7 +18,7 @@ function cleanReasons(input?: string | null) {
     .replace(/[{}[\]]/g, " ")
     .replace(/\s{2,}/g, " ")
     .trim()
-    .slice(0, 380);
+    .slice(0, 500);
 }
 
 function toPrettySymbol(sym: string) {
@@ -34,26 +34,116 @@ function scoreBand(score?: number | null) {
   return "Zayıf";
 }
 
-function mapReasonsToTech(reasons: string) {
+// deterministik varyasyon: her sembol aynı cümleyi seçer ama semboller farklılaşır
+function stablePick(key: string, arr: string[]) {
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+  return arr[h % arr.length];
+}
+
+function confirmLine(symbol: string) {
+  return stablePick(symbol + "|confirm", [
+    "Teyit için kapanış gücü ve devam barları izlenmeli",
+    "Teyit adına takip eden 1-2 kapanış belirleyici olur",
+    "Teyit için trendin bozulmaması ve hacmin sönmemesi önemli",
+    "Teyit için destek/direnç çevresindeki kapanış davranışı kritik",
+  ]);
+}
+
+function riskLine(symbol: string) {
+  return stablePick(symbol + "|risk", [
+    "Zayıflama kalıcı olursa düzeltme derinleşebilir; risk yönetimi şart",
+    "Volatilite artarsa false sinyal ihtimali yükselir; stop/plan önemli",
+    "Sinyal bozulursa geri çekilme hızlanabilir; teyit arayın",
+    "Haber akışı ve sert spread hareketleri riski artırabilir; temkinli olun",
+  ]);
+}
+
+function mapReasonsToTech(reasons: string, symbol: string) {
   const r = (reasons || "").toLowerCase();
+  const out: string[] = [];
 
-  const points: string[] = [];
-
-  if (r.includes("macd")) points.push("MACD tarafında momentum dönüşü / kesişim etkisi");
-  if (r.includes("vwap üst")) points.push("VWAP üzeri tutunma trend teyidini güçlendiriyor");
-  if (r.includes("vwap alt")) points.push("VWAP altı fiyatlama zayıflama işareti olabilir");
-  if (r.includes("hacim")) points.push("Hacim davranışı katılımı destekliyor (teyit için önemli)");
-  if (r.includes("günlük onay")) points.push("Günlük zaman diliminden teyit sinyal kalitesini artırır");
-  if (r.includes("satış baskısı")) points.push("Satış baskısı/dağıtım ihtimali artmış görünüyor");
-  if (r.includes("rsi")) points.push("RSI bölgesi aşırılaşma / momentum yorgunluğu sinyali verebilir");
-
-  // hiç eşleşmezse genel ama teknik kal
-  if (points.length === 0) {
-    points.push("Etiketler genel momentum + trend teyidi + katılım (hacim) ekseninde okunmalı");
+  if (r.includes("macd")) {
+    out.push(
+      stablePick(symbol + "|macd", [
+        "MACD tarafında dönüş izi var; momentum yukarı çevirmeyi deniyor",
+        "MACD kesişim/dönüş etkisi, kısa vadede yön değişimi olasılığını artırıyor",
+        "MACD momentumu toparlıyor; hareketin kalitesi takip eden barlarda netleşir",
+      ])
+    );
   }
 
-  // 2-3 teknik cümleye sıkıştır
-  return points.slice(0, 3).join(". ") + ".";
+  if (r.includes("vwap üst")) {
+    out.push(
+      stablePick(symbol + "|vwapU", [
+        "VWAP üzerinde tutunma, alıcıların oyunda kaldığını gösteriyor",
+        "VWAP üstü fiyatlama trend tarafını destekliyor; geri test izlenebilir",
+        "VWAP üstü kalıcılık, dipten dönüş senaryosunu güçlendirebilir",
+      ])
+    );
+  }
+
+  if (r.includes("vwap alt")) {
+    out.push(
+      stablePick(symbol + "|vwapD", [
+        "VWAP altında kalma, güç kaybına işaret edebilir; tepki yükselişi satış yiyebilir",
+        "VWAP altı, zayıflama senaryosunu öne çıkarır; toparlanma teyit ister",
+        "VWAP altı fiyatlama sürerse momentum zayıf kalabilir",
+      ])
+    );
+  }
+
+  if (r.includes("hacim")) {
+    out.push(
+      stablePick(symbol + "|vol", [
+        "Hacim davranışı katılımı destekliyor; sürdürülebilirlik kritik",
+        "İşlem hacmi tarafında canlılık var; tek barlık patlamaya güvenme",
+        "Hacim eşliği varsa sinyalin kalitesi artar; kapanışlarla teyit aranmalı",
+      ])
+    );
+  }
+
+  if (r.includes("günlük onay") || r.includes("daily") || r.includes("1d")) {
+    out.push(
+      stablePick(symbol + "|mtf", [
+        "Günlük zaman diliminden teyit gelirse sinyalin güvenilirliği artar",
+        "MTF teyidi varsa hareketin devam etme ihtimali yükselir",
+      ])
+    );
+  }
+
+  if (r.includes("satış baskısı") || r.includes("dağıtım")) {
+    out.push(
+      stablePick(symbol + "|sellp", [
+        "Satış baskısı/dağıtım izleri varsa yükselişler zayıf kalabilir",
+        "Dağıtım ihtimali artıyorsa tepki hareketleri kısa sürebilir",
+        "Satış baskısı devam ederse destek seviyeleri hızlı test edilebilir",
+      ])
+    );
+  }
+
+  if (r.includes("rsi")) {
+    out.push(
+      stablePick(symbol + "|rsi", [
+        "RSI aşırı bölgeye yakınsa momentum yorgunluğu oluşabilir",
+        "RSI tarafı gerilimli; zayıflama kalıcı olursa düzeltme sertleşebilir",
+        "RSI’da aşırılık/soğuma sinyali varsa geri çekilme olasılığı artar",
+      ])
+    );
+  }
+
+  if (out.length === 0) {
+    out.push(
+      stablePick(symbol + "|gen", [
+        "Sinyal, momentum ve trend teyidi ekseninde okunmalı; kapanış davranışı belirleyici",
+        "Genel görünüm toparlanma denemesi; teyit için trend devamlılığına bakılmalı",
+        "Kısa vade yön arayışı var; sinyalin kalitesi takip eden barlarda netleşir",
+      ])
+    );
+  }
+
+  // 2 cümle yeter
+  return out.slice(0, 2).join(". ") + ".";
 }
 
 function pickTop2(rows: TopRow[]) {
@@ -64,6 +154,7 @@ function pickTop2(rows: TopRow[]) {
       symbol: toPrettySymbol(r.symbol),
       score: r.score ?? 0,
       reasons: cleanReasons(r.reasons),
+      price: r.price ?? null,
     }));
 }
 
@@ -71,7 +162,6 @@ function pickTop2(rows: TopRow[]) {
 function forceFiveBullets(text?: string | null) {
   if (!text) return null;
 
-  // markdown vb. temizle
   const cleaned = text
     .replace(/\*\*/g, "")
     .replace(/#+\s?/g, "")
@@ -83,14 +173,22 @@ function forceFiveBullets(text?: string | null) {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  // 1) / 1. / 1] gibi başlatanları yakala
   const bullets = lines.filter((l) => /^[1-5][\)\.\]]\s*/.test(l));
   if (bullets.length >= 5) return bullets.slice(0, 5).join("\n");
 
-  return null; // format kaçtıysa fallback
+  // bazen model tek paragraf döner; 1) 2) 3) ile bölmeyi dene
+  const parts = cleaned
+    .split(/(?=[1-5][\)\.\]]\s*)/g)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  const partsOk = parts.filter((p) => /^[1-5][\)\.\]]\s*/.test(p));
+  if (partsOk.length >= 5) return partsOk.slice(0, 5).join("\n");
+
+  return null;
 }
 
-// ✅ Kesin 5 madde (AI patlarsa bile)
+// ✅ Kesin 5 madde (AI patlarsa bile) - EZBERİ KIRAN versiyon
 function deterministicFallback(
   buy2: ReturnType<typeof pickTop2>,
   sell2: ReturnType<typeof pickTop2>
@@ -102,24 +200,55 @@ function deterministicFallback(
 
   const buyText = (x?: typeof b1) => {
     if (!x) return "Aday yok.";
-    const tech = mapReasonsToTech(x.reasons || "");
-    return `${x.symbol} (Skor: ${x.score} • ${scoreBand(x.score)}). ${tech} Teyit için kapanış davranışı ve trend devamlılığı izlenmeli.`;
+    const tech = mapReasonsToTech(x.reasons || "", x.symbol);
+    const conf = confirmLine(x.symbol);
+    const px =
+      x.price != null && Number.isFinite(x.price)
+        ? ` Fiyat: ${Number(x.price).toFixed(2)}.`
+        : "";
+    return `${x.symbol} (Skor: ${x.score} • ${scoreBand(x.score)}). ${tech}${px} ${conf}.`;
   };
 
   const sellText = (x?: typeof s1) => {
     if (!x) return "Aday yok (bugün güçlü bozulma/risk etiketleri öne çıkmıyor).";
-    const tech = mapReasonsToTech(x.reasons || "");
-    return `${x.symbol} (Skor: ${x.score} • ${scoreBand(x.score)}). ${tech} Risk: zayıflama kalıcı olursa geri çekilme derinleşebilir; teyit arayın.`;
+    const tech = mapReasonsToTech(x.reasons || "", x.symbol);
+    const rline = riskLine(x.symbol);
+    const px =
+      x.price != null && Number.isFinite(x.price)
+        ? ` Fiyat: ${Number(x.price).toFixed(2)}.`
+        : "";
+    return `${x.symbol} (Skor: ${x.score} • ${scoreBand(x.score)}). ${tech}${px} ${rline}.`;
   };
 
   const m1 = `1) BUY – ${buyText(b1)}`;
   const m2 = `2) BUY – ${buyText(b2)}`;
+
   const m3 =
     sell2.length > 0
       ? `3) SELL – ${sellText(s1)}${s2 ? " İkinci aday: " + sellText(s2) : ""}`
       : `3) SELL – ${sellText(undefined)}`;
-  const m4 = `4) Genel Piyasa Görünümü: BUY tarafı ${buy2.length ? "daha aktif" : "zayıf"}, SELL tarafı ${sell2.length ? "risk uyarısı veriyor" : "sınırlı"}. Endeks/hacim teyidi kritik.`;
-  const m5 = `5) Risk Notu: False sinyal, volatilite ve haber akışı riski; tek göstergeye dayanma, stop/plan şart.`;
+
+  const m4 = stablePick("m4|" + (b1?.symbol ?? "") + "|" + (s1?.symbol ?? ""), [
+    `4) Genel Piyasa Görünümü: BUY tarafı ${
+      buy2.length ? "daha etkin görünüyor" : "zayıf"
+    }, SELL tarafı ${
+      sell2.length ? "risk uyarısı veriyor" : "sınırlı"
+    }. Endeks yönü ve hacim teyidi kritik.`,
+    `4) Genel Piyasa Görünümü: Denge ${
+      buy2.length && sell2.length ? "karışık" : buy2.length ? "BUY ağırlıklı" : "temkinli"
+    }. Teyit için endeks davranışı ve gün içi volatilite izlenmeli.`,
+    `4) Genel Piyasa Görünümü: Sinyaller ${
+      buy2.length ? "alım yönlü fırsat arıyor" : "zayıf"
+    }, ancak ${
+      sell2.length ? "risk etiketleri de var" : "satış baskısı sınırlı"
+    }. Onay gelmeden agresifleşmemek daha sağlıklı.`,
+  ]);
+
+  const m5 = stablePick("m5|" + (b2?.symbol ?? ""), [
+    "5) Risk Notu: False sinyal, volatilite ve haber akışı riski; tek göstergeye dayanma, stop/plan şart.",
+    "5) Risk Notu: Piyasa rejimi (trend/yatay) değişirse sinyaller bozulabilir; pozisyon boyutu ve stop yönetimi önemli.",
+    "5) Risk Notu: Kırılım/tutunma teyidi gelmeden işlem açmak riskli; endeks yönü ve hacim teyidine dikkat.",
+  ]);
 
   return [m1, m2, m3, m4, m5].join("\n");
 }
@@ -172,11 +301,12 @@ ASLA giriş paragrafı yazma.
 4) ...
 5) ...
 Her madde 2-3 cümle, hisse bazlı ve teknik dille yazılacak.
+Aynı kalıp cümleyi tekrar etme; farklı ifade kullan.
 Kesin konuşma, yatırım tavsiyesi verme.
 `,
       generationConfig: {
-        temperature: 0.35,
-        maxOutputTokens: 650,
+        temperature: 0.65,
+        maxOutputTokens: 700,
       },
     });
 
@@ -191,13 +321,14 @@ ${JSON.stringify(sell2, null, 2)}
 İstenen rapor:
 1) BUY-1 hisse bazlı detay (2-3 cümle) + skor band yorumu.
 2) BUY-2 hisse bazlı detay (2-3 cümle) + skor band yorumu.
-3) SELL tarafı: varsa en güçlü SELL'i detayla (2-3 cümle). Yoksa "SELL: aday yok" ve kısa gerekçe.
+3) SELL tarafı: varsa en güçlü SELL'i detayla (2-3 cümle). Varsa ikinci adayı tek cümleyle ekle. Yoksa "SELL: aday yok" + kısa gerekçe.
 4) Genel piyasa duyarlılığı: BUY/SELL dengesini ve teyit ihtiyacını söyle.
-5) Risk notu: volatilite, false signal, endeks teyidi, stop-plan uyarısı.
+5) Risk notu: volatilite, false signal, haber akışı, endeks teyidi, stop/plan uyarısı.
 
 Skor bandı:
 >=25 Güçlü, 18-24 Orta, <18 Zayıf.
 Reasons'ı aynen kopyalama; ne anlama geldiğini teknik dille yorumla.
+Her maddede aynı cümleyi tekrar etme.
 `;
 
     const result = await model.generateContent(prompt);
