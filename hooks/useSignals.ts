@@ -16,6 +16,8 @@ export type SignalRow = {
 
 type UseSignalsOpts = {
   pollMs?: number; // visible tab polling
+  // İstersen ileride kapatabilirsin:
+  useServerTop?: boolean; // /api/signals?scope=todayTop kullansın mı?
 };
 
 function getErrorMessage(e: unknown, fallback: string) {
@@ -24,15 +26,37 @@ function getErrorMessage(e: unknown, fallback: string) {
   return fallback;
 }
 
+// ✅ TR gün hesabı (UTC buglarını bitirir)
+function isTodayTR(iso: string) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return false;
+
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  return fmt.format(d) === fmt.format(now);
+}
+
+function normalizeSignal(s: string | null | undefined) {
+  return String(s || "").trim().toUpperCase();
+}
+
 export function useSignals(opts: UseSignalsOpts = {}) {
   // visible sekmede varsayılan 10s, ama minimumu 10s bırakıyoruz
   const pollMs = Math.max(opts.pollMs ?? 10000, 10000);
+  const useServerTop = opts.useServerTop ?? false; // ✅ default: frontend hesaplasın
 
   const [signals, setSignals] = useState<SignalRow[]>([]);
   const [loadingSignals, setLoadingSignals] = useState(true);
 
-  const [todayTopBuy, setTodayTopBuy] = useState<SignalRow[]>([]);
-  const [todayTopSell, setTodayTopSell] = useState<SignalRow[]>([]);
+  // server'dan gelirse doldurabiliriz ama şart değil
+  const [serverTopBuy, setServerTopBuy] = useState<SignalRow[]>([]);
+  const [serverTopSell, setServerTopSell] = useState<SignalRow[]>([]);
 
   // ✅ kullanıcıya/ileride UI'ye gösterebilmen için
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +93,7 @@ export function useSignals(opts: UseSignalsOpts = {}) {
 
       const json = await res.json();
       const rows = (json.data ?? []) as SignalRow[];
+
       setSignals(rows);
       setError(null);
     } catch (e) {
@@ -80,7 +105,10 @@ export function useSignals(opts: UseSignalsOpts = {}) {
     }
   }, []);
 
-  const loadTodayTop = useCallback(async () => {
+  // ✅ Opsiyonel: server top çağrısı (buglı ise kapalı kalsın)
+  const loadServerTop = useCallback(async () => {
+    if (!useServerTop) return;
+
     abortTopRef.current?.abort();
     const ac = new AbortController();
     abortTopRef.current = ac;
@@ -101,29 +129,31 @@ export function useSignals(opts: UseSignalsOpts = {}) {
       }
 
       const json = await res.json();
-      setTodayTopBuy((json.topBuy ?? []) as SignalRow[]);
-      setTodayTopSell((json.topSell ?? []) as SignalRow[]);
+      setServerTopBuy((json.topBuy ?? []) as SignalRow[]);
+      setServerTopSell((json.topSell ?? []) as SignalRow[]);
       setError(null);
     } catch (e) {
       if ((e as any)?.name === "AbortError") return;
       console.error("Günlük Top listesi alınamadı:", e);
+      // server top bozulsa bile UI çalışsın diye error basmak opsiyonel:
       setError(getErrorMessage(e, "Top listesi alınamadı"));
     }
-  }, []);
+  }, [useServerTop]);
 
   const refreshAll = useCallback(async () => {
     if (inFlightRef.current) return;
     inFlightRef.current = true;
     try {
-      await Promise.all([loadSignals(), loadTodayTop()]);
+      // ✅ Önce signals, sonra opsiyonel server top
+      await loadSignals();
+      await loadServerTop();
     } finally {
       inFlightRef.current = false;
     }
-  }, [loadSignals, loadTodayTop]);
+  }, [loadSignals, loadServerTop]);
 
   const setOutcome = useCallback(
     async (id: number, outcome: "WIN" | "LOSS" | null) => {
-      // snapshot al (rollback için)
       snapshotRef.current = signals;
 
       // optimistic update
@@ -146,7 +176,6 @@ export function useSignals(opts: UseSignalsOpts = {}) {
         }
 
         setError(null);
-        // DB ile senkron (istersen kaldırabiliriz ama güvenli)
         await refreshAll();
       } catch (e) {
         console.error("Outcome update failed:", e);
@@ -156,6 +185,32 @@ export function useSignals(opts: UseSignalsOpts = {}) {
     },
     [signals, refreshAll]
   );
+
+  // ✅ Frontend hesaplı TOP5 (TR buglarını bitirir)
+  const computedTop = useMemo(() => {
+    const todays = signals.filter((r) => isTodayTR(r.created_at));
+
+    const topBuy = [...todays]
+      .filter((r) => normalizeSignal(r.signal) === "BUY")
+      .sort((a, b) => (b.score ?? -999999) - (a.score ?? -999999))
+      .slice(0, 5);
+
+    const topSell = [...todays]
+      .filter((r) => normalizeSignal(r.signal) === "SELL")
+      .sort((a, b) => (b.score ?? -999999) - (a.score ?? -999999))
+      .slice(0, 5);
+
+    return { topBuy, topSell };
+  }, [signals]);
+
+  // ✅ dışarıya dönen TOP: server top doluysa onu kullan, yoksa computed
+  const todayTopBuy = useMemo(() => {
+    return serverTopBuy.length ? serverTopBuy : computedTop.topBuy;
+  }, [serverTopBuy, computedTop.topBuy]);
+
+  const todayTopSell = useMemo(() => {
+    return serverTopSell.length ? serverTopSell : computedTop.topSell;
+  }, [serverTopSell, computedTop.topSell]);
 
   // ✅ Adaptive polling: sekme arka planda → daha seyrek (min 60s)
   useEffect(() => {
@@ -172,7 +227,6 @@ export function useSignals(opts: UseSignalsOpts = {}) {
       }, interval);
     };
 
-    // initial
     refreshAll();
     start();
 
@@ -188,7 +242,6 @@ export function useSignals(opts: UseSignalsOpts = {}) {
     };
   }, [pollMs, refreshAll]);
 
-  // İstersen ileride UI’da kullanırsın diye
   const hasTopData = useMemo(
     () => todayTopBuy.length + todayTopSell.length > 0,
     [todayTopBuy.length, todayTopSell.length]
@@ -197,12 +250,14 @@ export function useSignals(opts: UseSignalsOpts = {}) {
   return {
     signals,
     loadingSignals,
+
+    // ✅ artık her koşulda dolması gereken top listeler:
     todayTopBuy,
     todayTopSell,
+
     refreshAll,
     setOutcome,
 
-    // ✅ yeni alanlar (TerminalPage kullanmak zorunda değil)
     error,
     hasTopData,
   };
