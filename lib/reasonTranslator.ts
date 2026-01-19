@@ -1,5 +1,5 @@
 // src/lib/reasonTranslator.ts
-import { REASON_TO_TECH } from "./reasonMap";
+import { REASON_META } from "./reasonMap";
 
 export function parseReasonKeys(details: string | null | undefined) {
   const raw = (details ?? "").trim();
@@ -13,20 +13,40 @@ export function parseReasonKeys(details: string | null | undefined) {
     .filter(Boolean);
 }
 
+function uniq<T>(arr: T[]) {
+  return Array.from(new Set(arr));
+}
+
+// BUY/SELL sinyali + score'a göre kısa etiket
+export function scoreBadge(signal: string | null | undefined, score: number | null | undefined) {
+  const s = (signal ?? "").toUpperCase();
+  const sc = typeof score === "number" ? score : null;
+
+  // skor yoksa boş
+  if (sc == null) return "";
+
+  // senin mevcut sistemin: 25 çok güçlü, 18-24 orta, <18 zayıf
+  const level =
+    sc >= 25 ? "ÇOK GÜÇLÜ" :
+    sc >= 18 ? "ORTA" :
+    "ZAYIF / TEYİT";
+
+  if (s === "BUY") return `BUY • ${level}`;
+  if (s === "SELL") return `SELL • ${level}`;
+  return `${level}`;
+}
+
 export function reasonsToTechSentences(details: string | null | undefined) {
   const keys = parseReasonKeys(details);
 
-  // map’te olmayanları ele
-  const sentences = keys.map((k) => REASON_TO_TECH[k]).filter(Boolean);
+  const sentences = keys
+    .map((k) => REASON_META[k]?.sentence)
+    .filter(Boolean) as string[];
 
-  // tekrarları temizle
-  const uniq = Array.from(new Set(sentences));
+  const list = uniq(sentences);
 
-  // 0 ise boş dön
-  if (!uniq.length) return "";
+  if (!list.length) return "";
 
-  // en fazla 4 cümle (UI taşmasın)
-  return uniq.slice(0, 4).join(" ") // noktalı zaten cümle sonlarında var
-    .replace(/\s{2,}/g, " ")
-    .trim();
+  // 4 cümle sınırı (UI taşmasın)
+  return list.slice(0, 4).join(" ").replace(/\s{2,}/g, " ").trim();
 }
