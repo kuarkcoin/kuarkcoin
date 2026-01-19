@@ -18,7 +18,7 @@ function cleanReasons(input?: string | null) {
     .replace(/[{}[\]]/g, " ")
     .replace(/\s{2,}/g, " ")
     .trim()
-    .slice(0, 300);
+    .slice(0, 500); // Veri kaybını önlemek için sınırı biraz artırdık
 }
 
 function toPrettySymbol(sym: string) {
@@ -67,38 +67,45 @@ export async function POST(req: Request) {
     const sell2 = pickTop2(topSell);
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    // Not: Model ismini ihtiyacına göre 'gemini-1.5-flash' veya 'gemini-1.5-pro' olarak güncelleyebilirsin.
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash", 
       systemInstruction: `
-Sen profesyonel bir trading terminal analistisin.
-Hisse hisse konuş, teknik gerekçelerle yorum yap.
-Kesin konuşma, yatırım tavsiyesi verme.
-Cevap SADECE 5 maddelik formatta ve Türkçe olacak.
+Sen kıdemli bir borsa stratejisti ve teknik analiz uzmanısın. 
+Görevin, sana verilen skor ve teknik gerekçeleri (reasons) profesyonel bir terminal raporuna dönüştürmektir.
+Analizlerinde şu kurallara uy:
+1. Teknik terminolojiyi kullan (Momentum, RSI uyumsuzluğu, hareketli ortalamalar, trend kırılımı vb.).
+2. Sadece ham veriyi kopyalama; verinin ne anlama geldiğini teknik bir dille yorumla.
+3. Her madde doyurucu, en az 2-3 cümlelik derinliğe sahip olsun.
+4. Kesinlik bildiren ifadelerden kaçın ("yükselecek" yerine "yükseliş potansiyeli taşıyor" gibi).
+5. Yanıtın SADECE 5 maddelik bir liste formatında ve Türkçe olsun.
 `,
       generationConfig: {
-        temperature: 0.45,
-        maxOutputTokens: 500,
+        temperature: 0.7, // Daha yaratıcı ve detaylı yorumlar için artırıldı
+        maxOutputTokens: 1000, // Sözünün kesilmemesi için yükseltildi
       },
     });
 
     const prompt = `
-Aşağıdaki verileri kullanarak analiz yap.
+Aşağıdaki teknik verileri kullanarak piyasa analizini oluştur:
 
-EN İYİ 2 BUY:
+[ALIM SİNYALLERİ (BUY)]
 ${JSON.stringify(buy2, null, 2)}
 
-EN İYİ 2 SELL:
+[SATIŞ SİNYALLERİ (SELL)]
 ${JSON.stringify(sell2, null, 2)}
 
-Kurallar:
-- 1. madde: En güçlü BUY (hisse adıyla, teknik nedenlerle)
-- 2. madde: İkinci BUY
-- 3. madde: En güçlü SELL (yoksa "aday yok" de)
-- 4. madde: Genel piyasa görünümü (BUY/SELL dengesi)
-- 5. madde: Risk notu
-- Reason'ları aynen kopyalama, teknik dile çevir.
-- Skor yorumu:
-  >=25 güçlü, 18–24 orta, <18 zayıf.
+Rapor Formatı ve İçerik:
+- 1. Madde: En yüksek skorlu BUY hissesinin derinlemesine teknik analizi.
+- 2. Madde: İkinci sıradaki BUY hissesinin teknik görünümü ve sinyal gücü.
+- 3. Madde: En zayıf görünümlü SELL adayı (Aday yoksa genel bir uyarı maddesi yaz).
+- 4. Madde: Genel Piyasa Görünümü (BUY/SELL dengesine göre piyasa duyarlılığı/sentiment analizi).
+- 5. Madde: Stratejik Risk Notu (Hacim, volatilite veya endeks desteği üzerinden bir uyarı).
+
+Teknik Puanlama Kriterin:
+- Skor >= 25: Çok Güçlü / Aşırı Alım İştahı
+- Skor 18-24: Orta / Trend Oluşumu
+- Skor < 18: Zayıf / Teyit Bekleniyor
 `;
 
     const result = await model.generateContent(prompt);
@@ -106,7 +113,7 @@ Kurallar:
 
     return NextResponse.json({
       ok: true,
-      commentary: text && text.length > 0 ? text : "Analiz üretilemedi.",
+      commentary: text && text.length > 0 ? text : "Teknik analiz oluşturulamadı.",
     });
   } catch (e: any) {
     console.error("AI commentary error:", e);
