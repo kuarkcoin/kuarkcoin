@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
-import { reasonsToTechSentences } from "@/lib/reasonTranslator";
+import { reasonsToTechSentences, scoreBadge } from "@/lib/reasonTranslator";
 import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 
 // ── UI Bileşenleri ────────────────────────────────
@@ -44,6 +44,37 @@ function ReasonBadges({ reasons }: { reasons: string | null }) {
           {REASON_LABEL[key] ?? key}
         </span>
       ))}
+    </div>
+  );
+}
+
+// ✅ Reasons -> otomatik teknik cümle
+function TechLine({ reasons }: { reasons: string | null }) {
+  const tech = reasonsToTechSentences(reasons);
+  if (!tech) return null;
+
+  return (
+    <div className="mt-2 text-[11px] leading-relaxed text-gray-300">
+      {tech}
+    </div>
+  );
+}
+
+function ScoreChip({ signal, score }: { signal: string | null | undefined; score: number | null | undefined }) {
+  const text = scoreBadge(signal, score);
+  if (!text) return null;
+
+  const sig = String(signal ?? "").toUpperCase();
+  const cls =
+    sig === "BUY"
+      ? "border-green-700 text-green-200 bg-green-950/30"
+      : sig === "SELL"
+      ? "border-red-700 text-red-200 bg-red-950/30"
+      : "border-gray-700 text-gray-200 bg-gray-900/30";
+
+  return (
+    <div className={`inline-flex items-center px-2 py-1 rounded-md border text-[10px] ${cls}`}>
+      {text}
     </div>
   );
 }
@@ -448,8 +479,9 @@ export default function TerminalPage() {
                   </div>
                 </div>
 
-                {/* Günlük Top 5 BUY/SELL (DB’den) */}
+                {/* Günlük Top 5 BUY/SELL */}
                 <div className="grid grid-cols-1 gap-3">
+                  {/* BUY */}
                   <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-xs font-bold uppercase tracking-wide text-green-400">
@@ -485,18 +517,24 @@ export default function TerminalPage() {
                                   {timeAgo(r.created_at)} • {r.price ?? "—"}
                                 </div>
                               </div>
-                              <div className="text-sm font-black text-white shrink-0">
-                                {r.score ?? "—"}
+
+                              <div className="flex flex-col items-end gap-1 shrink-0">
+                                <div className="text-sm font-black text-white">
+                                  {r.score ?? "—"}
+                                </div>
+                                <ScoreChip signal={r.signal} score={r.score} />
                               </div>
                             </div>
 
                             <ReasonBadges reasons={r.reasons} />
+                            <TechLine reasons={r.reasons} />
                           </button>
                         ))}
                       </div>
                     )}
                   </div>
 
+                  {/* SELL */}
                   <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-xs font-bold uppercase tracking-wide text-red-400">
@@ -532,12 +570,17 @@ export default function TerminalPage() {
                                   {timeAgo(r.created_at)} • {r.price ?? "—"}
                                 </div>
                               </div>
-                              <div className="text-sm font-black text-white shrink-0">
-                                {r.score ?? "—"}
+
+                              <div className="flex flex-col items-end gap-1 shrink-0">
+                                <div className="text-sm font-black text-white">
+                                  {r.score ?? "—"}
+                                </div>
+                                <ScoreChip signal={r.signal} score={r.score} />
                               </div>
                             </div>
 
                             <ReasonBadges reasons={r.reasons} />
+                            <TechLine reasons={r.reasons} />
                           </button>
                         ))}
                       </div>
@@ -599,12 +642,16 @@ export default function TerminalPage() {
                             <span className="text-white">{r.price ?? "—"}</span>
                           </div>
 
-                          <div className="text-xs text-gray-400">
-                            Score:{" "}
-                            <span className="text-white">{r.score ?? "—"}</span>
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="text-xs text-gray-400">
+                              Score:{" "}
+                              <span className="text-white">{r.score ?? "—"}</span>
+                            </div>
+                            <ScoreChip signal={r.signal} score={r.score} />
                           </div>
 
                           <ReasonBadges reasons={r.reasons} />
+                          <TechLine reasons={r.reasons} />
 
                           {/* Outcome */}
                           <div className="mt-4 flex gap-2">
