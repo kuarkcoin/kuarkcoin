@@ -1,115 +1,154 @@
 // src/lib/reasonMap.ts
-
 export type ReasonTone = "BUY" | "SELL" | "NEUTRAL";
 
 export type ReasonMeta = {
   tone: ReasonTone;
-  label?: string;          // rozet metni istersen
-  sentence: string;        // teknik cümle
+  label: string;
+  priority: number; // 1 düşük, 5 kritik
+  template: (val?: string) => string;
+  // UI otomasyon (opsiyonel ama çok işe yarar)
+  chip?: {
+    icon?: string;
+  };
+};
+
+const fmt = (val?: string) => {
+  const v = (val ?? "").trim();
+  if (!v) return "";
+  // "+10" / "10" / "+10.5" fark etmez -> " (+10)" olarak bas
+  return v.startsWith("(") ? ` ${v}` : ` (${v})`;
 };
 
 export const REASON_META: Record<string, ReasonMeta> = {
-  // =========================
-  // BUY (pozitif ton)
-  // =========================
+  // BUY
   BLUE_REV: {
     tone: "BUY",
-    label: "Dip dönüş",
-    sentence:
+    label: "Dip Dönüş",
+    priority: 5,
+    chip: { icon: "★" },
+    template: () =>
       "Sert düşüş sonrası dip dönüş (reversal) yapısı oluşmuş; tepki potansiyeli artar.",
   },
   RSI_BULLDIV3: {
     tone: "BUY",
-    label: "RSI uyumsuzluk",
-    sentence:
+    label: "RSI Uyumsuzluk",
+    priority: 4,
+    chip: { icon: "🟤" },
+    template: () =>
       "3 pivotlu RSI pozitif uyumsuzluk, satış baskısının zayıfladığına ve dipten dönüş ihtimaline işaret eder.",
   },
   RSI30_OK: {
     tone: "BUY",
-    label: "Momentum dönüşü",
-    sentence:
-      "RSI 30 üzeri geri dönüş, aşırı satımdan çıkış ve momentum toparlanması sinyali verebilir.",
+    label: "Momentum Dönüşü",
+    priority: 3,
+    chip: { icon: "↗" },
+    template: (val) =>
+      `RSI 30 üzeri geri dönüş${fmt(val)} aşırı satımdan çıkış ve momentum toparlanması sinyali verebilir.`,
   },
   MACD_OK: {
     tone: "BUY",
-    label: "Momentum dönüşü",
-    sentence:
-      "MACD kesişimi, momentumun yukarı yönlü döndüğünü ve hızlanma ihtimalini gösterir.",
+    label: "MACD Kesişimi",
+    priority: 3,
+    chip: { icon: "↗" },
+    template: (val) =>
+      `MACD bull cross${fmt(val)} momentumun yukarı yönlü döndüğünü ve ivmelenme ihtimalini gösterir.`,
   },
   "MA5/20_OK": {
     tone: "BUY",
-    label: "Kısa trend",
-    sentence:
-      "MA5/MA20 yukarı kesişimi, kısa vadede trend başlangıcı/ivmelenme sinyali üretebilir.",
+    label: "Kısa Trend",
+    priority: 2,
+    chip: { icon: "↗" },
+    template: (val) =>
+      `MA5/MA20 yukarı kesişimi${fmt(val)} kısa vadede trend başlangıcı/ivmelenme sinyali üretebilir.`,
   },
   VWAP_UP: {
     tone: "BUY",
-    label: "Trend teyidi",
-    sentence:
-      "Fiyatın VWAP üzerinde kalması, gün içi trend teyidi ve alıcı kontrolünün güçlendiği şeklinde okunabilir.",
+    label: "Trend Teyidi",
+    priority: 2,
+    chip: { icon: "✓" },
+    template: (val) =>
+      `Fiyatın VWAP üzerinde kalması${fmt(val)} gün içi trend teyidi ve alıcı kontrolü şeklinde okunabilir.`,
   },
   VOL_UP: {
     tone: "BUY",
-    label: "Katılım artışı",
-    sentence:
-      "Hacim artışı, hareketin katılımla desteklendiğini ve sinyal kalitesinin güçlendiğini gösterir.",
+    label: "Katılım Artışı",
+    priority: 2,
+    chip: { icon: "📈" },
+    template: (val) =>
+      `Hacim artışı${fmt(val)} hareketin katılımla desteklendiğini ve sinyal kalitesinin güçlendiğini gösterir.`,
   },
   GC_OK: {
     tone: "BUY",
-    label: "Uzun trend",
-    sentence:
-      "Golden Cross (MA50>MA200), uzun vadeli rejimde pozitifleşme ihtimalini artırır (tek başına yeterli değildir).",
+    label: "Golden Cross",
+    priority: 5,
+    chip: { icon: "🏆" },
+    template: (val) =>
+      `Golden Cross (MA50>MA200)${fmt(val)} uzun vadeli rejimde pozitifleşme ihtimalini artırır (tek başına yeterli değildir).`,
   },
   D1_CONFIRM: {
     tone: "BUY",
-    label: "MTF onay",
-    sentence:
-      "Günlük zaman dilimi onayı, daha büyük resimde trendin desteklendiğine işaret eder.",
+    label: "MTF Onay",
+    priority: 4,
+    chip: { icon: "D" },
+    template: (val) =>
+      `Günlük zaman dilimi onayı${fmt(val)} daha büyük resimde trendin desteklendiğine işaret eder.`,
   },
 
-  // =========================
-  // SELL (uyarı ton)
-  // =========================
+  // SELL
   TOP_REV: {
     tone: "SELL",
-    label: "Tepe dönüş",
-    sentence:
+    label: "Tepe Dönüş",
+    priority: 5,
+    chip: { icon: "★" },
+    template: () =>
       "Aşırı yükseliş sonrası tepe dönüş (reversal) yapısı, kâr satışı ve geri çekilme riskini artırır.",
   },
   RSI_BEARDIV3: {
     tone: "SELL",
-    label: "RSI uyumsuzluk",
-    sentence:
+    label: "RSI Uyumsuzluk",
+    priority: 4,
+    chip: { icon: "🔵" },
+    template: () =>
       "3 pivotlu RSI negatif uyumsuzluk, yükselişte momentum kaybı ve tepe oluşumu riskine işaret eder.",
   },
   RSI70_DN: {
     tone: "SELL",
-    label: "Momentum zayıf",
-    sentence:
-      "RSI’nin 70 altına sarkması, aşırı alım sonrası soğuma ve momentum zayıflaması göstergesi olabilir.",
+    label: "Momentum Zayıflıyor",
+    priority: 3,
+    chip: { icon: "↘" },
+    template: (val) =>
+      `RSI’nin 70 altına sarkması${fmt(val)} aşırı alım sonrası soğuma ve momentum zayıflaması göstergesi olabilir.`,
   },
   VWAP_DN: {
     tone: "SELL",
-    label: "Trend zayıf",
-    sentence:
-      "Fiyatın VWAP altına inmesi, gün içi trend zayıflaması ve satıcılı rejime geçiş uyarısıdır.",
+    label: "Trend Zayıf",
+    priority: 2,
+    chip: { icon: "!" },
+    template: (val) =>
+      `Fiyatın VWAP altına inmesi${fmt(val)} gün içi trend zayıflaması ve satıcılı rejim uyarısıdır.`,
   },
   "MA5/20_DN": {
     tone: "SELL",
-    label: "Kısa trend kırılımı",
-    sentence:
-      "MA5/MA20 aşağı kesişimi, kısa vadeli zayıflama ve geri çekilme riskini yükseltir.",
+    label: "Kısa Trend Kırılımı",
+    priority: 3,
+    chip: { icon: "↘" },
+    template: (val) =>
+      `MA5/MA20 aşağı kesişimi${fmt(val)} kısa vadeli zayıflama ve geri çekilme riskini yükseltir.`,
   },
   BEAR_CANDLE: {
     tone: "SELL",
-    label: "Ayı mum",
-    sentence:
-      "Ayı mum formasyonları satış baskısını artırabilir; özellikle tepe bölgelerinde teyit aramak gerekir.",
+    label: "Ayı Mum",
+    priority: 2,
+    chip: { icon: "🕯" },
+    template: () =>
+      "Ayı mum formasyonları satış baskısını artırabilir; tepe bölgelerinde teyit aramak gerekir.",
   },
   VOL_DUMP: {
     tone: "SELL",
-    label: "Dağıtım / dump",
-    sentence:
-      "Artan hacimle düşüş, dağıtım (distribution) ihtimalini artırır; satış baskısı güçleniyor olabilir.",
+    label: "Dump / Dağıtım",
+    priority: 4,
+    chip: { icon: "📉" },
+    template: (val) =>
+      `Artan hacimle düşüş${fmt(val)} dağıtım ihtimalini artırır; satış baskısı güçleniyor olabilir.`,
   },
 };
