@@ -93,7 +93,7 @@ export default function TerminalPage() {
     todayTopSell,
     refreshAll,
     setOutcome,
-  } = useSignals({ pollMs: 10000 });
+  } = useSignals({ pollMs: 300_000 });
 
   // ✅ Limit: panelde gerçekten son 20
   const LIMIT = 20;
