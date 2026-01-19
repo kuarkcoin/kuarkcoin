@@ -18,7 +18,7 @@ export function parseReasonDetails(details: string | null | undefined): ParsedRe
       if (!p) return null;
 
       // KEY(+10) veya KEY(whatever)
-      const match = p.match(/^([A-Z0-9_\/]+)(?:(.*))?$/);
+      const match = p.match(/^([A-Z0-9_\/]+)(?:\((.*)\))?$/);
       if (!match) return null;
 
       const key = (match[1] ?? "").trim();
@@ -77,4 +77,18 @@ export function getSignalUI(signal: string | null | undefined, score: number | n
   const sc = typeof score === "number" ? score : 0;
 
   const strength =
-    sc >= 25 ? "GÜÇLÜ
+    sc >= 25 ? "GÜÇLÜ" :
+    sc >= 18 ? "STANDART" :
+    "ZAYIF";
+
+  const isBuy = s === "BUY";
+  const isSell = s === "SELL";
+
+  return {
+    strength,
+    icon: isBuy ? "↑" : isSell ? "↓" : "•",
+    color: isBuy ? "text-green-200" : isSell ? "text-red-200" : "text-gray-200",
+    bg: isBuy ? "bg-green-950/30" : isSell ? "bg-red-950/30" : "bg-gray-900/30",
+    border: isBuy ? "border-green-700" : isSell ? "border-red-700" : "border-gray-700",
+  };
+}
