@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 type Props = {
-  symbol: string;         // "NASDAQ:AAPL", "BINANCE:BTCUSDT", "AMEX:SPY"
-  interval?: string;      // "15", "60", "D"
+  symbol: string;
+  interval?: string;
   theme?: "dark" | "light";
   height?: number | string;
 };
@@ -22,28 +22,25 @@ export default function TradingViewWidget({
   height = "100%",
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const widgetIdRef = useRef<string>("");
 
-  // her sembolde yeniden kur
+  const tvSymbol = useMemo(() => {
+    if (!symbol) return symbol;
+    if (symbol.startsWith("BIST_DLY:")) return symbol.replace("BIST_DLY:", "BIST:");
+    return symbol;
+  }, [symbol]);
+
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // container temizle
     containerRef.current.innerHTML = "";
     const widgetId = `tv-${Math.random().toString(36).slice(2)}`;
-    widgetIdRef.current = widgetId;
 
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/tv.js";
-    script.async = true;
-
-    script.onload = () => {
+    const mount = () => {
       if (!window.TradingView || !containerRef.current) return;
 
-      // TradingView widget’i üret
       new window.TradingView.widget({
         autosize: true,
-        symbol,
+        symbol: tvSymbol,          // ✅ normalize edilmiş sembol
         interval,
         timezone: "Europe/Istanbul",
         theme,
@@ -53,18 +50,30 @@ export default function TradingViewWidget({
         hide_top_toolbar: false,
         hide_legend: false,
         withdateranges: true,
-        allow_symbol_change: false, // sembol değişimi bizden gelsin
+        allow_symbol_change: false,
         container_id: widgetId,
       });
     };
 
     containerRef.current.innerHTML = `<div id="${widgetId}" style="height:${typeof height === "number" ? `${height}px` : height}; width:100%"></div>`;
+
+    // ✅ tv.js zaten yüklenmişse tekrar script basma
+    if (window.TradingView) {
+      mount();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://s3.tradingview.com/tv.js";
+    script.async = true;
+    script.onload = mount;
+
     containerRef.current.appendChild(script);
 
     return () => {
       if (containerRef.current) containerRef.current.innerHTML = "";
     };
-  }, [symbol, interval, theme, height]);
+  }, [tvSymbol, interval, theme, height]);
 
   return <div ref={containerRef} className="w-full h-full" />;
 }
