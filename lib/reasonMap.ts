@@ -1,4 +1,5 @@
 // src/lib/reasonMap.ts
+
 export type ReasonTone = "BUY" | "SELL" | "NEUTRAL";
 
 export type ReasonMeta = {
@@ -12,15 +13,22 @@ export type ReasonMeta = {
   };
 };
 
+// "+10" / "10" / "+10.5" / "+10%)" / "(+10)" gibi değerleri güvenle "(...)" yap
 const fmt = (val?: string) => {
-  const v = (val ?? "").trim();
+  const v0 = (val ?? "").trim();
+  if (!v0) return "";
+
+  // zaten parantezliyse tekrar parantezleme
+  const v = v0.replace(/^\(/, "").replace(/\)$/, "").trim();
   if (!v) return "";
-  // "+10" / "10" / "+10.5" fark etmez -> " (+10)" olarak bas
-  return v.startsWith("(") ? ` ${v}` : ` (${v})`;
+
+  return ` (${v})`;
 };
 
 export const REASON_META: Record<string, ReasonMeta> = {
+  // =========================
   // BUY
+  // =========================
   BLUE_REV: {
     tone: "BUY",
     label: "Dip Dönüş",
@@ -94,7 +102,9 @@ export const REASON_META: Record<string, ReasonMeta> = {
       `Günlük zaman dilimi onayı${fmt(val)} daha büyük resimde trendin desteklendiğine işaret eder.`,
   },
 
+  // =========================
   // SELL
+  // =========================
   TOP_REV: {
     tone: "SELL",
     label: "Tepe Dönüş",
@@ -145,10 +155,10 @@ export const REASON_META: Record<string, ReasonMeta> = {
   },
   VOL_DUMP: {
     tone: "SELL",
-    label: "Dump / Dağıtım",
+    label: "Satış Baskısı (Hacim)",
     priority: 4,
     chip: { icon: "📉" },
     template: (val) =>
-      `Artan hacimle düşüş${fmt(val)} dağıtım ihtimalini artırır; satış baskısı güçleniyor olabilir.`,
+      `Artan işlem hacmi eşliğinde gelen düşüş${fmt(val)} güçlü katılımlı satış baskısına işaret edebilir. Hacim destekli satış, hareketin tesadüfi değil “dağıtım (distribution)” karakterli olma riskini artırır.`,
   },
 };
