@@ -11,7 +11,7 @@ type SignalRow = {
   score: number | null;
   reasons: string | null;
 };
-
+ 
 function symbolToPlain(sym: string) {
   return sym?.includes(":") ? sym.split(":")[1] : sym;
 }
