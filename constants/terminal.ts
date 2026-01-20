@@ -30,44 +30,38 @@ export const ASSETS = {
     "BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","ADAUSDT","AVAXUSDT",
     "DOGEUSDT","DOTUSDT","LINKUSDT","MATICUSDT","LTCUSDT","UNIUSDT","SHIBUSDT"
   ],
-
-  // ✅ BIST EKLENDİ (burayı büyüteceksin)
   BIST: [
-    // ÖRNEK — buraya kendi tam BIST listenizi yapıştırın
     "THYAO","ASELS","EREGL","KCHOL","SISE","GARAN","AKBNK","YKBNK","BIMAS","TUPRS",
     "SAHOL","FROTO","KRDMD","PETKM","TOASO","TCELL","TTKOM","KOZAL","KOZAA","HEKTS"
   ],
 } as const;
 
 export type AssetCategory = keyof typeof ASSETS;
-
-// ✅ never/toLowerCase sorununu kökten çözer
 export const ASSET_LISTS: Record<AssetCategory, readonly string[]> = ASSETS;
 
-// ✅ UI rozet metinleri (normalize edilmiş key’ler)
+// ── UI Rozet Metinleri ────────────────────────────
 export const REASON_LABEL: Record<string, string> = {
   // BUY
   BLUE_STAR: "⭐ Mavi Yıldız",
   RSI_DIV: "🟤 RSI Uyumsuzluk",
   RSI_30: "🟣 RSI 30 Üstü",
   MACD_BULL: "📈 MACD Bull Cross",
-  MA5_20_UP: "📊 MA5>MA20",
+  MA5_20_UP: "📊 MA5 > MA20",
   VWAP_UP: "🟦 VWAP Üstü",
   VOL_BOOST: "📊 Hacim Artışı",
   GOLDEN_CROSS: "🟡 Golden Cross",
+  FALLING_WEDGE: "🔺 Düşen Takoz (Falling Wedge)",
+  BULL_FLAG: "🏁 Flama (Bull Flag)",
   D1_CONFIRM: "🟩 Günlük Onay",
 
   // SELL
   RED_STAR: "🔻 Kırmızı Yıldız",
   RSI_70_DOWN: "🔴 RSI 70 Altı",
   MACD_BEAR: "📉 MACD Bear Cross",
-  MA5_20_DOWN: "⚠️ MA5<MA20",
+  MA5_20_DOWN: "⚠️ MA5 < MA20",
   VWAP_DOWN: "🔻 VWAP Altı",
-  SELL_PRESSURE: "⚡ Satış Baskısı (Vol)",
+  SELL_PRESSURE: "⚡ Satış Baskısı (Hacim)",
   DEATH_CROSS: "⚫ Death Cross",
-
-  // backward compat
-  VWAP_DOWN_OLD: "🔻 VWAP Down",
 };
 
 // ── Yardımcılar ───────────────────────────────────
@@ -85,9 +79,9 @@ export function symbolToPlain(sym: string) {
   return sym?.split(":")[1] ?? sym;
 }
 
-// Pine reasons -> UI reasons normalize
+// Pine → UI reason normalize
 export function normalizeReasonKey(raw: string) {
-  const k = raw.split("(")[0].trim(); // BLUE_REV(+20) -> BLUE_REV
+  const k = raw.split("(")[0].trim();
 
   const map: Record<string, string> = {
     // BUY
@@ -99,6 +93,9 @@ export function normalizeReasonKey(raw: string) {
     VWAP_UP: "VWAP_UP",
     VOL_UP: "VOL_BOOST",
     GC_OK: "GOLDEN_CROSS",
+    FALLING_WEDGE: "FALLING_WEDGE",
+    BULL_FLAG: "BULL_FLAG",
+    FLAG_BREAKOUT: "BULL_FLAG",
     D1_CONFIRM: "D1_CONFIRM",
 
     // SELL
