@@ -43,25 +43,27 @@ export const ASSET_LISTS: Record<AssetCategory, readonly string[]> = ASSETS;
 export const REASON_LABEL: Record<string, string> = {
   // BUY
   BLUE_STAR: "⭐ Mavi Yıldız",
-  RSI_DIV: "🟤 RSI Uyumsuzluk",
+  RSI_DIV: "🟤 RSI Divergence",
+  HID_DIV: "🟠 Hidden Divergence",
+  MULTIDIV: "🧬 MultiDiv (RSI+MACD)",
   RSI_30: "🟣 RSI 30 Üstü",
   MACD_BULL: "📈 MACD Bull Cross",
   MA5_20_UP: "📊 MA5 > MA20",
   VWAP_UP: "🟦 VWAP Üstü",
   VOL_BOOST: "📊 Hacim Artışı",
   GOLDEN_CROSS: "🟡 Golden Cross",
-  FALLING_WEDGE: "🔺 Düşen Takoz (Falling Wedge)",
-  BULL_FLAG: "🏁 Flama (Bull Flag)",
   D1_CONFIRM: "🟩 Günlük Onay",
+  BULL_FLAG: "🏁 Flama Breakout",
+  NEAR_SUP: "🧱 Desteğe Yakın",
+  NEAR_RES: "🧱 Dirence Yakın",
 
   // SELL
   RED_STAR: "🔻 Kırmızı Yıldız",
   RSI_70_DOWN: "🔴 RSI 70 Altı",
-  MACD_BEAR: "📉 MACD Bear Cross",
-  MA5_20_DOWN: "⚠️ MA5 < MA20",
   VWAP_DOWN: "🔻 VWAP Altı",
+  MA5_20_DOWN: "⚠️ MA5 < MA20",
+  SELL_CANDLE: "🕯️ Bear Candle",
   SELL_PRESSURE: "⚡ Satış Baskısı (Hacim)",
-  DEATH_CROSS: "⚫ Death Cross",
 };
 
 // ── Yardımcılar ───────────────────────────────────
@@ -81,42 +83,50 @@ export function symbolToPlain(sym: string) {
 
 // Pine → UI reason normalize
 export function normalizeReasonKey(raw: string) {
+  // "RSI30_OK(+20)" gibi stringlerden sadece anahtar kısmını al
   const k = raw.split("(")[0].trim();
 
   const map: Record<string, string> = {
     // BUY
     BLUE_REV: "BLUE_STAR",
     RSI_BULLDIV3: "RSI_DIV",
+    HID_BULLDIV3: "HID_DIV",
+    MULTIDIV: "MULTIDIV",
     RSI30_OK: "RSI_30",
     MACD_OK: "MACD_BULL",
     "MA5/20_OK": "MA5_20_UP",
     VWAP_UP: "VWAP_UP",
     VOL_UP: "VOL_BOOST",
     GC_OK: "GOLDEN_CROSS",
-    FALLING_WEDGE: "FALLING_WEDGE",
-    BULL_FLAG: "BULL_FLAG",
-    FLAG_BREAKOUT: "BULL_FLAG",
     D1_CONFIRM: "D1_CONFIRM",
+    FLAG_BRK: "BULL_FLAG",
+    FLAG_BREAKOUT: "BULL_FLAG",
+    BULL_FLAG: "BULL_FLAG",
+    NEAR_SUP: "NEAR_SUP",
+    NEAR_RES: "NEAR_RES",
 
     // SELL
     TOP_REV: "RED_STAR",
     RSI_BEARDIV3: "RSI_DIV",
+    HID_BEARDIV3: "HID_DIV",
     RSI70_DN: "RSI_70_DOWN",
-    MACD_DN: "MACD_BEAR",
     VWAP_DN: "VWAP_DOWN",
     "MA5/20_DN": "MA5_20_DOWN",
-    BEAR_CANDLE: "SELL_PRESSURE",
+    BEAR_CANDLE: "SELL_CANDLE",
     VOL_DUMP: "SELL_PRESSURE",
-    DEATH_CROSS: "DEATH_CROSS",
   };
 
   return map[k] ?? k;
 }
 
+// reasons parsing (dedupe + boşları at)
 export function parseReasons(reasons: string | null) {
-  return (reasons || "")
+  const keys = (reasons || "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
     .map(normalizeReasonKey);
+
+  // aynı rozet tekrar basmasın
+  return Array.from(new Set(keys));
 }
