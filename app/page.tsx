@@ -36,18 +36,17 @@ function Badge({ children }: { children: ReactNode }) {
 
 function parseReasons(reasons: string | null): string[] {
   if (!reasons) return [];
-  // Virgül, noktalı virgül, pipe veya satır sonu ile ayrılmış olabilir
   return reasons
     .split(/[,;|\n]+/g)
     .map((s) => s.trim())
     .filter(Boolean)
-    .slice(0, 8); // kartı şişirmemek için
+    .slice(0, 8);
 }
 
 function formatPrice(n: number | null) {
   if (n === null || Number.isNaN(n)) return "—";
   const abs = Math.abs(n);
-  const decimals = abs >= 100 ? 2 : abs >= 1 ? 4 : 6; // crypto küçük fiyatlara daha çok ondalık
+  const decimals = abs >= 100 ? 2 : abs >= 1 ? 4 : 6;
   return new Intl.NumberFormat("tr-TR", {
     minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
@@ -57,7 +56,6 @@ function formatPrice(n: number | null) {
 function formatDateTR(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  // Server-side stabil gösterim: "18 Oca 2026 • 18:10"
   return new Intl.DateTimeFormat("tr-TR", {
     day: "2-digit",
     month: "short",
@@ -67,50 +65,59 @@ function formatDateTR(iso: string) {
   }).format(d);
 }
 
-async function getLatestSignals(): Promise<SignalRow[]> {
+// ---------- helpers: host + timeout fetch ----------
+function getBaseUrlFromHeaders() {
+  const h = headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  if (!host) return null;
+  return `${proto}://${host}`;
+}
+
+async function fetchJsonWithTimeout<T>(url: string, ms = 2500): Promise<T | null> {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
+
   try {
-    const h = headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host");
-    const proto = h.get("x-forwarded-proto") ?? "https";
-    if (!host) return [];
-
-    const url = `${proto}://${host}/api/signals`;
-
-    const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-    if (!res.ok) return [];
-    const json = await res.json();
-    const arr: SignalRow[] = json.data ?? [];
-    return arr.slice(0, 6);
+    const res = await fetch(url, {
+      cache: "no-store",
+      next: { revalidate: 0 },
+      signal: ac.signal,
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
   } catch (e) {
-    console.error("getLatestSignals error:", e);
-    return [];
+    // abort veya network hatası
+    console.error("fetchJsonWithTimeout error:", url, e);
+    return null;
+  } finally {
+    clearTimeout(t);
   }
+}
+
+async function getLatestSignals(): Promise<SignalRow[]> {
+  const base = getBaseUrlFromHeaders();
+  if (!base) return [];
+
+  const url = `${base}/api/signals`;
+  const json = await fetchJsonWithTimeout<{ data?: SignalRow[] }>(url, 2500);
+  const arr = json?.data ?? [];
+  return Array.isArray(arr) ? arr.slice(0, 6) : [];
 }
 
 async function getKapImportant(): Promise<KapRow[]> {
-  try {
-    const h = headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host");
-    const proto = h.get("x-forwarded-proto") ?? "https";
-    if (!host) return [];
+  const base = getBaseUrlFromHeaders();
+  if (!base) return [];
 
-    const url = `${proto}://${host}/api/kap/bist100-important`;
-
-    const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-    if (!res.ok) return [];
-
-    const json = await res.json();
-    const arr: KapRow[] = json.data ?? [];
-    return arr.slice(0, 8);
-  } catch (e) {
-    console.error("getKapImportant error:", e);
-    return [];
-  }
+  const url = `${base}/api/kap/bist100-important`;
+  const json = await fetchJsonWithTimeout<{ data?: KapRow[] }>(url, 3000);
+  const arr = json?.data ?? [];
+  return Array.isArray(arr) ? arr.slice(0, 8) : [];
 }
 
 export default async function HomePage() {
-  const latest = await getLatestSignals();
-  const kap = await getKapImportant();
+  // ✅ paralel: biri takılsa diğeri yine gelir (timeout’lar var)
+  const [latest, kap] = await Promise.all([getLatestSignals(), getKapImportant()]);
 
   return (
     <main className="min-h-screen bg-[#0d1117] text-white">
@@ -213,8 +220,8 @@ export default async function HomePage() {
 
         {kap.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Şu an önemli KAP haberi yok (veya <code className="text-gray-300">/api/kap/bist100-important</code>{" "}
-            erişilemiyor).
+            Şu an önemli KAP haberi yok (veya{" "}
+            <code className="text-gray-300">/api/kap/bist100-important</code> erişilemiyor).
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -234,21 +241,15 @@ export default async function HomePage() {
                     {k.stockCodes ?? "—"} • {k.publishDate ? formatDateTR(k.publishDate) : "—"}
                   </div>
 
-                  <div className="mt-1 font-black text-sm">
-                    {k.kapTitle ?? "KAP Bildirimi"}
-                  </div>
+                  <div className="mt-1 font-black text-sm">{k.kapTitle ?? "KAP Bildirimi"}</div>
 
                   {summaryShort ? (
-                    <div className="mt-2 text-xs text-gray-400 leading-relaxed">
-                      {summaryShort}
-                    </div>
+                    <div className="mt-2 text-xs text-gray-400 leading-relaxed">{summaryShort}</div>
                   ) : (
                     <div className="mt-2 text-xs text-gray-600">—</div>
                   )}
 
-                  {href ? (
-                    <div className="mt-3 text-xs text-blue-400">KAP’ta aç →</div>
-                  ) : null}
+                  {href ? <div className="mt-3 text-xs text-blue-400">KAP’ta aç →</div> : null}
                 </div>
               );
 
@@ -282,7 +283,9 @@ export default async function HomePage() {
         {latest.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
             Henüz sinyal yok (veya <code className="text-gray-300">/api/signals</code> erişilemiyor).
-            <div className="mt-2 text-xs text-gray-600">Son kontrol: {formatDateTR(new Date().toISOString())}</div>
+            <div className="mt-2 text-xs text-gray-600">
+              Son kontrol: {formatDateTR(new Date().toISOString())}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -392,15 +395,9 @@ export default async function HomePage() {
               Terminale Git →
             </Link>
             <div className="text-xs text-gray-500 flex items-center">
-              Not:{" "}
-              <span className="ml-1 text-gray-300">
-                /api/signals
-              </span>{" "}
-              veya{" "}
-              <span className="ml-1 text-gray-300">
-                /api/kap/bist100-important
-              </span>{" "}
-              çalışmıyorsa ilgili kutular boş görünür.
+              Not: <span className="ml-1 text-gray-300">/api/signals</span> veya{" "}
+              <span className="ml-1 text-gray-300">/api/kap/bist100-important</span> çalışmıyorsa
+              ilgili kutular boş görünür.
             </div>
           </div>
         </div>
