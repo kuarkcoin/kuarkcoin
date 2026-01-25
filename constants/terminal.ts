@@ -31,8 +31,18 @@ export const ASSETS = {
     "DOGEUSDT","DOTUSDT","LINKUSDT","MATICUSDT","LTCUSDT","UNIUSDT","SHIBUSDT"
   ],
   BIST: [
-    "THYAO","ASELS","EREGL","KCHOL","SISE","GARAN","AKBNK","YKBNK","BIMAS","TUPRS",
-    "SAHOL","FROTO","KRDMD","PETKM","TOASO","TCELL","TTKOM","KOZAL","KOZAA","HEKTS"
+    "AKBNK","ALARK","ARCLK","ASELS","BIMAS","BRYAT","CIMSA","DOAS","EKGYO",
+    "ENJSA","EREGL","FROTO","GARAN","GUBRF","HALKB","HEKTS","ISCTR","KCHOL",
+    "KOZAA","KOZAL","KRDMD","MGROS","PETKM","SAHOL","SISE","TCELL","THYAO",
+    "TOASO","TTKOM","TUPRS","YKBNK",
+
+    // (istersen buraya kalan BIST 100 hisselerini de ekleyebilirsin)
+
+    // ===== ÖZEL / AZ LOT / YÜKSEK POTANSİYEL =====
+    "CMBTN",
+    "MRSHL",
+    "EGEEN",
+    "CLEBI"
   ],
 } as const;
 
