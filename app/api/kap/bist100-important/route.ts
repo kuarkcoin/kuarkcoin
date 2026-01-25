@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// ✅ BIST100 (zamanla değişebilir; istersen ayrı dosyaya alırız)
+// ✅ BIST100 (zamanla değişebilir)
 const BIST100 = [
   "AEFES","AGHOL","AKBNK","AKSA","AKSEN","ALARK","ARCLK","ARDYZ","ASELS","ASTOR",
   "BIMAS","BRISA","BSOKE","CIMSA","CANTE","CCOLA","DOAS","ECILC","EGEEN","EKGYO",
@@ -12,13 +12,12 @@ const BIST100 = [
   "ISCTR","ISGYO","ISMEN","KARSN","KCAER","KCHOL","KONTR","KOZAA","KOZAL","KRDMD",
   "KRONT","LOGO","MAVI","MGROS","MIATK","ODAS","OTKAR","OYAKC","PETKM","PGSUS",
   "SAHOL","SASA","SDTTR","SELEC","SISE","SKBNK","SMRTG","SOKM","TABGD","TAVHL",
-  "TCELL","THYAO","TKFEN","TOASO","TSKB","TTKOM","TTRAK","TUPRS","ULKER","VAKBN","CMBTN","MRSHL",
-"VESBE","VESTL","YATAS","YKBNK","ZOREN",
+  "TCELL","THYAO","TKFEN","TOASO","TSKB","TTKOM","TTRAK","TUPRS","ULKER","VAKBN",
+  "VESBE","VESTL","YATAS","YKBNK","ZOREN",
+  // sen eklemişsin:
+  "CMBTN","MRSHL",
 ];
 
-// --------------------
-// 1) Etiket sistemi
-// --------------------
 type KapTag =
   | "IS_ANLASMASI"
   | "SATIN_ALMA"
@@ -41,7 +40,6 @@ const TAG_KEYWORDS: Record<KapTag, string[]> = {
     "sipariş al",
     "sipariş",
   ],
-
   SATIN_ALMA: [
     "satın alma",
     "pay devri",
@@ -50,7 +48,6 @@ const TAG_KEYWORDS: Record<KapTag, string[]> = {
     "iştirak edinimi",
     "edinim",
   ],
-
   BIRLESME: [
     "birleşme",
     "birleşme işlemi",
@@ -58,7 +55,6 @@ const TAG_KEYWORDS: Record<KapTag, string[]> = {
     "bölünme",
     "kısmi bölünme",
   ],
-
   YUKSEK_KAR: [
     "finansal sonuç",
     "bilanço",
@@ -71,7 +67,6 @@ const TAG_KEYWORDS: Record<KapTag, string[]> = {
     "yüksek kâr",
     "yuksek kar",
   ],
-
   TEMETTU: [
     "temettü",
     "kâr payı",
@@ -80,14 +75,12 @@ const TAG_KEYWORDS: Record<KapTag, string[]> = {
     "kar dağıt",
     "kâr dağıt",
   ],
-
   GERI_ALIM: [
     "geri alım",
     "pay geri alım",
     "hisse geri alım",
     "geri alim",
   ],
-
   NEGATIF: [
     "zarar",
     "ceza",
@@ -99,7 +92,6 @@ const TAG_KEYWORDS: Record<KapTag, string[]> = {
     "dava",
     "iflas",
   ],
-
   DIGER: [],
 };
 
@@ -117,13 +109,11 @@ function detectKapTags(text: string): KapTag[] {
   const tags: KapTag[] = [];
 
   for (const [tag, keywords] of Object.entries(TAG_KEYWORDS)) {
-    if (keywords.some((k) => t.includes(k))) tags.push(tag as KapTag);
+    if (keywords.length && keywords.some((k) => t.includes(k))) tags.push(tag as KapTag);
   }
-
   return tags.length ? tags : ["DIGER"];
 }
 
-// KAP stockCodes bazen "THYAO,PGSUS" gibi geliyor.
 function extractCodes(stockCodes: any): string[] {
   const raw = String(stockCodes ?? "").toUpperCase();
   if (!raw) return [];
@@ -140,6 +130,10 @@ function safeTimeMs(value: any): number {
 }
 
 export async function GET() {
+  // ✅ KAP bazen yavaş → Home'u kilitlemesin diye timeout
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), 2500);
+
   try {
     const r = await fetch("https://www.kap.org.tr/tr/api/memberDisclosureQuery", {
       method: "POST",
@@ -155,13 +149,13 @@ export async function GET() {
         srcCategory: "4",
       }),
       cache: "no-store",
+      signal: ac.signal,
     });
 
     if (!r.ok) throw new Error(`KAP API error: ${r.status}`);
 
     const items = await r.json();
 
-    // Son 24 saat
     const since = Date.now() - 24 * 60 * 60 * 1000;
 
     const filtered = (Array.isArray(items) ? items : [])
@@ -171,25 +165,18 @@ export async function GET() {
         return { ...it, tags };
       })
       .filter((it: any) => {
-        // 1) zaman filtresi
         const t = safeTimeMs(it.publishDate);
         if (!t || t < since) return false;
 
-        // 2) BIST100 filtresi
         const codes = extractCodes(it.stockCodes);
-        const isBist100 = codes.some((c) => BIST100.includes(c));
-        if (!isBist100) return false;
+        if (!codes.some((c) => BIST100.includes(c))) return false;
 
-        // 3) Negatifleri at (istersen bunu kapatabiliriz)
         const tags: KapTag[] = Array.isArray(it.tags) ? it.tags : [];
         if (tags.includes("NEGATIF")) return false;
 
-        // 4) Sadece yükseltici türler
-        const isBullish = tags.some((t) => BULLISH_TAGS.includes(t));
-        return isBullish;
+        return tags.some((tg) => BULLISH_TAGS.includes(tg));
       });
 
-    // Yeni -> eski sırala
     filtered.sort((a: any, b: any) => safeTimeMs(b.publishDate) - safeTimeMs(a.publishDate));
 
     return NextResponse.json({
@@ -197,6 +184,10 @@ export async function GET() {
       data: filtered.slice(0, 30),
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e?.message ?? "KAP error" }, { status: 500 });
+    // timeout olursa da boş dönüp UI'yı kilitlemeyelim
+    const msg = e?.name === "AbortError" ? "KAP timeout" : (e?.message ?? "KAP error");
+    return NextResponse.json({ count: 0, data: [], error: msg }, { status: 200 });
+  } finally {
+    clearTimeout(timer);
   }
 }
