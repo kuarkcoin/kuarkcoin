@@ -528,7 +528,12 @@ export default function TerminalPage() {
           <div className="flex-1 flex flex-col md:flex-row min-h-0">
             {/* Grafik (TradingView) */}
             <div className="flex-1 relative bg-black min-w-0">
-              <TradingViewWidget symbol={selectedSymbol} interval="15" theme="dark" />
+              <TradingViewWidget
+  key={selectedSymbol}              // ✅ her sembolde widget komple yeniden kurulur
+  symbol={selectedSymbol}
+  interval="15"
+  theme="dark"
+/>
             </div>
 
             {/* Sinyaller Paneli */}
