@@ -7,21 +7,17 @@ export type ReasonMeta = {
   label: string;
   priority: number; // 1 düşük, 5 kritik
   template: (val?: string) => string;
-  // UI otomasyon (opsiyonel ama çok işe yarar)
   chip?: {
     icon?: string;
   };
 };
 
-// "+10" / "10" / "+10.5" / "+10%)" / "(+10)" gibi değerleri güvenle "(...)" yap
+// "+10" / "10" / "+10.5" / "(+10)" gibi değerleri güvenle "(...)" yap
 const fmt = (val?: string) => {
   const v0 = (val ?? "").trim();
   if (!v0) return "";
-
-  // zaten parantezliyse tekrar parantezleme
   const v = v0.replace(/^\(/, "").replace(/\)$/, "").trim();
   if (!v) return "";
-
   return ` (${v})`;
 };
 
@@ -35,7 +31,7 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 5,
     chip: { icon: "★" },
     template: () =>
-      "Sert düşüş sonrası dip dönüş (reversal) yapısı oluşmuş; tepki potansiyeli artar.",
+      "Sert düşüş sonrası dip dönüş yapısı; tepki potansiyeli yükselir.",
   },
   RSI_BULLDIV3: {
     tone: "BUY",
@@ -43,7 +39,7 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 4,
     chip: { icon: "🟤" },
     template: () =>
-      "3 pivotlu RSI pozitif uyumsuzluk, satış baskısının zayıfladığına ve dipten dönüş ihtimaline işaret eder.",
+      "3 pivotlu RSI pozitif uyumsuzluk; satış baskısı zayıflıyor.",
   },
   RSI30_OK: {
     tone: "BUY",
@@ -51,7 +47,7 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 3,
     chip: { icon: "↗" },
     template: (val) =>
-      `RSI 30 üzeri geri dönüş${fmt(val)} aşırı satımdan çıkış ve momentum toparlanması sinyali verebilir.`,
+      `RSI 30 üzeri dönüş${fmt(val)} momentum toparlanması sinyali verebilir.`,
   },
   MACD_OK: {
     tone: "BUY",
@@ -59,7 +55,7 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 3,
     chip: { icon: "↗" },
     template: (val) =>
-      `MACD bull cross${fmt(val)} momentumun yukarı yönlü döndüğünü ve ivmelenme ihtimalini gösterir.`,
+      `MACD bull cross${fmt(val)} yukarı yönlü momentum ihtimalini artırır.`,
   },
   "MA5/20_OK": {
     tone: "BUY",
@@ -67,23 +63,23 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 2,
     chip: { icon: "↗" },
     template: (val) =>
-      `MA5/MA20 yukarı kesişimi${fmt(val)} kısa vadede trend başlangıcı/ivmelenme sinyali üretebilir.`,
+      `MA5/MA20 yukarı kesişimi${fmt(val)} kısa vadeli trend başlangıcı olabilir.`,
   },
   VWAP_UP: {
     tone: "BUY",
-    label: "Trend Teyidi",
+    label: "VWAP Üstü",
     priority: 2,
     chip: { icon: "✓" },
     template: (val) =>
-      `Fiyatın VWAP üzerinde kalması${fmt(val)} gün içi trend teyidi ve alıcı kontrolü şeklinde okunabilir.`,
+      `VWAP üzerinde tutunma${fmt(val)} alıcı kontrolünü destekler.`,
   },
   VOL_UP: {
     tone: "BUY",
-    label: "Katılım Artışı",
+    label: "Hacim Artışı",
     priority: 2,
     chip: { icon: "📈" },
     template: (val) =>
-      `Hacim artışı${fmt(val)} hareketin katılımla desteklendiğini ve sinyal kalitesinin güçlendiğini gösterir.`,
+      `Hacim artışı${fmt(val)} hareketin katılımla desteklendiğini gösterir.`,
   },
   GC_OK: {
     tone: "BUY",
@@ -91,7 +87,7 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 5,
     chip: { icon: "🏆" },
     template: (val) =>
-      `Golden Cross (MA50>MA200)${fmt(val)} uzun vadeli rejimde pozitifleşme ihtimalini artırır (tek başına yeterli değildir).`,
+      `Golden Cross${fmt(val)} uzun vadeli rejim değişimi sinyali verebilir.`,
   },
   D1_CONFIRM: {
     tone: "BUY",
@@ -99,7 +95,7 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 4,
     chip: { icon: "D" },
     template: (val) =>
-      `Günlük zaman dilimi onayı${fmt(val)} daha büyük resimde trendin desteklendiğine işaret eder.`,
+      `Günlük zaman dilimi onayı${fmt(val)} büyük resimde trendi destekler.`,
   },
 
   // =========================
@@ -111,39 +107,39 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 5,
     chip: { icon: "★" },
     template: () =>
-      "Aşırı yükseliş sonrası tepe dönüş (reversal) yapısı, kâr satışı ve geri çekilme riskini artırır.",
+      "Tepe dönüş yapısı; kâr satışı ve geri çekilme riski artıyor.",
   },
   RSI_BEARDIV3: {
     tone: "SELL",
-    label: "RSI Uyumsuzluk",
+    label: "RSI Negatif Uyumsuzluk",
     priority: 4,
     chip: { icon: "🔵" },
     template: () =>
-      "3 pivotlu RSI negatif uyumsuzluk, yükselişte momentum kaybı ve tepe oluşumu riskine işaret eder.",
+      "RSI negatif uyumsuzluk; momentum kaybı ve tepe riski.",
   },
   RSI70_DN: {
     tone: "SELL",
-    label: "Momentum Zayıflıyor",
+    label: "Momentum Zayıf",
     priority: 3,
     chip: { icon: "↘" },
     template: (val) =>
-      `RSI’nin 70 altına sarkması${fmt(val)} aşırı alım sonrası soğuma ve momentum zayıflaması göstergesi olabilir.`,
+      `RSI 70 altına sarkma${fmt(val)} aşırı alımdan çıkış sinyali.`,
   },
   VWAP_DN: {
     tone: "SELL",
-    label: "Trend Zayıf",
+    label: "VWAP Altı",
     priority: 2,
     chip: { icon: "!" },
     template: (val) =>
-      `Fiyatın VWAP altına inmesi${fmt(val)} gün içi trend zayıflaması ve satıcılı rejim uyarısıdır.`,
+      `VWAP altı fiyatlama${fmt(val)} satıcılı rejim uyarısıdır.`,
   },
   "MA5/20_DN": {
     tone: "SELL",
-    label: "Kısa Trend Kırılımı",
+    label: "Trend Kırılımı",
     priority: 3,
     chip: { icon: "↘" },
     template: (val) =>
-      `MA5/MA20 aşağı kesişimi${fmt(val)} kısa vadeli zayıflama ve geri çekilme riskini yükseltir.`,
+      `MA5/MA20 aşağı kesişimi${fmt(val)} zayıflama riskini artırır.`,
   },
   BEAR_CANDLE: {
     tone: "SELL",
@@ -151,14 +147,33 @@ export const REASON_META: Record<string, ReasonMeta> = {
     priority: 2,
     chip: { icon: "🕯" },
     template: () =>
-      "Ayı mum formasyonları satış baskısını artırabilir; tepe bölgelerinde teyit aramak gerekir.",
+      "Ayı mum formasyonu; satış baskısı artabilir.",
   },
   VOL_DUMP: {
     tone: "SELL",
-    label: "Satış Baskısı (Hacim)",
+    label: "Hacimli Satış",
     priority: 4,
     chip: { icon: "📉" },
     template: (val) =>
-      `Artan işlem hacmi eşliğinde gelen düşüş${fmt(val)} güçlü katılımlı satış baskısına işaret edebilir. Hacim destekli satış, hareketin tesadüfi değil “dağıtım (distribution)” karakterli olma riskini artırır.`,
+      `Hacimli düşüş${fmt(val)} dağıtım riskini yükseltir.`,
   },
 };
+
+// =========================
+// HELPER EXPORTLAR
+// =========================
+export function reasonLabel(key: string) {
+  return REASON_META[key]?.label ?? key;
+}
+
+export function reasonIcon(key: string) {
+  return REASON_META[key]?.chip?.icon ?? "";
+}
+
+export function reasonTone(key: string): ReasonTone {
+  return REASON_META[key]?.tone ?? "NEUTRAL";
+}
+
+export function reasonPriority(key: string) {
+  return REASON_META[key]?.priority ?? 1;
+}
