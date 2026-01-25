@@ -12,8 +12,7 @@ const BIST100 = [
   "ISGYO","ISMEN","KARSN","KCAER","KCHOL","KONTR","KOZAA","KOZAL","KRDMD","LOGO",
   "MAVI","MGROS","MIATK","ODAS","OTKAR","OYAKC","PETKM","PGSUS","SAHOL","SASA",
   "SDTTR","SELEC","SISE","SKBNK","SMRTG","SOKM","TABGD","TAVHL","TCELL","THYAO",
-  "TKFEN","TOASO","TSKB","TTKOM","TTRAK","TUPRS","ULKER","VAKBN","VESBE","VESTL",
-  "YKBNK","ZOREN"
+  "TKFEN","TOASO","TSKB","TTKOM","TTRAK","TUPRS","ULKER","VAKBN","VESBE","VESTL","EGEEN","CMBTN","MRSHL","YKBNK","ZOREN"
   // Not: BIST100 zamanla değişebilir. İstersen bunu otomatik güncelleyen bir modül yaparız.
 ];
 
