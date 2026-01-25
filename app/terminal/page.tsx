@@ -229,8 +229,8 @@ export default function TerminalPage() {
     pollMs: 300_000,
   });
 
-  // ✅ Limit: panelde gerçekten son 20
-  const LIMIT = 20;
+  // ✅ Limit: panelde gerçekten son 110
+  const LIMIT = 110;
 
   // ✅ Prefix (BIST dahil)
   const pickPrefix = useCallback((cat: keyof typeof ASSETS) => {
