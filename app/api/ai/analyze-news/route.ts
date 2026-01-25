@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true, score: 0, explanation: "Haber bulunamadı." });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
       Sen bir kıdemli finansal analistsin. Aşağıdaki haber başlıklarını ${symbol} hissesi/varlığı özelinde analiz et.
