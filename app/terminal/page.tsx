@@ -1,18 +1,50 @@
+// app/terminal/page.tsx
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
-import DashboardView from "@/components/DashboardView";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
 import { reasonsToTechSentences } from "@/lib/reasonTranslator";
 import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
+import DashboardView from "@/components/DashboardView";
 
 // ──────────────────────────────────────────────────
-// Sets (PRO: includes() type bug fix + perf)
+// Types
 // ──────────────────────────────────────────────────
-const ETF_SET = new Set<string>(ASSETS.ETF as unknown as string[]);
-const CRYPTO_SET = new Set<string>(ASSETS.CRYPTO as unknown as string[]);
-const BIST_SET = new Set<string>(((ASSETS as any).BIST ?? []) as string[]);
+type AssetsMap = {
+  NASDAQ: string[];
+  ETF: string[];
+  CRYPTO: string[];
+  BIST?: string[];
+};
+
+// Pro: normalize ASSETS once (and keep types clean)
+const ASSETS_MAP: AssetsMap = {
+  NASDAQ: (ASSETS as any).NASDAQ ?? [],
+  ETF: (ASSETS as any).ETF ?? [],
+  CRYPTO: (ASSETS as any).CRYPTO ?? [],
+  BIST: (ASSETS as any).BIST ?? [],
+};
+
+type AssetCategory = keyof AssetsMap;
+
+type NewsItem = {
+  headline: string;
+  url: string;
+  source: string;
+  datetime: number;
+  summary?: string;
+  relevance?: number;
+  matched?: string[];
+};
+
+// ──────────────────────────────────────────────────
+// Sets (perf + includes() TS fix)
+// ──────────────────────────────────────────────────
+const NASDAQ_SET = new Set<string>((ASSETS_MAP.NASDAQ ?? []).map((s) => String(s).toUpperCase()));
+const ETF_SET = new Set<string>((ASSETS_MAP.ETF ?? []).map((s) => String(s).toUpperCase()));
+const CRYPTO_SET = new Set<string>((ASSETS_MAP.CRYPTO ?? []).map((s) => String(s).toUpperCase()));
+const BIST_SET = new Set<string>(((ASSETS_MAP.BIST ?? []) as string[]).map((s) => String(s).toUpperCase()));
 
 // ──────────────────────────────────────────────────
 // UI Helpers
@@ -20,10 +52,11 @@ const BIST_SET = new Set<string>(((ASSETS as any).BIST ?? []) as string[]);
 function scoreBadge(signal: string | null | undefined, score: number | null | undefined) {
   const s = String(signal ?? "").toUpperCase();
   const sc = Number(score ?? 0);
+
   const strength = sc >= 25 ? "ÇOK GÜÇLÜ" : sc >= 18 ? "GÜÇLÜ" : sc >= 12 ? "ORTA" : "ZAYIF";
   if (s === "BUY") return `BUY • ${strength}`;
   if (s === "SELL") return `SELL • ${strength}`;
-  return `${strength}`;
+  return strength;
 }
 
 function HamburgerIcon({ open }: { open: boolean }) {
@@ -73,17 +106,10 @@ function TechLine({ reasons }: { reasons: string | null }) {
   return <div className="mt-2 text-[11px] leading-relaxed text-gray-300">{tech}</div>;
 }
 
-function ScoreChip({
-  signal,
-  score,
-}: {
-  signal: string | null | undefined;
-  score: number | null | undefined;
-}) {
+function ScoreChip({ signal, score }: { signal: string | null | undefined; score: number | null | undefined }) {
   const text = scoreBadge(signal, score);
-  if (!text) return null;
-
   const sig = String(signal ?? "").toUpperCase();
+
   const cls =
     sig === "BUY"
       ? "border-green-700 text-green-200 bg-green-950/30"
@@ -91,11 +117,7 @@ function ScoreChip({
       ? "border-red-700 text-red-200 bg-red-950/30"
       : "border-gray-700 text-gray-200 bg-gray-900/30";
 
-  return (
-    <div className={`inline-flex items-center px-2 py-1 rounded-md border text-[10px] ${cls}`}>
-      {text}
-    </div>
-  );
+  return <div className={`inline-flex items-center px-2 py-1 rounded-md border text-[10px] ${cls}`}>{text}</div>;
 }
 
 function SignalSkeleton() {
@@ -120,19 +142,6 @@ function SignalSkeleton() {
   );
 }
 
-// ──────────────────────────────────────────────────
-// News Types/UI
-// ──────────────────────────────────────────────────
-type NewsItem = {
-  headline: string;
-  url: string;
-  source: string;
-  datetime: number;
-  summary?: string;
-  relevance?: number;
-  matched?: string[];
-};
-
 function formatNewsTime(unixSec?: number) {
   if (!unixSec) return "";
   try {
@@ -143,27 +152,23 @@ function formatNewsTime(unixSec?: number) {
 }
 
 // ──────────────────────────────────────────────────
-// Pro: Market Status (weekday-aware approx)
+// Market status (approx)
 // ──────────────────────────────────────────────────
 function marketStatusTRandUS() {
   const now = new Date();
-  const day = now.getDay(); // 0 Sun, 6 Sat
+  const day = now.getDay();
   const isWeekend = day === 0 || day === 6;
-
   const h = now.getHours();
   const m = now.getMinutes();
 
-  const trOpen =
-    !isWeekend && (h > 10 || (h === 10 && m >= 0)) && (h < 18 || (h === 18 && m <= 10));
-
-  const usOpen =
-    !isWeekend && (h > 16 || (h === 16 && m >= 30)) && (h < 23 || (h === 23 && m <= 0));
+  const trOpen = !isWeekend && ((h > 10 || (h === 10 && m >= 0)) && (h < 18 || (h === 18 && m <= 10)));
+  const usOpen = !isWeekend && ((h > 16 || (h === 16 && m >= 30)) && (h < 23 || (h === 23 && m <= 0)));
 
   return { trOpen, usOpen, isWeekend };
 }
 
 // ──────────────────────────────────────────────────
-// Pro: tiny sparkline (optional placeholder)
+// Tiny sparkline
 // ──────────────────────────────────────────────────
 function Sparkline({ points }: { points?: number[] | null }) {
   if (!points || points.length < 3) return null;
@@ -180,50 +185,70 @@ function Sparkline({ points }: { points?: number[] | null }) {
     .join(" ");
 
   return (
-    <svg viewBox="0 0 100 30" className="w-20 h-6 text-gray-300/80">
+    <svg viewBox="0 0 100 30" className="w-20 h-6 text-gray-300/80" aria-hidden="true">
       <path d={d} fill="none" stroke="currentColor" strokeWidth="2" />
     </svg>
   );
 }
 
+// ──────────────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────────────
+function normalizeSymbol(sym: string) {
+  const s = String(sym || "").trim();
+  if (!s) return "NASDAQ:AAPL";
+  if (s.includes(":")) return s;
+  return `NASDAQ:${s}`;
+}
+
+function uniqBy<T>(arr: T[], keyFn: (t: T) => string) {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const x of arr) {
+    const k = keyFn(x);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(x);
+  }
+  return out;
+}
+
+// ──────────────────────────────────────────────────
+// Page
+// ──────────────────────────────────────────────────
 export default function TerminalPage() {
   // ── core state ───────────────────────────────────
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
-  const [activeCategory, setActiveCategory] = useState<keyof typeof ASSETS>("NASDAQ");
+  const [activeCategory, setActiveCategory] = useState<AssetCategory>("NASDAQ");
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedSignalId, setSelectedSignalId] = useState<number | null>(null);
   const [onlySelectedSymbol, setOnlySelectedSymbol] = useState(false);
 
-  // view mode: Dashboard <-> Terminal
-  const [viewMode, setViewMode] = useState<"DASHBOARD" | "TERMINAL">("DASHBOARD");
+  // Mobile tabs (chart / signals)
+  const [mobileTab, setMobileTab] = useState<"DASH" | "CHART" | "SIGNALS">("DASH");
 
-  // mobile tabs (Terminal içi)
-  const [mobileTab, setMobileTab] = useState<"CHART" | "SIGNALS">("CHART");
-
-  // audio toggle
+  // Audio toggle
   const [audioOn, setAudioOn] = useState(false);
+
+  // Dashboard toggle (desktop)
+  const [showDashboard, setShowDashboard] = useState(true);
 
   // API + polling hook
   const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome } = useSignals({
     pollMs: 300_000,
   });
 
-  // Dashboard’tan sembol seçimi: otomatik terminale geç
-  const handleSelectSymbol = useCallback((symbol: string) => {
-    setSelectedSymbol(symbol);
-    setSelectedSignalId(null);
-    setSidebarOpen(false);
-    setViewMode("TERMINAL");
-    setMobileTab("CHART");
-  }, []);
+  // Better empty/loading/error discrimination
+  const uiLoading = loadingSignals && (!signals || signals.length === 0);
+  const uiEmpty = !loadingSignals && (!signals || signals.length === 0);
 
-  // title
+  // Title
   useEffect(() => {
     document.title = `${symbolToPlain(selectedSymbol)} | Kuark Terminal`;
   }, [selectedSymbol]);
 
-  // tab visible refresh
+  // Visible refresh
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === "visible") refreshAll();
@@ -232,7 +257,7 @@ export default function TerminalPage() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [refreshAll]);
 
-  // audio when new signal arrives (only if enabled)
+  // Audio on new signal
   const lastSignalCount = useRef(0);
   useEffect(() => {
     if (!audioOn) {
@@ -240,13 +265,13 @@ export default function TerminalPage() {
       return;
     }
     if (signals.length > lastSignalCount.current && lastSignalCount.current !== 0) {
-      const audio = new Audio("/alert.mp3"); // public/alert.mp3
+      const audio = new Audio("/alert.mp3");
       audio.play().catch(() => {});
     }
     lastSignalCount.current = signals.length;
   }, [signals, audioOn]);
 
-  // favorites
+  // Favorites
   const FAV_KEY = "kuark:favs";
   const [favs, setFavs] = useState<string[]>([]);
   useEffect(() => {
@@ -267,27 +292,30 @@ export default function TerminalPage() {
     setFavs((p) => (p.includes(sym) ? p.filter((x) => x !== sym) : [sym, ...p]));
   }, []);
 
-  const LIMIT = 110;
+  // Limits + load more
+  const [heatLimit, setHeatLimit] = useState(48);
+  const [signalLimit, setSignalLimit] = useState(110);
 
-  // prefix resolver (Set-based, type-safe)
-  // NOTE: NASDAQ assumed default (if not in BIST/CRYPTO/ETF)
+  // prefix resolver
   const prefixForSymbol = useCallback((sym: string) => {
-    const s = sym.toUpperCase();
+    const s = String(sym || "").toUpperCase();
     if (BIST_SET.has(s)) return "BIST";
     if (CRYPTO_SET.has(s)) return "BINANCE";
     if (ETF_SET.has(s)) return "AMEX";
     return "NASDAQ";
   }, []);
 
-  // sidebar assets (favorites top)
+  // Assets filtered
   const filteredAssets = useMemo(() => {
-    const list = ASSETS[activeCategory].filter((sym) =>
-      sym.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    return list.sort((a, b) => (isFav(b) ? 1 : 0) - (isFav(a) ? 1 : 0));
+    const base = (ASSETS_MAP[activeCategory] ?? []).slice();
+    const q = searchQuery.trim().toLowerCase();
+    const list = q ? base.filter((sym) => String(sym).toLowerCase().includes(q)) : base;
+
+    // favorites first (stable-ish)
+    return list.sort((a, b) => (isFav(String(b)) ? 1 : 0) - (isFav(String(a)) ? 1 : 0));
   }, [activeCategory, searchQuery, isFav]);
 
-  // last signal per symbol (newest-first varsayımı)
+  // Latest per symbol map
   const lastSignalMap = useMemo(() => {
     const m = new Map<string, SignalRow>();
     for (const r of signals) {
@@ -297,17 +325,14 @@ export default function TerminalPage() {
     return m;
   }, [signals]);
 
-  const signaledSymbols = useMemo(
-    () => new Set(signals.map((r) => symbolToPlain(r.symbol))),
-    [signals]
-  );
+  const signaledSymbols = useMemo(() => new Set(signals.map((r) => symbolToPlain(r.symbol))), [signals]);
 
   const visibleSignals = useMemo(() => {
-    const last = signals.slice(0, LIMIT);
+    const last = signals.slice(0, signalLimit);
     if (!onlySelectedSymbol) return last;
     const plainSel = symbolToPlain(selectedSymbol);
     return last.filter((s) => symbolToPlain(s.symbol) === plainSel);
-  }, [signals, selectedSymbol, onlySelectedSymbol]);
+  }, [signals, selectedSymbol, onlySelectedSymbol, signalLimit]);
 
   const winrate = useMemo(() => {
     const decided = visibleSignals.filter((r) => r.outcome != null);
@@ -316,18 +341,31 @@ export default function TerminalPage() {
     return Math.round((wins / decided.length) * 100);
   }, [visibleSignals]);
 
-  const totalAssetsCount =
-    ASSETS.NASDAQ.length +
-    ASSETS.ETF.length +
-    ASSETS.CRYPTO.length +
-    (((ASSETS as any).BIST?.length ?? 0) as number);
+  const totalAssetsCount = useMemo(() => {
+    return (
+      (ASSETS_MAP.NASDAQ?.length ?? 0) +
+      (ASSETS_MAP.ETF?.length ?? 0) +
+      (ASSETS_MAP.CRYPTO?.length ?? 0) +
+      (ASSETS_MAP.BIST?.length ?? 0)
+    );
+  }, []);
 
   const tvUrl = useMemo(() => {
     const s = encodeURIComponent(selectedSymbol);
     return `https://www.tradingview.com/chart/?symbol=${s}`;
   }, [selectedSymbol]);
 
-  // ── AI daily digest state ────────────────────────
+  // ── Dashboard data ───────────────────────────────
+  // Use newest-ish signals, unique by symbol for heatmap style
+  const dashSignals = useMemo(() => {
+    // remove duplicates (keep first seen = newest because signals assumed newest-first)
+    const uniq = uniqBy(signals, (r) => symbolToPlain(r.symbol));
+    return uniq.slice(0, Math.max(heatLimit, 48));
+  }, [signals, heatLimit]);
+
+  // ──────────────────────────────────────────────────
+  // AI daily digest
+  // ──────────────────────────────────────────────────
   const [aiCommentary, setAiCommentary] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string>("");
@@ -359,16 +397,17 @@ export default function TerminalPage() {
     } catch {}
   }, [aiCommentary]);
 
-  // ── News state ──────────────────────────────────
+  // ──────────────────────────────────────────────────
+  // News state + Smart score
+  // ──────────────────────────────────────────────────
   const [newsLoadingFor, setNewsLoadingFor] = useState<string>("");
   const [newsErrorFor, setNewsErrorFor] = useState<Record<string, string>>({});
   const [newsCache, setNewsCache] = useState<Record<string, NewsItem[]>>({});
   const [openNewsForSymbol, setOpenNewsForSymbol] = useState<string>("");
 
-  // Smart News Score cache
-  const [smartScore, setSmartScore] = useState<
-    Record<string, { score: number; impact: string; explanation: string }>
-  >({});
+  const [smartScore, setSmartScore] = useState<Record<string, { score: number; impact: string; explanation: string }>>(
+    {}
+  );
 
   const lastNewsFetchAt = useRef<Record<string, number>>({});
   const newsCacheRef = useRef<Record<string, NewsItem[]>>({});
@@ -380,7 +419,7 @@ export default function TerminalPage() {
     async (symbol: string, items: NewsItem[]) => {
       const plain = symbolToPlain(symbol);
       if (!items?.length) return;
-      if (smartScore[plain]) return; // spam olmasın
+      if (smartScore[plain]) return;
 
       try {
         const res = await fetch("/api/ai/analyze-news", {
@@ -407,6 +446,7 @@ export default function TerminalPage() {
   const fetchNewsForSymbol = useCallback(
     async (symbol: string, reasons: string | null) => {
       const plain = symbolToPlain(symbol);
+
       if (newsCacheRef.current[plain]) return;
 
       const now = Date.now();
@@ -419,9 +459,7 @@ export default function TerminalPage() {
         setNewsLoadingFor(plain);
         setNewsErrorFor((p) => ({ ...p, [plain]: "" }));
 
-        const url = `/api/news?symbol=${encodeURIComponent(symbol)}&max=8&reasons=${encodeURIComponent(
-          reasonKeys
-        )}`;
+        const url = `/api/news?symbol=${encodeURIComponent(symbol)}&max=8&reasons=${encodeURIComponent(reasonKeys)}`;
         const res = await fetch(url);
         const json = await res.json();
 
@@ -429,7 +467,6 @@ export default function TerminalPage() {
 
         const items = (json.items ?? []) as NewsItem[];
         setNewsCache((p) => ({ ...p, [plain]: items }));
-
         analyzeWithGemini(symbol, items);
       } catch (e: any) {
         setNewsErrorFor((p) => ({ ...p, [plain]: e?.message ?? "Haber alınamadı" }));
@@ -491,8 +528,7 @@ export default function TerminalPage() {
               }`}
               title={smart.explanation}
             >
-              Smart News Score: <b>{smart.score}</b> / 10 • Impact: <b>{smart.impact}</b> —{" "}
-              {smart.explanation}
+              Smart News Score: <b>{smart.score}</b> / 10 • Impact: <b>{smart.impact}</b> — {smart.explanation}
             </div>
           ) : (
             <div className="text-[10px] text-gray-500">Smart News Score: (hazırlanıyor / yok)</div>
@@ -551,7 +587,9 @@ export default function TerminalPage() {
     );
   }
 
-  // sparkline cache
+  // ──────────────────────────────────────────────────
+  // mini spark cache
+  // ──────────────────────────────────────────────────
   const [miniCache, setMiniCache] = useState<Record<string, number[]>>({});
   const miniCacheRef = useRef<Record<string, number[]>>({});
   useEffect(() => {
@@ -570,6 +608,9 @@ export default function TerminalPage() {
     } catch {}
   }, []);
 
+  // ──────────────────────────────────────────────────
+  // Sidebar
+  // ──────────────────────────────────────────────────
   const SidebarContent = (
     <div className="h-full flex flex-col bg-[#0d1117]">
       <div className="p-5 border-b border-gray-800 bg-[#161b22]">
@@ -577,24 +618,52 @@ export default function TerminalPage() {
           <h1 className="text-xl font-black text-blue-500 tracking-tight italic">KUARK TERMINAL</h1>
           <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/40" />
         </div>
+
         <p className="text-[10px] text-gray-500 mt-1 font-mono uppercase tracking-widest">
           {totalAssetsCount} Assets • Live Alerts → TradingView
         </p>
+
+        <div className="mt-3 flex items-center gap-2">
+          <button
+            onClick={() => setShowDashboard((v) => !v)}
+            className={`text-[11px] px-3 py-1.5 rounded border transition-colors ${
+              showDashboard
+                ? "border-blue-500 bg-blue-900/20 text-blue-200"
+                : "border-gray-700 hover:bg-gray-800 text-gray-200"
+            }`}
+            title="Dashboard panelini aç/kapat"
+          >
+            Dashboard: {showDashboard ? "ON" : "OFF"}
+          </button>
+
+          <button
+            onClick={() => {
+              setHeatLimit((p) => Math.max(48, p));
+              setSignalLimit(110);
+              refreshAll();
+            }}
+            className="text-[11px] px-3 py-1.5 rounded border border-gray-700 hover:bg-gray-800 text-gray-200"
+            title="Paneli yenile"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className="flex p-1.5 border-b border-gray-800">
-        {Object.keys(ASSETS).map((cat) => (
+        {(Object.keys(ASSETS_MAP) as AssetCategory[]).map((cat) => (
           <button
             key={cat}
             onClick={() => {
-              setActiveCategory(cat as any);
+              setActiveCategory(cat);
               setSearchQuery("");
             }}
             className={`flex-1 py-2.5 text-xs font-bold rounded transition-colors ${
-              activeCategory === (cat as any)
+              activeCategory === cat
                 ? "bg-blue-600 text-white shadow-sm"
                 : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/40"
             }`}
+            aria-label={`Kategori: ${cat}`}
           >
             {cat}
           </button>
@@ -609,12 +678,14 @@ export default function TerminalPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-[#161b22] border border-gray-700 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600"
+            aria-label="Sembol ara"
           />
           <svg
             className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -630,7 +701,8 @@ export default function TerminalPage() {
         {filteredAssets.length === 0 ? (
           <div className="p-6 text-center text-gray-500 text-sm">Sonuç bulunamadı.</div>
         ) : (
-          filteredAssets.map((sym) => {
+          filteredAssets.map((sym0) => {
+            const sym = String(sym0);
             const full = `${prefixForSymbol(sym)}:${sym}`;
             const active = selectedSymbol === full;
 
@@ -646,7 +718,6 @@ export default function TerminalPage() {
                   setSelectedSignalId(null);
                   setSidebarOpen(false);
                   setOpenNewsForSymbol("");
-                  setViewMode("TERMINAL");
                   setMobileTab("CHART");
                   fetchMini(full);
                 }}
@@ -655,17 +726,16 @@ export default function TerminalPage() {
                     ? "bg-blue-900/10 border-l-4 border-blue-500"
                     : "hover:bg-gray-800/30 border-l-4 border-transparent"
                 }`}
+                aria-label={`Sembol seç: ${sym}`}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="text-left min-w-0">
-                    <div className={`font-medium truncate ${active ? "text-blue-400" : "text-gray-200"}`}>
-                      {sym}
-                    </div>
+                    <div className={`font-medium truncate ${active ? "text-blue-400" : "text-gray-200"}`}>{sym}</div>
                     <div className="text-[10px] text-gray-600 font-mono">{prefixForSymbol(sym)}</div>
                   </div>
 
                   {hasSignal && (
-                    <div className="relative flex h-2 w-2 shrink-0">
+                    <div className="relative flex h-2 w-2 shrink-0" aria-label="Yeni sinyal var">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
                     </div>
@@ -682,9 +752,7 @@ export default function TerminalPage() {
                           ? "border-green-700 text-green-200 bg-green-950/30"
                           : "border-red-700 text-red-200 bg-red-950/30"
                       }`}
-                      title={`${String(last.signal).toUpperCase()} • ${last.score ?? "—"} • ${timeAgo(
-                        (last as any).created_at
-                      )}`}
+                      title={`${String(last.signal).toUpperCase()} • ${last.score ?? "—"} • ${timeAgo(last.created_at)}`}
                     >
                       {String(last.signal).toUpperCase()} {last.score ?? "—"}
                     </span>
@@ -702,6 +770,7 @@ export default function TerminalPage() {
                         : "border-gray-700 text-gray-400 hover:text-gray-200"
                     }`}
                     title="Favorilere ekle/çıkar"
+                    aria-label="Favori"
                   >
                     {isFav(sym) ? "★" : "☆"}
                   </button>
@@ -720,6 +789,9 @@ export default function TerminalPage() {
 
   const ms = marketStatusTRandUS();
 
+  // ──────────────────────────────────────────────────
+  // Render
+  // ──────────────────────────────────────────────────
   return (
     <div className="h-screen bg-[#0d1117] text-white overflow-hidden font-sans">
       {sidebarOpen && (
@@ -746,9 +818,7 @@ export default function TerminalPage() {
               </button>
 
               <div className="min-w-0">
-                <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                  {viewMode === "DASHBOARD" ? "Dashboard" : "Terminal"}
-                </div>
+                <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Terminal</div>
                 <div className="text-xl font-black truncate">
                   {symbolToPlain(selectedSymbol)}
                   <span className="text-blue-500 text-sm ml-1.5">/ USD</span>
@@ -776,26 +846,18 @@ export default function TerminalPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setViewMode(viewMode === "DASHBOARD" ? "TERMINAL" : "DASHBOARD")}
-                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-bold transition-colors"
-                title="Dashboard / Terminal"
-              >
-                {viewMode === "DASHBOARD" ? "ANALİZ TERMİNALİ →" : "← ANA DASHBOARD"}
-              </button>
-
               <a
                 href={tvUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="hidden md:inline-flex text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors"
+                className="text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors"
               >
                 TradingView’de Aç
               </a>
 
               <button
                 onClick={() => setOnlySelectedSymbol((v) => !v)}
-                className={`hidden md:inline-flex text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
                   onlySelectedSymbol
                     ? "border-blue-500 bg-blue-900/20 text-blue-200"
                     : "border-gray-700 hover:bg-gray-800 text-gray-200"
@@ -807,7 +869,7 @@ export default function TerminalPage() {
 
               <button
                 onClick={() => setAudioOn((v) => !v)}
-                className={`hidden md:inline-flex text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
                   audioOn
                     ? "border-yellow-500 bg-yellow-900/20 text-yellow-200"
                     : "border-gray-700 hover:bg-gray-800 text-gray-200"
@@ -826,363 +888,405 @@ export default function TerminalPage() {
             </div>
           </header>
 
-          {/* DASHBOARD VIEW */}
-          {viewMode === "DASHBOARD" ? (
-            <DashboardView
-              signals={signals}
-              topBuy={todayTopBuy}
-              topSell={todayTopSell}
-              onSelectSymbol={handleSelectSymbol}
-            />
-          ) : (
-            <>
-              {/* Mobile tabs (Terminal içi) */}
-              <div className="md:hidden flex border-b border-gray-800 bg-[#161b22]">
-                <button
-                  onClick={() => setMobileTab("CHART")}
-                  className={`flex-1 py-3 text-xs font-bold ${
-                    mobileTab === "CHART" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
-                  }`}
-                >
-                  GRAFİK
-                </button>
-                <button
-                  onClick={() => setMobileTab("SIGNALS")}
-                  className={`flex-1 py-3 text-xs font-bold ${
-                    mobileTab === "SIGNALS" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
-                  }`}
-                >
-                  SİNYALLER ({visibleSignals.length})
-                </button>
+          {/* Mobile tabs: Dashboard / Chart / Signals */}
+          <div className="md:hidden flex border-b border-gray-800 bg-[#161b22]">
+            {(["DASH", "CHART", "SIGNALS"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setMobileTab(t)}
+                className={`flex-1 py-3 text-xs font-bold ${
+                  mobileTab === t ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
+                }`}
+              >
+                {t === "DASH" ? "DASH" : t === "CHART" ? "GRAFİK" : `SİNYALLER (${visibleSignals.length})`}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* Dashboard (desktop + mobile) */}
+            {showDashboard && (
+              <section className={`${mobileTab !== "DASH" ? "hidden md:block" : "block"} border-b border-gray-800`}>
+                <DashboardView
+                  signals={dashSignals}
+                  topBuy={todayTopBuy}
+                  topSell={todayTopSell}
+                  onSelectSymbol={(sym) => {
+                    const ns = normalizeSymbol(sym);
+                    setSelectedSymbol(ns);
+                    setSelectedSignalId(null);
+                    setMobileTab("CHART");
+                    fetchMini(ns);
+                  }}
+                />
+
+                {/* Heatmap limit controls */}
+                <div className="px-4 md:px-8 pb-5">
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <span>Isı haritası:</span>
+                    <button
+                      onClick={() => setHeatLimit(48)}
+                      className={`px-2 py-1 rounded border ${
+                        heatLimit === 48 ? "border-blue-500 text-blue-300 bg-blue-900/20" : "border-gray-700 hover:bg-gray-800"
+                      }`}
+                    >
+                      48
+                    </button>
+                    <button
+                      onClick={() => setHeatLimit(96)}
+                      className={`px-2 py-1 rounded border ${
+                        heatLimit === 96 ? "border-blue-500 text-blue-300 bg-blue-900/20" : "border-gray-700 hover:bg-gray-800"
+                      }`}
+                    >
+                      96
+                    </button>
+                    <button
+                      onClick={() => setHeatLimit(144)}
+                      className={`px-2 py-1 rounded border ${
+                        heatLimit === 144 ? "border-blue-500 text-blue-300 bg-blue-900/20" : "border-gray-700 hover:bg-gray-800"
+                      }`}
+                    >
+                      144
+                    </button>
+                    <span className="ml-auto">
+                      {uiLoading ? "Yükleniyor..." : uiEmpty ? "Henüz veri yok." : `Sembol: ${dashSignals.length}`}
+                    </span>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Chart + Signals row */}
+            <div className="flex-1 flex flex-col md:flex-row min-h-0">
+              <div
+                className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
+                  mobileTab !== "CHART" ? "hidden md:block" : "block"
+                }`}
+              >
+                <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
               </div>
 
-              <div className="flex-1 flex flex-col md:flex-row min-h-0">
-                {/* Grafik */}
-                <div
-                  className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
-                    mobileTab !== "CHART" ? "hidden md:block" : "block"
-                  }`}
-                >
-                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
-                </div>
+              <aside
+                className={`md:w-96 w-full border-t md:border-t-0 md:border-l border-gray-800 bg-[#0b0f14] p-4 overflow-y-auto custom-scrollbar min-h-0 ${
+                  mobileTab !== "SIGNALS" ? "hidden md:block" : "block"
+                }`}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-bold uppercase tracking-wide">Son Sinyaller ({visibleSignals.length})</h2>
+                    <div className="text-xs text-gray-400">
+                      {loadingSignals ? "Yükleniyor..." : uiEmpty ? "Boş" : "Canlı"}
+                    </div>
+                  </div>
 
-                {/* Sinyal paneli */}
-                <aside
-                  className={`md:w-96 w-full border-t md:border-t-0 md:border-l border-gray-800 bg-[#0b0f14] p-4 overflow-y-auto custom-scrollbar min-h-0 ${
-                    mobileTab !== "SIGNALS" ? "hidden md:block" : "block"
-                  }`}
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-sm font-bold uppercase tracking-wide">
-                        Son Sinyaller ({visibleSignals.length})
-                      </h2>
-                      <div className="text-xs text-gray-400">{loadingSignals ? "Yükleniyor..." : "Canlı"}</div>
+                  {/* Win rate */}
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
+                    <div className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-1">Win Rate (manuel)</div>
+                    <div className="text-3xl font-black text-white">{winrate == null ? "—" : `${winrate}%`}</div>
+                    <div className="text-[10px] text-gray-500 mt-2">
+                      (Bu panel, şu an ekranda görünen sinyallere göre hesaplar)
+                    </div>
+                  </div>
+
+                  {/* AI */}
+                  <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                    <div className="flex items-center justify-between mb-2 gap-2">
+                      <div className="text-xs font-bold uppercase tracking-wide text-blue-300">🧠 AI Günlük Yorum (Top 5)</div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={runAiCommentary}
+                          disabled={aiLoading}
+                          className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                            aiLoading ? "border-gray-700 text-gray-500" : "border-gray-700 hover:bg-gray-800 text-gray-200"
+                          }`}
+                          title="Top 5 BUY/SELL + Haber + Risk"
+                        >
+                          {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
+                        </button>
+
+                        <button
+                          onClick={copyAi}
+                          disabled={!aiCommentary}
+                          className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                            aiCommentary ? "border-gray-700 hover:bg-gray-800 text-gray-200" : "border-gray-800 text-gray-600"
+                          }`}
+                          title="Kopyala"
+                        >
+                          Kopyala
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
-                      <div className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-1">
-                        Win Rate (manuel)
+                    {aiError ? (
+                      <div className="text-xs text-red-400">{aiError}</div>
+                    ) : aiCommentary ? (
+                      <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-line">{aiCommentary}</div>
+                    ) : (
+                      <div className="text-xs text-gray-500">Top 5 listesi hazır olunca “Yorumla”ya bas.</div>
+                    )}
+
+                    <div className="text-[10px] text-gray-600 mt-3">Not: Yatırım tavsiyesi değildir.</div>
+                  </div>
+
+                  {/* Top 5 BUY/SELL */}
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs font-bold uppercase tracking-wide text-green-400">Günlük Top 5 BUY (Score)</div>
+                        <div className="text-[10px] text-gray-500">{todayTopBuy.length}/5</div>
                       </div>
-                      <div className="text-3xl font-black text-white">{winrate == null ? "—" : `${winrate}%`}</div>
-                      <div className="text-[10px] text-gray-500 mt-2">
-                        (Bu panel, şu an ekranda görünen sinyallere göre hesaplar)
-                      </div>
+
+                      {todayTopBuy.length === 0 ? (
+                        <div className="text-xs text-gray-500">{loadingSignals ? "Yükleniyor..." : "Bugün BUY yok."}</div>
+                      ) : (
+                        <div className="space-y-2">
+                          {todayTopBuy.map((r) => {
+                            const plain = symbolToPlain(r.symbol);
+                            const open = openNewsForSymbol === plain;
+
+                            return (
+                              <button
+                                key={`topbuy-${r.id}`}
+                                onClick={() => {
+                                  setSelectedSymbol(r.symbol);
+                                  setSelectedSignalId(r.id);
+                                  setSidebarOpen(false);
+                                  toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
+                                  fetchMini(r.symbol);
+                                }}
+                                className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
+                                aria-label={`Top BUY: ${r.symbol}`}
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
+                                    <div className="text-[10px] text-gray-600">
+                                      {timeAgo(r.created_at)} • {r.price ?? "—"}
+                                    </div>
+                                  </div>
+
+                                  <div className="flex flex-col items-end gap-1 shrink-0">
+                                    <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
+                                    <ScoreChip signal={r.signal} score={r.score} />
+                                  </div>
+                                </div>
+
+                                <ReasonBadges reasons={r.reasons} />
+                                <TechLine reasons={r.reasons} />
+
+                                <NewsBlock
+                                  symbol={r.symbol}
+                                  isOpen={open}
+                                  isLoading={newsLoadingFor === plain}
+                                  error={newsErrorFor[plain]}
+                                  items={newsCache[plain]}
+                                  onStopPropagation
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
 
                     <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                      <div className="flex items-center justify-between mb-2 gap-2">
-                        <div className="text-xs font-bold uppercase tracking-wide text-blue-300">
-                          🧠 AI Günlük Yorum (Top 5)
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={runAiCommentary}
-                            disabled={aiLoading}
-                            className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
-                              aiLoading
-                                ? "border-gray-700 text-gray-500"
-                                : "border-gray-700 hover:bg-gray-800 text-gray-200"
-                            }`}
-                            title="Top 5 BUY/SELL + Haber + Risk"
-                          >
-                            {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
-                          </button>
-
-                          <button
-                            onClick={copyAi}
-                            disabled={!aiCommentary}
-                            className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
-                              aiCommentary
-                                ? "border-gray-700 hover:bg-gray-800 text-gray-200"
-                                : "border-gray-800 text-gray-600"
-                            }`}
-                            title="Kopyala"
-                          >
-                            Kopyala
-                          </button>
-                        </div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="text-xs font-bold uppercase tracking-wide text-red-400">Günlük Top 5 SELL (Score)</div>
+                        <div className="text-[10px] text-gray-500">{todayTopSell.length}/5</div>
                       </div>
 
-                      {aiError ? (
-                        <div className="text-xs text-red-400">{aiError}</div>
-                      ) : aiCommentary ? (
-                        <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-line">{aiCommentary}</div>
+                      {todayTopSell.length === 0 ? (
+                        <div className="text-xs text-gray-500">{loadingSignals ? "Yükleniyor..." : "Bugün SELL yok."}</div>
                       ) : (
-                        <div className="text-xs text-gray-500">Top 5 listesi hazır olunca “Yorumla”ya bas.</div>
+                        <div className="space-y-2">
+                          {todayTopSell.map((r) => {
+                            const plain = symbolToPlain(r.symbol);
+                            const open = openNewsForSymbol === plain;
+
+                            return (
+                              <button
+                                key={`topsell-${r.id}`}
+                                onClick={() => {
+                                  setSelectedSymbol(r.symbol);
+                                  setSelectedSignalId(r.id);
+                                  setSidebarOpen(false);
+                                  toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
+                                  fetchMini(r.symbol);
+                                }}
+                                className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
+                                aria-label={`Top SELL: ${r.symbol}`}
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
+                                    <div className="text-[10px] text-gray-600">
+                                      {timeAgo(r.created_at)} • {r.price ?? "—"}
+                                    </div>
+                                  </div>
+
+                                  <div className="flex flex-col items-end gap-1 shrink-0">
+                                    <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
+                                    <ScoreChip signal={r.signal} score={r.score} />
+                                  </div>
+                                </div>
+
+                                <ReasonBadges reasons={r.reasons} />
+                                <TechLine reasons={r.reasons} />
+
+                                <NewsBlock
+                                  symbol={r.symbol}
+                                  isOpen={open}
+                                  isLoading={newsLoadingFor === plain}
+                                  error={newsErrorFor[plain]}
+                                  items={newsCache[plain]}
+                                  onStopPropagation
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
                       )}
-
-                      <div className="text-[10px] text-gray-600 mt-3">Not: Yatırım tavsiyesi değildir.</div>
                     </div>
-
-                    {/* Top5 BUY/SELL */}
-                    <div className="grid grid-cols-1 gap-3">
-                      <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="text-xs font-bold uppercase tracking-wide text-green-400">
-                            Günlük Top 5 BUY (Score)
-                          </div>
-                          <div className="text-[10px] text-gray-500">{todayTopBuy.length}/5</div>
-                        </div>
-
-                        {todayTopBuy.length === 0 ? (
-                          <div className="text-xs text-gray-500">
-                            {loadingSignals ? "Yükleniyor..." : "Bugün BUY yok."}
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            {todayTopBuy.map((r: any) => {
-                              const plain = symbolToPlain(r.symbol);
-                              const open = openNewsForSymbol === plain;
-
-                              return (
-                                <button
-                                  key={`topbuy-${r.id}`}
-                                  onClick={() => {
-                                    setSelectedSymbol(r.symbol);
-                                    setSelectedSignalId(r.id);
-                                    setSidebarOpen(false);
-                                    toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                    fetchMini(r.symbol);
-                                  }}
-                                  className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
-                                >
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div className="min-w-0">
-                                      <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
-                                      <div className="text-[10px] text-gray-600">
-                                        {timeAgo(r.created_at)} • {r.price ?? "—"}
-                                      </div>
-                                    </div>
-
-                                    <div className="flex flex-col items-end gap-1 shrink-0">
-                                      <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
-                                      <ScoreChip signal={r.signal} score={r.score} />
-                                    </div>
-                                  </div>
-
-                                  <ReasonBadges reasons={r.reasons} />
-                                  <TechLine reasons={r.reasons} />
-
-                                  <NewsBlock
-                                    symbol={r.symbol}
-                                    isOpen={open}
-                                    isLoading={newsLoadingFor === plain}
-                                    error={newsErrorFor[plain]}
-                                    items={newsCache[plain]}
-                                    onStopPropagation
-                                  />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="text-xs font-bold uppercase tracking-wide text-red-400">
-                            Günlük Top 5 SELL (Score)
-                          </div>
-                          <div className="text-[10px] text-gray-500">{todayTopSell.length}/5</div>
-                        </div>
-
-                        {todayTopSell.length === 0 ? (
-                          <div className="text-xs text-gray-500">
-                            {loadingSignals ? "Yükleniyor..." : "Bugün SELL yok."}
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            {todayTopSell.map((r: any) => {
-                              const plain = symbolToPlain(r.symbol);
-                              const open = openNewsForSymbol === plain;
-
-                              return (
-                                <button
-                                  key={`topsell-${r.id}`}
-                                  onClick={() => {
-                                    setSelectedSymbol(r.symbol);
-                                    setSelectedSignalId(r.id);
-                                    setSidebarOpen(false);
-                                    toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                    fetchMini(r.symbol);
-                                  }}
-                                  className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
-                                >
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div className="min-w-0">
-                                      <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
-                                      <div className="text-[10px] text-gray-600">
-                                        {timeAgo(r.created_at)} • {r.price ?? "—"}
-                                      </div>
-                                    </div>
-
-                                    <div className="flex flex-col items-end gap-1 shrink-0">
-                                      <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
-                                      <ScoreChip signal={r.signal} score={r.score} />
-                                    </div>
-                                  </div>
-
-                                  <ReasonBadges reasons={r.reasons} />
-                                  <TechLine reasons={r.reasons} />
-
-                                  <NewsBlock
-                                    symbol={r.symbol}
-                                    isOpen={open}
-                                    isLoading={newsLoadingFor === plain}
-                                    error={newsErrorFor[plain]}
-                                    items={newsCache[plain]}
-                                    onStopPropagation
-                                  />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Signals list */}
-                    {loadingSignals ? (
-                      <div className="space-y-3">
-                        {Array.from({ length: 6 }).map((_, i) => (
-                          <SignalSkeleton key={i} />
-                        ))}
-                      </div>
-                    ) : visibleSignals.length === 0 ? (
-                      <div className="p-6 text-center text-gray-500 text-sm">Henüz sinyal yok.</div>
-                    ) : (
-                      <div className="space-y-3">
-                        {visibleSignals.map((r: SignalRow) => {
-                          const sig = String(r.signal || "").toUpperCase();
-                          const isBuy = sig === "BUY";
-                          const isSell = sig === "SELL";
-                          const isActive = selectedSignalId === r.id;
-
-                          const plain = symbolToPlain(r.symbol);
-                          const open = openNewsForSymbol === plain;
-
-                          return (
-                            <button
-                              key={r.id}
-                              onClick={() => {
-                                setSelectedSymbol(r.symbol);
-                                setSelectedSignalId(r.id);
-                                toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                fetchMini(r.symbol);
-                              }}
-                              className={`w-full text-left p-4 rounded-xl border transition-all ${
-                                isActive
-                                  ? "border-blue-600 bg-blue-950/30"
-                                  : "border-gray-800 bg-[#0d1117] hover:border-gray-700 hover:bg-gray-900/50"
-                              }`}
-                            >
-                              <div className="flex justify-between items-start mb-2">
-                                <div
-                                  className={`font-bold text-lg ${
-                                    isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"
-                                  }`}
-                                >
-                                  {sig}
-                                </div>
-                                <div className="text-xs text-gray-500">{timeAgo((r as any).created_at)}</div>
-                              </div>
-
-                              <div className="text-sm font-mono mb-1 text-gray-300">
-                                {r.symbol} @ <span className="text-white">{r.price ?? "—"}</span>
-                              </div>
-
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="text-xs text-gray-400">
-                                  Score: <span className="text-white">{r.score ?? "—"}</span>
-                                </div>
-                                <ScoreChip signal={r.signal} score={r.score} />
-                              </div>
-
-                              <ReasonBadges reasons={r.reasons} />
-                              <TechLine reasons={r.reasons} />
-
-                              <NewsBlock
-                                symbol={r.symbol}
-                                isOpen={open}
-                                isLoading={newsLoadingFor === plain}
-                                error={newsErrorFor[plain]}
-                                items={newsCache[plain]}
-                                onStopPropagation
-                              />
-
-                              <div className="mt-4 flex gap-2">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setOutcome(r.id, "WIN");
-                                  }}
-                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                    r.outcome === "WIN"
-                                      ? "border-green-600 text-green-400 bg-green-950/30"
-                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                  }`}
-                                >
-                                  WIN
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setOutcome(r.id, "LOSS");
-                                  }}
-                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                    r.outcome === "LOSS"
-                                      ? "border-red-600 text-red-400 bg-red-950/30"
-                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                  }`}
-                                >
-                                  LOSS
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setOutcome(r.id, null);
-                                  }}
-                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                    r.outcome === null
-                                      ? "border-gray-600 text-gray-200 bg-gray-900/40"
-                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                  }`}
-                                >
-                                  Temizle
-                                </button>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
                   </div>
-                </aside>
-              </div>
-            </>
-          )}
+
+                  {/* Signal list controls */}
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <span>Liste limiti: {signalLimit}</span>
+                    <button
+                      onClick={() => setSignalLimit((p) => Math.min(p + 110, 660))}
+                      className="px-2 py-1 rounded border border-gray-700 hover:bg-gray-800"
+                      title="Daha fazla sinyal göster"
+                    >
+                      Daha fazla
+                    </button>
+                  </div>
+
+                  {/* Signals list */}
+                  {loadingSignals ? (
+                    <div className="space-y-3" aria-label="Sinyaller yükleniyor">
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <SignalSkeleton key={i} />
+                      ))}
+                    </div>
+                  ) : visibleSignals.length === 0 ? (
+                    <div className="p-6 text-center text-gray-500 text-sm">
+                      {uiEmpty ? "Henüz sinyal üretilmedi." : "Filtreye göre sinyal yok."}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {visibleSignals.map((r: SignalRow) => {
+                        const sig = String(r.signal || "").toUpperCase();
+                        const isBuy = sig === "BUY";
+                        const isSell = sig === "SELL";
+                        const isActive = selectedSignalId === r.id;
+
+                        const plain = symbolToPlain(r.symbol);
+                        const open = openNewsForSymbol === plain;
+
+                        return (
+                          <button
+                            key={r.id}
+                            onClick={() => {
+                              setSelectedSymbol(r.symbol);
+                              setSelectedSignalId(r.id);
+                              toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
+                              fetchMini(r.symbol);
+                            }}
+                            className={`w-full text-left p-4 rounded-xl border transition-all focus:outline-none focus:ring-2 focus:ring-blue-600/40 ${
+                              isActive
+                                ? "border-blue-600 bg-blue-950/30"
+                                : "border-gray-800 bg-[#0d1117] hover:border-gray-700 hover:bg-gray-900/50"
+                            }`}
+                            aria-label={`Sinyal: ${sig} ${r.symbol}`}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div
+                                className={`font-bold text-lg ${
+                                  isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"
+                                }`}
+                              >
+                                {sig}
+                              </div>
+                              <div className="text-xs text-gray-500">{timeAgo(r.created_at)}</div>
+                            </div>
+
+                            <div className="text-sm font-mono mb-1 text-gray-300">
+                              {r.symbol} @ <span className="text-white">{r.price ?? "—"}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="text-xs text-gray-400">
+                                Score: <span className="text-white">{r.score ?? "—"}</span>
+                              </div>
+                              <ScoreChip signal={r.signal} score={r.score} />
+                            </div>
+
+                            <ReasonBadges reasons={r.reasons} />
+                            <TechLine reasons={r.reasons} />
+
+                            <NewsBlock
+                              symbol={r.symbol}
+                              isOpen={open}
+                              isLoading={newsLoadingFor === plain}
+                              error={newsErrorFor[plain]}
+                              items={newsCache[plain]}
+                              onStopPropagation
+                            />
+
+                            <div className="mt-4 flex gap-2">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOutcome(r.id, "WIN");
+                                }}
+                                className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                  r.outcome === "WIN"
+                                    ? "border-green-600 text-green-400 bg-green-950/30"
+                                    : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                }`}
+                                aria-label="WIN"
+                              >
+                                WIN
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOutcome(r.id, "LOSS");
+                                }}
+                                className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                  r.outcome === "LOSS"
+                                    ? "border-red-600 text-red-400 bg-red-950/30"
+                                    : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                }`}
+                                aria-label="LOSS"
+                              >
+                                LOSS
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOutcome(r.id, null);
+                                }}
+                                className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                  r.outcome === null
+                                    ? "border-gray-600 text-gray-200 bg-gray-900/40"
+                                    : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                }`}
+                                aria-label="Temizle"
+                              >
+                                Temizle
+                              </button>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </aside>
+            </div>
+          </div>
         </main>
       </div>
 
