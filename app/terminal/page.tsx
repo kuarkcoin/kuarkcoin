@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
+import DashboardView from "@/components/DashboardView";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
 import { reasonsToTechSentences } from "@/lib/reasonTranslator";
 import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
@@ -9,7 +10,6 @@ import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/co
 // ──────────────────────────────────────────────────
 // Sets (PRO: includes() type bug fix + perf)
 // ──────────────────────────────────────────────────
-const NASDAQ_SET = new Set<string>(ASSETS.NASDAQ as unknown as string[]);
 const ETF_SET = new Set<string>(ASSETS.ETF as unknown as string[]);
 const CRYPTO_SET = new Set<string>(ASSETS.CRYPTO as unknown as string[]);
 const BIST_SET = new Set<string>(((ASSETS as any).BIST ?? []) as string[]);
@@ -20,7 +20,7 @@ const BIST_SET = new Set<string>(((ASSETS as any).BIST ?? []) as string[]);
 function scoreBadge(signal: string | null | undefined, score: number | null | undefined) {
   const s = String(signal ?? "").toUpperCase();
   const sc = Number(score ?? 0);
-  const strength = sc >= 25 ? "ÇOK GÜÇLÜ" : sc >= 18 ? "GÜÇÇÜLÜ" : sc >= 12 ? "ORTA" : "ZAYIF";
+  const strength = sc >= 25 ? "ÇOK GÜÇLÜ" : sc >= 18 ? "GÜÇLÜ" : sc >= 12 ? "ORTA" : "ZAYIF";
   if (s === "BUY") return `BUY • ${strength}`;
   if (s === "SELL") return `SELL • ${strength}`;
   return `${strength}`;
@@ -29,9 +29,21 @@ function scoreBadge(signal: string | null | undefined, score: number | null | un
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
     <div className="w-6 h-6 relative">
-      <span className={`absolute left-0 top-1.5 h-0.5 w-6 bg-white transition-all duration-200 ${open ? "translate-y-2 rotate-45" : ""}`} />
-      <span className={`absolute left-0 top-3 h-0.5 w-6 bg-white transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
-      <span className={`absolute left-0 top-[18px] h-0.5 w-6 bg-white transition-all duration-200 ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+      <span
+        className={`absolute left-0 top-1.5 h-0.5 w-6 bg-white transition-all duration-200 ${
+          open ? "translate-y-2 rotate-45" : ""
+        }`}
+      />
+      <span
+        className={`absolute left-0 top-3 h-0.5 w-6 bg-white transition-opacity duration-200 ${
+          open ? "opacity-0" : "opacity-100"
+        }`}
+      />
+      <span
+        className={`absolute left-0 top-[18px] h-0.5 w-6 bg-white transition-all duration-200 ${
+          open ? "-translate-y-2 -rotate-45" : ""
+        }`}
+      />
     </div>
   );
 }
@@ -61,7 +73,13 @@ function TechLine({ reasons }: { reasons: string | null }) {
   return <div className="mt-2 text-[11px] leading-relaxed text-gray-300">{tech}</div>;
 }
 
-function ScoreChip({ signal, score }: { signal: string | null | undefined; score: number | null | undefined }) {
+function ScoreChip({
+  signal,
+  score,
+}: {
+  signal: string | null | undefined;
+  score: number | null | undefined;
+}) {
   const text = scoreBadge(signal, score);
   if (!text) return null;
 
@@ -73,7 +91,11 @@ function ScoreChip({ signal, score }: { signal: string | null | undefined; score
       ? "border-red-700 text-red-200 bg-red-950/30"
       : "border-gray-700 text-gray-200 bg-gray-900/30";
 
-  return <div className={`inline-flex items-center px-2 py-1 rounded-md border text-[10px] ${cls}`}>{text}</div>;
+  return (
+    <div className={`inline-flex items-center px-2 py-1 rounded-md border text-[10px] ${cls}`}>
+      {text}
+    </div>
+  );
 }
 
 function SignalSkeleton() {
@@ -132,12 +154,10 @@ function marketStatusTRandUS() {
   const m = now.getMinutes();
 
   const trOpen =
-    !isWeekend &&
-    ((h > 10 || (h === 10 && m >= 0)) && (h < 18 || (h === 18 && m <= 10)));
+    !isWeekend && (h > 10 || (h === 10 && m >= 0)) && (h < 18 || (h === 18 && m <= 10));
 
   const usOpen =
-    !isWeekend &&
-    ((h > 16 || (h === 16 && m >= 30)) && (h < 23 || (h === 23 && m <= 0)));
+    !isWeekend && (h > 16 || (h === 16 && m >= 30)) && (h < 23 || (h === 23 && m <= 0));
 
   return { trOpen, usOpen, isWeekend };
 }
@@ -175,10 +195,13 @@ export default function TerminalPage() {
   const [selectedSignalId, setSelectedSignalId] = useState<number | null>(null);
   const [onlySelectedSymbol, setOnlySelectedSymbol] = useState(false);
 
-  // PRO: mobile tabs
+  // view mode: Dashboard <-> Terminal
+  const [viewMode, setViewMode] = useState<"DASHBOARD" | "TERMINAL">("DASHBOARD");
+
+  // mobile tabs (Terminal içi)
   const [mobileTab, setMobileTab] = useState<"CHART" | "SIGNALS">("CHART");
 
-  // PRO: audio toggle
+  // audio toggle
   const [audioOn, setAudioOn] = useState(false);
 
   // API + polling hook
@@ -186,12 +209,21 @@ export default function TerminalPage() {
     pollMs: 300_000,
   });
 
-  // PRO: title
+  // Dashboard’tan sembol seçimi: otomatik terminale geç
+  const handleSelectSymbol = useCallback((symbol: string) => {
+    setSelectedSymbol(symbol);
+    setSelectedSignalId(null);
+    setSidebarOpen(false);
+    setViewMode("TERMINAL");
+    setMobileTab("CHART");
+  }, []);
+
+  // title
   useEffect(() => {
     document.title = `${symbolToPlain(selectedSymbol)} | Kuark Terminal`;
   }, [selectedSymbol]);
 
-  // PRO: tab visible refresh
+  // tab visible refresh
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === "visible") refreshAll();
@@ -200,7 +232,7 @@ export default function TerminalPage() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [refreshAll]);
 
-  // PRO: audio when new signal arrives (only if enabled)
+  // audio when new signal arrives (only if enabled)
   const lastSignalCount = useRef(0);
   useEffect(() => {
     if (!audioOn) {
@@ -208,13 +240,13 @@ export default function TerminalPage() {
       return;
     }
     if (signals.length > lastSignalCount.current && lastSignalCount.current !== 0) {
-      const audio = new Audio("/alert.mp3"); // public/alert.mp3 koy (önerilen)
+      const audio = new Audio("/alert.mp3"); // public/alert.mp3
       audio.play().catch(() => {});
     }
     lastSignalCount.current = signals.length;
   }, [signals, audioOn]);
 
-  // PRO: favorites
+  // favorites
   const FAV_KEY = "kuark:favs";
   const [favs, setFavs] = useState<string[]>([]);
   useEffect(() => {
@@ -237,7 +269,8 @@ export default function TerminalPage() {
 
   const LIMIT = 110;
 
-  // PRO: prefix resolver (Set-based, type-safe)
+  // prefix resolver (Set-based, type-safe)
+  // NOTE: NASDAQ assumed default (if not in BIST/CRYPTO/ETF)
   const prefixForSymbol = useCallback((sym: string) => {
     const s = sym.toUpperCase();
     if (BIST_SET.has(s)) return "BIST";
@@ -248,7 +281,9 @@ export default function TerminalPage() {
 
   // sidebar assets (favorites top)
   const filteredAssets = useMemo(() => {
-    const list = ASSETS[activeCategory].filter((sym) => sym.toLowerCase().includes(searchQuery.toLowerCase()));
+    const list = ASSETS[activeCategory].filter((sym) =>
+      sym.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     return list.sort((a, b) => (isFav(b) ? 1 : 0) - (isFav(a) ? 1 : 0));
   }, [activeCategory, searchQuery, isFav]);
 
@@ -262,7 +297,10 @@ export default function TerminalPage() {
     return m;
   }, [signals]);
 
-  const signaledSymbols = useMemo(() => new Set(signals.map((r) => symbolToPlain(r.symbol))), [signals]);
+  const signaledSymbols = useMemo(
+    () => new Set(signals.map((r) => symbolToPlain(r.symbol))),
+    [signals]
+  );
 
   const visibleSignals = useMemo(() => {
     const last = signals.slice(0, LIMIT);
@@ -279,7 +317,10 @@ export default function TerminalPage() {
   }, [visibleSignals]);
 
   const totalAssetsCount =
-    ASSETS.NASDAQ.length + ASSETS.ETF.length + ASSETS.CRYPTO.length + (((ASSETS as any).BIST?.length ?? 0) as number);
+    ASSETS.NASDAQ.length +
+    ASSETS.ETF.length +
+    ASSETS.CRYPTO.length +
+    (((ASSETS as any).BIST?.length ?? 0) as number);
 
   const tvUrl = useMemo(() => {
     const s = encodeURIComponent(selectedSymbol);
@@ -324,10 +365,10 @@ export default function TerminalPage() {
   const [newsCache, setNewsCache] = useState<Record<string, NewsItem[]>>({});
   const [openNewsForSymbol, setOpenNewsForSymbol] = useState<string>("");
 
-  // PRO: Smart News Score cache
-  const [smartScore, setSmartScore] = useState<Record<string, { score: number; impact: string; explanation: string }>>(
-    {}
-  );
+  // Smart News Score cache
+  const [smartScore, setSmartScore] = useState<
+    Record<string, { score: number; impact: string; explanation: string }>
+  >({});
 
   const lastNewsFetchAt = useRef<Record<string, number>>({});
   const newsCacheRef = useRef<Record<string, NewsItem[]>>({});
@@ -335,35 +376,37 @@ export default function TerminalPage() {
     newsCacheRef.current = newsCache;
   }, [newsCache]);
 
-  const analyzeWithGemini = useCallback(async (symbol: string, items: NewsItem[]) => {
-    const plain = symbolToPlain(symbol);
-    if (!items?.length) return;
+  const analyzeWithGemini = useCallback(
+    async (symbol: string, items: NewsItem[]) => {
+      const plain = symbolToPlain(symbol);
+      if (!items?.length) return;
+      if (smartScore[plain]) return; // spam olmasın
 
-    // aynı sembol için tekrar tekrar analiz spam olmasın
-    if (smartScore[plain]) return;
-
-    try {
-      const res = await fetch("/api/ai/analyze-news", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symbol: plain, newsItems: items }),
-      });
-      const data = await res.json();
-      if (data?.ok) {
-        setSmartScore((prev) => ({
-          ...prev,
-          [plain]: { score: Number(data.score ?? 0), impact: String(data.impact ?? "LOW"), explanation: String(data.explanation ?? "") },
-        }));
-      }
-    } catch {
-      // sessiz geç
-    }
-  }, [smartScore]);
+      try {
+        const res = await fetch("/api/ai/analyze-news", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ symbol: plain, newsItems: items }),
+        });
+        const data = await res.json();
+        if (data?.ok) {
+          setSmartScore((prev) => ({
+            ...prev,
+            [plain]: {
+              score: Number(data.score ?? 0),
+              impact: String(data.impact ?? "LOW"),
+              explanation: String(data.explanation ?? ""),
+            },
+          }));
+        }
+      } catch {}
+    },
+    [smartScore]
+  );
 
   const fetchNewsForSymbol = useCallback(
     async (symbol: string, reasons: string | null) => {
       const plain = symbolToPlain(symbol);
-
       if (newsCacheRef.current[plain]) return;
 
       const now = Date.now();
@@ -376,7 +419,9 @@ export default function TerminalPage() {
         setNewsLoadingFor(plain);
         setNewsErrorFor((p) => ({ ...p, [plain]: "" }));
 
-        const url = `/api/news?symbol=${encodeURIComponent(symbol)}&max=8&reasons=${encodeURIComponent(reasonKeys)}`;
+        const url = `/api/news?symbol=${encodeURIComponent(symbol)}&max=8&reasons=${encodeURIComponent(
+          reasonKeys
+        )}`;
         const res = await fetch(url);
         const json = await res.json();
 
@@ -385,7 +430,6 @@ export default function TerminalPage() {
         const items = (json.items ?? []) as NewsItem[];
         setNewsCache((p) => ({ ...p, [plain]: items }));
 
-        // ✅ Smart News Score tetikle
         analyzeWithGemini(symbol, items);
       } catch (e: any) {
         setNewsErrorFor((p) => ({ ...p, [plain]: e?.message ?? "Haber alınamadı" }));
@@ -435,7 +479,6 @@ export default function TerminalPage() {
           <div className="text-[10px] text-gray-600 font-mono">{plain}</div>
         </div>
 
-        {/* ✅ Smart Score banner */}
         <div className="mb-2">
           {smart ? (
             <div
@@ -448,7 +491,8 @@ export default function TerminalPage() {
               }`}
               title={smart.explanation}
             >
-              Smart News Score: <b>{smart.score}</b> / 10 • Impact: <b>{smart.impact}</b> — {smart.explanation}
+              Smart News Score: <b>{smart.score}</b> / 10 • Impact: <b>{smart.impact}</b> —{" "}
+              {smart.explanation}
             </div>
           ) : (
             <div className="text-[10px] text-gray-500">Smart News Score: (hazırlanıyor / yok)</div>
@@ -507,7 +551,7 @@ export default function TerminalPage() {
     );
   }
 
-  // sparkline (optional)
+  // sparkline cache
   const [miniCache, setMiniCache] = useState<Record<string, number[]>>({});
   const miniCacheRef = useRef<Record<string, number[]>>({});
   useEffect(() => {
@@ -566,8 +610,18 @@ export default function TerminalPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-[#161b22] border border-gray-700 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600"
           />
-          <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 0 7 7 0 0114 0z" />
+          <svg
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
       </div>
@@ -592,15 +646,21 @@ export default function TerminalPage() {
                   setSelectedSignalId(null);
                   setSidebarOpen(false);
                   setOpenNewsForSymbol("");
+                  setViewMode("TERMINAL");
+                  setMobileTab("CHART");
                   fetchMini(full);
                 }}
                 className={`w-full flex items-center justify-between px-4 py-3.5 border-b border-gray-800/30 transition-colors group ${
-                  active ? "bg-blue-900/10 border-l-4 border-blue-500" : "hover:bg-gray-800/30 border-l-4 border-transparent"
+                  active
+                    ? "bg-blue-900/10 border-l-4 border-blue-500"
+                    : "hover:bg-gray-800/30 border-l-4 border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="text-left min-w-0">
-                    <div className={`font-medium truncate ${active ? "text-blue-400" : "text-gray-200"}`}>{sym}</div>
+                    <div className={`font-medium truncate ${active ? "text-blue-400" : "text-gray-200"}`}>
+                      {sym}
+                    </div>
                     <div className="text-[10px] text-gray-600 font-mono">{prefixForSymbol(sym)}</div>
                   </div>
 
@@ -622,7 +682,9 @@ export default function TerminalPage() {
                           ? "border-green-700 text-green-200 bg-green-950/30"
                           : "border-red-700 text-red-200 bg-red-950/30"
                       }`}
-                      title={`${String(last.signal).toUpperCase()} • ${last.score ?? "—"} • ${timeAgo(last.created_at)}`}
+                      title={`${String(last.signal).toUpperCase()} • ${last.score ?? "—"} • ${timeAgo(
+                        (last as any).created_at
+                      )}`}
                     >
                       {String(last.signal).toUpperCase()} {last.score ?? "—"}
                     </span>
@@ -635,14 +697,18 @@ export default function TerminalPage() {
                       toggleFav(sym);
                     }}
                     className={`text-xs px-2 py-1 rounded border ${
-                      isFav(sym) ? "border-yellow-500 text-yellow-300 bg-yellow-900/20" : "border-gray-700 text-gray-400 hover:text-gray-200"
+                      isFav(sym)
+                        ? "border-yellow-500 text-yellow-300 bg-yellow-900/20"
+                        : "border-gray-700 text-gray-400 hover:text-gray-200"
                     }`}
                     title="Favorilere ekle/çıkar"
                   >
                     {isFav(sym) ? "★" : "☆"}
                   </button>
 
-                  <span className={`text-xs ${active ? "text-blue-400" : "text-gray-600 group-hover:text-gray-400"}`}>→</span>
+                  <span className={`text-xs ${active ? "text-blue-400" : "text-gray-600 group-hover:text-gray-400"}`}>
+                    →
+                  </span>
                 </div>
               </button>
             );
@@ -659,7 +725,9 @@ export default function TerminalPage() {
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/70" onClick={() => setSidebarOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-4/5 max-w-xs border-r border-gray-800 shadow-2xl">{SidebarContent}</div>
+          <div className="absolute left-0 top-0 h-full w-4/5 max-w-xs border-r border-gray-800 shadow-2xl">
+            {SidebarContent}
+          </div>
         </div>
       )}
 
@@ -669,12 +737,18 @@ export default function TerminalPage() {
         <main className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between px-4 md:px-6 bg-[#161b22] border-b border-gray-800 z-10">
             <div className="flex items-center gap-4 min-w-0">
-              <button className="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-800/50 active:scale-95" onClick={() => setSidebarOpen((v) => !v)} aria-label="Open menu">
+              <button
+                className="md:hidden p-2 -ml-2 rounded-lg hover:bg-gray-800/50 active:scale-95"
+                onClick={() => setSidebarOpen((v) => !v)}
+                aria-label="Open menu"
+              >
                 <HamburgerIcon open={sidebarOpen} />
               </button>
 
               <div className="min-w-0">
-                <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Terminal</div>
+                <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                  {viewMode === "DASHBOARD" ? "Dashboard" : "Terminal"}
+                </div>
                 <div className="text-xl font-black truncate">
                   {symbolToPlain(selectedSymbol)}
                   <span className="text-blue-500 text-sm ml-1.5">/ USD</span>
@@ -682,24 +756,49 @@ export default function TerminalPage() {
               </div>
 
               <div className="hidden lg:flex items-center gap-2 text-[10px] text-gray-400">
-                <span className={`px-2 py-1 rounded border ${ms.trOpen ? "border-green-700 text-green-300" : "border-gray-700 text-gray-400"}`} title="Yaklaşık seans göstergesi">
+                <span
+                  className={`px-2 py-1 rounded border ${
+                    ms.trOpen ? "border-green-700 text-green-300" : "border-gray-700 text-gray-400"
+                  }`}
+                  title="Yaklaşık seans göstergesi"
+                >
                   TR {ms.trOpen ? "OPEN" : "CLOSED"}
                 </span>
-                <span className={`px-2 py-1 rounded border ${ms.usOpen ? "border-green-700 text-green-300" : "border-gray-700 text-gray-400"}`} title="Yaklaşık seans göstergesi">
+                <span
+                  className={`px-2 py-1 rounded border ${
+                    ms.usOpen ? "border-green-700 text-green-300" : "border-gray-700 text-gray-400"
+                  }`}
+                  title="Yaklaşık seans göstergesi"
+                >
                   US {ms.usOpen ? "OPEN" : "CLOSED"}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <a href={tvUrl} target="_blank" rel="noreferrer" className="text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors">
+              <button
+                onClick={() => setViewMode(viewMode === "DASHBOARD" ? "TERMINAL" : "DASHBOARD")}
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-bold transition-colors"
+                title="Dashboard / Terminal"
+              >
+                {viewMode === "DASHBOARD" ? "ANALİZ TERMİNALİ →" : "← ANA DASHBOARD"}
+              </button>
+
+              <a
+                href={tvUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hidden md:inline-flex text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors"
+              >
                 TradingView’de Aç
               </a>
 
               <button
                 onClick={() => setOnlySelectedSymbol((v) => !v)}
-                className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
-                  onlySelectedSymbol ? "border-blue-500 bg-blue-900/20 text-blue-200" : "border-gray-700 hover:bg-gray-800 text-gray-200"
+                className={`hidden md:inline-flex text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                  onlySelectedSymbol
+                    ? "border-blue-500 bg-blue-900/20 text-blue-200"
+                    : "border-gray-700 hover:bg-gray-800 text-gray-200"
                 }`}
                 title="Sadece seçili sembolün sinyallerini göster"
               >
@@ -708,308 +807,399 @@ export default function TerminalPage() {
 
               <button
                 onClick={() => setAudioOn((v) => !v)}
-                className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
-                  audioOn ? "border-yellow-500 bg-yellow-900/20 text-yellow-200" : "border-gray-700 hover:bg-gray-800 text-gray-200"
+                className={`hidden md:inline-flex text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                  audioOn
+                    ? "border-yellow-500 bg-yellow-900/20 text-yellow-200"
+                    : "border-gray-700 hover:bg-gray-800 text-gray-200"
                 }`}
                 title="Yeni sinyal gelince sesli uyarı"
               >
                 Ses: {audioOn ? "ON" : "OFF"}
               </button>
 
-              <button onClick={() => refreshAll()} className="text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors">
+              <button
+                onClick={() => refreshAll()}
+                className="text-xs font-medium px-3 py-1.5 border border-gray-700 rounded hover:bg-gray-800 transition-colors"
+              >
                 Yenile
               </button>
             </div>
           </header>
 
-          {/* Mobile tabs */}
-          <div className="md:hidden flex border-b border-gray-800 bg-[#161b22]">
-            <button
-              onClick={() => setMobileTab("CHART")}
-              className={`flex-1 py-3 text-xs font-bold ${mobileTab === "CHART" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"}`}
-            >
-              GRAFİK
-            </button>
-            <button
-              onClick={() => setMobileTab("SIGNALS")}
-              className={`flex-1 py-3 text-xs font-bold ${mobileTab === "SIGNALS" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"}`}
-            >
-              SİNYALLER ({visibleSignals.length})
-            </button>
-          </div>
-
-          <div className="flex-1 flex flex-col md:flex-row min-h-0">
-            <div className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${mobileTab !== "CHART" ? "hidden md:block" : "block"}`}>
-              <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
-            </div>
-
-            <aside className={`md:w-96 w-full border-t md:border-t-0 md:border-l border-gray-800 bg-[#0b0f14] p-4 overflow-y-auto custom-scrollbar min-h-0 ${mobileTab !== "SIGNALS" ? "hidden md:block" : "block"}`}>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold uppercase tracking-wide">Son Sinyaller ({visibleSignals.length})</h2>
-                  <div className="text-xs text-gray-400">{loadingSignals ? "Yükleniyor..." : "Canlı"}</div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
-                  <div className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-1">Win Rate (manuel)</div>
-                  <div className="text-3xl font-black text-white">{winrate == null ? "—" : `${winrate}%`}</div>
-                  <div className="text-[10px] text-gray-500 mt-2">(Bu panel, şu an ekranda görünen sinyallere göre hesaplar)</div>
-                </div>
-
-                <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                  <div className="flex items-center justify-between mb-2 gap-2">
-                    <div className="text-xs font-bold uppercase tracking-wide text-blue-300">🧠 AI Günlük Yorum (Top 5)</div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={runAiCommentary}
-                        disabled={aiLoading}
-                        className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
-                          aiLoading ? "border-gray-700 text-gray-500" : "border-gray-700 hover:bg-gray-800 text-gray-200"
-                        }`}
-                        title="Top 5 BUY/SELL + Haber + Risk"
-                      >
-                        {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
-                      </button>
-
-                      <button
-                        onClick={copyAi}
-                        disabled={!aiCommentary}
-                        className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
-                          aiCommentary ? "border-gray-700 hover:bg-gray-800 text-gray-200" : "border-gray-800 text-gray-600"
-                        }`}
-                        title="Kopyala"
-                      >
-                        Kopyala
-                      </button>
-                    </div>
-                  </div>
-
-                  {aiError ? (
-                    <div className="text-xs text-red-400">{aiError}</div>
-                  ) : aiCommentary ? (
-                    <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-line">{aiCommentary}</div>
-                  ) : (
-                    <div className="text-xs text-gray-500">Top 5 listesi hazır olunca “Yorumla”ya bas.</div>
-                  )}
-
-                  <div className="text-[10px] text-gray-600 mt-3">Not: Yatırım tavsiyesi değildir.</div>
-                </div>
-
-                {/* Top5 BUY/SELL */}
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="text-xs font-bold uppercase tracking-wide text-green-400">Günlük Top 5 BUY (Score)</div>
-                      <div className="text-[10px] text-gray-500">{todayTopBuy.length}/5</div>
-                    </div>
-
-                    {todayTopBuy.length === 0 ? (
-                      <div className="text-xs text-gray-500">{loadingSignals ? "Yükleniyor..." : "Bugün BUY yok."}</div>
-                    ) : (
-                      <div className="space-y-2">
-                        {todayTopBuy.map((r) => {
-                          const plain = symbolToPlain(r.symbol);
-                          const open = openNewsForSymbol === plain;
-
-                          return (
-                            <button
-                              key={`topbuy-${r.id}`}
-                              onClick={() => {
-                                setSelectedSymbol(r.symbol);
-                                setSelectedSignalId(r.id);
-                                setSidebarOpen(false);
-                                toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                fetchMini(r.symbol);
-                              }}
-                              className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
-                            >
-                              <div className="flex items-start justify-between gap-3">
-                                <div className="min-w-0">
-                                  <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
-                                  <div className="text-[10px] text-gray-600">{timeAgo(r.created_at)} • {r.price ?? "—"}</div>
-                                </div>
-
-                                <div className="flex flex-col items-end gap-1 shrink-0">
-                                  <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
-                                  <ScoreChip signal={r.signal} score={r.score} />
-                                </div>
-                              </div>
-
-                              <ReasonBadges reasons={r.reasons} />
-                              <TechLine reasons={r.reasons} />
-
-                              <NewsBlock
-                                symbol={r.symbol}
-                                isOpen={open}
-                                isLoading={newsLoadingFor === plain}
-                                error={newsErrorFor[plain]}
-                                items={newsCache[plain]}
-                                onStopPropagation
-                              />
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="text-xs font-bold uppercase tracking-wide text-red-400">Günlük Top 5 SELL (Score)</div>
-                      <div className="text-[10px] text-gray-500">{todayTopSell.length}/5</div>
-                    </div>
-
-                    {todayTopSell.length === 0 ? (
-                      <div className="text-xs text-gray-500">{loadingSignals ? "Yükleniyor..." : "Bugün SELL yok."}</div>
-                    ) : (
-                      <div className="space-y-2">
-                        {todayTopSell.map((r) => {
-                          const plain = symbolToPlain(r.symbol);
-                          const open = openNewsForSymbol === plain;
-
-                          return (
-                            <button
-                              key={`topsell-${r.id}`}
-                              onClick={() => {
-                                setSelectedSymbol(r.symbol);
-                                setSelectedSignalId(r.id);
-                                setSidebarOpen(false);
-                                toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                fetchMini(r.symbol);
-                              }}
-                              className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
-                            >
-                              <div className="flex items-start justify-between gap-3">
-                                <div className="min-w-0">
-                                  <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
-                                  <div className="text-[10px] text-gray-600">{timeAgo(r.created_at)} • {r.price ?? "—"}</div>
-                                </div>
-
-                                <div className="flex flex-col items-end gap-1 shrink-0">
-                                  <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
-                                  <ScoreChip signal={r.signal} score={r.score} />
-                                </div>
-                              </div>
-
-                              <ReasonBadges reasons={r.reasons} />
-                              <TechLine reasons={r.reasons} />
-
-                              <NewsBlock
-                                symbol={r.symbol}
-                                isOpen={open}
-                                isLoading={newsLoadingFor === plain}
-                                error={newsErrorFor[plain]}
-                                items={newsCache[plain]}
-                                onStopPropagation
-                              />
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Signals list */}
-                {loadingSignals ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 6 }).map((_, i) => <SignalSkeleton key={i} />)}
-                  </div>
-                ) : visibleSignals.length === 0 ? (
-                  <div className="p-6 text-center text-gray-500 text-sm">Henüz sinyal yok.</div>
-                ) : (
-                  <div className="space-y-3">
-                    {visibleSignals.map((r: SignalRow) => {
-                      const sig = String(r.signal || "").toUpperCase();
-                      const isBuy = sig === "BUY";
-                      const isSell = sig === "SELL";
-                      const isActive = selectedSignalId === r.id;
-
-                      const plain = symbolToPlain(r.symbol);
-                      const open = openNewsForSymbol === plain;
-
-                      return (
-                        <button
-                          key={r.id}
-                          onClick={() => {
-                            setSelectedSymbol(r.symbol);
-                            setSelectedSignalId(r.id);
-                            toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                            fetchMini(r.symbol);
-                          }}
-                          className={`w-full text-left p-4 rounded-xl border transition-all ${
-                            isActive ? "border-blue-600 bg-blue-950/30" : "border-gray-800 bg-[#0d1117] hover:border-gray-700 hover:bg-gray-900/50"
-                          }`}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div className={`font-bold text-lg ${isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"}`}>{sig}</div>
-                            <div className="text-xs text-gray-500">{timeAgo(r.created_at)}</div>
-                          </div>
-
-                          <div className="text-sm font-mono mb-1 text-gray-300">
-                            {r.symbol} @ <span className="text-white">{r.price ?? "—"}</span>
-                          </div>
-
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="text-xs text-gray-400">Score: <span className="text-white">{r.score ?? "—"}</span></div>
-                            <ScoreChip signal={r.signal} score={r.score} />
-                          </div>
-
-                          <ReasonBadges reasons={r.reasons} />
-                          <TechLine reasons={r.reasons} />
-
-                          <NewsBlock
-                            symbol={r.symbol}
-                            isOpen={open}
-                            isLoading={newsLoadingFor === plain}
-                            error={newsErrorFor[plain]}
-                            items={newsCache[plain]}
-                            onStopPropagation
-                          />
-
-                          <div className="mt-4 flex gap-2">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setOutcome(r.id, "WIN"); }}
-                              className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                r.outcome === "WIN" ? "border-green-600 text-green-400 bg-green-950/30" : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                              }`}
-                            >
-                              WIN
-                            </button>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setOutcome(r.id, "LOSS"); }}
-                              className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                r.outcome === "LOSS" ? "border-red-600 text-red-400 bg-red-950/30" : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                              }`}
-                            >
-                              LOSS
-                            </button>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setOutcome(r.id, null); }}
-                              className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                r.outcome === null ? "border-gray-600 text-gray-200 bg-gray-900/40" : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                              }`}
-                            >
-                              Temizle
-                            </button>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+          {/* DASHBOARD VIEW */}
+          {viewMode === "DASHBOARD" ? (
+            <DashboardView
+              signals={signals}
+              topBuy={todayTopBuy}
+              topSell={todayTopSell}
+              onSelectSymbol={handleSelectSymbol}
+            />
+          ) : (
+            <>
+              {/* Mobile tabs (Terminal içi) */}
+              <div className="md:hidden flex border-b border-gray-800 bg-[#161b22]">
+                <button
+                  onClick={() => setMobileTab("CHART")}
+                  className={`flex-1 py-3 text-xs font-bold ${
+                    mobileTab === "CHART" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
+                  }`}
+                >
+                  GRAFİK
+                </button>
+                <button
+                  onClick={() => setMobileTab("SIGNALS")}
+                  className={`flex-1 py-3 text-xs font-bold ${
+                    mobileTab === "SIGNALS" ? "text-blue-500 border-b-2 border-blue-500" : "text-gray-500"
+                  }`}
+                >
+                  SİNYALLER ({visibleSignals.length})
+                </button>
               </div>
-            </aside>
-          </div>
+
+              <div className="flex-1 flex flex-col md:flex-row min-h-0">
+                {/* Grafik */}
+                <div
+                  className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
+                    mobileTab !== "CHART" ? "hidden md:block" : "block"
+                  }`}
+                >
+                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                </div>
+
+                {/* Sinyal paneli */}
+                <aside
+                  className={`md:w-96 w-full border-t md:border-t-0 md:border-l border-gray-800 bg-[#0b0f14] p-4 overflow-y-auto custom-scrollbar min-h-0 ${
+                    mobileTab !== "SIGNALS" ? "hidden md:block" : "block"
+                  }`}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-sm font-bold uppercase tracking-wide">
+                        Son Sinyaller ({visibleSignals.length})
+                      </h2>
+                      <div className="text-xs text-gray-400">{loadingSignals ? "Yükleniyor..." : "Canlı"}</div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
+                      <div className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-1">
+                        Win Rate (manuel)
+                      </div>
+                      <div className="text-3xl font-black text-white">{winrate == null ? "—" : `${winrate}%`}</div>
+                      <div className="text-[10px] text-gray-500 mt-2">
+                        (Bu panel, şu an ekranda görünen sinyallere göre hesaplar)
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                      <div className="flex items-center justify-between mb-2 gap-2">
+                        <div className="text-xs font-bold uppercase tracking-wide text-blue-300">
+                          🧠 AI Günlük Yorum (Top 5)
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={runAiCommentary}
+                            disabled={aiLoading}
+                            className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                              aiLoading
+                                ? "border-gray-700 text-gray-500"
+                                : "border-gray-700 hover:bg-gray-800 text-gray-200"
+                            }`}
+                            title="Top 5 BUY/SELL + Haber + Risk"
+                          >
+                            {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
+                          </button>
+
+                          <button
+                            onClick={copyAi}
+                            disabled={!aiCommentary}
+                            className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
+                              aiCommentary
+                                ? "border-gray-700 hover:bg-gray-800 text-gray-200"
+                                : "border-gray-800 text-gray-600"
+                            }`}
+                            title="Kopyala"
+                          >
+                            Kopyala
+                          </button>
+                        </div>
+                      </div>
+
+                      {aiError ? (
+                        <div className="text-xs text-red-400">{aiError}</div>
+                      ) : aiCommentary ? (
+                        <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-line">{aiCommentary}</div>
+                      ) : (
+                        <div className="text-xs text-gray-500">Top 5 listesi hazır olunca “Yorumla”ya bas.</div>
+                      )}
+
+                      <div className="text-[10px] text-gray-600 mt-3">Not: Yatırım tavsiyesi değildir.</div>
+                    </div>
+
+                    {/* Top5 BUY/SELL */}
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-xs font-bold uppercase tracking-wide text-green-400">
+                            Günlük Top 5 BUY (Score)
+                          </div>
+                          <div className="text-[10px] text-gray-500">{todayTopBuy.length}/5</div>
+                        </div>
+
+                        {todayTopBuy.length === 0 ? (
+                          <div className="text-xs text-gray-500">
+                            {loadingSignals ? "Yükleniyor..." : "Bugün BUY yok."}
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            {todayTopBuy.map((r: any) => {
+                              const plain = symbolToPlain(r.symbol);
+                              const open = openNewsForSymbol === plain;
+
+                              return (
+                                <button
+                                  key={`topbuy-${r.id}`}
+                                  onClick={() => {
+                                    setSelectedSymbol(r.symbol);
+                                    setSelectedSignalId(r.id);
+                                    setSidebarOpen(false);
+                                    toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
+                                    fetchMini(r.symbol);
+                                  }}
+                                  className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div className="min-w-0">
+                                      <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
+                                      <div className="text-[10px] text-gray-600">
+                                        {timeAgo(r.created_at)} • {r.price ?? "—"}
+                                      </div>
+                                    </div>
+
+                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                      <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
+                                      <ScoreChip signal={r.signal} score={r.score} />
+                                    </div>
+                                  </div>
+
+                                  <ReasonBadges reasons={r.reasons} />
+                                  <TechLine reasons={r.reasons} />
+
+                                  <NewsBlock
+                                    symbol={r.symbol}
+                                    isOpen={open}
+                                    isLoading={newsLoadingFor === plain}
+                                    error={newsErrorFor[plain]}
+                                    items={newsCache[plain]}
+                                    onStopPropagation
+                                  />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-xs font-bold uppercase tracking-wide text-red-400">
+                            Günlük Top 5 SELL (Score)
+                          </div>
+                          <div className="text-[10px] text-gray-500">{todayTopSell.length}/5</div>
+                        </div>
+
+                        {todayTopSell.length === 0 ? (
+                          <div className="text-xs text-gray-500">
+                            {loadingSignals ? "Yükleniyor..." : "Bugün SELL yok."}
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            {todayTopSell.map((r: any) => {
+                              const plain = symbolToPlain(r.symbol);
+                              const open = openNewsForSymbol === plain;
+
+                              return (
+                                <button
+                                  key={`topsell-${r.id}`}
+                                  onClick={() => {
+                                    setSelectedSymbol(r.symbol);
+                                    setSelectedSignalId(r.id);
+                                    setSidebarOpen(false);
+                                    toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
+                                    fetchMini(r.symbol);
+                                  }}
+                                  className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div className="min-w-0">
+                                      <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
+                                      <div className="text-[10px] text-gray-600">
+                                        {timeAgo(r.created_at)} • {r.price ?? "—"}
+                                      </div>
+                                    </div>
+
+                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                      <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
+                                      <ScoreChip signal={r.signal} score={r.score} />
+                                    </div>
+                                  </div>
+
+                                  <ReasonBadges reasons={r.reasons} />
+                                  <TechLine reasons={r.reasons} />
+
+                                  <NewsBlock
+                                    symbol={r.symbol}
+                                    isOpen={open}
+                                    isLoading={newsLoadingFor === plain}
+                                    error={newsErrorFor[plain]}
+                                    items={newsCache[plain]}
+                                    onStopPropagation
+                                  />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Signals list */}
+                    {loadingSignals ? (
+                      <div className="space-y-3">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                          <SignalSkeleton key={i} />
+                        ))}
+                      </div>
+                    ) : visibleSignals.length === 0 ? (
+                      <div className="p-6 text-center text-gray-500 text-sm">Henüz sinyal yok.</div>
+                    ) : (
+                      <div className="space-y-3">
+                        {visibleSignals.map((r: SignalRow) => {
+                          const sig = String(r.signal || "").toUpperCase();
+                          const isBuy = sig === "BUY";
+                          const isSell = sig === "SELL";
+                          const isActive = selectedSignalId === r.id;
+
+                          const plain = symbolToPlain(r.symbol);
+                          const open = openNewsForSymbol === plain;
+
+                          return (
+                            <button
+                              key={r.id}
+                              onClick={() => {
+                                setSelectedSymbol(r.symbol);
+                                setSelectedSignalId(r.id);
+                                toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
+                                fetchMini(r.symbol);
+                              }}
+                              className={`w-full text-left p-4 rounded-xl border transition-all ${
+                                isActive
+                                  ? "border-blue-600 bg-blue-950/30"
+                                  : "border-gray-800 bg-[#0d1117] hover:border-gray-700 hover:bg-gray-900/50"
+                              }`}
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <div
+                                  className={`font-bold text-lg ${
+                                    isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"
+                                  }`}
+                                >
+                                  {sig}
+                                </div>
+                                <div className="text-xs text-gray-500">{timeAgo((r as any).created_at)}</div>
+                              </div>
+
+                              <div className="text-sm font-mono mb-1 text-gray-300">
+                                {r.symbol} @ <span className="text-white">{r.price ?? "—"}</span>
+                              </div>
+
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="text-xs text-gray-400">
+                                  Score: <span className="text-white">{r.score ?? "—"}</span>
+                                </div>
+                                <ScoreChip signal={r.signal} score={r.score} />
+                              </div>
+
+                              <ReasonBadges reasons={r.reasons} />
+                              <TechLine reasons={r.reasons} />
+
+                              <NewsBlock
+                                symbol={r.symbol}
+                                isOpen={open}
+                                isLoading={newsLoadingFor === plain}
+                                error={newsErrorFor[plain]}
+                                items={newsCache[plain]}
+                                onStopPropagation
+                              />
+
+                              <div className="mt-4 flex gap-2">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOutcome(r.id, "WIN");
+                                  }}
+                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                    r.outcome === "WIN"
+                                      ? "border-green-600 text-green-400 bg-green-950/30"
+                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                  }`}
+                                >
+                                  WIN
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOutcome(r.id, "LOSS");
+                                  }}
+                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                    r.outcome === "LOSS"
+                                      ? "border-red-600 text-red-400 bg-red-950/30"
+                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                  }`}
+                                >
+                                  LOSS
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOutcome(r.id, null);
+                                  }}
+                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                    r.outcome === null
+                                      ? "border-gray-600 text-gray-200 bg-gray-900/40"
+                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                  }`}
+                                >
+                                  Temizle
+                                </button>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </aside>
+              </div>
+            </>
+          )}
         </main>
       </div>
 
       <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #0d1117; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #21262d; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #30363d; }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #0d1117;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #21262d;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #30363d;
+        }
       `}</style>
     </div>
   );
