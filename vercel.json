@@ -2,7 +2,7 @@
   "framework": "nextjs",
   "crons": [
     {
-      "path": "/api/cron/top-margins?token=${a7f3d1e9c8b54f1b92d3a5f1c0b8e4a7d9f2b3c4e5f67890abcd}",
+      "path": "/api/cron/top-margins?token=${CRON_SECRET}",
       "schedule": "15 18 * * *"
     }
   ]
