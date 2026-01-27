@@ -291,4 +291,4 @@ export async function GET(req: Request) {
     console.error("top-margins error:", e?.message || e);
     return NextResponse.json({ data: { topNet: [], topGross: [], topQuality: [] } }, { status: 200 });
   }
-}
+} 
