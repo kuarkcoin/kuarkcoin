@@ -16,6 +16,11 @@ const BIST100 = [
   "CMBTN","MRSHL",
 ];
 
+// ✅ Debug / filtre kontrolü
+const DEBUG_META = false;          // true => meta içine rawCount + sample koyar
+const REQUIRE_BULLISH_ONLY = true; // true => sadece bullish tag'ler
+const EXCLUDE_NEGATIVE = true;     // true => NEGATIF tag'li olanları dışla
+
 type KapTag =
   | "IS_ANLASMASI"
   | "SATIN_ALMA"
@@ -38,17 +43,25 @@ type KapUIItem = {
 };
 
 const TAG_KEYWORDS: Record<KapTag, string[]> = {
-  IS_ANLASMASI: ["iş anlaşması","sözleşme imzalan","sözleşme","anlaşma sağlan","ihale kazan","ihale","proje sözleşmesi","sipariş al","sipariş"],
+  IS_ANLASMASI: [
+    "iş anlaşması","sözleşme imzalan","sözleşme","anlaşma sağlan","ihale kazan","ihale",
+    "proje sözleşmesi","sipariş al","sipariş","yeni sipariş"
+  ],
   SATIN_ALMA: ["satın alma","pay devri","hisse devri","devralma","iştirak edinimi","edinim"],
   BIRLESME: ["birleşme","birleşme işlemi","kolaylaştırılmış birleşme","bölünme","kısmi bölünme"],
-  YUKSEK_KAR: ["finansal sonuç","bilanço","faaliyet sonuç","net dönem kârı","net donem kari","kâr art","kar art","rekor","yüksek kâr","yuksek kar"],
+  YUKSEK_KAR: [
+    "finansal sonuç","bilanço","faaliyet sonuç","net dönem kârı","net donem kari",
+    "kâr art","kar art","rekor","yüksek kâr","yuksek kar"
+  ],
   TEMETTU: ["temettü","kâr payı","kar payi","nakit temettü","kar dağıt","kâr dağıt"],
   GERI_ALIM: ["geri alım","pay geri alım","hisse geri alım","geri alim"],
   NEGATIF: ["zarar","ceza","inceleme","soruşturma","iptal","fesih","durdur","dava","iflas"],
   DIGER: [],
 };
 
-const BULLISH_TAGS: KapTag[] = ["IS_ANLASMASI","SATIN_ALMA","BIRLESME","YUKSEK_KAR","TEMETTU","GERI_ALIM"];
+const BULLISH_TAGS: KapTag[] = [
+  "IS_ANLASMASI","SATIN_ALMA","BIRLESME","YUKSEK_KAR","TEMETTU","GERI_ALIM"
+];
 
 function detectKapTags(text: string): KapTag[] {
   const t = (text || "").toLowerCase();
@@ -63,11 +76,10 @@ function detectKapTags(text: string): KapTag[] {
 function normalizeCode(x: string) {
   const s = String(x || "")
     .toUpperCase()
-    .replace(/\(.*?\)/g, "")      // parantez içi sil
-    .replace(/[^A-Z0-9._-]/g, "") // garip karakterleri temizle
+    .replace(/\(.*?\)/g, "")
+    .replace(/[^A-Z0-9._-]/g, "")
     .trim();
   if (!s) return "";
-  // nokta sonrası uzantıyı kırp (AKBNK.E vs)
   return s.split(".")[0];
 }
 
@@ -80,9 +92,48 @@ function extractCodes(stockCodes: any): string[] {
     .filter(Boolean);
 }
 
-function safeTimeMs(value: any): number {
-  if (!value) return 0;
-  const ms = new Date(String(value)).getTime();
+/**
+ * ✅ KAP publishDate bazen:
+ * - "Bugün 10:30"
+ * - "Dün 17:44"
+ * - "14.07.2025 18:14" / "14.07.25 18:14"
+ * - unix (sec/ms)
+ */
+function safeTimeMsTR(value: any): number {
+  if (value == null) return 0;
+
+  // unix number
+  if (typeof value === "number") {
+    return value < 1e12 ? value * 1000 : value;
+  }
+
+  const s = String(value).trim();
+  if (!s) return 0;
+
+  // Bugün/Dün HH:mm
+  const mRel = s.match(/^(Bugün|Dün)\s+(\d{1,2}):(\d{2})$/i);
+  if (mRel) {
+    const [, dayWord, hh, mm] = mRel;
+    const d = new Date();
+    d.setHours(Number(hh), Number(mm), 0, 0);
+    if (dayWord.toLowerCase() === "dün") d.setDate(d.getDate() - 1);
+    return d.getTime();
+  }
+
+  // dd.MM.yy(yy) HH:mm
+  const mTR = s.match(/^(\d{2})\.(\d{2})\.(\d{2}|\d{4})\s+(\d{2}):(\d{2})$/);
+  if (mTR) {
+    const dd = Number(mTR[1]);
+    const MM = Number(mTR[2]);
+    let yyyy = Number(mTR[3]);
+    if (yyyy < 100) yyyy = 2000 + yyyy;
+    const hh = Number(mTR[4]);
+    const mm = Number(mTR[5]);
+    return new Date(yyyy, MM - 1, dd, hh, mm, 0, 0).getTime();
+  }
+
+  // ISO fallback
+  const ms = new Date(s).getTime();
   return Number.isFinite(ms) ? ms : 0;
 }
 
@@ -94,7 +145,6 @@ function ok(items: KapUIItem[], meta?: any) {
 }
 
 function fail(error: string, meta?: any) {
-  // UI patlamasın diye 200 + ok:false
   return NextResponse.json(
     { ok: false, error, items: [] as KapUIItem[], meta: meta ?? {} },
     { status: 200, headers: { "Cache-Control": "no-store" } }
@@ -102,11 +152,14 @@ function fail(error: string, meta?: any) {
 }
 
 export async function GET() {
-  // ✅ KAP bazen yavaş → ama 2.5s çok kısa, 7s daha sağlıklı
   const ac = new AbortController();
-  const timer = setTimeout(() => ac.abort(), 7000);
+  const timer = setTimeout(() => ac.abort(), 9000); // ✅ 9s daha güvenli
 
   try {
+    // (Opsiyonel) dün-bugün aralığı — KAP bazen boş tarih sevmez
+    const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
     const r = await fetch("https://www.kap.org.tr/tr/api/memberDisclosureQuery", {
       method: "POST",
       headers: {
@@ -114,11 +167,11 @@ export async function GET() {
         "user-agent": "Mozilla/5.0",
       },
       body: JSON.stringify({
-        fromDate: "",
-        toDate: "",
+        fromDate: yesterday,      // ✅ boş yerine tarih ver
+        toDate: today,            // ✅
         subjectList: [],
         bdkMemberOidList: [],
-        srcCategory: "4",
+        srcCategory: "",          // ✅ debug için genişlet (istersen "4" yaparsın)
       }),
       cache: "no-store",
       signal: ac.signal,
@@ -127,16 +180,27 @@ export async function GET() {
     if (!r.ok) throw new Error(`KAP API error: ${r.status}`);
 
     const rawItems = await r.json();
+    const arr = Array.isArray(rawItems) ? rawItems : [];
+
+    // Debug meta (tek bakış)
+    if (DEBUG_META) {
+      return ok([], {
+        rawCount: arr.length,
+        samplePublishDate: arr?.[0]?.publishDate ?? null,
+        sampleStockCodes: arr?.[0]?.stockCodes ?? null,
+        sampleTitle: arr?.[0]?.kapTitle ?? null,
+      });
+    }
 
     const since = Date.now() - 24 * 60 * 60 * 1000;
 
-    const filtered = (Array.isArray(rawItems) ? rawItems : [])
+    const filtered = arr
       .map((it: any) => {
         const text = `${it.kapTitle ?? ""} ${it.summary ?? ""} ${it.disclosureClass ?? ""}`;
         const tags = detectKapTags(text);
         const codes = extractCodes(it.stockCodes);
-
-        return { it, text, tags, codes, t: safeTimeMs(it.publishDate) };
+        const t = safeTimeMsTR(it.publishDate);
+        return { it, text, tags, codes, t };
       })
       .filter((x) => {
         if (!x.t || x.t < since) return false;
@@ -145,17 +209,21 @@ export async function GET() {
         if (!x.codes.some((c) => BIST100.includes(c))) return false;
 
         // negatif filtre
-        if (x.tags.includes("NEGATIF")) return false;
+        if (EXCLUDE_NEGATIVE && x.tags.includes("NEGATIF")) return false;
 
-        // bullish
-        return x.tags.some((tg) => BULLISH_TAGS.includes(tg));
+        // bullish only (istersen kapat)
+        if (REQUIRE_BULLISH_ONLY) {
+          return x.tags.some((tg) => BULLISH_TAGS.includes(tg));
+        }
+
+        return true;
       })
       .sort((a, b) => b.t - a.t)
       .slice(0, 30)
       .map((x) => {
         const it = x.it;
         const publishMs = x.t;
-        // ✅ URL alanı KAP'ta farklı gelebilir; en güvenlisi link'i kontrol edip fallback ver
+
         const url =
           it?.disclosureLink ||
           it?.disclosureUrl ||
@@ -169,15 +237,14 @@ export async function GET() {
           url: String(url),
           source: "KAP",
           datetime: Math.floor(publishMs / 1000),
-          company: (x.codes[0] ?? undefined),
+          company: x.codes[0] ?? undefined,
           tags: x.tags,
           stockCodes: x.codes,
-          raw: undefined, // debug istersen it koyabilirsin
+          raw: undefined,
         };
         return out;
       });
 
-    // ✅ Haber yoksa da ok:true + items:[]
     return ok(filtered, { count: filtered.length, windowHours: 24 });
   } catch (e: any) {
     const msg = e?.name === "AbortError" ? "KAP timeout" : (e?.message ?? "KAP error");
