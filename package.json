@@ -10,12 +10,8 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-<<<<<<< HEAD
-    "@supabase/supabase-js": "^2.43.5",
-=======
     "@supabase/supabase-js": "^2.90.1",
     "@vercel/kv": "^3.0.0",
->>>>>>> 2dcf90a (Add @vercel/kv)
     "clsx": "2.1.1",
     "docx": "^9.5.1",
     "dompurify": "^3.3.1",
