@@ -6,14 +6,13 @@ export const dynamic = "force-dynamic";
 // =====================
 // CONFIG
 // =====================
-// mode:
-//  - raw     : hiç filtre yok, sadece KAP'tan geleni normalize edip döner (API çalışıyor mu testi)
-//  - relaxed : BIST100 yok, bullish şartı yok (parse/keyword testi)
-//  - strict  : senin asıl mantığın (BIST100 + bullish + negatif hariç)
 type Mode = "raw" | "relaxed" | "strict";
 
 const DEFAULT_MODE: Mode = "strict";
-const WINDOW_HOURS = 72; // 24 yerine 72 (özellikle hafta sonu/az haber)
+const WINDOW_HOURS = 72; // son 72 saat
+
+// KAP sorgusunda kaç gün geriye gidelim (72 saat için 3 gün mantıklı)
+const QUERY_DAYS_BACK = 3;
 
 const BIST100 = [
   "AEFES","AGHOL","AKBNK","AKSA","AKSEN","ALARK","ARCLK","ARDYZ","ASELS","ASTOR",
@@ -148,14 +147,15 @@ export async function GET(req: Request) {
   const timer = setTimeout(() => ac.abort(), 12000);
 
   try {
-    const today = new Date().toISOString().slice(0, 10);
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const toDate = new Date().toISOString().slice(0, 10);
+    const fromDate = new Date(Date.now() - QUERY_DAYS_BACK * 86400000)
+      .toISOString()
+      .slice(0, 10);
 
-    // Not: KAP bazen srcCategory ile nazlanıyor.
-    // Burada srcCategory göndermiyoruz -> en toleranslı hal.
+    // srcCategory YOK -> toleranslı
     const body = {
-      fromDate: yesterday,
-      toDate: today,
+      fromDate,
+      toDate,
       subjectList: [],
       bdkMemberOidList: [],
     };
@@ -164,7 +164,7 @@ export async function GET(req: Request) {
       method: "POST",
       headers: {
         "content-type": "application/json; charset=utf-8",
-        "accept": "application/json",
+        accept: "application/json",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
       },
       body: JSON.stringify(body),
@@ -189,7 +189,9 @@ export async function GET(req: Request) {
         it?.disclosureLink ||
         it?.disclosureUrl ||
         it?.relatedLink ||
-        (it?.disclosureIndex ? `https://www.kap.org.tr/tr/Bildirim/${it.disclosureIndex}` : "https://www.kap.org.tr/tr/");
+        (it?.disclosureIndex
+          ? `https://www.kap.org.tr/tr/Bildirim/${encodeURIComponent(String(it.disclosureIndex))}`
+          : "https://www.kap.org.tr/tr/");
 
       return {
         it,
@@ -209,7 +211,7 @@ export async function GET(req: Request) {
       };
     });
 
-    // RAW mode: sadece “KAP’tan veri geliyor mu” kontrolü
+    // RAW: API geliyor mu?
     if (mode === "raw") {
       return ok({
         ok: true,
@@ -221,6 +223,7 @@ export async function GET(req: Request) {
         meta: {
           rawCount: arr.length,
           normalizedCount: normalized.length,
+          dateRange: { fromDate, toDate },
           sample: {
             publishDate: arr?.[0]?.publishDate ?? null,
             stockCodes: arr?.[0]?.stockCodes ?? null,
@@ -230,11 +233,10 @@ export async function GET(req: Request) {
       });
     }
 
-    // base window filter
+    // window filter
     let filtered = normalized.filter((x) => x.t && x.t >= since);
 
     if (mode === "relaxed") {
-      // sadece zaman filtresi var; BIST100/tag/negatif yok
       const items = filtered
         .sort((a, b) => (b.t || 0) - (a.t || 0))
         .slice(0, 30)
@@ -248,6 +250,7 @@ export async function GET(req: Request) {
           rawCount: arr.length,
           afterWindow: filtered.length,
           windowHours: WINDOW_HOURS,
+          dateRange: { fromDate, toDate },
         },
       });
     }
@@ -274,6 +277,7 @@ export async function GET(req: Request) {
         afterWindow: beforeStrict,
         afterStrict: filtered.length,
         windowHours: WINDOW_HOURS,
+        dateRange: { fromDate, toDate },
       },
     });
   } catch (e: any) {
