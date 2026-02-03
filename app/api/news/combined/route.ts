@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { NASDAQ300, ETFS } from "@/constants/universe";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +8,6 @@ type KapRow = {
   url: string;
   source: string;
   datetime: number; // unix sec
-  company?: string;
   tags: string[];
   stockCodes: string[];
 };
@@ -17,23 +17,17 @@ type NewsItem = {
   url: string;
   source: string;
   datetime: number;      // unix sec
-  tickers: string[];
+  tickers: string[];     // ["NASDAQ:AAPL"] | ["ETF:QQQ"] | ["BIST:ASELS"]
   tags: string[];
 };
 
 const FINNHUB_KEY = process.env.FINNHUB_API_KEY || process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
 
-// Basit tagger (istersen geliştiririz)
-function autoTags(headline: string) {
-  const t = (headline || "").toLowerCase();
-  const tags = new Set<string>();
-  if (/(acquisition|merger|m&a|takeover|satın alma|birleş)/.test(t)) tags.add("M&A");
-  if (/(earnings|results|guidance|bilanço|financial)/.test(t)) tags.add("EARNINGS");
-  if (/(dividend|temett)/.test(t)) tags.add("DIVIDEND");
-  if (/(buyback|geri alım)/.test(t)) tags.add("BUYBACK");
-  if (/(contract|agreement|deal|ihale|sözleşme|iş anlaş)/.test(t)) tags.add("CONTRACT");
-  if (/(defense|navy|warship|frigate|corvette|savunma|donanma|fırkateyn|korvet)/.test(t)) tags.add("DEFENSE");
-  return Array.from(tags);
+function normalizeUniverse(u: string) {
+  const U = String(u || "BIST100").toUpperCase();
+  if (U === "NASDAQ300") return "NASDAQ300";
+  if (U === "ETF") return "ETF";
+  return "BIST100";
 }
 
 function uniqByUrl(items: NewsItem[]) {
@@ -48,28 +42,61 @@ function uniqByUrl(items: NewsItem[]) {
   return out;
 }
 
-// Query: ?u=BIST100|NASDAQ100|ETF
-function normalizeUniverse(u: string) {
-  const U = String(u || "BIST100").toUpperCase();
-  if (U === "NASDAQ100") return "NASDAQ100";
-  if (U === "ETF") return "ETF";
-  return "BIST100";
+function autoTags(headline: string) {
+  const t = (headline || "").toLowerCase();
+  const tags = new Set<string>();
+  if (/(acquisition|merger|m&a|takeover|satın alma|birleş)/.test(t)) tags.add("M&A");
+  if (/(earnings|results|guidance|bilanço|financial)/.test(t)) tags.add("EARNINGS");
+  if (/(dividend|temett)/.test(t)) tags.add("DIVIDEND");
+  if (/(buyback|geri alım)/.test(t)) tags.add("BUYBACK");
+  if (/(contract|agreement|deal|ihale|sözleşme|iş anlaş)/.test(t)) tags.add("CONTRACT");
+  if (/(defense|navy|warship|frigate|corvette|savunma|donanma|fırkateyn|korvet)/.test(t)) tags.add("DEFENSE");
+  if (/(negative|lawsuit|investigation|fraud|downgrade|ceza|soruşturma|dava)/.test(t)) tags.add("NEGATIVE");
+  return Array.from(tags);
+}
+
+/**
+ * Haber metninden + Finnhub related alanından tickers yakala:
+ * - Büyük harf token'ları çıkar
+ * - Universe set'inde olanları filtrele
+ */
+function extractTickersFromText(text: string, universeSet: Set<string>) {
+  const tokens = new Set<string>();
+
+  // 1) $AAPL gibi kalıplar
+  const dollarMatches = text.match(/\$[A-Z]{1,6}\b/g) || [];
+  for (const m of dollarMatches) tokens.add(m.replace("$", ""));
+
+  // 2) Normal tokenizasyon
+  const raw = text
+    .toUpperCase()
+    .replace(/[^A-Z0-9\s]/g, " ")
+    .split(/\s+/g)
+    .map((x) => x.trim())
+    .filter(Boolean);
+
+  for (const tok of raw) {
+    // ticker olma ihtimali yüksek (1-6)
+    if (tok.length >= 1 && tok.length <= 6) tokens.add(tok);
+  }
+
+  // sadece universe içindekiler
+  return Array.from(tokens).filter((t) => universeSet.has(t));
 }
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const u = normalizeUniverse(searchParams.get("u") || "BIST100");
-  const limit = Math.min(30, Math.max(1, Number(searchParams.get("limit") || 12)));
+  const limit = Math.min(40, Math.max(1, Number(searchParams.get("limit") || 12)));
 
   const items: NewsItem[] = [];
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  // 1) BIST → KAP Important (senin route)
+  // 1) BIST100 → KAP Important
   if (u === "BIST100") {
     try {
-      const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const kapRes = await fetch(`${base}/api/kap/bist100-important?mode=strict`, {
-        // DB yok → kısa cache daha mantıklı
-        next: { revalidate: 60 }, // 60 sn
+        next: { revalidate: 60 }, // 60 sn cache
       });
       const kapJson = kapRes.ok ? await kapRes.json() : null;
       const kapRows: KapRow[] = (kapJson?.items ?? []) as KapRow[];
@@ -88,38 +115,48 @@ export async function GET(req: Request) {
     } catch {}
   }
 
-  // 2) NASDAQ/ETF → Finnhub general news (basit, hızlı)
-  // Not: Finnhub "general news" tek endpoint; ticker bazlı istersen onu da ekleriz.
-  if ((u === "NASDAQ100" || u === "ETF") && FINNHUB_KEY) {
+  // 2) NASDAQ300 / ETF → Finnhub general news → ticker yakala
+  if ((u === "NASDAQ300" || u === "ETF") && FINNHUB_KEY) {
+    const universePlain = u === "NASDAQ300" ? NASDAQ300 : ETFS;
+    const universeSet = new Set(universePlain.map((x) => String(x).toUpperCase()));
+
     try {
+      // “General” haber akışı: tek çağrı → sonra ticker yakalıyoruz
       const url = `https://finnhub.io/api/v1/news?category=general&token=${encodeURIComponent(FINNHUB_KEY)}`;
       const res = await fetch(url, { next: { revalidate: 120 } }); // 2 dk cache
       const arr = res.ok ? await res.json() : [];
-      // Finnhub item shape: {headline, url, source, datetime, related}
-      for (const n of Array.isArray(arr) ? arr.slice(0, 25) : []) {
+
+      for (const n of Array.isArray(arr) ? arr.slice(0, 80) : []) {
         const headline = String(n?.headline || "");
         const link = String(n?.url || "");
         const dt = Number(n?.datetime || 0);
         if (!headline || !link || !dt) continue;
 
-        // related bazen "AAPL,MSFT" gibi gelir
         const relatedRaw = String(n?.related || "");
-        const related = relatedRaw
+        const relatedPlain = relatedRaw
           .split(/[,\s]+/g)
           .map((x) => x.trim().toUpperCase())
-          .filter(Boolean)
-          .slice(0, 8);
+          .filter(Boolean);
 
-        // Universe prefix: ETF için "ETF:" kullanacağız ama related ticker'lar hisse olur genelde.
-        // Şimdilik NASDAQ: diye prefixleyelim; ETF için de gene aynı, çünkü haberin çoğu şirket haberi.
-        const tickers = related.map((t) => `NASDAQ:${t}`);
+        // Finnhub related + headline içinde ticker ara
+        const text = `${headline} ${String(n?.summary || "")} ${relatedRaw}`;
+        const found = new Set<string>();
 
+        // related’tan
+        for (const r of relatedPlain) if (universeSet.has(r)) found.add(r);
+
+        // text’ten
+        for (const t of extractTickersFromText(text, universeSet)) found.add(t);
+
+        if (found.size === 0) continue;
+
+        const prefix = u === "ETF" ? "ETF:" : "NASDAQ:";
         items.push({
           headline,
           url: link,
           source: String(n?.source || "FINNHUB"),
           datetime: dt,
-          tickers,
+          tickers: Array.from(found).slice(0, 8).map((t) => `${prefix}${t}`),
           tags: autoTags(headline),
         });
       }
