@@ -29,6 +29,15 @@ type KapRow = {
   stockCodes: string[];
 };
 
+type NewsItem = {
+  headline: string;
+  url: string;
+  source: string;
+  datetime: number; // unix sec
+  tickers: string[];
+  tags: string[];
+};
+
 type TopMarginRow = {
   symbol: string;
   finnhubSymbol?: string;
@@ -50,7 +59,7 @@ type TopMarginsResp = {
   topQuality: TopMarginRow[];
 };
 
-const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ100"] as const;
+const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ300", "ETF"] as const;
 type Universe = (typeof ALLOWED_UNIVERSE)[number];
 
 // =====================
@@ -65,6 +74,8 @@ function getApiBaseUrl() {
 }
 
 async function safeFetchJson(url: string) {
+  // DB yok: sayfada "her request fetch" yerine route'lar zaten revalidate veriyor.
+  // Burada no-store kalsın; asıl cache'yi route'larda veriyoruz.
   const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
   if (!res.ok) return null;
   return res.json();
@@ -156,6 +167,17 @@ function tagLabel(tag: string) {
   return "📌 Diğer";
 }
 
+function cleanTickerLabel(t: string) {
+  // NASDAQ:AAPL -> AAPL, ETF:QQQ -> QQQ, BIST:ASELS -> ASELS
+  return t?.includes(":") ? t.split(":")[1] : t;
+}
+
+function universeLabel(u: Universe) {
+  if (u === "NASDAQ300") return "NASDAQ • 300";
+  if (u === "ETF") return "ETF";
+  return "BIST100";
+}
+
 // =====================
 // DATA FETCHERS
 // =====================
@@ -173,7 +195,6 @@ async function getLatestSignals(base: string): Promise<SignalRow[]> {
 async function getKapImportant(base: string): Promise<KapRow[]> {
   try {
     const json = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
-    // ✅ KRİTİK: route "items" döndürüyor (data değil)
     const arr: KapRow[] = (json?.items ?? []) as KapRow[];
     return Array.isArray(arr) ? arr.slice(0, 8) : [];
   } catch (e) {
@@ -183,14 +204,32 @@ async function getKapImportant(base: string): Promise<KapRow[]> {
 }
 
 async function getTopMargins(base: string, universe: Universe): Promise<TopMarginsResp | null> {
+  // ETF’de marj sıralaması anlamsız → gizleyeceğiz
+  if (universe === "ETF") return null;
+
   try {
-    const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(universe)}&limit=10`;
+    // ✅ backend endpoint'in sadece BIST100/NASDAQ100 biliyorsa:
+    // NASDAQ300 seçiliyse backend'e NASDAQ100 diye gönderiyoruz (ya da backend'i NASDAQ300'e genişletirsin)
+    const backendUniverse = universe === "NASDAQ300" ? "NASDAQ100" : universe;
+
+    const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(backendUniverse)}&limit=10`;
     const json = await safeFetchJson(url);
     const data = (json?.data ?? null) as TopMarginsResp | null;
     return data && typeof data === "object" ? data : null;
   } catch (e) {
     console.error("getTopMargins error:", e);
     return null;
+  }
+}
+
+async function getNewsCombined(base: string, universe: Universe): Promise<NewsItem[]> {
+  try {
+    const json = await safeFetchJson(`${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=12`);
+    const arr: NewsItem[] = (json?.items ?? []) as NewsItem[];
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    console.error("getNewsCombined error:", e);
+    return [];
   }
 }
 
@@ -203,10 +242,11 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
 
   const base = getApiBaseUrl();
 
-  const [latest, kap, top] = await Promise.all([
+  const [latest, kap, top, news] = await Promise.all([
     getLatestSignals(base),
     getKapImportant(base),
     getTopMargins(base, universe),
+    getNewsCombined(base, universe),
   ]);
 
   const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
@@ -250,6 +290,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
               <Badge>NASDAQ • ETF • CRYPTO</Badge>
               <Badge>Custom Chart</Badge>
               <Badge>KAP • BIST100</Badge>
+              <Badge>News Catcher</Badge>
               <Badge>Top Margins</Badge>
             </div>
 
@@ -260,7 +301,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
             <p className="text-gray-300 max-w-2xl leading-relaxed">
               Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir: skor, nedenler, Win/Loss takibi ve
               grafikte işaretleme. Ek olarak ana sayfada BIST100 için yükseltici KAP bildirimlerini etiketleyip özetler.
-              Yeni: BIST100 / NASDAQ100 için “kâr marjı” sıralamaları.
+              Yeni: Haber yakalayıcı (BIST100 / NASDAQ300 / ETF) + marj sıralamaları.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -296,19 +337,20 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
                 <div className="text-xs text-gray-500 mt-1">“Golden Cross, VWAP, RSI Divergence…” gibi nedenler rozetlenir.</div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="text-sm font-bold">💰 Marj Sıralaması</div>
-                <div className="text-xs text-gray-500 mt-1">Net/Brüt kâr marjı en yüksekler + “Kaliteli Kâr” filtresi.</div>
+                <div className="text-sm font-bold">🗞️ Haber Yakala</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Haber metninden / related alanından tickers yakalanır: <span className="text-gray-300">{universeLabel(universe)}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* High margin ranking */}
-      <section className="mx-auto max-w-6xl px-4 pb-12">
-        <div className="flex items-end justify-between mb-4">
-          <h2 className="text-lg font-black">💰 Yüksek Kâr Oranı</h2>
-
+      {/* Universe switch */}
+      <section className="mx-auto max-w-6xl px-4 pb-6">
+        <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 flex items-center justify-between">
+          <div className="text-sm font-black">🌍 Universe</div>
           <div className="flex items-center gap-2">
             <Link
               href={`/?u=BIST100`}
@@ -321,177 +363,263 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
               BIST100
             </Link>
             <Link
-              href={`/?u=NASDAQ100`}
+              href={`/?u=NASDAQ300`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "NASDAQ100"
+                universe === "NASDAQ300"
                   ? "border-blue-600 bg-blue-950/30 text-blue-200"
                   : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
-              NASDAQ100
+              NASDAQ300
+            </Link>
+            <Link
+              href={`/?u=ETF`}
+              className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
+                universe === "ETF"
+                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
+                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
+              }`}
+            >
+              ETF
             </Link>
           </div>
         </div>
-
-        <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 mb-3">
-          <div className="text-sm font-bold">“Yüksek kâr oranı” ne demek?</div>
-          <div className="text-xs text-gray-400 mt-1 leading-relaxed">
-            • <b>Brüt Kâr Marjı</b>: satış kârlılığı (ürün/hizmet ne kadar iyi kâr bırakıyor). <br />
-            • <b>Net Kâr Marjı</b>: tüm giderler + finansman + vergi sonrası gerçek kârlılık.{" "}
-            <span className="text-gray-500">(Aşırı yüksek net marj bazen tek seferlik gelirlerden şişebilir.)</span>
-          </div>
-          <div className="mt-2 text-[11px] text-gray-500">
-            Endeks: <span className="text-gray-200 font-semibold">{universe}</span> • Son güncelleme:{" "}
-            {top?.updatedAt ? formatDateTR(top.updatedAt) : "—"} • Periyot: {top?.periodHint ?? "—"}
-          </div>
-        </div>
-
-        {!top || (top.topNet?.length ?? 0) === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Marj sıralaması boş (veya <code className="text-gray-300">/api/financials/top-margins</code> erişilemiyor).
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {/* Net */}
-            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-              <div className="font-black text-sm">🏆 Net Kâr Marjı</div>
-              <div className="mt-3 space-y-2">
-                {top.topNet.map((r, i) => (
-                  <Link
-                    key={`net-${r.symbol}`}
-                    href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
-                    className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
-                  >
-                    <div className="min-w-0">
-                      <div className="text-xs text-gray-500">
-                        {i + 1}. {r.symbol}
-                      </div>
-                      <div className="text-sm font-black text-green-300">{fmtPct(r.netMargin)}</div>
-                    </div>
-                    <div className="text-gray-400">
-                      <Sparkline values={r.netSeries ?? []} />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Gross */}
-            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-              <div className="font-black text-sm">🏆 Brüt Kâr Marjı</div>
-              <div className="mt-3 space-y-2">
-                {top.topGross.map((r, i) => (
-                  <Link
-                    key={`gross-${r.symbol}`}
-                    href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
-                    className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
-                  >
-                    <div className="min-w-0">
-                      <div className="text-xs text-gray-500">
-                        {i + 1}. {r.symbol}
-                      </div>
-                      <div className="text-sm font-black text-blue-300">{fmtPct(r.grossMargin)}</div>
-                    </div>
-                    <div className="text-gray-400">
-                      <Sparkline values={r.grossSeries ?? []} />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Quality */}
-            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-              <div className="font-black text-sm">💎 Kaliteli Kâr</div>
-              <div className="text-[11px] text-gray-500 mt-1">Stabil + trend bonus (dalgalanma cezası ile)</div>
-              <div className="mt-3 space-y-2">
-                {top.topQuality.map((r, i) => (
-                  <Link
-                    key={`q-${r.symbol}`}
-                    href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
-                    className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
-                  >
-                    <div className="min-w-0">
-                      <div className="text-xs text-gray-500">
-                        {i + 1}. {r.symbol}
-                      </div>
-                      <div className="text-xs text-gray-300">
-                        Net: <span className="font-bold text-green-300">{fmtPct(r.netMargin)}</span> • Brüt:{" "}
-                        <span className="font-bold text-blue-300">{fmtPct(r.grossMargin)}</span>
-                      </div>
-                      <div className="text-[11px] text-gray-500">
-                        Skor: <span className="text-gray-200 font-semibold">{r.qualityScore ?? "—"}</span>
-                        {r.volatility != null ? ` • Vol: ${Number(r.volatility).toFixed(2)}` : ""}
-                      </div>
-                    </div>
-                    <div className="text-gray-400">
-                      <Sparkline values={(r.netSeries?.length ? r.netSeries : r.grossSeries) ?? []} />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </section>
 
-      {/* KAP Important */}
+      {/* News feed */}
       <section className="mx-auto max-w-6xl px-4 pb-12">
         <div className="flex items-end justify-between mb-4">
-          <h2 className="text-lg font-black">KAP • BIST100 Önemli</h2>
+          <h2 className="text-lg font-black">🔥 Haber Akışı</h2>
           <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
         </div>
 
-        {kap.length === 0 ? (
+        {news.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Şu an yükseltici KAP haberi yok (veya <code className="text-gray-300">/api/kap/bist100-important</code>{" "}
-            erişilemiyor).
+            Haber yok (veya <code className="text-gray-300">/api/news/combined</code> erişilemiyor).
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {kap.map((k, i) => {
-              const href = k.url ? String(k.url) : null;
-
-              const dateIso = k.datetime ? new Date(k.datetime * 1000).toISOString() : "";
-              const codes = Array.isArray(k.stockCodes) ? k.stockCodes : [];
-              const tags = Array.isArray(k.tags) ? k.tags.slice(0, 3) : [];
-
-              const Card = (
-                <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
-                  <div className="text-xs text-gray-500">
-                    {(codes.length ? codes.join(", ") : "—")} • {dateIso ? formatDateTR(dateIso) : "—"}
-                  </div>
-
-                  <div className="mt-1 font-black text-sm">{k.title ?? "KAP Bildirimi"}</div>
-
-                  {tags.length > 0 ? (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {tags.map((t) => (
-                        <span
-                          key={t}
-                          className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                        >
-                          {tagLabel(t)}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  {href ? <div className="mt-3 text-xs text-blue-400">KAP’ta aç →</div> : null}
-                </div>
-              );
-
-              if (!href) return <div key={`kap-${i}`}>{Card}</div>;
+            {news.map((n, i) => {
+              const dateIso = n.datetime ? new Date(n.datetime * 1000).toISOString() : "";
+              const tick = (n.tickers || []).slice(0, 5);
+              const tags = (n.tags || []).slice(0, 3);
 
               return (
-                <a key={`kap-${i}`} href={href} target="_blank" rel="noreferrer" className="block">
-                  {Card}
+                <a key={`${n.url}-${i}`} href={n.url} target="_blank" rel="noreferrer" className="block">
+                  <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
+                    <div className="text-xs text-gray-500">
+                      {n.source} • {dateIso ? formatDateTR(dateIso) : "—"}
+                    </div>
+
+                    <div className="mt-1 font-black text-sm">{n.headline}</div>
+
+                    {tick.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {tick.map((t) => (
+                          <span
+                            key={t}
+                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
+                          >
+                            {cleanTickerLabel(t)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {tags.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {tags.map((t) => (
+                          <span
+                            key={t}
+                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
+                          >
+                            {tagLabel(t)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <div className="mt-3 text-xs text-blue-400">Haberi aç →</div>
+                  </div>
                 </a>
               );
             })}
           </div>
         )}
       </section>
+
+      {/* High margin ranking (hidden for ETF) */}
+      {universe !== "ETF" ? (
+        <section className="mx-auto max-w-6xl px-4 pb-12">
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="text-lg font-black">💰 Yüksek Kâr Oranı</h2>
+
+            <div className="text-xs text-gray-500">
+              Universe: <span className="text-gray-200 font-semibold">{universeLabel(universe)}</span>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 mb-3">
+            <div className="text-sm font-bold">“Yüksek kâr oranı” ne demek?</div>
+            <div className="text-xs text-gray-400 mt-1 leading-relaxed">
+              • <b>Brüt Kâr Marjı</b>: satış kârlılığı. <br />
+              • <b>Net Kâr Marjı</b>: tüm giderler + finansman + vergi sonrası gerçek kârlılık.{" "}
+              <span className="text-gray-500">(Aşırı yüksek net marj bazen tek seferlik gelirlerden şişebilir.)</span>
+            </div>
+            <div className="mt-2 text-[11px] text-gray-500">
+              Son güncelleme: {top?.updatedAt ? formatDateTR(top.updatedAt) : "—"} • Periyot: {top?.periodHint ?? "—"}
+            </div>
+          </div>
+
+          {!top || (top.topNet?.length ?? 0) === 0 ? (
+            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
+              Marj sıralaması boş (veya <code className="text-gray-300">/api/financials/top-margins</code> erişilemiyor).
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {/* Net */}
+              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
+                <div className="font-black text-sm">🏆 Net Kâr Marjı</div>
+                <div className="mt-3 space-y-2">
+                  {top.topNet.map((r, i) => (
+                    <Link
+                      key={`net-${r.symbol}`}
+                      href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
+                      className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <div className="text-xs text-gray-500">
+                          {i + 1}. {r.symbol}
+                        </div>
+                        <div className="text-sm font-black text-green-300">{fmtPct(r.netMargin)}</div>
+                      </div>
+                      <div className="text-gray-400">
+                        <Sparkline values={r.netSeries ?? []} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Gross */}
+              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
+                <div className="font-black text-sm">🏆 Brüt Kâr Marjı</div>
+                <div className="mt-3 space-y-2">
+                  {top.topGross.map((r, i) => (
+                    <Link
+                      key={`gross-${r.symbol}`}
+                      href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
+                      className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <div className="text-xs text-gray-500">
+                          {i + 1}. {r.symbol}
+                        </div>
+                        <div className="text-sm font-black text-blue-300">{fmtPct(r.grossMargin)}</div>
+                      </div>
+                      <div className="text-gray-400">
+                        <Sparkline values={r.grossSeries ?? []} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quality */}
+              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
+                <div className="font-black text-sm">💎 Kaliteli Kâr</div>
+                <div className="text-[11px] text-gray-500 mt-1">Stabil + trend bonus (dalgalanma cezası ile)</div>
+                <div className="mt-3 space-y-2">
+                  {top.topQuality.map((r, i) => (
+                    <Link
+                      key={`q-${r.symbol}`}
+                      href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
+                      className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <div className="text-xs text-gray-500">
+                          {i + 1}. {r.symbol}
+                        </div>
+                        <div className="text-xs text-gray-300">
+                          Net: <span className="font-bold text-green-300">{fmtPct(r.netMargin)}</span> • Brüt:{" "}
+                          <span className="font-bold text-blue-300">{fmtPct(r.grossMargin)}</span>
+                        </div>
+                        <div className="text-[11px] text-gray-500">
+                          Skor: <span className="text-gray-200 font-semibold">{r.qualityScore ?? "—"}</span>
+                          {r.volatility != null ? ` • Vol: ${Number(r.volatility).toFixed(2)}` : ""}
+                        </div>
+                      </div>
+                      <div className="text-gray-400">
+                        <Sparkline values={(r.netSeries?.length ? r.netSeries : r.grossSeries) ?? []} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {/* KAP Important (only meaningful for BIST100) */}
+      {universe === "BIST100" ? (
+        <section className="mx-auto max-w-6xl px-4 pb-12">
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="text-lg font-black">KAP • BIST100 Önemli</h2>
+            <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
+          </div>
+
+          {kap.length === 0 ? (
+            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
+              Şu an yükseltici KAP haberi yok (veya <code className="text-gray-300">/api/kap/bist100-important</code>{" "}
+              erişilemiyor).
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {kap.map((k, i) => {
+                const href = k.url ? String(k.url) : null;
+
+                const dateIso = k.datetime ? new Date(k.datetime * 1000).toISOString() : "";
+                const codes = Array.isArray(k.stockCodes) ? k.stockCodes : [];
+                const tags = Array.isArray(k.tags) ? k.tags.slice(0, 3) : [];
+
+                const Card = (
+                  <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
+                    <div className="text-xs text-gray-500">
+                      {(codes.length ? codes.join(", ") : "—")} • {dateIso ? formatDateTR(dateIso) : "—"}
+                    </div>
+
+                    <div className="mt-1 font-black text-sm">{k.title ?? "KAP Bildirimi"}</div>
+
+                    {tags.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {tags.map((t) => (
+                          <span
+                            key={t}
+                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
+                          >
+                            {tagLabel(t)}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {href ? <div className="mt-3 text-xs text-blue-400">KAP’ta aç →</div> : null}
+                  </div>
+                );
+
+                if (!href) return <div key={`kap-${i}`}>{Card}</div>;
+
+                return (
+                  <a key={`kap-${i}`} href={href} target="_blank" rel="noreferrer" className="block">
+                    {Card}
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      ) : null}
 
       {/* Latest signals */}
       <section className="mx-auto max-w-6xl px-4 pb-14">
@@ -598,11 +726,9 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
               </div>
             </div>
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
-              <div className="font-bold">3) KAP + Marj</div>
+              <div className="font-bold">3) Haber Yakala</div>
               <div className="text-gray-500 mt-1">
-                <code className="text-gray-300">/api/kap/bist100-important</code> yükseltici KAP’ları,
-                <br />
-                <code className="text-gray-300">/api/financials/top-margins</code> günlük marj sıralamasını üretir.
+                <code className="text-gray-300">/api/news/combined</code> haberleri çeker, tickers yakalar ve ana sayfada yayınlar.
               </div>
             </div>
           </div>
