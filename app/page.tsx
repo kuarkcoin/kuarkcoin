@@ -5,6 +5,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
 
+// =====================
+// TYPES
+// =====================
 type SignalRow = {
   id: number;
   created_at: string;
@@ -15,13 +18,15 @@ type SignalRow = {
   reasons: string | null;
 };
 
+// ✅ KAP route'un döndürdüğü format (items -> KapUIItem)
 type KapRow = {
-  publishDate?: string;
-  stockCodes?: string;
-  kapTitle?: string;
-  summary?: string;
-  disclosureIndex?: number | string;
-  tags?: string[];
+  title: string;
+  url: string;
+  source: string;
+  datetime: number; // unix sec
+  company?: string;
+  tags: string[];
+  stockCodes: string[];
 };
 
 type TopMarginRow = {
@@ -44,6 +49,26 @@ type TopMarginsResp = {
   topGross: TopMarginRow[];
   topQuality: TopMarginRow[];
 };
+
+const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ100"] as const;
+type Universe = (typeof ALLOWED_UNIVERSE)[number];
+
+// =====================
+// HELPERS
+// =====================
+function getApiBaseUrl() {
+  const h = headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  const xfProto = h.get("x-forwarded-proto");
+  const proto = xfProto ?? (host.includes("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
+async function safeFetchJson(url: string) {
+  const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
+  if (!res.ok) return null;
+  return res.json();
+}
 
 function symbolToPlain(sym: string) {
   return sym?.includes(":") ? sym.split(":")[1] : sym;
@@ -119,67 +144,6 @@ function Sparkline({ values }: { values?: number[] }) {
   );
 }
 
-async function getLatestSignals(): Promise<SignalRow[]> {
-  try {
-    const h = headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host");
-    const proto = h.get("x-forwarded-proto") ?? "https";
-    if (!host) return [];
-
-    const url = `${proto}://${host}/api/signals`;
-    const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-    if (!res.ok) return [];
-    const json = await res.json();
-    const arr: SignalRow[] = json.data ?? [];
-    return arr.slice(0, 6);
-  } catch (e) {
-    console.error("getLatestSignals error:", e);
-    return [];
-  }
-}
-
-async function getKapImportant(): Promise<KapRow[]> {
-  try {
-    const h = headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host");
-    const proto = h.get("x-forwarded-proto") ?? "https";
-    if (!host) return [];
-
-    const url = `${proto}://${host}/api/kap/bist100-important`;
-    const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-    if (!res.ok) return [];
-
-    const json = await res.json();
-    const arr: KapRow[] = json.data ?? [];
-    return arr.slice(0, 8);
-  } catch (e) {
-    console.error("getKapImportant error:", e);
-    return [];
-  }
-}
-
-async function getTopMargins(universe: string): Promise<TopMarginsResp | null> {
-  try {
-    const h = headers();
-    const host = h.get("x-forwarded-host") ?? h.get("host");
-    const proto = h.get("x-forwarded-proto") ?? "https";
-    if (!host) return null;
-
-    const url = `${proto}://${host}/api/financials/top-margins?universe=${encodeURIComponent(
-      universe
-    )}&limit=10`;
-
-    const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-    if (!res.ok) return null;
-
-    const json = await res.json();
-    return (json.data ?? null) as TopMarginsResp | null;
-  } catch (e) {
-    console.error("getTopMargins error:", e);
-    return null;
-  }
-}
-
 function tagLabel(tag: string) {
   const t = String(tag || "").toUpperCase();
   if (t === "IS_ANLASMASI") return "🟢 İş Anlaşması";
@@ -188,21 +152,65 @@ function tagLabel(tag: string) {
   if (t === "YUKSEK_KAR") return "💰 Yüksek Kâr/Bilanço";
   if (t === "TEMETTU") return "🟦 Temettü";
   if (t === "GERI_ALIM") return "🟣 Geri Alım";
+  if (t === "NEGATIF") return "🔴 Negatif";
   return "📌 Diğer";
 }
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams?: { u?: string };
-}) {
-  const universe = (searchParams?.u || "BIST100").toUpperCase();
+// =====================
+// DATA FETCHERS
+// =====================
+async function getLatestSignals(base: string): Promise<SignalRow[]> {
+  try {
+    const json = await safeFetchJson(`${base}/api/signals`);
+    const arr: SignalRow[] = (json?.data ?? []) as SignalRow[];
+    return Array.isArray(arr) ? arr.slice(0, 6) : [];
+  } catch (e) {
+    console.error("getLatestSignals error:", e);
+    return [];
+  }
+}
 
-  const latest = await getLatestSignals();
-  const kap = await getKapImportant();
-  const top = await getTopMargins(universe);
+async function getKapImportant(base: string): Promise<KapRow[]> {
+  try {
+    const json = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
+    // ✅ KRİTİK: route "items" döndürüyor (data değil)
+    const arr: KapRow[] = (json?.items ?? []) as KapRow[];
+    return Array.isArray(arr) ? arr.slice(0, 8) : [];
+  } catch (e) {
+    console.error("getKapImportant error:", e);
+    return [];
+  }
+}
+
+async function getTopMargins(base: string, universe: Universe): Promise<TopMarginsResp | null> {
+  try {
+    const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(universe)}&limit=10`;
+    const json = await safeFetchJson(url);
+    const data = (json?.data ?? null) as TopMarginsResp | null;
+    return data && typeof data === "object" ? data : null;
+  } catch (e) {
+    console.error("getTopMargins error:", e);
+    return null;
+  }
+}
+
+// =====================
+// PAGE
+// =====================
+export default async function HomePage({ searchParams }: { searchParams?: { u?: string } }) {
+  const u = String(searchParams?.u ?? "BIST100").toUpperCase();
+  const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
+
+  const base = getApiBaseUrl();
+
+  const [latest, kap, top] = await Promise.all([
+    getLatestSignals(base),
+    getKapImportant(base),
+    getTopMargins(base, universe),
+  ]);
 
   const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
+  const nowIso = new Date().toISOString();
 
   return (
     <main className="min-h-screen bg-[#0d1117] text-white">
@@ -250,9 +258,8 @@ export default async function HomePage({
             </h1>
 
             <p className="text-gray-300 max-w-2xl leading-relaxed">
-              Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir:
-              skor, nedenler, Win/Loss takibi ve grafikte işaretleme. Ek olarak ana sayfada
-              BIST100 için yükseltici KAP bildirimlerini etiketleyip özetler.
+              Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir: skor, nedenler, Win/Loss takibi ve
+              grafikte işaretleme. Ek olarak ana sayfada BIST100 için yükseltici KAP bildirimlerini etiketleyip özetler.
               Yeni: BIST100 / NASDAQ100 için “kâr marjı” sıralamaları.
             </p>
 
@@ -282,21 +289,15 @@ export default async function HomePage({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4">
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">⚡ Canlı Akış</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  API’dan son sinyaller çekilir, terminalde otomatik yenilenir.
-                </div>
+                <div className="text-xs text-gray-500 mt-1">API’dan son sinyaller çekilir, terminalde otomatik yenilenir.</div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">🧠 Skor + Neden</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  “Golden Cross, VWAP, RSI Divergence…” gibi nedenler rozetlenir.
-                </div>
+                <div className="text-xs text-gray-500 mt-1">“Golden Cross, VWAP, RSI Divergence…” gibi nedenler rozetlenir.</div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">💰 Marj Sıralaması</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Net/Brüt kâr marjı en yüksekler + “Kaliteli Kâr” filtresi.
-                </div>
+                <div className="text-xs text-gray-500 mt-1">Net/Brüt kâr marjı en yüksekler + “Kaliteli Kâr” filtresi.</div>
               </div>
             </div>
           </div>
@@ -347,8 +348,7 @@ export default async function HomePage({
 
         {!top || (top.topNet?.length ?? 0) === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Marj sıralaması boş (veya <code className="text-gray-300">/api/financials/top-margins</code>{" "}
-            erişilemiyor).
+            Marj sıralaması boş (veya <code className="text-gray-300">/api/financials/top-margins</code> erişilemiyor).
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -369,7 +369,7 @@ export default async function HomePage({
                       <div className="text-sm font-black text-green-300">{fmtPct(r.netMargin)}</div>
                     </div>
                     <div className="text-gray-400">
-                      <Sparkline values={r.netSeries} />
+                      <Sparkline values={r.netSeries ?? []} />
                     </div>
                   </Link>
                 ))}
@@ -393,7 +393,7 @@ export default async function HomePage({
                       <div className="text-sm font-black text-blue-300">{fmtPct(r.grossMargin)}</div>
                     </div>
                     <div className="text-gray-400">
-                      <Sparkline values={r.grossSeries} />
+                      <Sparkline values={r.grossSeries ?? []} />
                     </div>
                   </Link>
                 ))}
@@ -403,9 +403,7 @@ export default async function HomePage({
             {/* Quality */}
             <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
               <div className="font-black text-sm">💎 Kaliteli Kâr</div>
-              <div className="text-[11px] text-gray-500 mt-1">
-                Stabil + trend bonus (dalgalanma cezası ile)
-              </div>
+              <div className="text-[11px] text-gray-500 mt-1">Stabil + trend bonus (dalgalanma cezası ile)</div>
               <div className="mt-3 space-y-2">
                 {top.topQuality.map((r, i) => (
                   <Link
@@ -427,7 +425,7 @@ export default async function HomePage({
                       </div>
                     </div>
                     <div className="text-gray-400">
-                      <Sparkline values={r.netSeries?.length ? r.netSeries : r.grossSeries} />
+                      <Sparkline values={(r.netSeries?.length ? r.netSeries : r.grossSeries) ?? []} />
                     </div>
                   </Link>
                 ))}
@@ -441,34 +439,30 @@ export default async function HomePage({
       <section className="mx-auto max-w-6xl px-4 pb-12">
         <div className="flex items-end justify-between mb-4">
           <h2 className="text-lg font-black">KAP • BIST100 Önemli</h2>
-          <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(new Date().toISOString())}</span>
+          <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
         </div>
 
         {kap.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Şu an yükseltici KAP haberi yok (veya{" "}
-            <code className="text-gray-300">/api/kap/bist100-important</code> erişilemiyor).
+            Şu an yükseltici KAP haberi yok (veya <code className="text-gray-300">/api/kap/bist100-important</code>{" "}
+            erişilemiyor).
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {kap.map((k, i) => {
-              const idx = k.disclosureIndex ?? i;
-              const href =
-                k.disclosureIndex != null && String(k.disclosureIndex).trim() !== ""
-                  ? `https://www.kap.org.tr/tr/Bildirim/${encodeURIComponent(String(k.disclosureIndex))}`
-                  : null;
+              const href = k.url ? String(k.url) : null;
 
-              const summary = String(k.summary ?? "").trim();
-              const summaryShort = summary.length > 180 ? summary.slice(0, 180) + "…" : summary;
+              const dateIso = k.datetime ? new Date(k.datetime * 1000).toISOString() : "";
+              const codes = Array.isArray(k.stockCodes) ? k.stockCodes : [];
               const tags = Array.isArray(k.tags) ? k.tags.slice(0, 3) : [];
 
               const Card = (
                 <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
                   <div className="text-xs text-gray-500">
-                    {k.stockCodes ?? "—"} • {k.publishDate ? formatDateTR(k.publishDate) : "—"}
+                    {(codes.length ? codes.join(", ") : "—")} • {dateIso ? formatDateTR(dateIso) : "—"}
                   </div>
 
-                  <div className="mt-1 font-black text-sm">{k.kapTitle ?? "KAP Bildirimi"}</div>
+                  <div className="mt-1 font-black text-sm">{k.title ?? "KAP Bildirimi"}</div>
 
                   {tags.length > 0 ? (
                     <div className="mt-2 flex flex-wrap gap-1.5">
@@ -483,20 +477,14 @@ export default async function HomePage({
                     </div>
                   ) : null}
 
-                  {summaryShort ? (
-                    <div className="mt-2 text-xs text-gray-400 leading-relaxed">{summaryShort}</div>
-                  ) : (
-                    <div className="mt-2 text-xs text-gray-600">—</div>
-                  )}
-
                   {href ? <div className="mt-3 text-xs text-blue-400">KAP’ta aç →</div> : null}
                 </div>
               );
 
-              if (!href) return <div key={String(idx)}>{Card}</div>;
+              if (!href) return <div key={`kap-${i}`}>{Card}</div>;
 
               return (
-                <a key={String(idx)} href={href} target="_blank" rel="noreferrer" className="block">
+                <a key={`kap-${i}`} href={href} target="_blank" rel="noreferrer" className="block">
                   {Card}
                 </a>
               );
@@ -517,7 +505,7 @@ export default async function HomePage({
         {latest.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
             Henüz sinyal yok (veya <code className="text-gray-300">/api/signals</code> erişilemiyor).
-            <div className="mt-2 text-xs text-gray-600">Son kontrol: {formatDateTR(new Date().toISOString())}</div>
+            <div className="mt-2 text-xs text-gray-600">Son kontrol: {formatDateTR(nowIso)}</div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -601,9 +589,7 @@ export default async function HomePage({
           <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300">
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
               <div className="font-bold">1) TradingView Alert</div>
-              <div className="text-gray-500 mt-1">
-                Pine Script alarmı JSON gönderir (BUY/SELL, score, reasons…).
-              </div>
+              <div className="text-gray-500 mt-1">Pine Script alarmı JSON gönderir (BUY/SELL, score, reasons…).</div>
             </div>
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
               <div className="font-bold">2) API Kaydeder</div>
@@ -628,9 +614,7 @@ export default async function HomePage({
             >
               Terminale Git →
             </Link>
-            <div className="text-xs text-gray-500 flex items-center">
-              Not: API’ler çalışmıyorsa kutular boş görünür.
-            </div>
+            <div className="text-xs text-gray-500 flex items-center">Not: API’ler çalışmıyorsa kutular boş görünür.</div>
           </div>
         </div>
       </section>
