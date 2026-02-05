@@ -48,7 +48,7 @@ const REASON_MATCH: Record<string, string[]> = {
   GOLDEN_CROSS: ["golden cross"],
   EARNINGS: ["earnings", "results", "revenue", "profit", "guidance", "balance sheet", "quarter"],
   MERGER: ["merger", "acquisition", "acquire", "deal"],
-  // BIST/KAP için TR kelimeleri de ekleyelim (istersen çoğaltırız)
+  // BIST/KAP için TR kelimeleri
   KAP: ["kap", "bildirim", "özel durum", "ozel durum", "yatırımcı", "yatirimci", "genel kurul", "temettü", "temettu"],
 };
 
@@ -115,26 +115,42 @@ function toUnixSec(dateStr?: string) {
   return Math.floor(ms / 1000);
 }
 
+// ✅ Boundary-safe ticker check (AKBNK yanlış eşleşmesin diye)
+function hasTicker(blobUpper: string, T: string) {
+  const re = new RegExp(`(^|[^A-Z0-9])${escapeRegex(T)}([^A-Z0-9]|$)`);
+  return re.test(blobUpper);
+}
+
+function escapeRegex(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 async function fetchKapRss(ticker: string, max: number): Promise<NewsItem[]> {
   // ✅ Genel KAP bildirim RSS
-  // Eğer sende farklı/özel bir KAP RSS linki kullanıyorsan burayı değiştirirsin.
   const rssUrl = `https://www.kap.org.tr/tr/rss/bildirimler`;
 
-  const r = await fetch(rssUrl, { next: { revalidate: 120 } });
+  const r = await fetch(rssUrl, {
+    headers: {
+      "user-agent": "Mozilla/5.0",
+      accept: "application/rss+xml,application/xml;q=0.9,*/*;q=0.8",
+    },
+    next: { revalidate: 120 },
+  });
   if (!r.ok) return [];
 
   const xml = await r.text();
   const items = parseRssItems(xml);
 
-  // ✅ ticker filtre: başlık + description içinde arıyoruz
   const T = ticker.toUpperCase();
+
+  // ✅ ticker filtre (boundary-safe)
   const filtered = items.filter((x) => {
     const blob = `${x.title} ${x.description ?? ""}`.toUpperCase();
-    return blob.includes(T);
+    return hasTicker(blob, T);
   });
 
-  const mapped: NewsItem[] = filtered.slice(0, 120).map((x) => {
-    const datetime = toUnixSec(x.pubDate);
+  const mapped: NewsItem[] = filtered.slice(0, 160).map((x) => {
+    const datetime = toUnixSec(x.pubDate) || Math.floor(Date.now() / 1000);
     const summary = x.description ? stripHtml(x.description).slice(0, 300) : "";
     return {
       headline: x.title,
@@ -185,7 +201,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: true, items: items.slice(0, max) });
     }
 
-    // ✅ Diğerleri → Finnhub company-news (senin mevcut akış)
+    // ✅ Diğerleri → Finnhub company-news
     const token = process.env.FINNHUB_API_KEY;
     if (!token) {
       return NextResponse.json({ ok: false, error: "FINNHUB_API_KEY missing" }, { status: 500 });
@@ -231,7 +247,10 @@ export async function GET(req: Request) {
 
     // ✅ reasons varsa, relevance’e göre öne çıkar
     if (reasonKeys.length) {
-      items.sort((a, b) => (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0));
+      items.sort(
+        (a, b) =>
+          (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0)
+      );
     } else {
       items.sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
     }
