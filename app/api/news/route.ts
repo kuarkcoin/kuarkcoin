@@ -1,11 +1,25 @@
 // app/api/news/route.ts
 import { NextResponse } from "next/server";
 
+type NewsItem = {
+  headline: string;
+  url: string;
+  source: string;
+  datetime: number; // unix seconds
+  summary?: string;
+  relevance?: number;
+  matched?: string[];
+};
+
 function toTicker(symbol: string) {
   const s = (symbol || "").trim();
   if (!s) return "";
   const parts = s.split(":");
   return (parts[1] ?? parts[0]).toUpperCase();
+}
+
+function isBistSymbol(symbol: string) {
+  return String(symbol || "").toUpperCase().startsWith("BIST:");
 }
 
 function isoDate(d: Date) {
@@ -26,15 +40,16 @@ function parseReasonKeys(raw: string | null) {
 }
 
 // ✅ Basit keyword eşleme: reasonKey -> arama kelimeleri
-// (İstersen bunu constants/terminal ile aynı sözlükten besleriz)
 const REASON_MATCH: Record<string, string[]> = {
   VWAP: ["vwap"],
   MACD: ["macd"],
   RSI: ["rsi"],
-  "RSI_DIV": ["divergence", "diverjan", "uyumsuzluk"],
-  "GOLDEN_CROSS": ["golden cross"],
-  "EARNINGS": ["earnings", "results", "revenue", "profit", "guidance"],
-  "MERGER": ["merger", "acquisition", "acquire", "deal"],
+  RSI_DIV: ["divergence", "diverjan", "uyumsuzluk"],
+  GOLDEN_CROSS: ["golden cross"],
+  EARNINGS: ["earnings", "results", "revenue", "profit", "guidance", "balance sheet", "quarter"],
+  MERGER: ["merger", "acquisition", "acquire", "deal"],
+  // BIST/KAP için TR kelimeleri de ekleyelim (istersen çoğaltırız)
+  KAP: ["kap", "bildirim", "özel durum", "ozel durum", "yatırımcı", "yatirimci", "genel kurul", "temettü", "temettu"],
 };
 
 function scoreRelevance(text: string, reasonKeys: string[]) {
@@ -52,6 +67,91 @@ function scoreRelevance(text: string, reasonKeys: string[]) {
   };
 }
 
+// ──────────────────────────────────────────────────
+// KAP RSS (BIST) helpers
+// ──────────────────────────────────────────────────
+function decodeXml(s: string) {
+  return (s || "")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
+function stripCdata(s: string) {
+  return (s || "").replace(/^<!\[CDATA\[/, "").replace(/\]\]>$/, "");
+}
+
+function stripHtml(s: string) {
+  return (s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+// Basit RSS item parser (title/link/pubDate/description)
+function parseRssItems(xml: string) {
+  const out: { title: string; link: string; pubDate?: string; description?: string }[] = [];
+  const blocks = xml.match(/<item[\s\S]*?<\/item>/g) || [];
+  for (const b of blocks) {
+    const title = (b.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? "").trim();
+    const link = (b.match(/<link>([\s\S]*?)<\/link>/)?.[1] ?? "").trim();
+    const pubDate = (b.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] ?? "").trim();
+    const description = (b.match(/<description>([\s\S]*?)<\/description>/)?.[1] ?? "").trim();
+    if (!title || !link) continue;
+
+    out.push({
+      title: decodeXml(stripCdata(title)),
+      link: decodeXml(stripCdata(link)),
+      pubDate: decodeXml(stripCdata(pubDate)),
+      description: decodeXml(stripCdata(description)),
+    });
+  }
+  return out;
+}
+
+function toUnixSec(dateStr?: string) {
+  if (!dateStr) return 0;
+  const ms = Date.parse(dateStr);
+  if (!Number.isFinite(ms)) return 0;
+  return Math.floor(ms / 1000);
+}
+
+async function fetchKapRss(ticker: string, max: number): Promise<NewsItem[]> {
+  // ✅ Genel KAP bildirim RSS
+  // Eğer sende farklı/özel bir KAP RSS linki kullanıyorsan burayı değiştirirsin.
+  const rssUrl = `https://www.kap.org.tr/tr/rss/bildirimler`;
+
+  const r = await fetch(rssUrl, { next: { revalidate: 120 } });
+  if (!r.ok) return [];
+
+  const xml = await r.text();
+  const items = parseRssItems(xml);
+
+  // ✅ ticker filtre: başlık + description içinde arıyoruz
+  const T = ticker.toUpperCase();
+  const filtered = items.filter((x) => {
+    const blob = `${x.title} ${x.description ?? ""}`.toUpperCase();
+    return blob.includes(T);
+  });
+
+  const mapped: NewsItem[] = filtered.slice(0, 120).map((x) => {
+    const datetime = toUnixSec(x.pubDate);
+    const summary = x.description ? stripHtml(x.description).slice(0, 300) : "";
+    return {
+      headline: x.title,
+      url: x.link,
+      source: "KAP",
+      datetime,
+      summary,
+    };
+  });
+
+  mapped.sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
+  return mapped.slice(0, max);
+}
+
+// ──────────────────────────────────────────────────
+// GET
+// ──────────────────────────────────────────────────
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -59,13 +159,37 @@ export async function GET(req: Request) {
     const max = Math.min(Number(searchParams.get("max") ?? 8), 20);
     const reasonKeys = parseReasonKeys(searchParams.get("reasons"));
 
+    const ticker = toTicker(symbol);
+    if (!ticker) return NextResponse.json({ ok: true, items: [] });
+
+    // ✅ BIST → KAP RSS
+    if (isBistSymbol(symbol)) {
+      let items = await fetchKapRss(ticker, max);
+
+      // ✅ reasons varsa relevance + matched üret
+      items = items.map((x) => {
+        const blob = `${x.headline} ${x.summary ?? ""}`;
+        const rel = scoreRelevance(blob, reasonKeys);
+        return { ...x, relevance: rel.relevance, matched: rel.matched };
+      });
+
+      if (reasonKeys.length) {
+        items.sort(
+          (a, b) =>
+            (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0)
+        );
+      } else {
+        items.sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
+      }
+
+      return NextResponse.json({ ok: true, items: items.slice(0, max) });
+    }
+
+    // ✅ Diğerleri → Finnhub company-news (senin mevcut akış)
     const token = process.env.FINNHUB_API_KEY;
     if (!token) {
       return NextResponse.json({ ok: false, error: "FINNHUB_API_KEY missing" }, { status: 500 });
     }
-
-    const ticker = toTicker(symbol);
-    if (!ticker) return NextResponse.json({ ok: true, items: [] });
 
     const to = new Date();
     const from = new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -85,7 +209,7 @@ export async function GET(req: Request) {
 
     const data = (await r.json()) as any[];
 
-    let items = (Array.isArray(data) ? data : [])
+    let items: NewsItem[] = (Array.isArray(data) ? data : [])
       .filter((x) => x?.headline && x?.url)
       .map((x) => {
         const headline = String(x.headline);
@@ -109,7 +233,6 @@ export async function GET(req: Request) {
     if (reasonKeys.length) {
       items.sort((a, b) => (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0));
     } else {
-      // yoksa tarihe göre (zaten genelde öyle gelir ama garanti)
       items.sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
     }
 
