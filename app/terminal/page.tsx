@@ -9,6 +9,18 @@ import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/co
 import DashboardView from "@/components/DashboardView";
 
 // ──────────────────────────────────────────────────
+// Small hook: useDebounce
+// ──────────────────────────────────────────────────
+function useDebounce<T>(value: T, delayMs = 300) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delayMs);
+    return () => clearTimeout(t);
+  }, [value, delayMs]);
+  return debounced;
+}
+
+// ──────────────────────────────────────────────────
 // Types
 // ──────────────────────────────────────────────────
 type AssetsMap = {
@@ -18,7 +30,6 @@ type AssetsMap = {
   BIST?: string[];
 };
 
-// Pro: normalize ASSETS once (and keep types clean)
 const ASSETS_MAP: AssetsMap = {
   NASDAQ: (ASSETS as any).NASDAQ ?? [],
   ETF: (ASSETS as any).ETF ?? [],
@@ -221,6 +232,8 @@ export default function TerminalPage() {
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
   const [activeCategory, setActiveCategory] = useState<AssetCategory>("NASDAQ");
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedSignalId, setSelectedSignalId] = useState<number | null>(null);
   const [onlySelectedSymbol, setOnlySelectedSymbol] = useState(false);
@@ -256,6 +269,18 @@ export default function TerminalPage() {
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [refreshAll]);
+
+  // ✅ Body scroll kilitleme (sidebar açıkken)
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [sidebarOpen]);
 
   // Audio on new signal
   const lastSignalCount = useRef(0);
@@ -308,12 +333,12 @@ export default function TerminalPage() {
   // Assets filtered
   const filteredAssets = useMemo(() => {
     const base = (ASSETS_MAP[activeCategory] ?? []).slice();
-    const q = searchQuery.trim().toLowerCase();
+    const q = debouncedSearch.trim().toLowerCase();
     const list = q ? base.filter((sym) => String(sym).toLowerCase().includes(q)) : base;
 
     // favorites first (stable-ish)
     return list.sort((a, b) => (isFav(String(b)) ? 1 : 0) - (isFav(String(a)) ? 1 : 0));
-  }, [activeCategory, searchQuery, isFav]);
+  }, [activeCategory, debouncedSearch, isFav]);
 
   // Latest per symbol map
   const lastSignalMap = useMemo(() => {
@@ -356,9 +381,7 @@ export default function TerminalPage() {
   }, [selectedSymbol]);
 
   // ── Dashboard data ───────────────────────────────
-  // Use newest-ish signals, unique by symbol for heatmap style
   const dashSignals = useMemo(() => {
-    // remove duplicates (keep first seen = newest because signals assumed newest-first)
     const uniq = uniqBy(signals, (r) => symbolToPlain(r.symbol));
     return uniq.slice(0, Math.max(heatLimit, 48));
   }, [signals, heatLimit]);
@@ -447,8 +470,10 @@ export default function TerminalPage() {
     async (symbol: string, reasons: string | null) => {
       const plain = symbolToPlain(symbol);
 
+      // cache hit
       if (newsCacheRef.current[plain]) return;
 
+      // rate limit
       const now = Date.now();
       if (lastNewsFetchAt.current[plain] && now - lastNewsFetchAt.current[plain] < 30_000) return;
       lastNewsFetchAt.current[plain] = now;
@@ -459,6 +484,7 @@ export default function TerminalPage() {
         setNewsLoadingFor(plain);
         setNewsErrorFor((p) => ({ ...p, [plain]: "" }));
 
+        // ✅ aynı endpoint: BIST ise backend KAP RSS döndürüyor
         const url = `/api/news?symbol=${encodeURIComponent(symbol)}&max=8&reasons=${encodeURIComponent(reasonKeys)}`;
         const res = await fetch(url);
         const json = await res.json();
@@ -691,7 +717,7 @@ export default function TerminalPage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 0 7 7 0 0114 0z"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
         </div>
@@ -888,7 +914,7 @@ export default function TerminalPage() {
             </div>
           </header>
 
-          {/* Mobile tabs: Dashboard / Chart / Signals */}
+          {/* Mobile tabs */}
           <div className="md:hidden flex border-b border-gray-800 bg-[#161b22]">
             {(["DASH", "CHART", "SIGNALS"] as const).map((t) => (
               <button
@@ -904,7 +930,6 @@ export default function TerminalPage() {
           </div>
 
           <div className="flex-1 flex flex-col min-h-0">
-            {/* Dashboard (desktop + mobile) */}
             {showDashboard && (
               <section className={`${mobileTab !== "DASH" ? "hidden md:block" : "block"} border-b border-gray-800`}>
                 <DashboardView
@@ -920,14 +945,15 @@ export default function TerminalPage() {
                   }}
                 />
 
-                {/* Heatmap limit controls */}
                 <div className="px-4 md:px-8 pb-5">
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <span>Isı haritası:</span>
                     <button
                       onClick={() => setHeatLimit(48)}
                       className={`px-2 py-1 rounded border ${
-                        heatLimit === 48 ? "border-blue-500 text-blue-300 bg-blue-900/20" : "border-gray-700 hover:bg-gray-800"
+                        heatLimit === 48
+                          ? "border-blue-500 text-blue-300 bg-blue-900/20"
+                          : "border-gray-700 hover:bg-gray-800"
                       }`}
                     >
                       48
@@ -935,7 +961,9 @@ export default function TerminalPage() {
                     <button
                       onClick={() => setHeatLimit(96)}
                       className={`px-2 py-1 rounded border ${
-                        heatLimit === 96 ? "border-blue-500 text-blue-300 bg-blue-900/20" : "border-gray-700 hover:bg-gray-800"
+                        heatLimit === 96
+                          ? "border-blue-500 text-blue-300 bg-blue-900/20"
+                          : "border-gray-700 hover:bg-gray-800"
                       }`}
                     >
                       96
@@ -943,7 +971,9 @@ export default function TerminalPage() {
                     <button
                       onClick={() => setHeatLimit(144)}
                       className={`px-2 py-1 rounded border ${
-                        heatLimit === 144 ? "border-blue-500 text-blue-300 bg-blue-900/20" : "border-gray-700 hover:bg-gray-800"
+                        heatLimit === 144
+                          ? "border-blue-500 text-blue-300 bg-blue-900/20"
+                          : "border-gray-700 hover:bg-gray-800"
                       }`}
                     >
                       144
@@ -956,7 +986,6 @@ export default function TerminalPage() {
               </section>
             )}
 
-            {/* Chart + Signals row */}
             <div className="flex-1 flex flex-col md:flex-row min-h-0">
               <div
                 className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
@@ -974,21 +1003,15 @@ export default function TerminalPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-bold uppercase tracking-wide">Son Sinyaller ({visibleSignals.length})</h2>
-                    <div className="text-xs text-gray-400">
-                      {loadingSignals ? "Yükleniyor..." : uiEmpty ? "Boş" : "Canlı"}
-                    </div>
+                    <div className="text-xs text-gray-400">{loadingSignals ? "Yükleniyor..." : uiEmpty ? "Boş" : "Canlı"}</div>
                   </div>
 
-                  {/* Win rate */}
                   <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
                     <div className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-1">Win Rate (manuel)</div>
                     <div className="text-3xl font-black text-white">{winrate == null ? "—" : `${winrate}%`}</div>
-                    <div className="text-[10px] text-gray-500 mt-2">
-                      (Bu panel, şu an ekranda görünen sinyallere göre hesaplar)
-                    </div>
+                    <div className="text-[10px] text-gray-500 mt-2">(Bu panel, şu an ekranda görünen sinyallere göre hesaplar)</div>
                   </div>
 
-                  {/* AI */}
                   <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
                     <div className="flex items-center justify-between mb-2 gap-2">
                       <div className="text-xs font-bold uppercase tracking-wide text-blue-300">🧠 AI Günlük Yorum (Top 5)</div>
@@ -1000,7 +1023,6 @@ export default function TerminalPage() {
                           className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
                             aiLoading ? "border-gray-700 text-gray-500" : "border-gray-700 hover:bg-gray-800 text-gray-200"
                           }`}
-                          title="Top 5 BUY/SELL + Haber + Risk"
                         >
                           {aiLoading ? "Yorumlanıyor..." : "Yorumla"}
                         </button>
@@ -1011,7 +1033,6 @@ export default function TerminalPage() {
                           className={`text-xs font-medium px-3 py-1.5 border rounded transition-colors ${
                             aiCommentary ? "border-gray-700 hover:bg-gray-800 text-gray-200" : "border-gray-800 text-gray-600"
                           }`}
-                          title="Kopyala"
                         >
                           Kopyala
                         </button>
@@ -1029,140 +1050,16 @@ export default function TerminalPage() {
                     <div className="text-[10px] text-gray-600 mt-3">Not: Yatırım tavsiyesi değildir.</div>
                   </div>
 
-                  {/* Top 5 BUY/SELL */}
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-xs font-bold uppercase tracking-wide text-green-400">Günlük Top 5 BUY (Score)</div>
-                        <div className="text-[10px] text-gray-500">{todayTopBuy.length}/5</div>
-                      </div>
-
-                      {todayTopBuy.length === 0 ? (
-                        <div className="text-xs text-gray-500">{loadingSignals ? "Yükleniyor..." : "Bugün BUY yok."}</div>
-                      ) : (
-                        <div className="space-y-2">
-                          {todayTopBuy.map((r) => {
-                            const plain = symbolToPlain(r.symbol);
-                            const open = openNewsForSymbol === plain;
-
-                            return (
-                              <button
-                                key={`topbuy-${r.id}`}
-                                onClick={() => {
-                                  setSelectedSymbol(r.symbol);
-                                  setSelectedSignalId(r.id);
-                                  setSidebarOpen(false);
-                                  toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                  fetchMini(r.symbol);
-                                }}
-                                className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
-                                aria-label={`Top BUY: ${r.symbol}`}
-                              >
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className="min-w-0">
-                                    <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
-                                    <div className="text-[10px] text-gray-600">
-                                      {timeAgo(r.created_at)} • {r.price ?? "—"}
-                                    </div>
-                                  </div>
-
-                                  <div className="flex flex-col items-end gap-1 shrink-0">
-                                    <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
-                                    <ScoreChip signal={r.signal} score={r.score} />
-                                  </div>
-                                </div>
-
-                                <ReasonBadges reasons={r.reasons} />
-                                <TechLine reasons={r.reasons} />
-
-                                <NewsBlock
-                                  symbol={r.symbol}
-                                  isOpen={open}
-                                  isLoading={newsLoadingFor === plain}
-                                  error={newsErrorFor[plain]}
-                                  items={newsCache[plain]}
-                                  onStopPropagation
-                                />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="p-4 rounded-xl border border-gray-800 bg-[#0d1117]">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-xs font-bold uppercase tracking-wide text-red-400">Günlük Top 5 SELL (Score)</div>
-                        <div className="text-[10px] text-gray-500">{todayTopSell.length}/5</div>
-                      </div>
-
-                      {todayTopSell.length === 0 ? (
-                        <div className="text-xs text-gray-500">{loadingSignals ? "Yükleniyor..." : "Bugün SELL yok."}</div>
-                      ) : (
-                        <div className="space-y-2">
-                          {todayTopSell.map((r) => {
-                            const plain = symbolToPlain(r.symbol);
-                            const open = openNewsForSymbol === plain;
-
-                            return (
-                              <button
-                                key={`topsell-${r.id}`}
-                                onClick={() => {
-                                  setSelectedSymbol(r.symbol);
-                                  setSelectedSignalId(r.id);
-                                  setSidebarOpen(false);
-                                  toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                                  fetchMini(r.symbol);
-                                }}
-                                className="w-full text-left px-3 py-2 rounded-lg border border-gray-800 hover:border-gray-700 hover:bg-gray-900/40 transition-colors"
-                                aria-label={`Top SELL: ${r.symbol}`}
-                              >
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className="min-w-0">
-                                    <div className="text-xs font-mono text-gray-300 truncate">{r.symbol}</div>
-                                    <div className="text-[10px] text-gray-600">
-                                      {timeAgo(r.created_at)} • {r.price ?? "—"}
-                                    </div>
-                                  </div>
-
-                                  <div className="flex flex-col items-end gap-1 shrink-0">
-                                    <div className="text-sm font-black text-white">{r.score ?? "—"}</div>
-                                    <ScoreChip signal={r.signal} score={r.score} />
-                                  </div>
-                                </div>
-
-                                <ReasonBadges reasons={r.reasons} />
-                                <TechLine reasons={r.reasons} />
-
-                                <NewsBlock
-                                  symbol={r.symbol}
-                                  isOpen={open}
-                                  isLoading={newsLoadingFor === plain}
-                                  error={newsErrorFor[plain]}
-                                  items={newsCache[plain]}
-                                  onStopPropagation
-                                />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Signal list controls */}
                   <div className="flex items-center justify-between text-xs text-gray-400">
                     <span>Liste limiti: {signalLimit}</span>
                     <button
                       onClick={() => setSignalLimit((p) => Math.min(p + 110, 660))}
                       className="px-2 py-1 rounded border border-gray-700 hover:bg-gray-800"
-                      title="Daha fazla sinyal göster"
                     >
                       Daha fazla
                     </button>
                   </div>
 
-                  {/* Signals list */}
                   {loadingSignals ? (
                     <div className="space-y-3" aria-label="Sinyaller yükleniyor">
                       {Array.from({ length: 6 }).map((_, i) => (
@@ -1184,6 +1081,9 @@ export default function TerminalPage() {
                         const plain = symbolToPlain(r.symbol);
                         const open = openNewsForSymbol === plain;
 
+                        const disableWin = r.outcome === "WIN";
+                        const disableLoss = r.outcome === "LOSS";
+
                         return (
                           <button
                             key={r.id}
@@ -1201,11 +1101,7 @@ export default function TerminalPage() {
                             aria-label={`Sinyal: ${sig} ${r.symbol}`}
                           >
                             <div className="flex justify-between items-start mb-2">
-                              <div
-                                className={`font-bold text-lg ${
-                                  isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"
-                                }`}
-                              >
+                              <div className={`font-bold text-lg ${isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"}`}>
                                 {sig}
                               </div>
                               <div className="text-xs text-gray-500">{timeAgo(r.created_at)}</div>
@@ -1236,33 +1132,35 @@ export default function TerminalPage() {
 
                             <div className="mt-4 flex gap-2">
                               <button
+                                disabled={disableWin}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setOutcome(r.id, "WIN");
+                                  if (!disableWin) setOutcome(r.id, "WIN");
                                 }}
                                 className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
                                   r.outcome === "WIN"
-                                    ? "border-green-600 text-green-400 bg-green-950/30"
+                                    ? "border-green-600 text-green-300 bg-green-950/30"
                                     : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                }`}
-                                aria-label="WIN"
+                                } ${disableWin ? "opacity-60 cursor-not-allowed" : ""}`}
                               >
                                 WIN
                               </button>
+
                               <button
+                                disabled={disableLoss}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setOutcome(r.id, "LOSS");
+                                  if (!disableLoss) setOutcome(r.id, "LOSS");
                                 }}
                                 className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
                                   r.outcome === "LOSS"
-                                    ? "border-red-600 text-red-400 bg-red-950/30"
+                                    ? "border-red-600 text-red-300 bg-red-950/30"
                                     : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                }`}
-                                aria-label="LOSS"
+                                } ${disableLoss ? "opacity-60 cursor-not-allowed" : ""}`}
                               >
                                 LOSS
                               </button>
+
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1273,7 +1171,6 @@ export default function TerminalPage() {
                                     ? "border-gray-600 text-gray-200 bg-gray-900/40"
                                     : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
                                 }`}
-                                aria-label="Temizle"
                               >
                                 Temizle
                               </button>
