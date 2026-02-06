@@ -81,6 +81,12 @@ async function safeFetchJson(url: string) {
   return res.json();
 }
 
+async function safeFetchJsonCached(url: string, revalidate: number) {
+  const res = await fetch(url, { cache: "force-cache", next: { revalidate } });
+  if (!res.ok) return null;
+  return res.json();
+}
+
 function symbolToPlain(sym: string) {
   return sym?.includes(":") ? sym.split(":")[1] : sym;
 }
@@ -224,7 +230,10 @@ async function getTopMargins(base: string, universe: Universe): Promise<TopMargi
 
 async function getNewsCombined(base: string, universe: Universe): Promise<NewsItem[]> {
   try {
-    const json = await safeFetchJson(`${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=12`);
+    const json = await safeFetchJsonCached(
+      `${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=30&minScore=80`,
+      3600
+    );
     const arr: NewsItem[] = (json?.items ?? []) as NewsItem[];
     return Array.isArray(arr) ? arr : [];
   } catch (e) {
@@ -390,7 +399,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
       <section className="mx-auto max-w-6xl px-4 pb-12">
         <div className="flex items-end justify-between mb-4">
           <h2 className="text-lg font-black">🔥 Haber Akışı</h2>
-          <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
+          <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)} • Saatlik yenilenir</span>
         </div>
 
         {news.length === 0 ? (
