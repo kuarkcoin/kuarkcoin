@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
+import TopBuyTrackingTable from "@/components/top-buy-tracking-table";
 
 // =====================
 // TYPES
@@ -57,12 +58,6 @@ type TopMarginsResp = {
   topNet: TopMarginRow[];
   topGross: TopMarginRow[];
   topQuality: TopMarginRow[];
-};
-
-type TopBuyTrackingRow = {
-  symbol: string;
-  price: number;
-  changes: number[];
 };
 
 const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ300", "ETF"] as const;
@@ -184,49 +179,6 @@ function universeLabel(u: Universe) {
   return "BIST100";
 }
 
-function hashToUnit(symbol: string) {
-  let hash = 0;
-  for (let i = 0; i < symbol.length; i += 1) {
-    hash = (hash << 5) - hash + symbol.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) % 1000;
-}
-
-function buildTopBuyTracking(rows: SignalRow[]): TopBuyTrackingRow[] {
-  const buySignals = rows
-    .filter((r) => String(r.signal || "").toUpperCase() === "BUY" && typeof r.price === "number")
-    .sort((a, b) => (b.price ?? 0) - (a.price ?? 0))
-    .slice(0, 6);
-
-  if (buySignals.length === 0) {
-    return [
-      { symbol: "BIMAS", price: 322.4, changes: [0, 1.8, 3.2, 2.1, 4.4, 5.3, 4.9, 6.1, 7.4, 8.2] },
-      { symbol: "THYAO", price: 284.1, changes: [0, 1.1, 2.4, 1.7, 2.9, 3.3, 3.8, 4.2, 5.1, 5.6] },
-      { symbol: "ASELS", price: 58.9, changes: [0, 0.9, 1.6, 1.2, 2.1, 2.7, 2.4, 3.1, 3.6, 4.1] },
-    ];
-  }
-
-  return buySignals.map((row, index) => {
-    const symbol = symbolToPlain(row.symbol);
-    const base = hashToUnit(symbol);
-    const dailyBase = (base % 40) / 10;
-    const changes = Array.from({ length: 10 }, (_, dayIndex) => {
-      if (dayIndex === 0) return 0;
-      const wave = Math.sin((base + dayIndex) / 3) * 1.1;
-      const step = dayIndex * 0.85;
-      const positionPenalty = index * 0.35;
-      return Number((dailyBase + wave + step - positionPenalty).toFixed(2));
-    });
-
-    return {
-      symbol,
-      price: row.price ?? 0,
-      changes,
-    };
-  });
-}
-
 // =====================
 // DATA FETCHERS
 // =====================
@@ -300,7 +252,6 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
 
   const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
   const nowIso = new Date().toISOString();
-  const topBuyTracking = buildTopBuyTracking(latest);
 
   return (
     <main className="min-h-screen bg-[#0d1117] text-white">
@@ -437,55 +388,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
       </section>
 
       {/* Top Buy Tracking */}
-      <section className="mx-auto max-w-6xl px-4 pb-12">
-        <div className="flex items-end justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-black">📈 Günlük En Yüksek BUY Takibi (10 Gün)</h2>
-            <p className="text-xs text-gray-500 mt-1">
-              Supabase olmadan son BUY sinyallerinden oluşturulur. 11. günde en eski hisse çıkar, yeni hisse eklenir.
-            </p>
-          </div>
-          <span className="text-xs text-gray-500">Son güncelleme: {formatDateTR(nowIso)}</span>
-        </div>
-
-        <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-          <div className="overflow-x-auto">
-            <table className="min-w-[920px] w-full text-xs text-left">
-              <thead>
-                <tr className="text-gray-400">
-                  <th className="py-2 pr-4 font-semibold">Hisse</th>
-                  <th className="py-2 pr-4 font-semibold">Kapanış</th>
-                  {Array.from({ length: 10 }, (_, i) => (
-                    <th key={`day-${i + 1}`} className="py-2 pr-4 font-semibold">
-                      {i + 1}. Gün
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="text-gray-200">
-                {topBuyTracking.map((row) => (
-                  <tr key={row.symbol} className="border-t border-gray-800/70">
-                    <td className="py-2 pr-4 font-semibold text-white">{row.symbol}</td>
-                    <td className="py-2 pr-4 text-gray-300">{formatPrice(row.price)}</td>
-                    {row.changes.map((change, i) => {
-                      const tone = change >= 0 ? "text-green-300" : "text-red-300";
-                      return (
-                        <td key={`${row.symbol}-day-${i}`} className={`py-2 pr-4 ${tone}`}>
-                          {fmtPct(change)}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-3 text-[11px] text-gray-500">
-            Not: 1. gün kapanış fiyatı baz alınır, sonraki günler değişim yüzdesi olarak gösterilir. Satırlar, ilk günün
-            kapanışına göre sıralı tutulur.
-          </div>
-        </div>
-      </section>
+      <TopBuyTrackingTable latestSignals={latest} nowIso={nowIso} />
 
       {/* News feed */}
       <section className="mx-auto max-w-6xl px-4 pb-12">
