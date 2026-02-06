@@ -50,7 +50,9 @@ async function fetchExternalNews(u: string, universeSymbols: string[]): Promise<
   if (u === "BIST100") {
     // KAP RSS → BIST ticker match
     const rss = await fetchKapRss();
-    return matchUniverse(rss, universeSymbols);
+    const matched = matchUniverse(rss, universeSymbols);
+    if (matched.length) return matched;
+    return rss.map((item) => ({ ...item, matched: [] }));
   }
 
   // NASDAQ300 / ETFS → Finnhub market-news (general)
