@@ -14,10 +14,12 @@ const DEFAULT_MODE: Mode = "strict";
 
 // BIST KAP API: kaç saatlik pencere
 const WINDOW_HOURS = 72;
+
 // KAP sorgusunda kaç gün geriye gidelim (72 saat için 3 gün mantıklı)
 const QUERY_DAYS_BACK = 3;
+
 // Timeout
-const FETCH_TIMEOUT_MS = 12000;
+const FETCH_TIMEOUT_MS = 12_000;
 
 // =====================
 // TYPES
@@ -42,10 +44,10 @@ type CombinedNewsItem = {
   datetime: number; // unix sec
   summary?: string;
 
-  matched?: string[]; // e.g. ["AKBNK","THYAO"] or for US matched tickers
+  // Matching / enrichment
+  matched?: string[]; // örn: ["AKBNK","THYAO"]
   score?: number; // 0..100
-  level?: string; // LOW/MID/HIGH
-  relevance?: number;
+  level?: string; // LOW/MID/HIGH gibi
 
   // KAP-specific
   company?: string;
@@ -55,40 +57,107 @@ type CombinedNewsItem = {
 };
 
 // =====================
-// TAG KEYWORDS
+// TAG KEYWORDS (DIAMOND)
 // =====================
 const TAG_KEYWORDS: Record<KapTag, string[]> = {
   IS_ANLASMASI: [
-    "iş anlaşması","is anlasmasi","sözleşme","sozlesme","anlaşma","anlasma","ihale","sipariş","siparis","proje",
-    "iş artışı","is artisi","kabul","teslim","yüklenici","alt yüklenici","alt yuklenici",
+    "iş anlaşması",
+    "is anlasmasi",
+    "sözleşme",
+    "sozlesme",
+    "anlaşma",
+    "anlasma",
+    "ihale",
+    "sipariş",
+    "siparis",
+    "proje",
+    "iş artışı",
+    "is artisi",
+    "kabul",
+    "teslim",
+    "yüklenici",
+    "alt yüklenici",
+    "alt yuklenici",
   ],
-  SATIN_ALMA: ["satın alma","satin alma","devralma","edinim","pay devri","hisse devri","varlık devri","varlik devri"],
-  BIRLESME: ["birleşme","birlesme","bölünme","bolunme","kısmi bölünme","kismi bolunme"],
+  SATIN_ALMA: ["satın alma", "satin alma", "devralma", "edinim", "pay devri", "hisse devri", "varlık devri"],
+  BIRLESME: ["birleşme", "birlesme", "bölünme", "bolunme", "kısmi bölünme", "kismi bolunme"],
   YUKSEK_KAR: [
-    "finansal sonuç","finansal sonuc","bilanço","bilanco","net dönem kâr","net donem kar","kâr art","kar art",
-    "rekor","yüksek kâr","yuksek kar","faaliyet karı","faaliyet kari","hasılat","hasilat","favök","fvaok","guidance",
+    "finansal sonuç",
+    "finansal sonuc",
+    "bilanço",
+    "bilanco",
+    "net dönem kâr",
+    "net donem kar",
+    "kâr art",
+    "kar art",
+    "rekor",
+    "yüksek kâr",
+    "yuksek kar",
+    "faaliyet karı",
+    "faaliyet kari",
+    "hasılat",
+    "hasilat",
+    "favök",
+    "fvaok",
+    "guidance",
   ],
-  TEMETTU: ["temettü","temettu","kâr payı","kar payi","kar dağıt","kar dagit","kâr dağıt","dagitim teklifi"],
-  GERI_ALIM: ["geri alım","geri alim","pay geri alım","pay geri alim","hisse geri alım","hisse geri alim","programı","programi"],
-  SERMAYE: ["sermaye artırımı","sermaye artirimi","bedelli","bedelsiz","tavan","kayıtlı sermaye","kayitli sermaye","rüçhan","ruchan"],
-  BORCLANMA: ["tahvil","bono","borçlanma","borclanma","eurobond","finansman","kredi anlaşması","kredi anlasmasi","sendikasyon"],
-  ORTAKLIK: ["stratejik ortak","ortaklık","ortaklik","joint venture","iş birliği","is birligi","mutabakat","mou"],
+  TEMETTU: ["temettü", "temettu", "kâr payı", "kar payi", "kar dağıt", "kar dagit", "kâr dağıt", "dagitim teklifi"],
+  GERI_ALIM: ["geri alım", "geri alim", "pay geri alım", "pay geri alim", "hisse geri alım", "hisse geri alim", "program"],
+  SERMAYE: [
+    "sermaye artırımı",
+    "sermaye artirimi",
+    "bedelli",
+    "bedelsiz",
+    "tavan",
+    "kayıtlı sermaye",
+    "kayitli sermaye",
+    "rüçhan",
+    "ruchan",
+    "hak kullanımı",
+    "hak kullanimi",
+  ],
+  BORCLANMA: ["tahvil", "bono", "borçlanma", "borclanma", "eurobond", "finansman", "kredi anlaşması", "kredi anlasmasi"],
+  ORTAKLIK: ["stratejik ortak", "ortaklık", "ortaklik", "joint venture", "iş birliği", "is birligi", "mutabakat", "mou"],
   NEGATIF: [
-    "zarar","ceza","inceleme","soruşturma","sorusturma","iptal","fesih","dava","iflas","tedbir","uyarı","uyari",
-    "işlem sırası kapatma","islem sirasi kapatma","piyasa bozucu",
+    "zarar",
+    "ceza",
+    "inceleme",
+    "soruşturma",
+    "sorusturma",
+    "iptal",
+    "fesih",
+    "dava",
+    "iflas",
+    "tedbir",
+    "uyarı",
+    "uyari",
+    "işlem sırası kapatma",
+    "islem sirasi kapatma",
+    "piyasa bozucu",
   ],
   DIGER: [],
 };
 
 const BULLISH_TAGS: KapTag[] = [
-  "IS_ANLASMASI","SATIN_ALMA","BIRLESME","YUKSEK_KAR","TEMETTU","GERI_ALIM","SERMAYE","BORCLANMA","ORTAKLIK",
+  "IS_ANLASMASI",
+  "SATIN_ALMA",
+  "BIRLESME",
+  "YUKSEK_KAR",
+  "TEMETTU",
+  "GERI_ALIM",
+  "SERMAYE",
+  "BORCLANMA",
+  "ORTAKLIK",
 ];
 
 // =====================
-// RESP HELPERS
+// HELPERS
 // =====================
 function ok(payload: any) {
-  return NextResponse.json(payload, { status: 200, headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json(payload, {
+    status: 200,
+    headers: { "Cache-Control": "no-store" },
+  });
 }
 
 function clampInt(v: string | null, fallback: number, min: number, max: number) {
@@ -106,22 +175,29 @@ function normalizeUrl(u: any) {
   if (!s) return "https://www.kap.org.tr/tr/";
   if (s.startsWith("//")) return `https:${s}`;
   if (s.startsWith("/")) return `https://www.kap.org.tr${s}`;
-  if (!/^https?:\/\//i.test(s)) return `https://www.kap.org.tr/${s.replace(/^\/+/, "")}`;
+  if (!/^https?:\/\//i.test(s)) return `https://www.kap.org.tr${s.startsWith("tr/") ? "/" : "/"}${s}`;
   return s;
 }
 
-// =====================
-// UNIVERSE
-// =====================
-function pickUniverse(u: string): string[] {
-  if (u === "NASDAQ300") return (NASDAQ300 ?? []).map((s) => String(s).toUpperCase());
-  if (u === "ETFS") return (ETFS ?? []).map((s) => String(s).toUpperCase());
-  return ((BIST100_UNIVERSE ?? []) as string[]).map((s) => String(s).toUpperCase());
+function normalizeCode(x: string) {
+  const s = String(x || "")
+    .toUpperCase()
+    .replace(/\(.*?\)/g, "")
+    .replace(/[^A-Z0-9._-]/g, "")
+    .trim();
+  if (!s) return "";
+  return s.split(".")[0];
 }
 
-// =====================
-// KAP TAGS
-// =====================
+function extractCodes(stockCodes: any): string[] {
+  const raw = String(stockCodes ?? "").toUpperCase();
+  if (!raw) return [];
+  return raw
+    .split(/[\s,;|/]+/g)
+    .map((x) => normalizeCode(x))
+    .filter(Boolean);
+}
+
 function detectKapTags(text: string): KapTag[] {
   const t = (text || "").toLowerCase();
   const tags: KapTag[] = [];
@@ -133,83 +209,48 @@ function detectKapTags(text: string): KapTag[] {
 }
 
 // =====================
-// STOCK CODE NORMALIZE (DIAMOND)
+// TIME PARSING (TR-safe)
 // =====================
-function normalizeCode(x: string) {
-  const s = String(x || "")
-    .toUpperCase()
-    .replace(/\(.*?\)/g, "")
-    .replace(/[^A-Z0-9._-]/g, "")
-    .trim();
-  if (!s) return "";
-  return s.split(".")[0];
+// We compute today/yesterday using Istanbul calendar even if server runs in UTC.
+function getIstanbulParts(d: Date) {
+  const parts = new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(d);
+
+  const get = (t: string) => parts.find((p) => p.type === t)?.value || "00";
+  return {
+    yyyy: Number(get("year")),
+    MM: Number(get("month")),
+    dd: Number(get("day")),
+    hh: Number(get("hour")),
+    mm: Number(get("minute")),
+  };
 }
 
-/**
- * KAP bazen:
- *  - "AKBNK, THYAO"
- *  - ["AKBNK","THYAO"]
- *  - [{ code:"AKBNK" }, ...] gibi dönebiliyor.
- */
-function extractCodesAny(stockCodes: any): string[] {
-  if (!stockCodes) return [];
-
-  // array
-  if (Array.isArray(stockCodes)) {
-    const flat = stockCodes
-      .map((x) => {
-        if (typeof x === "string") return x;
-        if (x && typeof x === "object") return x.code ?? x.stockCode ?? x.symbol ?? "";
-        return "";
-      })
-      .join(" ");
-    return extractCodesString(flat);
-  }
-
-  // object
-  if (typeof stockCodes === "object") {
-    const maybe = stockCodes.code ?? stockCodes.stockCode ?? stockCodes.symbol ?? "";
-    return extractCodesString(String(maybe));
-  }
-
-  // string/number
-  return extractCodesString(String(stockCodes));
-}
-
-function extractCodesString(raw0: string): string[] {
-  const raw = String(raw0 ?? "").toUpperCase();
-  if (!raw) return [];
-  return raw
-    .split(/[\s,;|/]+/g)
-    .map((x) => normalizeCode(x))
-    .filter(Boolean);
-}
-
-// =====================
-// TIME (TR safe)
-// =====================
-// TR = UTC+3 (DST yok)
-function trLocalToUtcMs(yyyy: number, MM: number, dd: number, hh: number, mm: number) {
+// Convert Istanbul local date-time to UTC ms (Istanbul is UTC+3, DST removed in TR).
+function istanbulLocalToUtcMs(yyyy: number, MM: number, dd: number, hh: number, mm: number) {
   return Date.UTC(yyyy, MM - 1, dd, hh - 3, mm, 0, 0);
 }
 
-// "Bugün 10:30", "Dün 17:44" gibi ifadeleri TR saatine göre UTC ms üret
-function relTrToUtcMs(dayWord: string, hh: number, mm: number) {
-  const nowUtc = Date.now();
-  // UTC zamanını TR lokal gibi düşünmek için +3 saat ekleyip "TR günü" yakala
-  const nowTr = new Date(nowUtc + 3 * 3600_000);
-  const y = nowTr.getUTCFullYear();
-  const M = nowTr.getUTCMonth() + 1;
-  const d = nowTr.getUTCDate();
-  const baseUtc = trLocalToUtcMs(y, M, d, hh, mm);
-  const adj = dayWord.toLowerCase() === "dün" ? baseUtc - 24 * 3600_000 : baseUtc;
-  return adj;
-}
-
+/**
+ * KAP publishDate may be:
+ *  - "Bugün 10:30" / "Dün 17:44" (TR)
+ *  - "14.07.2025 18:14" (TR)
+ *  - unix seconds/ms
+ *  - ISO
+ */
 function safeTimeMsTR(value: any): number {
   if (value == null) return 0;
 
-  if (typeof value === "number") return value < 1e12 ? value * 1000 : value;
+  if (typeof value === "number") {
+    return value < 1e12 ? value * 1000 : value;
+  }
 
   const s = String(value).trim();
   if (!s) return 0;
@@ -217,7 +258,21 @@ function safeTimeMsTR(value: any): number {
   const mRel = s.match(/^(Bugün|Dün)\s+(\d{1,2}):(\d{2})$/i);
   if (mRel) {
     const [, dayWord, hh, mm] = mRel;
-    return relTrToUtcMs(dayWord, Number(hh), Number(mm));
+
+    // Determine "today" in Istanbul calendar (not server tz)
+    const nowParts = getIstanbulParts(new Date());
+    let { yyyy, MM, dd } = nowParts;
+    if (dayWord.toLowerCase() === "dün") {
+      // subtract one day in Istanbul calendar by creating a UTC date from Istanbul and subtracting 1 day
+      const todayUtcMs = istanbulLocalToUtcMs(yyyy, MM, dd, 12, 0); // noon safe
+      const yUtc = new Date(todayUtcMs - 86400000);
+      const yParts = getIstanbulParts(yUtc);
+      yyyy = yParts.yyyy;
+      MM = yParts.MM;
+      dd = yParts.dd;
+    }
+
+    return istanbulLocalToUtcMs(yyyy, MM, dd, Number(hh), Number(mm));
   }
 
   const mTR = s.match(/^(\d{2})\.(\d{2})\.(\d{2}|\d{4})\s+(\d{2}):(\d{2})$/);
@@ -228,7 +283,7 @@ function safeTimeMsTR(value: any): number {
     if (yyyy < 100) yyyy = 2000 + yyyy;
     const hh = Number(mTR[4]);
     const mm = Number(mTR[5]);
-    return trLocalToUtcMs(yyyy, MM, dd, hh, mm);
+    return istanbulLocalToUtcMs(yyyy, MM, dd, hh, mm);
   }
 
   const ms = new Date(s).getTime();
@@ -236,15 +291,20 @@ function safeTimeMsTR(value: any): number {
 }
 
 // =====================
-// MATCHING (US/ETF)
+// UNIVERSE
 // =====================
+function pickUniverse(u: string): string[] {
+  if (u === "NASDAQ300") return (NASDAQ300 ?? []).map((s) => String(s).toUpperCase());
+  if (u === "ETFS") return (ETFS ?? []).map((s) => String(s).toUpperCase());
+  return ((BIST100_UNIVERSE ?? []) as string[]).map((s) => String(s).toUpperCase());
+}
+
 function escapeRegex(s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function matchUniverse(news: CombinedNewsItem[], universeSymbols: string[]): CombinedNewsItem[] {
   if (!news.length || !universeSymbols.length) return [];
-
   const symSet = new Set(universeSymbols.map((s) => String(s).toUpperCase()));
   const regexCache = new Map<string, RegExp>();
   const out: CombinedNewsItem[] = [];
@@ -280,29 +340,56 @@ async function fetchFinnhubMarketNews(category: string): Promise<CombinedNewsIte
     `https://finnhub.io/api/v1/news?category=${encodeURIComponent(category)}` +
     `&token=${encodeURIComponent(token)}`;
 
-  const r = await fetch(url, { next: { revalidate: 120 } });
-  if (!r.ok) return [];
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
 
-  const data = (await r.json()) as any[];
-  return (Array.isArray(data) ? data : [])
-    .filter((x) => x?.headline && x?.url)
-    .map((x) => ({
-      headline: String(x.headline),
-      url: String(x.url),
-      source: String(x.source ?? "Finnhub"),
-      datetime: Number(x.datetime ?? 0),
-      summary: String(x.summary ?? ""),
-    }))
-    .sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
+  try {
+    const r = await fetch(url, { next: { revalidate: 120 }, signal: ac.signal });
+    if (!r.ok) return [];
+
+    const data = (await r.json()) as any[];
+    return (Array.isArray(data) ? data : [])
+      .filter((x) => x?.headline && x?.url)
+      .map((x) => ({
+        headline: String(x.headline),
+        url: String(x.url),
+        source: String(x.source ?? "Finnhub"),
+        datetime: Number(x.datetime ?? 0),
+        summary: String(x.summary ?? ""),
+      }))
+      .sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // KAP API (memberDisclosureQuery)
-async function fetchKapApi(mode: Mode, universeBistSymbols: string[]) {
+async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: boolean) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
 
   const toDate = new Date().toISOString().slice(0, 10);
   const fromDate = new Date(Date.now() - QUERY_DAYS_BACK * 86400000).toISOString().slice(0, 10);
+
+  const uniSet = new Set(universeBistSymbols.map((x) => String(x).toUpperCase()));
+  const since = Date.now() - WINDOW_HOURS * 60 * 60 * 1000;
+
+  const debug = {
+    mode,
+    rawCount: 0,
+    normalizedCount: 0,
+    afterWindow: 0,
+    afterStrict: 0,
+    windowHours: WINDOW_HOURS,
+    dateRange: { fromDate, toDate },
+    noCodes: 0,
+    notInUniverse: 0,
+    hasNegative: 0,
+    notBullishOrOther: 0,
+    sample: {} as any,
+  };
 
   try {
     const body = { fromDate, toDate, subjectList: [], bdkMemberOidList: [] };
@@ -324,17 +411,26 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[]) {
     const raw = await r.json();
     const arr = Array.isArray(raw) ? raw : [];
 
-    const since = Date.now() - WINDOW_HOURS * 3600_000;
-    const uniSet = new Set(universeBistSymbols.map((x) => String(x).toUpperCase()));
+    debug.rawCount = arr.length;
+    debug.sample = debugOn
+      ? {
+          publishDate: arr?.[0]?.publishDate ?? null,
+          stockCodes: arr?.[0]?.stockCodes ?? null,
+          relatedStockCodes: arr?.[0]?.relatedStockCodes ?? null,
+          kapTitle: arr?.[0]?.kapTitle ?? null,
+          disclosureIndex: arr?.[0]?.disclosureIndex ?? null,
+        }
+      : {};
 
     const normalized = arr.map((it: any) => {
-      const title = String(it?.kapTitle ?? it?.title ?? "KAP Bildirimi");
-      const summary = it?.summary ? stripHtml(String(it.summary)).slice(0, 360) : "";
+      const headline = String(it?.kapTitle ?? it?.title ?? "KAP Bildirimi");
+      const summary = it?.summary ? stripHtml(String(it.summary)).slice(0, 320) : "";
 
-      const text = `${title} ${summary} ${it?.disclosureClass ?? ""}`;
+      const text = `${headline} ${summary} ${it?.disclosureClass ?? ""}`;
       const tags = detectKapTags(text);
 
-      const codes = extractCodesAny(it.stockCodes ?? it.relatedStockCodes ?? it.companyStocks ?? it.stocks ?? it.stockCode);
+      // stockCodes sometimes empty; try alternatives
+      const codes = extractCodes(it.stockCodes || it.relatedStockCodes || it.companyStocks || it?.stockCode || "");
 
       const t = safeTimeMsTR(it.publishDate);
 
@@ -342,76 +438,48 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[]) {
         it?.disclosureLink ||
         it?.disclosureUrl ||
         it?.relatedLink ||
-        (it?.disclosureIndex
-          ? `https://www.kap.org.tr/tr/Bildirim/${encodeURIComponent(String(it.disclosureIndex))}`
-          : "");
+        (it?.disclosureIndex ? `https://www.kap.org.tr/tr/Bildirim/${encodeURIComponent(String(it.disclosureIndex))}` : "");
 
       const ui: CombinedNewsItem = {
-        headline: title,
+        headline,
         url: normalizeUrl(url),
         source: "KAP",
         datetime: Math.floor((t || 0) / 1000),
         summary,
+        company: codes[0] ?? undefined,
         tags,
         stockCodes: codes,
-        company: codes[0] ?? undefined,
         matched: codes.length ? codes.slice(0, 6) : undefined,
-        meta: {
-          disclosureIndex: it?.disclosureIndex ?? null,
-          publishDate: it?.publishDate ?? null,
-          disclosureClass: it?.disclosureClass ?? null,
-        },
+        meta: debugOn ? { disclosureIndex: it?.disclosureIndex ?? null, publishDateRaw: it?.publishDate ?? null } : undefined,
       };
 
-      return { it, tags, codes, t, ui };
+      return { it, t, codes, tags, ui };
     });
+
+    debug.normalizedCount = normalized.length;
 
     if (mode === "raw") {
       const items = normalized
         .sort((a, b) => (b.t || 0) - (a.t || 0))
-        .slice(0, 40)
+        .slice(0, 80)
         .map((x) => x.ui);
 
-      return {
-        items,
-        meta: {
-          mode,
-          rawCount: arr.length,
-          normalizedCount: normalized.length,
-          dateRange: { fromDate, toDate },
-          sample: {
-            publishDate: arr?.[0]?.publishDate ?? null,
-            stockCodes: arr?.[0]?.stockCodes ?? null,
-            relatedStockCodes: arr?.[0]?.relatedStockCodes ?? null,
-            kapTitle: arr?.[0]?.kapTitle ?? null,
-          },
-        },
-      };
+      return { items, meta: debugOn ? debug : { mode, rawCount: debug.rawCount } };
     }
 
     // window filter
     let filtered = normalized.filter((x) => x.t && x.t >= since);
+    debug.afterWindow = filtered.length;
 
     if (mode === "relaxed") {
       const items = filtered
         .sort((a, b) => (b.t || 0) - (a.t || 0))
         .slice(0, 120)
         .map((x) => x.ui);
-      return {
-        items,
-        meta: {
-          mode,
-          rawCount: arr.length,
-          afterWindow: filtered.length,
-          windowHours: WINDOW_HOURS,
-          dateRange: { fromDate, toDate },
-        },
-      };
+      return { items, meta: debugOn ? debug : { mode, rawCount: debug.rawCount, afterWindow: debug.afterWindow } };
     }
 
     // strict
-    const debug = { rawCount: arr.length, afterWindow: filtered.length, noCodes: 0, notInUniverse: 0, hasNegative: 0, notBullishOrOther: 0 };
-
     filtered = filtered.filter((x) => {
       if (!x.codes.length) {
         debug.noCodes++;
@@ -426,6 +494,7 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[]) {
         debug.hasNegative++;
         return false;
       }
+      // Bullish OR DIGER (so it doesn't go empty)
       const okTag = x.tags.some((tg) => BULLISH_TAGS.includes(tg)) || x.tags.includes("DIGER");
       if (!okTag) {
         debug.notBullishOrOther++;
@@ -434,42 +503,36 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[]) {
       return true;
     });
 
+    debug.afterStrict = filtered.length;
+
     const items = filtered
       .sort((a, b) => (b.t || 0) - (a.t || 0))
       .slice(0, 120)
       .map((x) => x.ui);
 
-    return {
-      items,
-      meta: {
-        mode,
-        ...debug,
-        afterStrict: filtered.length,
-        windowHours: WINDOW_HOURS,
-        dateRange: { fromDate, toDate },
-      },
-    };
+    return { items, meta: debugOn ? debug : { mode, rawCount: debug.rawCount, afterWindow: debug.afterWindow, afterStrict: debug.afterStrict } };
+  } catch (e: any) {
+    const msg = e?.name === "AbortError" ? "KAP timeout" : (e?.message ?? "KAP error");
+    return { items: [] as CombinedNewsItem[], meta: debugOn ? { ...debug, error: msg } : { mode, error: msg } };
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function fetchExternalNews(u: string, mode: Mode, universeSymbols: string[]) {
+async function fetchExternalNews(u: string, mode: Mode, universeSymbols: string[], debugOn: boolean) {
   if (u === "BIST100") {
-    return fetchKapApi(mode, universeSymbols);
+    return fetchKapApi(mode, universeSymbols, debugOn);
   }
 
+  // NASDAQ300 / ETFS
   const finnhub = await fetchFinnhubMarketNews("general");
   const matched = matchUniverse(finnhub, universeSymbols);
 
   return {
     items: matched,
-    meta: {
-      mode,
-      totalRaw: finnhub.length,
-      totalMatched: matched.length,
-      source: "Finnhub market-news general",
-    },
+    meta: debugOn
+      ? { mode, totalRaw: finnhub.length, totalMatched: matched.length, source: "Finnhub market-news general" }
+      : { mode, totalRaw: finnhub.length, totalMatched: matched.length },
   };
 }
 
@@ -486,28 +549,28 @@ export async function GET(req: Request) {
     const limit = clampInt(searchParams.get("limit"), 12, 1, 80);
     const minScore = clampInt(searchParams.get("minScore"), 60, 0, 100);
 
-    // Optional: US-side fallback (default OFF)
-    const allowFallback = searchParams.get("fallback") === "1";
+    const debugOn = searchParams.get("debug") === "1";
+    const allowFallback = searchParams.get("fallback") !== "0"; // default ON
 
     const universe = pickUniverse(u);
-    const { items: rawItems0, meta } = await fetchExternalNews(u, mode, universe);
 
-    // If US-side matched empty + fallback ON => show raw news (matched empty)
-    const rawItems =
-      allowFallback && u !== "BIST100" && rawItems0.length === 0
-        ? (await fetchFinnhubMarketNews("general")).slice(0, Math.max(limit * 2, 24)).map((x) => ({ ...x, matched: [] }))
-        : rawItems0;
+    // 1) fetch
+    let { items: rawItems, meta } = await fetchExternalNews(u, mode, universe, debugOn);
 
-    // Diamond: KAP strict modda DIGER'i tamamen öldürme -> minScore yumuşat
-    const effectiveMinScore =
-      u === "BIST100" && mode === "strict" ? Math.min(minScore, 55) : minScore;
+    // 2) BIST strict => fallback to relaxed if empty
+    if (u === "BIST100" && allowFallback && mode === "strict" && rawItems.length === 0) {
+      const fb = await fetchExternalNews(u, "relaxed", universe, debugOn);
+      rawItems = fb.items;
+      meta = debugOn ? { ...(meta || {}), fallbackTo: "relaxed", fallbackMeta: fb.meta } : { fallbackTo: "relaxed" };
+    }
 
+    // 3) Score + filter + sort
     const scored = rawItems
       .map((n) => {
         const r = scoreNews(n);
         return { ...n, score: r.score, level: r.level };
       })
-      .filter((n) => (n.score ?? 0) >= effectiveMinScore)
+      .filter((n) => (n.score ?? 0) >= minScore)
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, limit);
 
@@ -515,7 +578,7 @@ export async function GET(req: Request) {
       ok: true,
       universe: u,
       mode,
-      minScore: effectiveMinScore,
+      minScore,
       limit,
       totalRaw: rawItems.length,
       items: scored,
