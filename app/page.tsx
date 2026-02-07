@@ -371,7 +371,7 @@ export default async function HomePage({
   // debug: minScore override (default 80)
   const minScore = Number.isFinite(Number(searchParams?.minScore))
     ? Math.max(0, Math.min(100, Number(searchParams?.minScore)))
-    : 80;
+    : 30;
 
   const base = getApiBaseUrl();
 
