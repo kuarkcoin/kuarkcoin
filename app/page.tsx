@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
+import DailyTopBuyTracker from "@/components/DailyTopBuyTracker";
 
 // =====================
 // TYPES
@@ -949,6 +950,8 @@ export default async function HomePage({
           </div>
         )}
       </section>
+
+      <DailyTopBuyTracker />
 
       {/* How it works */}
       <section id="how" className="mx-auto max-w-6xl px-4 pb-16">
