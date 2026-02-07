@@ -9,7 +9,7 @@ export const revalidate = 0;
 type Outcome = "WIN" | "LOSS" | null;
 
 function istanbulDayRange(date = new Date()) {
-  const tzOffsetMs = 3 * 60 * 60 * 1000;
+  const tzOffsetMs = 3 * 60 * 60 * 1000; // UTC+3
   const local = new Date(date.getTime() + tzOffsetMs);
 
   const startLocal = new Date(local);
@@ -42,6 +42,19 @@ function parseTvTime(t: any) {
   return new Date(n < 1e12 ? n * 1000 : n);
 }
 
+// ✅ TradingView webhook'larda bazen header/JSON sıkıntısı olur.
+// Bu helper hem JSON parse eder hem debug için raw parçasını döndürebilir.
+async function readJsonBody(req: Request) {
+  const raw = await req.text();
+  let body: any = null;
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    body = null;
+  }
+  return { raw, body };
+}
+
 export async function GET(req: Request) {
   const supa = supabaseServer();
   const { searchParams } = new URL(req.url);
@@ -71,7 +84,10 @@ export async function GET(req: Request) {
       .limit(5);
 
     if (e1 || e2) {
-      return noStore({ ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message }, { status: 500 });
+      return noStore(
+        { ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message },
+        { status: 500 }
+      );
     }
 
     return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
@@ -90,11 +106,21 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const supa = supabaseServer();
 
-  const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  // ✅ RAW parse (TradingView ile en sağlam yöntem)
+  const { raw, body } = await readJsonBody(req);
+  if (!body) {
+    return noStore(
+      { ok: false, error: "Bad JSON", raw: raw.slice(0, 200) },
+      { status: 400 }
+    );
+  }
 
+  // ✅ Secret doğrulama
   if (body.secret !== process.env.SCAN_SECRET) {
-    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
+    return noStore(
+      { ok: false, error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
   const symbol = String(body.symbol ?? "").trim();
@@ -108,9 +134,13 @@ export async function POST(req: Request) {
     return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
   }
 
+  // NaN koruması
+  const safePrice = typeof price === "number" && Number.isFinite(price) ? price : null;
+  const safeScore = typeof score === "number" && Number.isFinite(score) ? score : null;
+
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([{ symbol, signal, price: safePrice, score: safeScore, reasons, created_at }])
     .select("*")
     .single();
 
@@ -121,11 +151,19 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   const supa = supabaseServer();
 
-  const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  // PATCH'te de aynı RAW parse (bazı clientlar header bozabiliyor)
+  const { raw, body } = await readJsonBody(req);
+  if (!body) {
+    return noStore(
+      { ok: false, error: "Bad JSON", raw: raw.slice(0, 200) },
+      { status: 400 }
+    );
+  }
 
   const id = Number(body.id);
-  const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
+  const outcome: Outcome =
+    body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
+
   if (!id) return noStore({ ok: false, error: "Missing id" }, { status: 400 });
 
   const { data, error } = await supa
