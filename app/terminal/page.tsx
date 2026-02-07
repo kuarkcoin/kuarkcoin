@@ -208,8 +208,13 @@ function Sparkline({ points }: { points?: number[] | null }) {
 function normalizeSymbol(sym: string) {
   const s = String(sym || "").trim();
   if (!s) return "NASDAQ:AAPL";
+  if (s.startsWith("BIST_DLY:")) return s.replace("BIST_DLY:", "BIST:");
   if (s.includes(":")) return s;
-  return `NASDAQ:${s}`;
+  const upper = s.toUpperCase();
+  if (BIST_SET.has(upper)) return `BIST:${upper}`;
+  if (CRYPTO_SET.has(upper)) return `BINANCE:${upper}`;
+  if (ETF_SET.has(upper)) return `AMEX:${upper}`;
+  return `NASDAQ:${upper}`;
 }
 
 function uniqBy<T>(arr: T[], keyFn: (t: T) => string) {
@@ -1088,10 +1093,11 @@ export default function TerminalPage() {
                           <button
                             key={r.id}
                             onClick={() => {
-                              setSelectedSymbol(r.symbol);
+                              const normalized = normalizeSymbol(r.symbol);
+                              setSelectedSymbol(normalized);
                               setSelectedSignalId(r.id);
                               toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                              fetchMini(r.symbol);
+                              fetchMini(normalized);
                             }}
                             className={`w-full text-left p-4 rounded-xl border transition-all focus:outline-none focus:ring-2 focus:ring-blue-600/40 ${
                               isActive

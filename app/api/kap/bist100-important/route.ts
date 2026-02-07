@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 // =====================
 type Mode = "raw" | "relaxed" | "strict";
 
-const DEFAULT_MODE: Mode = "strict";
+const DEFAULT_MODE: Mode = "relaxed";
 const WINDOW_HOURS = 72; // son 72 saat
 
 // KAP sorgusunda kaç gün geriye gidelim (72 saat için 3 gün mantıklı)
@@ -258,15 +258,36 @@ export async function GET(req: Request) {
     // strict
     const beforeStrict = filtered.length;
 
-    filtered = filtered
+    const strictFiltered = filtered
       .filter((x) => x.codes.some((c) => BIST100.includes(c)))
       .filter((x) => !x.tags.includes("NEGATIF"))
       .filter((x) => x.tags.some((tg) => BULLISH_TAGS.includes(tg)));
 
-    const items = filtered
+    const items = strictFiltered
       .sort((a, b) => (b.t || 0) - (a.t || 0))
       .slice(0, 30)
       .map((x) => x.ui);
+
+    if (items.length === 0 && filtered.length > 0) {
+      const relaxedItems = filtered
+        .sort((a, b) => (b.t || 0) - (a.t || 0))
+        .slice(0, 30)
+        .map((x) => x.ui);
+
+      return ok({
+        ok: true,
+        mode,
+        items: relaxedItems,
+        meta: {
+          rawCount: arr.length,
+          afterWindow: beforeStrict,
+          afterStrict: strictFiltered.length,
+          windowHours: WINDOW_HOURS,
+          dateRange: { fromDate, toDate },
+          fallback: "relaxed",
+        },
+      });
+    }
 
     return ok({
       ok: true,
@@ -275,7 +296,7 @@ export async function GET(req: Request) {
       meta: {
         rawCount: arr.length,
         afterWindow: beforeStrict,
-        afterStrict: filtered.length,
+        afterStrict: strictFiltered.length,
         windowHours: WINDOW_HOURS,
         dateRange: { fromDate, toDate },
       },

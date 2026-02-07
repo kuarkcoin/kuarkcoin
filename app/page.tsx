@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
+import TopBuyTrackingTable from "@/components/top-buy-tracking-table";
 
 // =====================
 // TYPES
@@ -574,6 +575,9 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+      {/* Top Buy Tracking */}
+      <TopBuyTrackingTable latestSignals={latest} nowIso={nowIso} />
 
       {/* News feed */}
       <section className="mx-auto max-w-6xl px-4 pb-12">
