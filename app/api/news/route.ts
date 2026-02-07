@@ -18,8 +18,17 @@ function toTicker(symbol: string) {
   return (parts[1] ?? parts[0]).toUpperCase();
 }
 
+// ✅ BIST + IST (TradingView’de IST:ASELS gibi gelebilir)
 function isBistSymbol(symbol: string) {
-  return String(symbol || "").toUpperCase().startsWith("BIST:");
+  const u = String(symbol || "").toUpperCase();
+  return u.startsWith("BIST:") || u.startsWith("IST:");
+}
+
+// ✅ ETF’ler TradingView’de AMEX:SPY / NYSEARCA:QQQ / ARCA:QQQ gibi gelebilir.
+// (Bu route’ta ETF’ler “company-news” ile çalışır, sorun yok; ama prefix tespiti doğru olsun diye ekliyorum.)
+function isEtfSymbol(symbol: string) {
+  const u = String(symbol || "").toUpperCase();
+  return u.startsWith("AMEX:") || u.startsWith("NYSEARCA:") || u.startsWith("ARCA:");
 }
 
 function isoDate(d: Date) {
@@ -27,6 +36,12 @@ function isoDate(d: Date) {
   const m = String(d.getUTCMonth() + 1).padStart(2, "0");
   const day = String(d.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
+}
+
+function clampInt(raw: string | null, fallback: number, min: number, max: number) {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(min, Math.min(max, Math.floor(n)));
 }
 
 // ✅ reasons= "VWAP,RSI_DIV,..." gibi geliyor → array
@@ -46,29 +61,24 @@ const REASON_MATCH: Record<string, string[]> = {
   RSI: ["rsi"],
   RSI_DIV: ["divergence", "diverjan", "uyumsuzluk"],
   GOLDEN_CROSS: ["golden cross"],
-  EARNINGS: ["earnings", "results", "revenue", "profit", "guidance", "balance sheet", "quarter"],
-  MERGER: ["merger", "acquisition", "acquire", "deal"],
+  EARNINGS: ["earnings", "results", "revenue", "profit", "guidance", "balance sheet", "quarter", "q1", "q2", "q3", "q4"],
+  MERGER: ["merger", "acquisition", "acquire", "deal", "buyout"],
   // BIST/KAP için TR kelimeleri
-  KAP: ["kap", "bildirim", "özel durum", "ozel durum", "yatırımcı", "yatirimci", "genel kurul", "temettü", "temettu"],
+  KAP: ["kap", "bildirim", "özel durum", "ozel durum", "yatırımcı", "yatirimci", "genel kurul", "temettü", "temettu", "bedelsiz", "sermaye", "geri alım", "geri alim"],
 };
 
 function scoreRelevance(text: string, reasonKeys: string[]) {
   const t = (text || "").toLowerCase();
   const matched: string[] = [];
-
   for (const k of reasonKeys) {
     const keys = REASON_MATCH[k] ?? [];
     if (keys.some((w) => t.includes(w))) matched.push(`${k}:hit`);
   }
-
-  return {
-    matched,
-    relevance: matched.length, // 0..N
-  };
+  return { matched, relevance: matched.length };
 }
 
 // ──────────────────────────────────────────────────
-// KAP RSS (BIST) helpers
+// KAP RSS helpers
 // ──────────────────────────────────────────────────
 function decodeXml(s: string) {
   return (s || "")
@@ -87,7 +97,6 @@ function stripHtml(s: string) {
   return (s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-// Basit RSS item parser (title/link/pubDate/description)
 function parseRssItems(xml: string) {
   const out: { title: string; link: string; pubDate?: string; description?: string }[] = [];
   const blocks = xml.match(/<item[\s\S]*?<\/item>/g) || [];
@@ -115,41 +124,48 @@ function toUnixSec(dateStr?: string) {
   return Math.floor(ms / 1000);
 }
 
-// ✅ Boundary-safe ticker check (AKBNK yanlış eşleşmesin diye)
+function escapeRegex(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// ✅ Boundary-safe ticker check
 function hasTicker(blobUpper: string, T: string) {
   const re = new RegExp(`(^|[^A-Z0-9])${escapeRegex(T)}([^A-Z0-9]|$)`);
   return re.test(blobUpper);
 }
 
-function escapeRegex(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
+// ✅ KAP: tek RSS’ten filtrelemek pahalı değil ama daha doğru olmak için max scan arttırdım.
+// Ayrıca network timeout ekledim.
 async function fetchKapRss(ticker: string, max: number): Promise<NewsItem[]> {
-  // ✅ Genel KAP bildirim RSS
   const rssUrl = `https://www.kap.org.tr/tr/rss/bildirimler`;
 
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), 8000);
+
   const r = await fetch(rssUrl, {
+    signal: ac.signal,
     headers: {
       "user-agent": "Mozilla/5.0",
       accept: "application/rss+xml,application/xml;q=0.9,*/*;q=0.8",
     },
     next: { revalidate: 120 },
-  });
-  if (!r.ok) return [];
+  }).catch(() => null);
+
+  clearTimeout(t);
+  if (!r || !r.ok) return [];
 
   const xml = await r.text();
   const items = parseRssItems(xml);
 
   const T = ticker.toUpperCase();
 
-  // ✅ ticker filtre (boundary-safe)
+  // ✅ Daha fazla tara, sonra datetime’e göre kes
   const filtered = items.filter((x) => {
     const blob = `${x.title} ${x.description ?? ""}`.toUpperCase();
     return hasTicker(blob, T);
   });
 
-  const mapped: NewsItem[] = filtered.slice(0, 160).map((x) => {
+  const mapped: NewsItem[] = filtered.map((x) => {
     const datetime = toUnixSec(x.pubDate) || Math.floor(Date.now() / 1000);
     const summary = x.description ? stripHtml(x.description).slice(0, 300) : "";
     return {
@@ -171,18 +187,19 @@ async function fetchKapRss(ticker: string, max: number): Promise<NewsItem[]> {
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+
     const symbol = searchParams.get("symbol") ?? "";
-    const max = Math.min(Number(searchParams.get("max") ?? 8), 20);
+    const max = clampInt(searchParams.get("max"), 8, 1, 20); // ✅ parse fix
     const reasonKeys = parseReasonKeys(searchParams.get("reasons"));
+    const debug = searchParams.get("debug") === "1";
 
     const ticker = toTicker(symbol);
-    if (!ticker) return NextResponse.json({ ok: true, items: [] });
+    if (!ticker) return NextResponse.json({ ok: true, items: [], meta: debug ? { symbol, ticker } : undefined });
 
-    // ✅ BIST → KAP RSS
+    // ✅ BIST/IST → KAP RSS
     if (isBistSymbol(symbol)) {
       let items = await fetchKapRss(ticker, max);
 
-      // ✅ reasons varsa relevance + matched üret
       items = items.map((x) => {
         const blob = `${x.headline} ${x.summary ?? ""}`;
         const rel = scoreRelevance(blob, reasonKeys);
@@ -190,35 +207,47 @@ export async function GET(req: Request) {
       });
 
       if (reasonKeys.length) {
-        items.sort(
-          (a, b) =>
-            (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0)
-        );
+        items.sort((a, b) => (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0));
       } else {
         items.sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
       }
 
-      return NextResponse.json({ ok: true, items: items.slice(0, max) });
+      return NextResponse.json({
+        ok: true,
+        items: items.slice(0, max),
+        meta: debug
+          ? {
+              mode: "KAP",
+              symbol,
+              ticker,
+              reasonKeys,
+              got: items.length,
+            }
+          : undefined,
+      });
     }
 
     // ✅ Diğerleri → Finnhub company-news
     const token = process.env.FINNHUB_API_KEY;
-    if (!token) {
-      return NextResponse.json({ ok: false, error: "FINNHUB_API_KEY missing" }, { status: 500 });
-    }
+    if (!token) return NextResponse.json({ ok: false, error: "FINNHUB_API_KEY missing" }, { status: 500 });
 
     const to = new Date();
-    const from = new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const from = new Date(to.getTime() - 10 * 24 * 60 * 60 * 1000); // ✅ 7 yerine 10 gün: boş dönme azalır
 
     const url =
       `https://finnhub.io/api/v1/company-news?symbol=${encodeURIComponent(ticker)}` +
       `&from=${isoDate(from)}&to=${isoDate(to)}&token=${encodeURIComponent(token)}`;
 
-    const r = await fetch(url, { next: { revalidate: 60 } });
-    if (!r.ok) {
-      const text = await r.text().catch(() => "");
+    const ac = new AbortController();
+    const tt = setTimeout(() => ac.abort(), 8000);
+
+    const r = await fetch(url, { next: { revalidate: 60 }, signal: ac.signal }).catch(() => null);
+    clearTimeout(tt);
+
+    if (!r || !r.ok) {
+      const text = r ? await r.text().catch(() => "") : "";
       return NextResponse.json(
-        { ok: false, error: `Finnhub error (${r.status}) ${text}` },
+        { ok: false, error: `Finnhub error (${r ? r.status : "no-response"}) ${text}` },
         { status: 500 }
       );
     }
@@ -231,13 +260,12 @@ export async function GET(req: Request) {
         const headline = String(x.headline);
         const summary = String(x.summary ?? "");
         const blob = `${headline} ${summary}`;
-
         const rel = scoreRelevance(blob, reasonKeys);
 
         return {
           headline,
           url: String(x.url),
-          source: String(x.source ?? ""),
+          source: String(x.source ?? "Finnhub"),
           datetime: Number(x.datetime ?? 0),
           summary,
           relevance: rel.relevance,
@@ -245,19 +273,29 @@ export async function GET(req: Request) {
         };
       });
 
-    // ✅ reasons varsa, relevance’e göre öne çıkar
+    // ✅ reasons varsa relevance’e göre öne çıkar
     if (reasonKeys.length) {
-      items.sort(
-        (a, b) =>
-          (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0)
-      );
+      items.sort((a, b) => (b.relevance ?? 0) - (a.relevance ?? 0) || (b.datetime ?? 0) - (a.datetime ?? 0));
     } else {
       items.sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
     }
 
     items = items.slice(0, max);
 
-    return NextResponse.json({ ok: true, items });
+    return NextResponse.json({
+      ok: true,
+      items,
+      meta: debug
+        ? {
+            mode: isEtfSymbol(symbol) ? "FINNHUB(ETF)" : "FINNHUB",
+            symbol,
+            ticker,
+            url,
+            reasonKeys,
+            got: items.length,
+          }
+        : undefined,
+    });
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: e?.message ?? "news failed" }, { status: 500 });
   }
