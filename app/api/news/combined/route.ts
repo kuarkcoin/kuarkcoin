@@ -9,7 +9,7 @@ type CombinedNewsItem = {
   source: string;
   datetime: number; // unix seconds
   summary?: string;
-  matched?: string[]; // örn: ["AKBNK", "THYAO"]
+  matched?: string[];
   score?: number;
   level?: string;
 };
@@ -20,17 +20,31 @@ export async function GET(req: Request) {
   const u = (searchParams.get("u") || "BIST100").toUpperCase();
   const limit = clampInt(searchParams.get("limit"), 12, 1, 50);
   const minScore = clampInt(searchParams.get("minScore"), 60, 0, 100);
+  const debug = searchParams.get("debug") === "1";
+  const allowFallback = searchParams.get("fallback") !== "0"; // default ON
 
   const universe = pickUniverse(u);
-  const rawNews = await fetchExternalNews(u, universe);
 
-  // score + filter + sort
-  const scored = rawNews
+  // 1) fetch raw
+  const rawNews = await fetchExternalNews(u);
+
+  // 2) match
+  let matched = matchUniverse(rawNews, universe);
+
+  // ✅ Diamond: fallback → hiç eşleşme yoksa “genel gündem” göster (boş kalmasın)
+  // İstersen UI’da “matched boş” olanları daha düşük skorla gösterirsin.
+  if (allowFallback && matched.length === 0) {
+    matched = rawNews.slice(0, Math.max(limit * 2, 24)).map((n) => ({ ...n, matched: [] }));
+  }
+
+  // 3) score + filter + sort
+  const scored = matched
     .map((n) => {
-      const r = scoreNews(n); // senin mevcut fonksiyonun
+      const r = scoreNews(n);
       return { ...n, score: r.score, level: r.level };
     })
-    .filter((n) => (n.score ?? 0) >= minScore)
+    // ✅ Diamond: fallback çalışıyorsa minScore’u biraz yumuşat (yoksa yine boşlar)
+    .filter((n) => (n.score ?? 0) >= (matched[0]?.matched?.length ? minScore : Math.min(minScore, 45)))
     .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
     .slice(0, limit);
 
@@ -39,23 +53,33 @@ export async function GET(req: Request) {
     universe: u,
     minScore,
     totalRaw: rawNews.length,
+    totalMatched: matched.filter((x) => (x.matched?.length ?? 0) > 0).length,
+    fallbackUsed: allowFallback && matched.length > 0 && (matched[0]?.matched?.length ?? 0) === 0,
     items: scored,
+    meta: debug
+      ? {
+          u,
+          limit,
+          minScore,
+          rawNewsSample: rawNews.slice(0, 3).map((x) => ({
+            headline: x.headline,
+            source: x.source,
+            datetime: x.datetime,
+          })),
+        }
+      : undefined,
   });
 }
 
 // ──────────────────────────────────────────────────
 // Fetchers
 // ──────────────────────────────────────────────────
-async function fetchExternalNews(u: string, universeSymbols: string[]): Promise<CombinedNewsItem[]> {
+async function fetchExternalNews(u: string): Promise<CombinedNewsItem[]> {
   if (u === "BIST100") {
-    // KAP RSS → BIST ticker match
-    const rss = await fetchKapRss();
-    return matchUniverse(rss, universeSymbols);
+    return fetchKapRss();
   }
-
-  // NASDAQ300 / ETFS → Finnhub market-news (general)
-  const finnhub = await fetchFinnhubMarketNews("general");
-  return matchUniverse(finnhub, universeSymbols);
+  // NASDAQ300 / ETFS
+  return fetchFinnhubMarketNews("general");
 }
 
 function pickUniverse(u: string): string[] {
@@ -69,13 +93,19 @@ function pickUniverse(u: string): string[] {
 // ──────────────────────────────────────────────────
 async function fetchKapRss(): Promise<CombinedNewsItem[]> {
   const rssUrl = "https://www.kap.org.tr/tr/rss/bildirimler";
-  const r = await fetch(rssUrl, { next: { revalidate: 120 } });
-  if (!r.ok) return [];
+
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), 8000);
+
+  const r = await fetch(rssUrl, { next: { revalidate: 120 }, signal: ac.signal }).catch(() => null);
+
+  clearTimeout(t);
+  if (!r || !r.ok) return [];
 
   const xml = await r.text();
   const items = parseRssItems(xml);
 
-  const mapped: CombinedNewsItem[] = items
+  return items
     .filter((x) => x.title && x.link)
     .map((x) => ({
       headline: x.title,
@@ -85,8 +115,6 @@ async function fetchKapRss(): Promise<CombinedNewsItem[]> {
       summary: x.description ? stripHtml(x.description).slice(0, 280) : "",
     }))
     .sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
-
-  return mapped;
 }
 
 function parseRssItems(xml: string) {
@@ -101,7 +129,6 @@ function parseRssItems(xml: string) {
     if (!title || !link) continue;
     out.push({ title, link, pubDate, description });
   }
-
   return out;
 }
 
@@ -128,7 +155,7 @@ function toUnixSec(dateStr: string) {
 }
 
 // ──────────────────────────────────────────────────
-// Finnhub market news (general)
+// Finnhub market news
 // ──────────────────────────────────────────────────
 async function fetchFinnhubMarketNews(category: string): Promise<CombinedNewsItem[]> {
   const token = process.env.FINNHUB_API_KEY;
@@ -138,11 +165,16 @@ async function fetchFinnhubMarketNews(category: string): Promise<CombinedNewsIte
     `https://finnhub.io/api/v1/news?category=${encodeURIComponent(category)}` +
     `&token=${encodeURIComponent(token)}`;
 
-  const r = await fetch(url, { next: { revalidate: 120 } });
-  if (!r.ok) return [];
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), 8000);
+
+  const r = await fetch(url, { next: { revalidate: 120 }, signal: ac.signal }).catch(() => null);
+
+  clearTimeout(t);
+  if (!r || !r.ok) return [];
 
   const data = (await r.json()) as any[];
-  const items: CombinedNewsItem[] = (Array.isArray(data) ? data : [])
+  return (Array.isArray(data) ? data : [])
     .filter((x) => x?.headline && x?.url)
     .map((x) => ({
       headline: String(x.headline),
@@ -152,36 +184,30 @@ async function fetchFinnhubMarketNews(category: string): Promise<CombinedNewsIte
       summary: String(x.summary ?? ""),
     }))
     .sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
-
-  return items;
 }
 
 // ──────────────────────────────────────────────────
-// Matching: headline/summary içinden universe sembol bul
+// Matching
 // ──────────────────────────────────────────────────
 function matchUniverse(news: CombinedNewsItem[], universeSymbols: string[]): CombinedNewsItem[] {
   if (!news.length || !universeSymbols.length) return [];
 
-  // Performans: küçük bir set + “word boundary” regex cache
   const symSet = new Set(universeSymbols.map((s) => String(s).toUpperCase()));
   const regexCache = new Map<string, RegExp>();
-
   const out: CombinedNewsItem[] = [];
 
   for (const n of news) {
     const blob = `${n.headline} ${n.summary ?? ""}`.toUpperCase();
     const matched: string[] = [];
 
-    // 300 sembolde 40–80 haber → gayet OK (server)
     for (const sym of symSet) {
-      // AAPL / MSFT gibi kısa sembollerde yanlış eşleşme olmasın diye boundary
       let re = regexCache.get(sym);
       if (!re) {
         re = new RegExp(`(^|[^A-Z0-9])${escapeRegex(sym)}([^A-Z0-9]|$)`, "i");
         regexCache.set(sym, re);
       }
       if (re.test(blob)) matched.push(sym);
-      if (matched.length >= 4) break; // çok uzatmayalım
+      if (matched.length >= 4) break;
     }
 
     if (matched.length) out.push({ ...n, matched });
