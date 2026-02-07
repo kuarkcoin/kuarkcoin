@@ -14,11 +14,10 @@ type SignalRow = {
   symbol: string;
   signal: string; // BUY | SELL
   price: number | null;
-  score: number | null;
+  score: number | null; // 0..100
   reasons: string | null;
 };
 
-// ✅ KAP route'un döndürdüğü format (items -> KapUIItem)
 type KapRow = {
   title: string;
   url: string;
@@ -36,6 +35,8 @@ type NewsItem = {
   datetime: number; // unix sec
   tickers: string[];
   tags: string[];
+  // opsiyonel alanlar varsa zarar vermez
+  score?: number;
 };
 
 type TopMarginRow = {
@@ -66,19 +67,46 @@ type Universe = (typeof ALLOWED_UNIVERSE)[number];
 // HELPERS
 // =====================
 function getApiBaseUrl() {
+  // Vercel / Prod: en sağlamı env ile sabitlemek
+  const env =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+
+  if (env) return env;
+
   const h = headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const xfProto = h.get("x-forwarded-proto");
-  const proto = xfProto ?? (host.includes("localhost") ? "http" : "https");
+  const proto = h.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
   return `${proto}://${host}`;
 }
 
+function safeHttpUrl(u: string | null | undefined) {
+  if (!u) return null;
+  try {
+    const url = new URL(u);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 async function safeFetchJson(url: string) {
-  // DB yok: sayfada "her request fetch" yerine route'lar zaten revalidate veriyor.
-  // Burada no-store kalsın; asıl cache'yi route'larda veriyoruz.
   const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-  if (!res.ok) return null;
-  return res.json();
+  if (!res.ok) {
+    return { __error: true, status: res.status, url } as const;
+  }
+  const json = await res.json().catch(() => null);
+  return json;
+}
+
+async function safeFetchJsonCached(url: string, revalidate: number) {
+  const res = await fetch(url, { cache: "force-cache", next: { revalidate } });
+  if (!res.ok) {
+    return { __error: true, status: res.status, url } as const;
+  }
+  const json = await res.json().catch(() => null);
+  return json;
 }
 
 function symbolToPlain(sym: string) {
@@ -121,6 +149,7 @@ function formatDateTR(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
   return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -129,9 +158,25 @@ function formatDateTR(iso: string) {
   }).format(d);
 }
 
+function timeAgoTR(unixSec?: number) {
+  if (!unixSec) return "—";
+  const now = Date.now();
+  const t = unixSec * 1000;
+  const diff = Math.max(0, now - t);
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return "az önce";
+  if (min < 60) return `${min} dk önce`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h} sa önce`;
+  const d = Math.floor(h / 24);
+  return `${d} gün önce`;
+}
+
 function Sparkline({ values }: { values?: number[] }) {
   const v = (values ?? []).filter((x) => Number.isFinite(x));
   if (v.length < 2) return <span className="text-[11px] text-gray-600">—</span>;
+
+  const trendUp = v[v.length - 1] >= v[0];
 
   const w = 90,
     h = 24,
@@ -149,7 +194,12 @@ function Sparkline({ values }: { values?: number[] }) {
   const d = pts.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(" ");
 
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="opacity-90">
+    <svg
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      className={`opacity-95 ${trendUp ? "text-green-400" : "text-red-400"}`}
+    >
       <path d={d} fill="none" stroke="currentColor" strokeWidth="2" />
     </svg>
   );
@@ -168,7 +218,6 @@ function tagLabel(tag: string) {
 }
 
 function cleanTickerLabel(t: string) {
-  // NASDAQ:AAPL -> AAPL, ETF:QQQ -> QQQ, BIST:ASELS -> ASELS
   return t?.includes(":") ? t.split(":")[1] : t;
 }
 
@@ -178,12 +227,72 @@ function universeLabel(u: Universe) {
   return "BIST100";
 }
 
+// Investing-style: score badge + bar
+function scoreTone(scoreNum: number | null) {
+  if (scoreNum == null) return "bg-gray-900/40 text-gray-200 border-gray-700";
+  if (scoreNum >= 80) return "bg-green-500/15 text-green-300 border-green-600 shadow-green-500/30 shadow-sm";
+  if (scoreNum >= 60) return "bg-yellow-500/15 text-yellow-300 border-yellow-600 shadow-yellow-500/20 shadow-sm";
+  return "bg-red-500/15 text-red-300 border-red-600 shadow-red-500/20 shadow-sm";
+}
+
+function ScoreBadge({ score }: { score: number | null }) {
+  return (
+    <span className={`text-xs font-black px-2.5 py-1 rounded-lg border ${scoreTone(score)}`}>
+      {score ?? "—"}
+    </span>
+  );
+}
+
+function ScoreBar({ score }: { score: number | null }) {
+  const s = score == null ? 0 : Math.max(0, Math.min(100, score));
+  const fill =
+    score == null ? "bg-gray-700" : s >= 80 ? "bg-green-500" : s >= 60 ? "bg-yellow-500" : "bg-red-500";
+  return (
+    <div className="mt-2">
+      <div className="h-1.5 w-full rounded-full bg-gray-800 overflow-hidden">
+        <div className={`h-1.5 ${fill}`} style={{ width: `${s}%` }} />
+      </div>
+      <div className="mt-1 text-[11px] text-gray-500">Heat: {score == null ? "—" : `${s}/100`}</div>
+    </div>
+  );
+}
+
+function newsImpactColor(tags: string[]) {
+  const u = (tags ?? []).map((x) => String(x).toUpperCase());
+  if (u.includes("NEGATIF")) return "border-red-600/70 bg-red-950/20";
+  if (u.includes("SATIN_ALMA") || u.includes("BIRLESME")) return "border-green-600/70 bg-green-950/15";
+  if (u.includes("TEMETTU") || u.includes("GERI_ALIM")) return "border-blue-600/70 bg-blue-950/15";
+  if (u.includes("YUKSEK_KAR")) return "border-yellow-600/70 bg-yellow-950/10";
+  return "border-gray-800 bg-[#0b0f14]";
+}
+
+function estimateNewsImpact(n: NewsItem) {
+  // Basit “impact score” (0..100): ticker sayısı + tag ağırlığı + kaynak bonusu
+  const tick = (n.tickers ?? []).length;
+  const tags = (n.tags ?? []).map((x) => String(x).toUpperCase());
+  let score = 10;
+
+  score += Math.min(30, tick * 6);
+
+  if (tags.includes("SATIN_ALMA") || tags.includes("BIRLESME")) score += 25;
+  if (tags.includes("TEMETTU") || tags.includes("GERI_ALIM")) score += 18;
+  if (tags.includes("YUKSEK_KAR")) score += 14;
+  if (tags.includes("NEGATIF")) score += 16;
+
+  const src = String(n.source || "").toLowerCase();
+  if (src.includes("reuters") || src.includes("bloomberg")) score += 10;
+
+  if (typeof n.score === "number") score = Math.max(score, Math.min(100, n.score));
+
+  return Math.max(0, Math.min(100, score));
+}
+
 // =====================
 // DATA FETCHERS
 // =====================
 async function getLatestSignals(base: string): Promise<SignalRow[]> {
   try {
-    const json = await safeFetchJson(`${base}/api/signals`);
+    const json: any = await safeFetchJson(`${base}/api/signals`);
     const arr: SignalRow[] = (json?.data ?? []) as SignalRow[];
     return Array.isArray(arr) ? arr.slice(0, 6) : [];
   } catch (e) {
@@ -194,7 +303,7 @@ async function getLatestSignals(base: string): Promise<SignalRow[]> {
 
 async function getKapImportant(base: string): Promise<KapRow[]> {
   try {
-    const json = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
+    const json: any = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
     const arr: KapRow[] = (json?.items ?? []) as KapRow[];
     return Array.isArray(arr) ? arr.slice(0, 8) : [];
   } catch (e) {
@@ -204,16 +313,12 @@ async function getKapImportant(base: string): Promise<KapRow[]> {
 }
 
 async function getTopMargins(base: string, universe: Universe): Promise<TopMarginsResp | null> {
-  // ETF’de marj sıralaması anlamsız → gizleyeceğiz
   if (universe === "ETF") return null;
 
   try {
-    // ✅ backend endpoint'in sadece BIST100/NASDAQ100 biliyorsa:
-    // NASDAQ300 seçiliyse backend'e NASDAQ100 diye gönderiyoruz (ya da backend'i NASDAQ300'e genişletirsin)
     const backendUniverse = universe === "NASDAQ300" ? "NASDAQ100" : universe;
-
     const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(backendUniverse)}&limit=10`;
-    const json = await safeFetchJson(url);
+    const json: any = await safeFetchJson(url);
     const data = (json?.data ?? null) as TopMarginsResp | null;
     return data && typeof data === "object" ? data : null;
   } catch (e) {
@@ -222,35 +327,79 @@ async function getTopMargins(base: string, universe: Universe): Promise<TopMargi
   }
 }
 
-async function getNewsCombined(base: string, universe: Universe): Promise<NewsItem[]> {
+async function getNewsCombined(
+  base: string,
+  universe: Universe,
+  minScore: number
+): Promise<{ items: NewsItem[]; meta?: any; debug?: any }> {
   try {
-    const json = await safeFetchJson(`${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=12`);
+    // Not: ilk debug için minScore'u query ile oynatacağız
+    const url = `${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=30&minScore=${minScore}`;
+    const json: any = await safeFetchJsonCached(url, 3600);
+
+    // hata objesi döndüyse
+    if (json?.__error) {
+      return { items: [], debug: json };
+    }
+
     const arr: NewsItem[] = (json?.items ?? []) as NewsItem[];
-    return Array.isArray(arr) ? arr : [];
+    return { items: Array.isArray(arr) ? arr : [], meta: json?.meta, debug: { url, status: 200 } };
   } catch (e) {
     console.error("getNewsCombined error:", e);
-    return [];
+    return { items: [], debug: { error: String(e) } };
   }
 }
 
 // =====================
 // PAGE
 // =====================
-export default async function HomePage({ searchParams }: { searchParams?: { u?: string } }) {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams?: { u?: string; t?: string; sort?: string; minScore?: string };
+}) {
   const u = String(searchParams?.u ?? "BIST100").toUpperCase();
   const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
 
+  // ticker filter
+  const tickerFilter = (searchParams?.t ?? "").toString().trim().toUpperCase();
+
+  // sorting: latest | impact
+  const sort = (searchParams?.sort ?? "latest").toString().toLowerCase();
+
+  // debug: minScore override (default 80)
+  const minScore = Number.isFinite(Number(searchParams?.minScore))
+    ? Math.max(0, Math.min(100, Number(searchParams?.minScore)))
+    : 80;
+
   const base = getApiBaseUrl();
 
-  const [latest, kap, top, news] = await Promise.all([
+  const [latest, kap, top, newsPack] = await Promise.all([
     getLatestSignals(base),
-    getKapImportant(base),
+    universe === "BIST100" ? getKapImportant(base) : Promise.resolve([]),
     getTopMargins(base, universe),
-    getNewsCombined(base, universe),
+    getNewsCombined(base, universe, minScore),
   ]);
+
+  let news = newsPack.items;
+
+  // ticker filter applied
+  if (tickerFilter) {
+    news = news.filter((n) => (n.tickers ?? []).some((t) => cleanTickerLabel(t).toUpperCase() === tickerFilter));
+  }
+
+  // sort
+  if (sort === "impact") {
+    news = [...news].sort((a, b) => estimateNewsImpact(b) - estimateNewsImpact(a));
+  } else {
+    news = [...news].sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
+  }
 
   const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
   const nowIso = new Date().toISOString();
+
+  const newsCount = news.length;
+  const lastNewsTimeIso = newsCount ? new Date(news[0].datetime * 1000).toISOString() : null;
 
   return (
     <main className="min-h-screen bg-[#0d1117] text-white">
@@ -278,10 +427,42 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
             </a>
           </nav>
         </div>
+
+        {/* Market pulse strip */}
+        <div className="border-t border-gray-800 bg-[#0b0f14]">
+          <div className="mx-auto max-w-6xl px-4 py-2 flex flex-wrap items-center gap-2 text-[11px] text-gray-400">
+            <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
+              Universe: <span className="text-gray-200 font-semibold">{universeLabel(universe)}</span>
+            </span>
+            <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
+              Haber: <span className="text-gray-200 font-semibold">{newsCount}</span>
+              {lastNewsTimeIso ? (
+                <span className="text-gray-500"> • son: {timeAgoTR(news[0].datetime)}</span>
+              ) : null}
+            </span>
+            <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
+              MinScore: <span className="text-gray-200 font-semibold">{minScore}</span>
+            </span>
+            {tickerFilter ? (
+              <span className="px-2 py-1 rounded-full border border-blue-700/60 bg-blue-950/30 text-blue-200">
+                Ticker: <span className="font-black">{tickerFilter}</span>{" "}
+                <Link
+                  href={`/?u=${encodeURIComponent(universe)}&sort=${encodeURIComponent(sort)}&minScore=${minScore}`}
+                  className="ml-1 text-blue-300 hover:text-blue-200 underline"
+                >
+                  temizle
+                </Link>
+              </span>
+            ) : null}
+            <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
+              Render: <span className="text-gray-200 font-semibold">{formatDateTR(nowIso)}</span>
+            </span>
+          </div>
+        </div>
       </header>
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pt-14 pb-10">
+      <section className="mx-auto max-w-6xl px-4 pt-12 pb-8">
         <div className="rounded-3xl border border-gray-800 bg-gradient-to-br from-[#111827] via-[#0d1117] to-black p-8 md:p-12 shadow-2xl">
           <div className="flex flex-col gap-6">
             <div className="flex flex-wrap gap-2">
@@ -313,33 +494,34 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
               </Link>
 
               <Link
-                href="/terminal"
-                className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-700 hover:bg-gray-900 transition-colors font-semibold text-gray-200"
-              >
-                Son sinyalleri gör
-              </Link>
-
-              <Link
                 href={`/bilanco?symbol=${encodeURIComponent(defaultSym)}`}
                 className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-700 hover:bg-gray-900 transition-colors font-semibold text-gray-200"
               >
                 Bilanço →
               </Link>
+
+              {/* Quick debug link */}
+              <Link
+                href={`/?u=${encodeURIComponent(universe)}&minScore=0&sort=impact`}
+                className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-700 hover:bg-gray-900 transition-colors font-semibold text-gray-200"
+              >
+                Debug: minScore=0 →
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">⚡ Canlı Akış</div>
                 <div className="text-xs text-gray-500 mt-1">API’dan son sinyaller çekilir, terminalde otomatik yenilenir.</div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">🧠 Skor + Neden</div>
-                <div className="text-xs text-gray-500 mt-1">“Golden Cross, VWAP, RSI Divergence…” gibi nedenler rozetlenir.</div>
+                <div className="text-xs text-gray-500 mt-1">Golden Cross, VWAP, Divergence… skor bar + glow ile.</div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">🗞️ Haber Yakala</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  Haber metninden / related alanından tickers yakalanır: <span className="text-gray-300">{universeLabel(universe)}</span>
+                  Haber metninden tickers yakalanır: <span className="text-gray-300">{universeLabel(universe)}</span>
                 </div>
               </div>
             </div>
@@ -347,40 +529,47 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
         </div>
       </section>
 
-      {/* Universe switch */}
+      {/* Universe switch + controls */}
       <section className="mx-auto max-w-6xl px-4 pb-6">
-        <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 flex items-center justify-between">
+        <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="text-sm font-black">🌍 Universe</div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex flex-wrap items-center gap-2">
+            {(["BIST100", "NASDAQ300", "ETF"] as Universe[]).map((x) => {
+              const active = universe === x;
+              return (
+                <Link
+                  key={x}
+                  href={`/?u=${x}&sort=${encodeURIComponent(sort)}&minScore=${minScore}${tickerFilter ? `&t=${encodeURIComponent(tickerFilter)}` : ""}`}
+                  aria-current={active ? "page" : undefined}
+                  className={`text-xs font-semibold px-3 py-2 rounded-lg border transition-colors ${
+                    active
+                      ? "border-blue-500 bg-blue-950/40 text-blue-200 shadow-blue-500/30 shadow-sm"
+                      : "border-gray-700 hover:bg-gray-900 text-gray-200"
+                  }`}
+                >
+                  {x}
+                </Link>
+              );
+            })}
+
+            <div className="w-px h-7 bg-gray-800 mx-1" />
+
             <Link
-              href={`/?u=BIST100`}
+              href={`/?u=${encodeURIComponent(universe)}&sort=latest&minScore=${minScore}${tickerFilter ? `&t=${encodeURIComponent(tickerFilter)}` : ""}`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "BIST100"
-                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
-                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
+                sort === "latest" ? "border-gray-200/30 bg-gray-900/40 text-gray-100" : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
-              BIST100
+              Sırala: Son
             </Link>
             <Link
-              href={`/?u=NASDAQ300`}
+              href={`/?u=${encodeURIComponent(universe)}&sort=impact&minScore=${minScore}${tickerFilter ? `&t=${encodeURIComponent(tickerFilter)}` : ""}`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "NASDAQ300"
-                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
-                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
+                sort === "impact" ? "border-gray-200/30 bg-gray-900/40 text-gray-100" : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
-              NASDAQ300
-            </Link>
-            <Link
-              href={`/?u=ETF`}
-              className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "ETF"
-                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
-                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
-              }`}
-            >
-              ETF
+              Sırala: Etki
             </Link>
           </div>
         </div>
@@ -390,57 +579,105 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
       <section className="mx-auto max-w-6xl px-4 pb-12">
         <div className="flex items-end justify-between mb-4">
           <h2 className="text-lg font-black">🔥 Haber Akışı</h2>
-          <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
+          <span className="text-xs text-gray-500">
+            Render: {formatDateTR(nowIso)} • Kaynak cache: 1 saat
+          </span>
         </div>
 
         {news.length === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Haber yok (veya <code className="text-gray-300">/api/news/combined</code> erişilemiyor).
+          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-300 text-sm">
+            <div className="font-black">Haber yok / gelmiyor</div>
+            <div className="mt-2 text-xs text-gray-400 leading-relaxed">
+              • Eğer <b>minScore</b> yüksekse (şu an: <b>{minScore}</b>) haberler filtrelenebilir.{" "}
+              <Link
+                className="text-blue-300 hover:text-blue-200 underline"
+                href={`/?u=${encodeURIComponent(universe)}&minScore=0&sort=${encodeURIComponent(sort)}`}
+              >
+                minScore=0 dene
+              </Link>
+              <br />
+              • Endpoint: <code className="text-gray-200">/api/news/combined</code>
+              <br />
+              • Debug:{" "}
+              <span className="text-gray-200">
+                {newsPack?.debug?.status ? `status=${newsPack.debug.status}` : "status=—"}
+              </span>{" "}
+              {newsPack?.debug?.url ? (
+                <>
+                  • url: <span className="text-gray-500 break-all">{newsPack.debug.url}</span>
+                </>
+              ) : null}
+              {newsPack?.debug?.error ? (
+                <>
+                  <br />• error: <span className="text-red-300">{String(newsPack.debug.error)}</span>
+                </>
+              ) : null}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {news.map((n, i) => {
+              const href = safeHttpUrl(n.url);
               const dateIso = n.datetime ? new Date(n.datetime * 1000).toISOString() : "";
-              const tick = (n.tickers || []).slice(0, 5);
-              const tags = (n.tags || []).slice(0, 3);
+              const tick = (n.tickers || []).slice(0, 6);
+              const tags = (n.tags || []).slice(0, 4);
+              const impact = estimateNewsImpact(n);
 
-              return (
-                <a key={`${n.url}-${i}`} href={n.url} target="_blank" rel="noreferrer" className="block">
-                  <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
-                    <div className="text-xs text-gray-500">
-                      {n.source} • {dateIso ? formatDateTR(dateIso) : "—"}
+              const Card = (
+                <div className={`rounded-2xl border p-4 hover:bg-[#0f1620] transition-colors ${newsImpactColor(tags)}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-xs text-gray-400">
+                      <span className="text-gray-300">{n.source}</span> • {dateIso ? formatDateTR(dateIso) : "—"} •{" "}
+                      <span className="text-gray-500">{timeAgoTR(n.datetime)}</span>
                     </div>
 
-                    <div className="mt-1 font-black text-sm">{n.headline}</div>
-
-                    {tick.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {tick.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                          >
-                            {cleanTickerLabel(t)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    {tags.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                          >
-                            {tagLabel(t)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    <div className="mt-3 text-xs text-blue-400">Haberi aç →</div>
+                    <ScoreBadge score={impact} />
                   </div>
+
+                  <div className="mt-1 font-black text-sm">{n.headline}</div>
+
+                  <ScoreBar score={impact} />
+
+                  {tick.length > 0 ? (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {tick.map((t) => {
+                        const plain = cleanTickerLabel(t).toUpperCase();
+                        return (
+                          <Link
+                            key={t}
+                            href={`/?u=${encodeURIComponent(universe)}&t=${encodeURIComponent(plain)}&sort=${encodeURIComponent(sort)}&minScore=${minScore}`}
+                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300 hover:border-blue-600/60 hover:text-blue-200 transition-colors"
+                            aria-label={`Ticker filtrele: ${plain}`}
+                          >
+                            {plain}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+
+                  {tags.length > 0 ? (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {tags.map((t) => (
+                        <span
+                          key={t}
+                          className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
+                        >
+                          {tagLabel(t)}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  <div className="mt-3 text-xs text-blue-400">{href ? "Haberi aç →" : "Link geçersiz"}</div>
+                </div>
+              );
+
+              if (!href) return <div key={`${n.url}-${i}`}>{Card}</div>;
+
+              return (
+                <a key={`${href}-${i}`} href={href} target="_blank" rel="noreferrer" className="block">
+                  {Card}
                 </a>
               );
             })}
@@ -453,9 +690,9 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
         <section className="mx-auto max-w-6xl px-4 pb-12">
           <div className="flex items-end justify-between mb-4">
             <h2 className="text-lg font-black">💰 Yüksek Kâr Oranı</h2>
-
             <div className="text-xs text-gray-500">
               Universe: <span className="text-gray-200 font-semibold">{universeLabel(universe)}</span>
+              {universe === "NASDAQ300" ? <span className="text-gray-600"> • (marjlar NASDAQ100’den)</span> : null}
             </div>
           </div>
 
@@ -566,7 +803,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
         <section className="mx-auto max-w-6xl px-4 pb-12">
           <div className="flex items-end justify-between mb-4">
             <h2 className="text-lg font-black">KAP • BIST100 Önemli</h2>
-            <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
+            <span className="text-xs text-gray-500">Render: {formatDateTR(nowIso)}</span>
           </div>
 
           {kap.length === 0 ? (
@@ -577,8 +814,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {kap.map((k, i) => {
-                const href = k.url ? String(k.url) : null;
-
+                const href = safeHttpUrl(k.url);
                 const dateIso = k.datetime ? new Date(k.datetime * 1000).toISOString() : "";
                 const codes = Array.isArray(k.stockCodes) ? k.stockCodes : [];
                 const tags = Array.isArray(k.tags) ? k.tags.slice(0, 3) : [];
@@ -586,7 +822,8 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
                 const Card = (
                   <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
                     <div className="text-xs text-gray-500">
-                      {(codes.length ? codes.join(", ") : "—")} • {dateIso ? formatDateTR(dateIso) : "—"}
+                      {(codes.length ? codes.join(", ") : "—")} • {dateIso ? formatDateTR(dateIso) : "—"} •{" "}
+                      <span className="text-gray-600">{timeAgoTR(k.datetime)}</span>
                     </div>
 
                     <div className="mt-1 font-black text-sm">{k.title ?? "KAP Bildirimi"}</div>
@@ -596,7 +833,15 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
                         {tags.map((t) => (
                           <span
                             key={t}
-                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
+                            className={`text-[11px] px-2 py-1 rounded-full border bg-[#0d1117] ${
+                              String(t).toUpperCase() === "NEGATIF"
+                                ? "border-red-600/60 text-red-300"
+                                : String(t).toUpperCase() === "SATIN_ALMA"
+                                ? "border-green-600/60 text-green-300"
+                                : String(t).toUpperCase() === "TEMETTU"
+                                ? "border-blue-600/60 text-blue-300"
+                                : "border-gray-800 text-gray-300"
+                            }`}
                           >
                             {tagLabel(t)}
                           </span>
@@ -633,7 +878,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
         {latest.length === 0 ? (
           <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
             Henüz sinyal yok (veya <code className="text-gray-300">/api/signals</code> erişilemiyor).
-            <div className="mt-2 text-xs text-gray-600">Son kontrol: {formatDateTR(nowIso)}</div>
+            <div className="mt-2 text-xs text-gray-600">Render: {formatDateTR(nowIso)}</div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -644,13 +889,6 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
               const plain = symbolToPlain(r.symbol);
               const reasons = parseReasons(r.reasons);
               const scoreNum = typeof r.score === "number" ? r.score : null;
-
-              const scoreClass =
-                scoreNum !== null && scoreNum >= 80
-                  ? "text-green-400"
-                  : scoreNum !== null && scoreNum >= 60
-                  ? "text-blue-300"
-                  : "text-white";
 
               return (
                 <Link
@@ -670,9 +908,9 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
                     <div
                       className={`shrink-0 text-xs font-black px-2.5 py-1 rounded-lg border ${
                         isBuy
-                          ? "border-green-600 text-green-300 bg-green-950/30"
+                          ? "border-green-600 text-green-300 bg-green-950/30 shadow-green-500/20 shadow-sm"
                           : isSell
-                          ? "border-red-600 text-red-300 bg-red-950/30"
+                          ? "border-red-600 text-red-300 bg-red-950/30 shadow-red-500/20 shadow-sm"
                           : "border-gray-700 text-gray-300 bg-gray-900/30"
                       }`}
                     >
@@ -684,10 +922,12 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
                     <div className="text-sm text-gray-200">
                       Fiyat: <span className="font-bold text-white">{formatPrice(r.price)}</span>
                     </div>
-                    <div className="text-sm text-gray-200">
-                      Skor: <span className={`font-black ${scoreClass}`}>{scoreNum ?? "—"}</span>
+                    <div className="text-sm text-gray-200 flex items-center gap-2">
+                      Skor: <ScoreBadge score={scoreNum} />
                     </div>
                   </div>
+
+                  <ScoreBar score={scoreNum} />
 
                   {reasons.length > 0 ? (
                     <div className="mt-3 flex flex-wrap gap-1.5">
