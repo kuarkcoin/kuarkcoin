@@ -42,7 +42,7 @@ export const ASSETS = {
 "KONTR","KORDS","KRONT","LIDFA","LOGO","LUKSK","MAGEN","MAALT","MAVI","MEKAG",
 "MPARK","NETAS","ODAS","OTKAR","PAPIL","PGSUS","QUAGR","RAYSG","RTALB","SDTTR",
 "SELEC","SNICA","SODSN","SUMAS","TAVHL","TKFEN","TRGYO","TURGG","ULKER","USAK",
-"VAKKO","VESBE","YATAS","ZOREN",
+"VAKKO","VESBE","YATAS","OZYSR","KLYPV","ZOREN",
 
     // (istersen buraya kalan BIST 100 hisselerini de ekleyebilirsin)
 
