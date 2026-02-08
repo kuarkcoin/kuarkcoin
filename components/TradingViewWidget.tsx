@@ -18,6 +18,12 @@ type Props = {
   scriptTimeoutMs?: number;
 };
 
+type NormalizedSymbol = {
+  primary: string;
+  fallback: string | null;
+  market: MarketHint;
+};
+
 declare global {
   interface Window {
     TradingView?: any;
@@ -32,11 +38,11 @@ function ensureTvScript(timeoutMs = 12000): Promise<void> {
   const existing = document.querySelector<HTMLScriptElement>('script[data-tvjs="1"]');
   if (existing) {
     return new Promise((resolve, reject) => {
-      const done = () => resolve();
-      const fail = () => reject(new Error("tv.js load error"));
+      const onLoad = () => resolve();
+      const onErr = () => reject(new Error("tv.js load error"));
 
-      existing.addEventListener("load", done, { once: true });
-      existing.addEventListener("error", fail, { once: true });
+      existing.addEventListener("load", onLoad, { once: true });
+      existing.addEventListener("error", onErr, { once: true });
 
       window.setTimeout(() => {
         if (!window.TradingView) reject(new Error("tv.js load timeout"));
@@ -64,49 +70,47 @@ function isPlainTicker(s: string) {
 }
 
 /**
- * Symbol normalize:
- * - BIST:XXXX => TVC:XXXX (en çok çalışan)
- * - Plain ticker + marketHint => uygun prefix
+ * ✅ HER ZAMAN NormalizedSymbol döndürür (union yok)
  */
-function normalizeSymbol(sym: string, marketHint: MarketHint) {
+function normalizeSymbol(sym: string, marketHint: MarketHint): NormalizedSymbol {
   const s0 = (sym || "").trim();
-  if (!s0) return s0;
+  if (!s0) return { primary: "", fallback: null, market: marketHint };
 
   // BIST_DLY: -> BIST:
   const base = s0.startsWith("BIST_DLY:") ? s0.replace("BIST_DLY:", "BIST:") : s0;
   const up = base.toUpperCase();
 
-  // Eğer "BIST:XXXX" geldiyse default TVC'ye çevir
+  // "BIST:XXXX" => primary TVC, fallback BIST
   if (up.startsWith("BIST:")) {
-    const t = up.replace("BIST:", "");
-    return { primary: `TVC:${t}`, fallback: `BIST:${t}`, market: "BIST" as const };
+    const t = up.slice("BIST:".length);
+    return { primary: `TVC:${t}`, fallback: `BIST:${t}`, market: "BIST" };
   }
 
-  // Zaten prefix varsa (NASDAQ:, BINANCE:, TVC:, AMEX: vb.)
+  // Prefix varsa dokunma (NASDAQ:, BINANCE:, TVC:, AMEX: vb.)
   if (up.includes(":")) {
-    return { primary: up, fallback: null as string | null, market: marketHint };
+    return { primary: up, fallback: null, market: marketHint };
+  }
+
+  // Plain ticker değilse olduğu gibi
+  if (!isPlainTicker(up)) {
+    return { primary: base, fallback: null, market: marketHint };
   }
 
   // Plain ticker
   const t = up;
-  if (!isPlainTicker(t)) return { primary: base, fallback: null as string | null, market: marketHint };
 
-  if (marketHint === "CRYPTO") return { primary: `BINANCE:${t}`, fallback: null, market: "CRYPTO" as const };
-  if (marketHint === "ETF") return { primary: `AMEX:${t}`, fallback: null, market: "ETF" as const };
-  if (marketHint === "NASDAQ") return { primary: `NASDAQ:${t}`, fallback: null, market: "NASDAQ" as const };
+  if (marketHint === "CRYPTO") return { primary: `BINANCE:${t}`, fallback: null, market: "CRYPTO" };
+  if (marketHint === "ETF") return { primary: `AMEX:${t}`, fallback: null, market: "ETF" };
+  if (marketHint === "NASDAQ") return { primary: `NASDAQ:${t}`, fallback: null, market: "NASDAQ" };
 
-  // BIST plain ticker -> TVC + fallback BIST
-  if (marketHint === "BIST") return { primary: `TVC:${t}`, fallback: `BIST:${t}`, market: "BIST" as const };
+  // BIST plain ticker => TVC primary, BIST fallback
+  if (marketHint === "BIST") return { primary: `TVC:${t}`, fallback: `BIST:${t}`, market: "BIST" };
 
   // AUTO
-  if (t.endsWith("USDT") || t.endsWith("USD")) return { primary: `BINANCE:${t}`, fallback: null, market: "CRYPTO" as const };
-  return { primary: `NASDAQ:${t}`, fallback: null, market: "NASDAQ" as const };
+  if (t.endsWith("USDT") || t.endsWith("USD")) return { primary: `BINANCE:${t}`, fallback: null, market: "CRYPTO" };
+  return { primary: `NASDAQ:${t}`, fallback: null, market: "NASDAQ" };
 }
 
-/**
- * TradingView embed widget:
- * - BIST için TVC primary + BIST fallback (opsiyonel)
- */
 export default function TradingViewWidget({
   symbol,
   interval = "1D",
@@ -148,7 +152,6 @@ export default function TradingViewWidget({
       }; width:100%"></div>`;
 
       await ensureTvScript(scriptTimeoutMs);
-
       if (cancelled || !window.TradingView) return;
 
       widgetRef.current = new window.TradingView.widget({
@@ -170,13 +173,14 @@ export default function TradingViewWidget({
 
     const mount = async () => {
       try {
-        // 1) Primary
+        // 1) primary
         await mountWith(sym.primary);
 
-        // 2) BIST fallback (TVC bazen yok): widget hata popup'ını yakalayamıyoruz.
-        // Bu yüzden "heuristic fallback": 1.8sn sonra hala canvas yoksa fallback dene.
+        // 2) BIST fallback: 1.8sn sonra hala render yoksa fallback dene
         const shouldTryFallback =
-          enableBistFallback && sym.fallback && (sym.market === "BIST" || sym.primary.startsWith("TVC:"));
+          enableBistFallback &&
+          !!sym.fallback &&
+          (sym.market === "BIST" || sym.primary.startsWith("TVC:"));
 
         if (shouldTryFallback) {
           fallbackTimer = window.setTimeout(async () => {
@@ -184,23 +188,20 @@ export default function TradingViewWidget({
             const el = containerRef.current;
             if (!el) return;
 
-            // widget çizdiyse (iframe/canvas vs) dokunma
+            // render olmuş gibi görünüyorsa dokunma
             const looksRendered = el.querySelector("iframe, canvas, .tv-chart-view") != null;
             if (looksRendered) return;
 
-            // fallback dene
             try {
               await mountWith(sym.fallback!);
             } catch {
-              // sessiz kalmasın
               setErr("TradingView grafiği yüklenemedi (TVC/BIST denendi).");
             }
           }, 1800);
         }
       } catch (e: any) {
         if (cancelled) return;
-        const msg = e?.message ?? "TradingView yüklenemedi.";
-        setErr(msg);
+        setErr(e?.message ?? "TradingView yüklenemedi.");
       }
     };
 
