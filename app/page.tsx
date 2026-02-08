@@ -958,6 +958,9 @@ export default async function HomePage({
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
               <div className="font-bold">1) TradingView Alert</div>
               <div className="text-gray-500 mt-1">Pine Script alarmı JSON gönderir (BUY/SELL, score, reasons…).</div>
+              <pre className="mt-3 whitespace-pre-wrap rounded-lg border border-gray-800 bg-black/40 p-3 text-[11px] text-gray-300">
+{`{"secret":"KUARK_SECRET","symbol":"BIST:ASELS","price":123.45,"signal":"BUY","score":42,"reasons":"🚀BREAKOUT,RSI,MACD","t":1717430400000}`}
+              </pre>
             </div>
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
               <div className="font-bold">2) API Kaydeder</div>
