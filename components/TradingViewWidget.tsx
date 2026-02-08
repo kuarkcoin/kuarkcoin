@@ -1,15 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-
-type Market = "AUTO" | "BIST" | "NASDAQ" | "CRYPTO";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
-  symbol: string; // "BIST:THYAO" | "NASDAQ:AAPL" | "BINANCE:BTCUSDT" | "AKBNK" | "AAPL"
-  market?: Market; // ✅ yeni
+  symbol: string; // "BIST:THYAO" | "TVC:THYAO" | "NASDAQ:AAPL" | "AAPL"
   interval?: string;
   theme?: "dark" | "light";
   height?: number | string;
+
+  /**
+   * BIST için varsayılan kaynak:
+   * - "auto": BIST gelirse TVC'ye çevir (en stabil)
+   * - "bist": zorla BIST:
+   * - "tvc": zorla TVC:
+   */
+  bistSource?: "auto" | "bist" | "tvc";
+
+  /**
+   * Widget “boş kaldı” hissini engellemek için:
+   * chart hazır olsa bile BIST veri yetkisi yoksa iframe boş kalabiliyor.
+   * Bu durumda kullanıcıya açıklama gösteriyoruz.
+   */
+  showFallbackHint?: boolean;
 };
 
 declare global {
@@ -41,45 +53,60 @@ function ensureTvScript(): Promise<void> {
   });
 }
 
-function normalizeSymbol(sym: string, market: Market) {
-  const s0 = (sym || "").trim().toUpperCase();
-  if (!s0) return s0;
+function normalizeSymbol(sym: string, bistSource: Props["bistSource"]): string {
+  const s = (sym || "").trim();
+  if (!s) return s;
 
   // BIST_DLY -> BIST
-  if (s0.startsWith("BIST_DLY:")) return s0.replace("BIST_DLY:", "BIST:");
+  const s1 = s.startsWith("BIST_DLY:") ? s.replace("BIST_DLY:", "BIST:") : s;
 
-  // Zaten exchange varsa dokunma
-  if (s0.includes(":")) return s0;
+  // Plain ticker gelirse NASDAQ fallback
+  if (!s1.includes(":") && /^[A-Z0-9._-]{1,12}$/.test(s1)) return `NASDAQ:${s1}`;
 
-  // Çıplak ticker: market'e göre prefix bas
-  if (market === "BIST") return `BIST:${s0}`;
-  if (market === "NASDAQ") return `NASDAQ:${s0}`;
-  if (market === "CRYPTO") return `BINANCE:${s0}`; // BTCUSDT gibi
+  // BIST -> TVC fix (auto modda)
+  if (s1.startsWith("BIST:")) {
+    if (bistSource === "bist") return s1;
+    if (bistSource === "tvc") return s1.replace("BIST:", "TVC:");
+    // auto
+    return s1.replace("BIST:", "TVC:");
+  }
 
-  // AUTO: BIST hisseleri çoğunlukla 5 harf (AKBNK, THYAO) → heuristik
-  // (istersen bunu BIST listesiyle daha kesin yaparız)
-  if (/^[A-Z]{5}$/.test(s0)) return `BIST:${s0}`;
-
-  // default: NASDAQ
-  return `NASDAQ:${s0}`;
+  return s1;
 }
 
 export default function TradingViewWidget({
   symbol,
-  market = "AUTO",
   interval = "15",
   theme = "dark",
   height = "100%",
+  bistSource = "auto",
+  showFallbackHint = true,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetRef = useRef<any>(null);
 
-  const tvSymbol = useMemo(() => normalizeSymbol(symbol, market), [symbol, market]);
+  // Kullanıcı “alternatif kaynakla dene” dediğinde burada flip’liyoruz
+  const [altFlip, setAltFlip] = useState(false);
+  const [hint, setHint] = useState<string | null>(null);
+
+  const tvSymbol = useMemo(() => {
+    // flip = BIST<->TVC
+    const effectiveSource: Props["bistSource"] =
+      bistSource === "auto"
+        ? altFlip
+          ? "bist" // ilk TVC denedik, olmazsa BIST'e dön
+          : "tvc"  // auto modda TVC ile başla
+        : bistSource;
+
+    return normalizeSymbol(symbol, effectiveSource);
+  }, [symbol, bistSource, altFlip]);
 
   useEffect(() => {
     let cancelled = false;
 
     const mount = async () => {
+      setHint(null);
+
       if (!containerRef.current) return;
 
       // cleanup old widget
@@ -96,6 +123,7 @@ export default function TradingViewWidget({
         typeof height === "number" ? `${height}px` : height
       }; width:100%"></div>`;
 
+      // load script once
       try {
         await ensureTvScript();
       } catch {
@@ -107,6 +135,7 @@ export default function TradingViewWidget({
 
       if (cancelled || !window.TradingView) return;
 
+      // create widget
       widgetRef.current = new window.TradingView.widget({
         autosize: true,
         symbol: tvSymbol,
@@ -122,6 +151,27 @@ export default function TradingViewWidget({
         allow_symbol_change: false,
         container_id: widgetId,
       });
+
+      // “Boş kaldı” hissi için açıklama:
+      // tv.js widget veri yoksa genelde hata fırlatmaz, iframe boş gibi kalır.
+      // Kesin tespit API yok; bu yüzden kontrollü, kullanıcıya net bilgi veriyoruz.
+      if (showFallbackHint) {
+        const isBistLike = symbol.trim().startsWith("BIST:") || symbol.trim().startsWith("BIST_DLY:");
+        if (isBistLike) {
+          // 2.5s sonra hala UI "şüpheli" ise hint ver
+          setTimeout(() => {
+            if (cancelled) return;
+            // iframe var mı?
+            const iframe = containerRef.current?.querySelector("iframe");
+            if (!iframe) {
+              setHint("BIST verisi TradingView’de bu hesapta / bölgede kapalı olabilir. TVC/BIST alternatifini deneyebilirsin.");
+              return;
+            }
+            // iframe var ama yine de veri gelmeyebilir → gene de açıklama vermek OK
+            setHint("BIST hisseleri TradingView widget’ında bazen veri kısıtı yüzünden boş kalabilir. Alternatif kaynağı deneyebilirsin (TVC/BIST).");
+          }, 2500);
+        }
+      }
     };
 
     mount();
@@ -134,7 +184,44 @@ export default function TradingViewWidget({
       widgetRef.current = null;
       if (containerRef.current) containerRef.current.innerHTML = "";
     };
-  }, [tvSymbol, interval, theme, height]);
+  }, [tvSymbol, interval, theme, height, showFallbackHint, symbol]);
 
-  return <div ref={containerRef} className="w-full h-full" />;
+  const showAltButton = symbol.trim().startsWith("BIST:") || symbol.trim().startsWith("BIST_DLY:");
+
+  return (
+    <div className="w-full h-full">
+      <div ref={containerRef} className="w-full h-full" />
+
+      {(hint || showAltButton) && (
+        <div className="mt-2 flex flex-col gap-2 text-sm">
+          {hint && <div className="opacity-80">{hint}</div>}
+
+          {showAltButton && (
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setAltFlip((v) => !v)}
+                className="rounded-md border px-3 py-1 hover:opacity-90"
+              >
+                Alternatif Kaynakla Dene ({altFlip ? "BIST:" : "TVC:"})
+              </button>
+
+              <a
+                className="underline opacity-80 hover:opacity-100"
+                href={`https://tr.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbol)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                TradingView’de aç
+              </a>
+
+              <span className="opacity-60">
+                (İstersen BIST için lightweight-charts ile %100 kontrol sağlayabiliriz.)
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
