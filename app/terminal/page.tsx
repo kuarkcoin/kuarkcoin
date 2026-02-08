@@ -208,8 +208,12 @@ function Sparkline({ points }: { points?: number[] | null }) {
 function normalizeSymbol(sym: string) {
   const s = String(sym || "").trim();
   if (!s) return "NASDAQ:AAPL";
-  if (s.includes(":")) return s;
   const up = s.toUpperCase();
+  if (up.includes(":")) {
+    const [ex, ticker] = up.split(":");
+    if (!ticker) return up;
+    return `${ex}:${ticker}`;
+  }
   if (BIST_SET.has(up)) return `BIST:${up}`;
   if (CRYPTO_SET.has(up)) return `BINANCE:${up}`;
   if (ETF_SET.has(up)) return `AMEX:${up}`;
