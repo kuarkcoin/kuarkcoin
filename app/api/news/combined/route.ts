@@ -12,14 +12,13 @@ export const dynamic = "force-dynamic";
 type Mode = "raw" | "relaxed" | "strict";
 const DEFAULT_MODE: Mode = "strict";
 
-// BIST KAP API: kaç saatlik pencere
 const WINDOW_HOURS = 72;
-
-// KAP sorgusunda kaç gün geriye gidelim (72 saat için 3 gün mantıklı)
 const QUERY_DAYS_BACK = 3;
-
-// Timeout
 const FETCH_TIMEOUT_MS = 12_000;
+
+// ✅ Critical Fix: meta union olmasın
+type FetchMeta = Record<string, any>;
+type FetchResult = { items: CombinedNewsItem[]; meta: FetchMeta };
 
 // =====================
 // TYPES
@@ -44,20 +43,19 @@ type CombinedNewsItem = {
   datetime: number; // unix sec
   summary?: string;
 
-  // Matching / enrichment
-  matched?: string[]; // örn: ["AKBNK","THYAO"]
-  score?: number; // 0..100
-  level?: string; // LOW/MID/HIGH gibi
+  matched?: string[];
+  score?: number;
+  level?: string;
 
-  // KAP-specific
   company?: string;
   tags?: KapTag[];
   stockCodes?: string[];
+
   meta?: Record<string, any>;
 };
 
 // =====================
-// TAG KEYWORDS (DIAMOND)
+// TAG KEYWORDS
 // =====================
 const TAG_KEYWORDS: Record<KapTag, string[]> = {
   IS_ANLASMASI: [
@@ -211,7 +209,6 @@ function detectKapTags(text: string): KapTag[] {
 // =====================
 // TIME PARSING (TR-safe)
 // =====================
-// We compute today/yesterday using Istanbul calendar even if server runs in UTC.
 function getIstanbulParts(d: Date) {
   const parts = new Intl.DateTimeFormat("tr-TR", {
     timeZone: "Europe/Istanbul",
@@ -233,18 +230,11 @@ function getIstanbulParts(d: Date) {
   };
 }
 
-// Convert Istanbul local date-time to UTC ms (Istanbul is UTC+3, DST removed in TR).
+// Istanbul is UTC+3
 function istanbulLocalToUtcMs(yyyy: number, MM: number, dd: number, hh: number, mm: number) {
   return Date.UTC(yyyy, MM - 1, dd, hh - 3, mm, 0, 0);
 }
 
-/**
- * KAP publishDate may be:
- *  - "Bugün 10:30" / "Dün 17:44" (TR)
- *  - "14.07.2025 18:14" (TR)
- *  - unix seconds/ms
- *  - ISO
- */
 function safeTimeMsTR(value: any): number {
   if (value == null) return 0;
 
@@ -259,12 +249,11 @@ function safeTimeMsTR(value: any): number {
   if (mRel) {
     const [, dayWord, hh, mm] = mRel;
 
-    // Determine "today" in Istanbul calendar (not server tz)
     const nowParts = getIstanbulParts(new Date());
     let { yyyy, MM, dd } = nowParts;
+
     if (dayWord.toLowerCase() === "dün") {
-      // subtract one day in Istanbul calendar by creating a UTC date from Istanbul and subtracting 1 day
-      const todayUtcMs = istanbulLocalToUtcMs(yyyy, MM, dd, 12, 0); // noon safe
+      const todayUtcMs = istanbulLocalToUtcMs(yyyy, MM, dd, 12, 0);
       const yUtc = new Date(todayUtcMs - 86400000);
       const yParts = getIstanbulParts(yUtc);
       yyyy = yParts.yyyy;
@@ -291,7 +280,7 @@ function safeTimeMsTR(value: any): number {
 }
 
 // =====================
-// UNIVERSE
+// UNIVERSE + MATCH
 // =====================
 function pickUniverse(u: string): string[] {
   if (u === "NASDAQ300") return (NASDAQ300 ?? []).map((s) => String(s).toUpperCase());
@@ -365,8 +354,7 @@ async function fetchFinnhubMarketNews(category: string): Promise<CombinedNewsIte
   }
 }
 
-// KAP API (memberDisclosureQuery)
-async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: boolean) {
+async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: boolean): Promise<FetchResult> {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
 
@@ -376,7 +364,7 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
   const uniSet = new Set(universeBistSymbols.map((x) => String(x).toUpperCase()));
   const since = Date.now() - WINDOW_HOURS * 60 * 60 * 1000;
 
-  const debug = {
+  const debug: FetchMeta = {
     mode,
     rawCount: 0,
     normalizedCount: 0,
@@ -388,7 +376,7 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
     notInUniverse: 0,
     hasNegative: 0,
     notBullishOrOther: 0,
-    sample: {} as any,
+    sample: {},
   };
 
   try {
@@ -429,9 +417,7 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
       const text = `${headline} ${summary} ${it?.disclosureClass ?? ""}`;
       const tags = detectKapTags(text);
 
-      // stockCodes sometimes empty; try alternatives
       const codes = extractCodes(it.stockCodes || it.relatedStockCodes || it.companyStocks || it?.stockCode || "");
-
       const t = safeTimeMsTR(it.publishDate);
 
       const url =
@@ -467,7 +453,6 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
       return { items, meta: debugOn ? debug : { mode, rawCount: debug.rawCount } };
     }
 
-    // window filter
     let filtered = normalized.filter((x) => x.t && x.t >= since);
     debug.afterWindow = filtered.length;
 
@@ -476,6 +461,7 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
         .sort((a, b) => (b.t || 0) - (a.t || 0))
         .slice(0, 120)
         .map((x) => x.ui);
+
       return { items, meta: debugOn ? debug : { mode, rawCount: debug.rawCount, afterWindow: debug.afterWindow } };
     }
 
@@ -494,7 +480,6 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
         debug.hasNegative++;
         return false;
       }
-      // Bullish OR DIGER (so it doesn't go empty)
       const okTag = x.tags.some((tg) => BULLISH_TAGS.includes(tg)) || x.tags.includes("DIGER");
       if (!okTag) {
         debug.notBullishOrOther++;
@@ -510,21 +495,25 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
       .slice(0, 120)
       .map((x) => x.ui);
 
-    return { items, meta: debugOn ? debug : { mode, rawCount: debug.rawCount, afterWindow: debug.afterWindow, afterStrict: debug.afterStrict } };
+    return {
+      items,
+      meta: debugOn
+        ? debug
+        : { mode, rawCount: debug.rawCount, afterWindow: debug.afterWindow, afterStrict: debug.afterStrict },
+    };
   } catch (e: any) {
     const msg = e?.name === "AbortError" ? "KAP timeout" : (e?.message ?? "KAP error");
-    return { items: [] as CombinedNewsItem[], meta: debugOn ? { ...debug, error: msg } : { mode, error: msg } };
+    return { items: [], meta: debugOn ? { ...debug, error: msg } : { mode, error: msg } };
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function fetchExternalNews(u: string, mode: Mode, universeSymbols: string[], debugOn: boolean) {
+async function fetchExternalNews(u: string, mode: Mode, universeSymbols: string[], debugOn: boolean): Promise<FetchResult> {
   if (u === "BIST100") {
     return fetchKapApi(mode, universeSymbols, debugOn);
   }
 
-  // NASDAQ300 / ETFS
   const finnhub = await fetchFinnhubMarketNews("general");
   const matched = matchUniverse(finnhub, universeSymbols);
 
@@ -550,18 +539,26 @@ export async function GET(req: Request) {
     const minScore = clampInt(searchParams.get("minScore"), 60, 0, 100);
 
     const debugOn = searchParams.get("debug") === "1";
-    const allowFallback = searchParams.get("fallback") !== "0"; // default ON
+    const allowFallback = searchParams.get("fallback") !== "0";
 
     const universe = pickUniverse(u);
 
+    // ✅ explicit meta type: no union, no build error
+    let rawItems: CombinedNewsItem[] = [];
+    let meta: FetchMeta = {};
+
     // 1) fetch
-    let { items: rawItems, meta } = await fetchExternalNews(u, mode, universe, debugOn);
+    const main = await fetchExternalNews(u, mode, universe, debugOn);
+    rawItems = main.items;
+    meta = main.meta;
 
     // 2) BIST strict => fallback to relaxed if empty
     if (u === "BIST100" && allowFallback && mode === "strict" && rawItems.length === 0) {
       const fb = await fetchExternalNews(u, "relaxed", universe, debugOn);
       rawItems = fb.items;
-      meta = debugOn ? { ...(meta || {}), fallbackTo: "relaxed", fallbackMeta: fb.meta } : { fallbackTo: "relaxed" };
+      meta = debugOn
+        ? { ...(meta || {}), fallbackTo: "relaxed", fallbackMeta: fb.meta }
+        : { ...(meta || {}), fallbackTo: "relaxed" };
     }
 
     // 3) Score + filter + sort
