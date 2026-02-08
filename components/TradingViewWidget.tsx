@@ -1,21 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type MarketHint = "BIST" | "NASDAQ" | "ETF" | "CRYPTO" | "AUTO";
 
 type Props = {
-  symbol: string; // örn: "BIST:THYAO" | "NASDAQ:AAPL" | "ARCLK" | "AAPL"
-  interval?: string; // "1" "5" "15" "60" "1D" vb. (TradingView widget string kabul eder)
+  symbol: string; // "BIST:THYAO" | "NASDAQ:AAPL" | "AKBNK" | "AAPL" | "BTCUSDT"
+  interval?: string; // "1" "5" "15" "60" "1D" vb.
   theme?: "dark" | "light";
   height?: number | string;
-
-  /**
-   * Plain ticker (ARCLK, AAPL) gelirse hangi market prefix’i eklensin?
-   * Terminalde hangi sekme seçiliyse onu yolla: "BIST" / "NASDAQ" / "CRYPTO" / "ETF"
-   * BIST görünmeme sorununu bitiren ana nokta: BIST’te TVC’ye çevirmiyoruz.
-   */
   marketHint?: MarketHint;
+
+  /** BIST için: önce TVC dene, olmazsa BIST'e düş */
+  enableBistFallback?: boolean;
+
+  /** tv.js yükleme timeout */
+  scriptTimeoutMs?: number;
 };
 
 declare global {
@@ -24,22 +24,22 @@ declare global {
   }
 }
 
-/** tv.js'i tek sefer yükle */
+/** tv.js tek sefer yükle */
 function ensureTvScript(timeoutMs = 12000): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   if (window.TradingView) return Promise.resolve();
 
   const existing = document.querySelector<HTMLScriptElement>('script[data-tvjs="1"]');
   if (existing) {
-    return new Promise((res, rej) => {
-      const onLoad = () => res();
-      const onErr = () => rej(new Error("tv.js load error"));
-      existing.addEventListener("load", onLoad, { once: true });
-      existing.addEventListener("error", onErr, { once: true });
+    return new Promise((resolve, reject) => {
+      const done = () => resolve();
+      const fail = () => reject(new Error("tv.js load error"));
 
-      // güvenlik timeout
+      existing.addEventListener("load", done, { once: true });
+      existing.addEventListener("error", fail, { once: true });
+
       window.setTimeout(() => {
-        if (!window.TradingView) rej(new Error("tv.js load timeout"));
+        if (!window.TradingView) reject(new Error("tv.js load timeout"));
       }, timeoutMs);
     });
   }
@@ -53,7 +53,6 @@ function ensureTvScript(timeoutMs = 12000): Promise<void> {
     s.onerror = () => reject(new Error("tv.js load error"));
     document.head.appendChild(s);
 
-    // güvenlik timeout
     window.setTimeout(() => {
       if (!window.TradingView) reject(new Error("tv.js load timeout"));
     }, timeoutMs);
@@ -61,87 +60,97 @@ function ensureTvScript(timeoutMs = 12000): Promise<void> {
 }
 
 function isPlainTicker(s: string) {
-  // ARCLK, AAPL, BTCUSDT, THYAO gibi
   return /^[A-Z0-9._-]{1,20}$/.test(s);
 }
 
-function normalizeSymbol(sym: string, marketHint: MarketHint): string {
+/**
+ * Symbol normalize:
+ * - BIST:XXXX => TVC:XXXX (en çok çalışan)
+ * - Plain ticker + marketHint => uygun prefix
+ */
+function normalizeSymbol(sym: string, marketHint: MarketHint) {
   const s0 = (sym || "").trim();
   if (!s0) return s0;
 
-  // Sende vardı: BIST_DLY -> BIST
-  if (s0.startsWith("BIST_DLY:")) return s0.replace("BIST_DLY:", "BIST:");
+  // BIST_DLY: -> BIST:
+  const base = s0.startsWith("BIST_DLY:") ? s0.replace("BIST_DLY:", "BIST:") : s0;
+  const up = base.toUpperCase();
 
-  // Zaten prefix varsa (BIST:, NASDAQ:, BINANCE: vs) dokunma
-  if (s0.includes(":")) return s0;
+  // Eğer "BIST:XXXX" geldiyse default TVC'ye çevir
+  if (up.startsWith("BIST:")) {
+    const t = up.replace("BIST:", "");
+    return { primary: `TVC:${t}`, fallback: `BIST:${t}`, market: "BIST" as const };
+  }
 
-  // Plain ticker ise hint’e göre prefix ekle
-  const s = s0.toUpperCase();
-  if (!isPlainTicker(s)) return s0;
+  // Zaten prefix varsa (NASDAQ:, BINANCE:, TVC:, AMEX: vb.)
+  if (up.includes(":")) {
+    return { primary: up, fallback: null as string | null, market: marketHint };
+  }
 
-  // CRYPTO ör: BTCUSDT -> BINANCE:BTCUSDT
-  if (marketHint === "CRYPTO") return `BINANCE:${s}`;
+  // Plain ticker
+  const t = up;
+  if (!isPlainTicker(t)) return { primary: base, fallback: null as string | null, market: marketHint };
 
-  // ETF çoğunlukla AMEX/NYSEARCA’da; TradingView genelde "AMEX:" ile çalışır
-  // Ama bazı ETF'ler NYSEARCA. En güvenlisi: kullanıcı zaten ETF listesini "SPY" gibi veriyorsa "AMEX:" denenir.
-  if (marketHint === "ETF") return `AMEX:${s}`;
+  if (marketHint === "CRYPTO") return { primary: `BINANCE:${t}`, fallback: null, market: "CRYPTO" as const };
+  if (marketHint === "ETF") return { primary: `AMEX:${t}`, fallback: null, market: "ETF" as const };
+  if (marketHint === "NASDAQ") return { primary: `NASDAQ:${t}`, fallback: null, market: "NASDAQ" as const };
 
-  // NASDAQ
-  if (marketHint === "NASDAQ") return `NASDAQ:${s}`;
+  // BIST plain ticker -> TVC + fallback BIST
+  if (marketHint === "BIST") return { primary: `TVC:${t}`, fallback: `BIST:${t}`, market: "BIST" as const };
 
-  // BIST: kritik fix -> TVC değil, BIST
-  if (marketHint === "BIST") return `BIST:${s}`;
-
-  // AUTO fallback: kriptoda USDT varsa BINANCE, yoksa NASDAQ
-  if (s.endsWith("USDT") || s.endsWith("USD")) return `BINANCE:${s}`;
-  return `NASDAQ:${s}`;
+  // AUTO
+  if (t.endsWith("USDT") || t.endsWith("USD")) return { primary: `BINANCE:${t}`, fallback: null, market: "CRYPTO" as const };
+  return { primary: `NASDAQ:${t}`, fallback: null, market: "NASDAQ" as const };
 }
 
+/**
+ * TradingView embed widget:
+ * - BIST için TVC primary + BIST fallback (opsiyonel)
+ */
 export default function TradingViewWidget({
   symbol,
-  interval = "15",
+  interval = "1D",
   theme = "dark",
   height = "100%",
   marketHint = "AUTO",
+  enableBistFallback = true,
+  scriptTimeoutMs = 12000,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetRef = useRef<any>(null);
 
-  const tvSymbol = useMemo(() => normalizeSymbol(symbol, marketHint), [symbol, marketHint]);
+  const [err, setErr] = useState<string | null>(null);
+
+  const sym = useMemo(() => normalizeSymbol(symbol, marketHint), [symbol, marketHint]);
 
   useEffect(() => {
     let cancelled = false;
+    let fallbackTimer: number | null = null;
 
-    const mount = async () => {
-      const el = containerRef.current;
-      if (!el) return;
-
-      // önce eski widget'ı temizle
+    const destroy = () => {
       try {
         widgetRef.current?.remove?.();
       } catch {}
       widgetRef.current = null;
+      if (containerRef.current) containerRef.current.innerHTML = "";
+    };
 
-      // container reset
-      el.innerHTML = "";
+    const mountWith = async (tvSymbol: string) => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      setErr(null);
+      destroy();
 
       const widgetId = `tv-${Math.random().toString(36).slice(2)}`;
       el.innerHTML = `<div id="${widgetId}" style="height:${
         typeof height === "number" ? `${height}px` : height
       }; width:100%"></div>`;
 
-      try {
-        await ensureTvScript();
-      } catch (err) {
-        if (!cancelled && containerRef.current) {
-          containerRef.current.innerHTML = `<div style="padding:12px">TradingView yüklenemedi.</div>`;
-        }
-        return;
-      }
+      await ensureTvScript(scriptTimeoutMs);
 
       if (cancelled || !window.TradingView) return;
 
-      // widget create
       widgetRef.current = new window.TradingView.widget({
         autosize: true,
         symbol: tvSymbol,
@@ -159,18 +168,55 @@ export default function TradingViewWidget({
       });
     };
 
+    const mount = async () => {
+      try {
+        // 1) Primary
+        await mountWith(sym.primary);
+
+        // 2) BIST fallback (TVC bazen yok): widget hata popup'ını yakalayamıyoruz.
+        // Bu yüzden "heuristic fallback": 1.8sn sonra hala canvas yoksa fallback dene.
+        const shouldTryFallback =
+          enableBistFallback && sym.fallback && (sym.market === "BIST" || sym.primary.startsWith("TVC:"));
+
+        if (shouldTryFallback) {
+          fallbackTimer = window.setTimeout(async () => {
+            if (cancelled) return;
+            const el = containerRef.current;
+            if (!el) return;
+
+            // widget çizdiyse (iframe/canvas vs) dokunma
+            const looksRendered = el.querySelector("iframe, canvas, .tv-chart-view") != null;
+            if (looksRendered) return;
+
+            // fallback dene
+            try {
+              await mountWith(sym.fallback!);
+            } catch {
+              // sessiz kalmasın
+              setErr("TradingView grafiği yüklenemedi (TVC/BIST denendi).");
+            }
+          }, 1800);
+        }
+      } catch (e: any) {
+        if (cancelled) return;
+        const msg = e?.message ?? "TradingView yüklenemedi.";
+        setErr(msg);
+      }
+    };
+
     mount();
 
     return () => {
       cancelled = true;
-      try {
-        widgetRef.current?.remove?.();
-      } catch {}
-      widgetRef.current = null;
-      if (containerRef.current) containerRef.current.innerHTML = "";
+      if (fallbackTimer) window.clearTimeout(fallbackTimer);
+      destroy();
     };
-  }, [tvSymbol, interval, theme, height]);
+  }, [sym.primary, sym.fallback, sym.market, interval, theme, height, enableBistFallback, scriptTimeoutMs]);
 
-  return <div ref={containerRef} className="w-full h-full" />;
+  return (
+    <div className="w-full h-full">
+      <div ref={containerRef} className="w-full h-full" />
+      {err && <div className="mt-2 text-xs text-red-400">{err}</div>}
+    </div>
+  );
 }
-
