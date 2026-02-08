@@ -7,6 +7,17 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
+type SignalSide = "BUY" | "SELL";
+
+type SignalItem = {
+  id: number;
+  symbol: string;
+  side: SignalSide;
+  tf: string;
+  time: number;
+  price: number | null;
+  reasons: string | null;
+};
 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000; // UTC+3
@@ -34,6 +45,12 @@ function noStore(json: any, init?: ResponseInit) {
   });
 }
 
+function clampInt(val: string | null, fallback: number, min: number, max: number) {
+  const n = Number(val);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.trunc(n)));
+}
+
 // TradingView t bazen seconds bazen ms gelebilir
 function parseTvTime(t: any) {
   const n = Number(t);
@@ -59,6 +76,9 @@ export async function GET(req: Request) {
   const supa = supabaseServer();
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
+  const symbol = searchParams.get("symbol");
+  const tf = searchParams.get("tf") || "1D";
+  const days = clampInt(searchParams.get("days"), 120, 1, 365);
 
   if (scope === "todayTop") {
     const { startUTC, endUTC } = istanbulDayRange();
@@ -91,6 +111,31 @@ export async function GET(req: Request) {
     }
 
     return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
+  }
+
+  if (symbol) {
+    const from = new Date(Date.now() - days * 86400000);
+    const { data, error } = await supa
+      .from("signals")
+      .select("*")
+      .eq("symbol", symbol)
+      .gte("created_at", from.toISOString())
+      .order("created_at", { ascending: true })
+      .limit(2000);
+
+    if (error) return noStore({ ok: false, items: [], error: error.message }, { status: 500 });
+
+    const items: SignalItem[] = (data ?? []).map((row: any) => ({
+      id: Number(row.id),
+      symbol: String(row.symbol ?? symbol),
+      side: String(row.signal ?? "").toUpperCase() === "SELL" ? "SELL" : "BUY",
+      tf: String(row.tf ?? tf),
+      time: Math.floor(new Date(row.created_at).getTime() / 1000),
+      price: row.price == null ? null : Number(row.price),
+      reasons: row.reasons == null ? null : String(row.reasons),
+    }));
+
+    return noStore({ ok: true, items });
   }
 
   const { data, error } = await supa
