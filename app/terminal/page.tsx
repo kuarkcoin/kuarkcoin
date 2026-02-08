@@ -351,13 +351,22 @@ export default function TerminalPage() {
   }, [signals]);
 
   const signaledSymbols = useMemo(() => new Set(signals.map((r) => symbolToPlain(r.symbol))), [signals]);
+  const selectedPlainSymbol = useMemo(() => symbolToPlain(selectedSymbol), [selectedSymbol]);
+  const selectedSignals = useMemo(() => {
+    return signals.filter((r) => symbolToPlain(r.symbol) === selectedPlainSymbol);
+  }, [signals, selectedPlainSymbol]);
+  const sortedSelectedSignals = useMemo(() => {
+    return [...selectedSignals].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  }, [selectedSignals]);
+  const chartSignalPreview = sortedSelectedSignals.slice(0, 5);
 
   const visibleSignals = useMemo(() => {
     const last = signals.slice(0, signalLimit);
     if (!onlySelectedSymbol) return last;
-    const plainSel = symbolToPlain(selectedSymbol);
-    return last.filter((s) => symbolToPlain(s.symbol) === plainSel);
-  }, [signals, selectedSymbol, onlySelectedSymbol, signalLimit]);
+    return last.filter((s) => symbolToPlain(s.symbol) === selectedPlainSymbol);
+  }, [signals, selectedPlainSymbol, onlySelectedSymbol, signalLimit]);
 
   const winrate = useMemo(() => {
     const decided = visibleSignals.filter((r) => r.outcome != null);
@@ -988,11 +997,82 @@ export default function TerminalPage() {
 
             <div className="flex-1 flex flex-col md:flex-row min-h-0">
               <div
-                className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
+                className={`flex-1 flex flex-col bg-black min-w-0 min-h-[420px] ${
                   mobileTab !== "CHART" ? "hidden md:block" : "block"
                 }`}
               >
-                <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                <div className="relative flex-1 min-h-[360px]">
+                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="D" theme="dark" />
+
+                  {chartSignalPreview.length > 0 ? (
+                    <div className="absolute left-3 top-3 flex flex-col gap-2">
+                      {chartSignalPreview.map((r) => {
+                        const sig = String(r.signal || "").toUpperCase();
+                        const cls =
+                          sig === "BUY"
+                            ? "border-green-700 text-green-200 bg-green-950/60"
+                            : sig === "SELL"
+                            ? "border-red-700 text-red-200 bg-red-950/60"
+                            : "border-gray-700 text-gray-200 bg-gray-900/60";
+                        return (
+                          <div
+                            key={r.id}
+                            className={`flex items-center gap-2 rounded-md border px-2.5 py-1 text-[10px] shadow-lg ${cls}`}
+                            title={`${sig} • ${symbolToPlain(r.symbol)} • ${new Date(
+                              r.created_at
+                            ).toLocaleString("tr-TR")}`}
+                          >
+                            <span className="font-semibold">{sig}</span>
+                            <span className="text-[10px] text-gray-300">{timeAgo(r.created_at)}</span>
+                            {r.price != null && <span className="text-[10px] text-gray-300">@{r.price}</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="absolute left-3 top-3 text-[11px] text-gray-500 bg-black/40 border border-gray-800 rounded px-2 py-1">
+                      Bu sembol için sinyal bulunamadı.
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t border-gray-800 bg-[#0b0f14] px-4 py-3">
+                  <div className="flex items-center justify-between text-[11px] text-gray-400">
+                    <span>1G mum altında tetiklenen indikatör/formasyon etiketleri</span>
+                    {chartSignalPreview[0] && <span>{timeAgo(chartSignalPreview[0].created_at)}</span>}
+                  </div>
+
+                  {chartSignalPreview.length > 0 ? (
+                    <div className="mt-2 space-y-3">
+                      {chartSignalPreview.map((signalRow) => (
+                        <div key={signalRow.id} className="rounded-lg border border-gray-800 bg-[#0d1117] p-3">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <ScoreChip signal={signalRow.signal} score={signalRow.score} />
+                            <span className="text-xs text-gray-300">
+                              {symbolToPlain(signalRow.symbol)} • {signalRow.signal || "—"}
+                            </span>
+                            <span className="text-xs text-gray-500">{timeAgo(signalRow.created_at)}</span>
+                            {signalRow.price != null && (
+                              <span className="text-xs text-gray-400">@{signalRow.price}</span>
+                            )}
+                          </div>
+                          {signalRow.reasons ? (
+                            <>
+                              <ReasonBadges reasons={signalRow.reasons} />
+                              <TechLine reasons={signalRow.reasons} />
+                            </>
+                          ) : (
+                            <div className="mt-2 text-xs text-gray-500">Bu sinyal için etiket bilgisi gelmedi.</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-2 text-xs text-gray-500">
+                      Günlük mum altında gösterecek etiket bulunamadı.
+                    </div>
+                  )}
+                </div>
               </div>
 
               <aside
