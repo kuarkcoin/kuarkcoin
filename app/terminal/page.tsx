@@ -672,7 +672,6 @@ export default function TerminalPage() {
 
           <button
             onClick={() => {
-              setHeatLimit((p) => Math.max(48, p));
               setSignalLimit(110);
               refreshAll();
             }}
