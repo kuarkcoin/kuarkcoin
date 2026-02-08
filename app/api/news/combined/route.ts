@@ -56,6 +56,47 @@ type CombinedNewsItem = {
   meta?: Record<string, any>;
 };
 
+type NewsMeta = {
+  mode?: Mode;
+  rawCount?: number;
+  normalizedCount?: number;
+  afterWindow?: number;
+  afterStrict?: number;
+  windowHours?: number;
+  dateRange?: { fromDate: string; toDate: string };
+  noCodes?: number;
+  notInUniverse?: number;
+  hasNegative?: number;
+  notBullishOrOther?: number;
+  totalRaw?: number;
+  totalMatched?: number;
+  source?: string;
+  error?: string;
+  sample?: any;
+  fallbackTo?: Mode;
+  fallbackMeta?: NewsMeta;
+};
+
+type FetchResult = {
+  items: CombinedNewsItem[];
+  meta?: NewsMeta;
+};
+
+type KapDebug = {
+  mode: Mode;
+  rawCount: number;
+  normalizedCount: number;
+  afterWindow: number;
+  afterStrict: number;
+  windowHours: number;
+  dateRange: { fromDate: string; toDate: string };
+  noCodes: number;
+  notInUniverse: number;
+  hasNegative: number;
+  notBullishOrOther: number;
+  sample: any;
+};
+
 // =====================
 // TAG KEYWORDS (DIAMOND)
 // =====================
@@ -366,7 +407,7 @@ async function fetchFinnhubMarketNews(category: string): Promise<CombinedNewsIte
 }
 
 // KAP API (memberDisclosureQuery)
-async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: boolean) {
+async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: boolean): Promise<FetchResult> {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
 
@@ -376,7 +417,7 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
   const uniSet = new Set(universeBistSymbols.map((x) => String(x).toUpperCase()));
   const since = Date.now() - WINDOW_HOURS * 60 * 60 * 1000;
 
-  const debug = {
+  const debug: KapDebug = {
     mode,
     rawCount: 0,
     normalizedCount: 0,
@@ -519,7 +560,12 @@ async function fetchKapApi(mode: Mode, universeBistSymbols: string[], debugOn: b
   }
 }
 
-async function fetchExternalNews(u: string, mode: Mode, universeSymbols: string[], debugOn: boolean) {
+async function fetchExternalNews(
+  u: string,
+  mode: Mode,
+  universeSymbols: string[],
+  debugOn: boolean
+): Promise<FetchResult> {
   if (u === "BIST100") {
     return fetchKapApi(mode, universeSymbols, debugOn);
   }
