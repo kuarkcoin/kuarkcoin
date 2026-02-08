@@ -2,8 +2,11 @@
 
 import { useEffect, useMemo, useRef } from "react";
 
+type Market = "AUTO" | "BIST" | "NASDAQ" | "CRYPTO";
+
 type Props = {
-  symbol: string; // örn: "BIST:THYAO" | "NASDAQ:AAPL" | "AAPL"
+  symbol: string; // "BIST:THYAO" | "NASDAQ:AAPL" | "BINANCE:BTCUSDT" | "AKBNK" | "AAPL"
+  market?: Market; // ✅ yeni
   interval?: string;
   theme?: "dark" | "light";
   height?: number | string;
@@ -38,21 +41,32 @@ function ensureTvScript(): Promise<void> {
   });
 }
 
-function normalizeSymbol(sym: string) {
-  const s = (sym || "").trim();
-  if (!s) return s;
+function normalizeSymbol(sym: string, market: Market) {
+  const s0 = (sym || "").trim().toUpperCase();
+  if (!s0) return s0;
 
   // BIST_DLY -> BIST
-  if (s.startsWith("BIST_DLY:")) return s.replace("BIST_DLY:", "BIST:");
+  if (s0.startsWith("BIST_DLY:")) return s0.replace("BIST_DLY:", "BIST:");
 
-  // Plain ticker gelirse (AAPL gibi) NASDAQ fallback
-  if (!s.includes(":") && /^[A-Z0-9._-]{1,10}$/.test(s)) return `NASDAQ:${s}`;
+  // Zaten exchange varsa dokunma
+  if (s0.includes(":")) return s0;
 
-  return s;
+  // Çıplak ticker: market'e göre prefix bas
+  if (market === "BIST") return `BIST:${s0}`;
+  if (market === "NASDAQ") return `NASDAQ:${s0}`;
+  if (market === "CRYPTO") return `BINANCE:${s0}`; // BTCUSDT gibi
+
+  // AUTO: BIST hisseleri çoğunlukla 5 harf (AKBNK, THYAO) → heuristik
+  // (istersen bunu BIST listesiyle daha kesin yaparız)
+  if (/^[A-Z]{5}$/.test(s0)) return `BIST:${s0}`;
+
+  // default: NASDAQ
+  return `NASDAQ:${s0}`;
 }
 
 export default function TradingViewWidget({
   symbol,
+  market = "AUTO",
   interval = "15",
   theme = "dark",
   height = "100%",
@@ -60,7 +74,7 @@ export default function TradingViewWidget({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetRef = useRef<any>(null);
 
-  const tvSymbol = useMemo(() => normalizeSymbol(symbol), [symbol]);
+  const tvSymbol = useMemo(() => normalizeSymbol(symbol, market), [symbol, market]);
 
   useEffect(() => {
     let cancelled = false;
@@ -82,11 +96,9 @@ export default function TradingViewWidget({
         typeof height === "number" ? `${height}px` : height
       }; width:100%"></div>`;
 
-      // load script once
       try {
         await ensureTvScript();
       } catch {
-        // sessiz kalmasın
         if (containerRef.current) {
           containerRef.current.innerHTML = `<div style="padding:12px">TradingView yüklenemedi.</div>`;
         }
@@ -95,7 +107,6 @@ export default function TradingViewWidget({
 
       if (cancelled || !window.TradingView) return;
 
-      // create widget
       widgetRef.current = new window.TradingView.widget({
         autosize: true,
         symbol: tvSymbol,
