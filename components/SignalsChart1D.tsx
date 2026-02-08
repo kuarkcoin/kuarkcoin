@@ -1,306 +1,175 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { parseReasons, REASON_LABEL } from "@/constants/terminal";
+import { useEffect, useMemo, useRef } from "react";
 
-type Candle = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-};
-
-type SignalRow = {
-  id: number;
-  symbol: string;
-  side: "BUY" | "SELL";
-  tf: string;
-  time: number;
-  price: number | null;
-  reasons: string | null;
-};
-
-type MergedSignal = {
-  time: number;
-  sides: Set<SignalRow["side"]>;
-  reasons: Set<string>;
-};
+type MarketHint = "BIST" | "NASDAQ" | "ETF" | "CRYPTO" | "AUTO";
 
 type Props = {
-  symbol: string;
-  days?: number;
+  symbol: string; // örn: "BIST:THYAO" | "NASDAQ:AAPL" | "ARCLK" | "AAPL"
+  interval?: string; // "1" "5" "15" "60" "1D" vb. (TradingView widget string kabul eder)
+  theme?: "dark" | "light";
+  height?: number | string;
+
+  /**
+   * Plain ticker (ARCLK, AAPL) gelirse hangi market prefix’i eklensin?
+   * Terminalde hangi sekme seçiliyse onu yolla: "BIST" / "NASDAQ" / "CRYPTO" / "ETF"
+   * BIST görünmeme sorununu bitiren ana nokta: BIST’te TVC’ye çevirmiyoruz.
+   */
+  marketHint?: MarketHint;
 };
 
-function normalizeReasonLabels(reasons: string | null) {
-  return parseReasons(reasons).map((key) => REASON_LABEL[key] ?? key);
-}
-
-function mergeSignals(rows: SignalRow[]) {
-  const map = new Map<number, MergedSignal>();
-  for (const row of rows) {
-    const key = row.time;
-    const entry = map.get(key) ?? { time: key, sides: new Set(), reasons: new Set() };
-    entry.sides.add(row.side);
-    for (const reason of normalizeReasonLabels(row.reasons)) {
-      if (reason) entry.reasons.add(reason);
-    }
-    map.set(key, entry);
+declare global {
+  interface Window {
+    TradingView?: any;
   }
-  return Array.from(map.values()).sort((a, b) => a.time - b.time);
 }
 
-async function loadScript(src: string) {
-  if (typeof window === "undefined") return;
-  const existing = document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
+/** tv.js'i tek sefer yükle */
+function ensureTvScript(timeoutMs = 12000): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if (window.TradingView) return Promise.resolve();
+
+  const existing = document.querySelector<HTMLScriptElement>('script[data-tvjs="1"]');
   if (existing) {
-    if (existing.dataset.loaded === "true") return;
-    await new Promise<void>((resolve, reject) => {
-      existing.addEventListener("load", () => resolve(), { once: true });
-      existing.addEventListener("error", () => reject(new Error("Script load failed")), { once: true });
+    return new Promise((res, rej) => {
+      const onLoad = () => res();
+      const onErr = () => rej(new Error("tv.js load error"));
+      existing.addEventListener("load", onLoad, { once: true });
+      existing.addEventListener("error", onErr, { once: true });
+
+      // güvenlik timeout
+      window.setTimeout(() => {
+        if (!window.TradingView) rej(new Error("tv.js load timeout"));
+      }, timeoutMs);
     });
-    return;
   }
 
-  await new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.async = true;
-    script.dataset.loaded = "false";
-    script.onload = () => {
-      script.dataset.loaded = "true";
-      resolve();
-    };
-    script.onerror = () => reject(new Error("Script load failed"));
-    document.head.appendChild(script);
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://s3.tradingview.com/tv.js";
+    s.async = true;
+    s.dataset.tvjs = "1";
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("tv.js load error"));
+    document.head.appendChild(s);
+
+    // güvenlik timeout
+    window.setTimeout(() => {
+      if (!window.TradingView) reject(new Error("tv.js load timeout"));
+    }, timeoutMs);
   });
 }
 
-export default function SignalsChart1D({ symbol, days = 120 }: Props) {
+function isPlainTicker(s: string) {
+  // ARCLK, AAPL, BTCUSDT, THYAO gibi
+  return /^[A-Z0-9._-]{1,20}$/.test(s);
+}
+
+function normalizeSymbol(sym: string, marketHint: MarketHint): string {
+  const s0 = (sym || "").trim();
+  if (!s0) return s0;
+
+  // Sende vardı: BIST_DLY -> BIST
+  if (s0.startsWith("BIST_DLY:")) return s0.replace("BIST_DLY:", "BIST:");
+
+  // Zaten prefix varsa (BIST:, NASDAQ:, BINANCE: vs) dokunma
+  if (s0.includes(":")) return s0;
+
+  // Plain ticker ise hint’e göre prefix ekle
+  const s = s0.toUpperCase();
+  if (!isPlainTicker(s)) return s0;
+
+  // CRYPTO ör: BTCUSDT -> BINANCE:BTCUSDT
+  if (marketHint === "CRYPTO") return `BINANCE:${s}`;
+
+  // ETF çoğunlukla AMEX/NYSEARCA’da; TradingView genelde "AMEX:" ile çalışır
+  // Ama bazı ETF'ler NYSEARCA. En güvenlisi: kullanıcı zaten ETF listesini "SPY" gibi veriyorsa "AMEX:" denenir.
+  if (marketHint === "ETF") return `AMEX:${s}`;
+
+  // NASDAQ
+  if (marketHint === "NASDAQ") return `NASDAQ:${s}`;
+
+  // BIST: kritik fix -> TVC değil, BIST
+  if (marketHint === "BIST") return `BIST:${s}`;
+
+  // AUTO fallback: kriptoda USDT varsa BINANCE, yoksa NASDAQ
+  if (s.endsWith("USDT") || s.endsWith("USD")) return `BINANCE:${s}`;
+  return `NASDAQ:${s}`;
+}
+
+export default function TradingViewWidget({
+  symbol,
+  interval = "15",
+  theme = "dark",
+  height = "100%",
+  marketHint = "AUTO",
+}: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const chartRef = useRef<any>(null);
-  const seriesRef = useRef<any>(null);
+  const widgetRef = useRef<any>(null);
 
-  const [candles, setCandles] = useState<Candle[]>([]);
-  const [signals, setSignals] = useState<SignalRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const mergedSignals = useMemo(() => mergeSignals(signals), [signals]);
-  const latestReasons = mergedSignals[mergedSignals.length - 1]?.reasons;
-  const latestBySide = useMemo(() => {
-    let latestBuy: SignalRow | null = null;
-    let latestSell: SignalRow | null = null;
-    for (const row of signals) {
-      if (row.side === "BUY") {
-        if (!latestBuy || row.time > latestBuy.time) latestBuy = row;
-      } else if (row.side === "SELL") {
-        if (!latestSell || row.time > latestSell.time) latestSell = row;
-      }
-    }
-    return { latestBuy, latestSell };
-  }, [signals]);
-
-  useEffect(() => {
-    let active = true;
-    const ac = new AbortController();
-
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const [candlesRes, signalsRes] = await Promise.all([
-          fetch(`/api/candles?symbol=${encodeURIComponent(symbol)}&tf=D&days=${days}`, {
-            cache: "no-store",
-            signal: ac.signal,
-          }),
-          fetch(`/api/signals?symbol=${encodeURIComponent(symbol)}&tf=1D&days=${days}`, {
-            cache: "no-store",
-            signal: ac.signal,
-          }),
-        ]);
-
-        if (!candlesRes.ok) throw new Error("Candles fetch failed");
-        if (!signalsRes.ok) throw new Error("Signals fetch failed");
-
-        const candlesJson = await candlesRes.json();
-        const signalsJson = await signalsRes.json();
-
-        if (!active) return;
-
-        setCandles((candlesJson.items ?? []) as Candle[]);
-        setSignals((signalsJson.items ?? []) as SignalRow[]);
-      } catch (err: any) {
-        if (err?.name === "AbortError") return;
-        setError(err?.message ?? "Veri alınamadı");
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
-
-    fetchAll();
-    return () => {
-      active = false;
-      ac.abort();
-    };
-  }, [symbol, days]);
+  const tvSymbol = useMemo(() => normalizeSymbol(symbol, marketHint), [symbol, marketHint]);
 
   useEffect(() => {
     let cancelled = false;
 
     const mount = async () => {
-      if (!containerRef.current) return;
-      await loadScript("https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js");
-      if (cancelled || !containerRef.current) return;
+      const el = containerRef.current;
+      if (!el) return;
 
-      const lwc = (window as any).LightweightCharts;
-      if (!lwc) {
-        setError("Grafik kütüphanesi yüklenemedi.");
+      // önce eski widget'ı temizle
+      try {
+        widgetRef.current?.remove?.();
+      } catch {}
+      widgetRef.current = null;
+
+      // container reset
+      el.innerHTML = "";
+
+      const widgetId = `tv-${Math.random().toString(36).slice(2)}`;
+      el.innerHTML = `<div id="${widgetId}" style="height:${
+        typeof height === "number" ? `${height}px` : height
+      }; width:100%"></div>`;
+
+      try {
+        await ensureTvScript();
+      } catch (err) {
+        if (!cancelled && containerRef.current) {
+          containerRef.current.innerHTML = `<div style="padding:12px">TradingView yüklenemedi.</div>`;
+        }
         return;
       }
 
-      if (chartRef.current) {
-        chartRef.current.remove();
-        chartRef.current = null;
-        seriesRef.current = null;
-      }
+      if (cancelled || !window.TradingView) return;
 
-      const chart = lwc.createChart(containerRef.current, {
-        autoSize: true,
-        layout: { textColor: "#d1d5db", background: { type: lwc.ColorType.Solid, color: "#050608" } },
-        grid: { vertLines: { color: "#111827" }, horzLines: { color: "#111827" } },
-        crosshair: { mode: lwc.CrosshairMode.Normal },
-        rightPriceScale: { borderColor: "#1f2937" },
-        timeScale: { borderColor: "#1f2937", timeVisible: false },
+      // widget create
+      widgetRef.current = new window.TradingView.widget({
+        autosize: true,
+        symbol: tvSymbol,
+        interval,
+        timezone: "Europe/Istanbul",
+        theme,
+        style: "1",
+        locale: "tr",
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        hide_legend: false,
+        withdateranges: true,
+        allow_symbol_change: false,
+        container_id: widgetId,
       });
-
-      const series = chart.addCandlestickSeries({
-        upColor: "#16a34a",
-        downColor: "#dc2626",
-        borderUpColor: "#16a34a",
-        borderDownColor: "#dc2626",
-        wickUpColor: "#22c55e",
-        wickDownColor: "#ef4444",
-      });
-
-      chartRef.current = chart;
-      seriesRef.current = series;
-
-      if (candles.length) {
-        series.setData(
-          candles.map((c) => ({
-            time: c.time,
-            open: c.open,
-            high: c.high,
-            low: c.low,
-            close: c.close,
-          }))
-        );
-      }
-
-      if (mergedSignals.length) {
-        const markers = mergedSignals.map((signal) => {
-          const sides = Array.from(signal.sides);
-          const sideLabel = sides.join("/");
-          const reasonText = Array.from(signal.reasons).join(", ");
-          const isBuyOnly = sides.length === 1 && sides[0] === "BUY";
-          const isSellOnly = sides.length === 1 && sides[0] === "SELL";
-
-          return {
-            time: signal.time,
-            position: "belowBar",
-            shape: isSellOnly ? "arrowDown" : "arrowUp",
-            color: isBuyOnly ? "#22c55e" : isSellOnly ? "#ef4444" : "#94a3b8",
-            text: reasonText ? `${sideLabel}: ${reasonText}` : sideLabel,
-          };
-        });
-        series.setMarkers(markers);
-      }
     };
 
     mount();
-    const resize = () => {
-      if (chartRef.current) chartRef.current.resize(containerRef.current?.clientWidth ?? 0, containerRef.current?.clientHeight ?? 0);
-    };
-    window.addEventListener("resize", resize);
+
     return () => {
       cancelled = true;
-      window.removeEventListener("resize", resize);
-      if (chartRef.current) {
-        chartRef.current.remove();
-        chartRef.current = null;
-        seriesRef.current = null;
-      }
+      try {
+        widgetRef.current?.remove?.();
+      } catch {}
+      widgetRef.current = null;
+      if (containerRef.current) containerRef.current.innerHTML = "";
     };
-  }, [candles, mergedSignals]);
+  }, [tvSymbol, interval, theme, height]);
 
-  return (
-    <div className="w-full">
-      <div className="flex items-center justify-between mb-3 text-xs text-gray-400">
-        <span>1G Grafik • {symbol}</span>
-        <span>{loading ? "Yükleniyor..." : error ? "Hata" : `${candles.length} mum`}</span>
-      </div>
-
-      <div className="relative h-[420px] w-full rounded-xl border border-gray-800 bg-black" ref={containerRef} />
-
-      {error && <div className="mt-3 text-xs text-red-400">{error}</div>}
-      {!error && !loading && candles.length === 0 && (
-        <div className="mt-3 text-xs text-gray-500">Mum verisi bulunamadı.</div>
-      )}
-
-      <div className="mt-4 rounded-xl border border-gray-800 bg-[#0b0f14] p-4">
-        <div className="text-xs font-semibold text-gray-400">Son tetiklenen indikatör/formasyon etiketleri</div>
-        {latestReasons && latestReasons.size ? (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {Array.from(latestReasons).map((label) => (
-              <span
-                key={label}
-                className="text-[11px] rounded-full border border-gray-700 bg-gray-900/60 px-2.5 py-1 text-gray-200"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-2 text-xs text-gray-500">Henüz sinyal etiketi bulunamadı.</div>
-        )}
-      </div>
-
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
-        {(["BUY", "SELL"] as const).map((side) => {
-          const row = side === "BUY" ? latestBySide.latestBuy : latestBySide.latestSell;
-          const labels = row ? normalizeReasonLabels(row.reasons) : [];
-          return (
-            <div key={side} className="rounded-xl border border-gray-800 bg-[#0b0f14] p-4">
-              <div className="text-xs font-semibold text-gray-400">{side} • Son tetik</div>
-              {row ? (
-                <>
-                  <div className="mt-1 text-[11px] text-gray-500">
-                    {new Date(row.time * 1000).toLocaleString("tr-TR")}
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {labels.length ? (
-                      labels.map((label) => (
-                        <span
-                          key={`${side}-${label}`}
-                          className="text-[11px] rounded-full border border-gray-700 bg-gray-900/60 px-2.5 py-1 text-gray-200"
-                        >
-                          {label}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-xs text-gray-500">Etiket yok.</span>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="mt-2 text-xs text-gray-500">Bu yönde sinyal bulunamadı.</div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+  return <div ref={containerRef} className="w-full h-full" />;
 }
