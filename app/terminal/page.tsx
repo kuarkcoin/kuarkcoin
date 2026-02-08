@@ -209,7 +209,11 @@ function normalizeSymbol(sym: string) {
   const s = String(sym || "").trim();
   if (!s) return "NASDAQ:AAPL";
   if (s.includes(":")) return s;
-  return `NASDAQ:${s}`;
+  const up = s.toUpperCase();
+  if (BIST_SET.has(up)) return `BIST:${up}`;
+  if (CRYPTO_SET.has(up)) return `BINANCE:${up}`;
+  if (ETF_SET.has(up)) return `AMEX:${up}`;
+  return `NASDAQ:${up}`;
 }
 
 function uniqBy<T>(arr: T[], keyFn: (t: T) => string) {
