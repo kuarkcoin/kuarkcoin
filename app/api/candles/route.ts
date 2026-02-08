@@ -18,6 +18,17 @@ function clampInt(val: string | null, fallback: number, min: number, max: number
   return Math.min(max, Math.max(min, Math.trunc(n)));
 }
 
+function normalizeFinnhubSymbol(raw: string) {
+  const trimmed = raw.trim();
+  if (!trimmed) return trimmed;
+  if (!trimmed.includes(":")) return trimmed;
+  const [prefix, rest] = trimmed.split(":");
+  if (prefix === "BIST" || prefix === "BIST_DLY") {
+    return `${rest}.IS`;
+  }
+  return trimmed;
+}
+
 function json(data: any, init?: ResponseInit) {
   return NextResponse.json(data, {
     ...init,
@@ -39,6 +50,11 @@ export async function GET(req: Request) {
       return json({ ok: false, error: "Missing symbol", items: [] }, { status: 400 });
     }
 
+    const finnhubSymbol = normalizeFinnhubSymbol(symbol);
+    if (!finnhubSymbol) {
+      return json({ ok: false, error: "Invalid symbol", items: [] }, { status: 400 });
+    }
+
     const apiKey = process.env.FINNHUB_API_KEY;
     if (!apiKey) {
       return json({ ok: false, error: "Missing FINNHUB_API_KEY", items: [] }, { status: 500 });
@@ -53,7 +69,7 @@ export async function GET(req: Request) {
 
     try {
       const url = new URL("https://finnhub.io/api/v1/stock/candle");
-      url.searchParams.set("symbol", symbol);
+      url.searchParams.set("symbol", finnhubSymbol);
       url.searchParams.set("resolution", resolution);
       url.searchParams.set("from", String(from));
       url.searchParams.set("to", String(to));

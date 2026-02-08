@@ -88,6 +88,18 @@ export default function SignalsChart1D({ symbol, days = 120 }: Props) {
 
   const mergedSignals = useMemo(() => mergeSignals(signals), [signals]);
   const latestReasons = mergedSignals[mergedSignals.length - 1]?.reasons;
+  const latestBySide = useMemo(() => {
+    let latestBuy: SignalRow | null = null;
+    let latestSell: SignalRow | null = null;
+    for (const row of signals) {
+      if (row.side === "BUY") {
+        if (!latestBuy || row.time > latestBuy.time) latestBuy = row;
+      } else if (row.side === "SELL") {
+        if (!latestSell || row.time > latestSell.time) latestSell = row;
+      }
+    }
+    return { latestBuy, latestSell };
+  }, [signals]);
 
   useEffect(() => {
     let active = true;
@@ -253,6 +265,41 @@ export default function SignalsChart1D({ symbol, days = 120 }: Props) {
         ) : (
           <div className="mt-2 text-xs text-gray-500">Henüz sinyal etiketi bulunamadı.</div>
         )}
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        {(["BUY", "SELL"] as const).map((side) => {
+          const row = side === "BUY" ? latestBySide.latestBuy : latestBySide.latestSell;
+          const labels = row ? normalizeReasonLabels(row.reasons) : [];
+          return (
+            <div key={side} className="rounded-xl border border-gray-800 bg-[#0b0f14] p-4">
+              <div className="text-xs font-semibold text-gray-400">{side} • Son tetik</div>
+              {row ? (
+                <>
+                  <div className="mt-1 text-[11px] text-gray-500">
+                    {new Date(row.time * 1000).toLocaleString("tr-TR")}
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {labels.length ? (
+                      labels.map((label) => (
+                        <span
+                          key={`${side}-${label}`}
+                          className="text-[11px] rounded-full border border-gray-700 bg-gray-900/60 px-2.5 py-1 text-gray-200"
+                        >
+                          {label}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-gray-500">Etiket yok.</span>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="mt-2 text-xs text-gray-500">Bu yönde sinyal bulunamadı.</div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { symbolToPlain, timeAgo } from "@/constants/terminal";
+import React, { useMemo } from "react";
+import { symbolToPlain } from "@/constants/terminal";
 
 type SignalTone = "BUY" | "SELL" | string;
 
@@ -32,50 +32,6 @@ function normalizeSymbol(sym: string) {
   if (!s) return "NASDAQ:AAPL";
   if (s.includes(":")) return s;
   return `NASDAQ:${s}`;
-}
-
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
-}
-
-// Heatmap intensity (score → opacity/contrast) — INLINE STYLE (Tailwind purge sorunu yok)
-function heatStyle(isBuy: boolean, intensity01: number): React.CSSProperties {
-  const k = clamp(intensity01, 0, 1);
-  const alpha = 0.25 + 0.6 * k; // 0.25 → 0.85
-
-  if (isBuy) {
-    return {
-      backgroundColor: `rgba(16,185,129,${alpha})`,
-      borderColor: "rgba(16,185,129,0.35)",
-      color: "rgba(167,243,208,1)",
-    };
-  }
-
-  return {
-    backgroundColor: `rgba(239,68,68,${alpha})`,
-    borderColor: "rgba(239,68,68,0.35)",
-    color: "rgba(254,202,202,1)",
-  };
-}
-
-// Basit hover-card (dependency yok)
-function HoverCard({
-  title,
-  children,
-}: {
-  title: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative group">
-      {children}
-      <div className="pointer-events-none absolute z-50 hidden group-hover:block -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-72">
-        <div className="rounded-xl border border-gray-800 bg-[#0b0f14] p-3 shadow-2xl">
-          <div className="text-xs text-gray-200 leading-snug">{title}</div>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 // 7 günlük sentiment sparkline
@@ -190,46 +146,6 @@ export default function DashboardView({
   const topBuy0 = topBuy?.[0];
   const topSell0 = topSell?.[0];
 
-  // ------------------------
-  // Heatmap controls
-  // ------------------------
-  const [heatFilter, setHeatFilter] = useState<"ALL" | "BUY" | "SELL">("ALL");
-  const [minScore, setMinScore] = useState<number>(0);
-  const [heatLimit, setHeatLimit] = useState<number>(48);
-
-  const scoreMax = useMemo(() => {
-    let mx = 0;
-    for (const s of signals ?? []) {
-      mx = Math.max(mx, Number(s?.score ?? 0));
-    }
-    return mx || 30;
-  }, [signals]);
-
-  const heatRows = useMemo(() => {
-    const list = (signals ?? [])
-      .map((s) => {
-        const symbol = normalizeSymbol(String(s?.symbol || ""));
-        return {
-          symbol,
-          plain: symbolToPlain(symbol),
-          signal: String(s?.signal || "").toUpperCase(),
-          score: Number(s?.score ?? 0),
-          created_at: s?.created_at ?? null,
-          reasons: s?.reasons ?? null,
-        };
-      })
-      // en güçlüleri öne al
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
-
-    const filtered = list.filter((x) => {
-      if (heatFilter !== "ALL" && x.signal !== heatFilter) return false;
-      if ((x.score ?? 0) < minScore) return false;
-      return true;
-    });
-
-    return filtered.slice(0, heatLimit);
-  }, [signals, heatFilter, minScore, heatLimit]);
-
   return (
     <div className="flex-1 overflow-y-auto bg-[#0d1117] p-4 md:p-8 custom-scrollbar">
       {/* Üst Satır */}
@@ -316,112 +232,6 @@ export default function DashboardView({
             ANALİZ ET →
           </button>
         </div>
-      </div>
-
-      {/* Isı Haritası */}
-      <div className="bg-[#161b22] border border-gray-800 p-6 rounded-3xl mb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">
-            Piyasa Isı Haritası (Sinyal Gücü)
-          </h3>
-
-          <div className="flex flex-wrap gap-2">
-            <div className="flex items-center gap-1 border border-gray-800 rounded-xl p-1 bg-[#0d1117]">
-              {(["ALL", "BUY", "SELL"] as const).map((k) => (
-                <button
-                  key={k}
-                  onClick={() => setHeatFilter(k)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                    heatFilter === k
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/40"
-                  }`}
-                >
-                  {k}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2 border border-gray-800 rounded-xl px-3 py-2 bg-[#0d1117]">
-              <div className="text-[10px] text-gray-500 uppercase tracking-widest">Min Score</div>
-              <input
-                type="range"
-                min={0}
-                max={Math.max(10, scoreMax)}
-                value={minScore}
-                onChange={(e) => setMinScore(Number(e.target.value))}
-              />
-              <div className="text-xs font-mono text-gray-300 w-8 text-right">{minScore}</div>
-            </div>
-
-            <button
-              onClick={() => setHeatLimit((p) => Math.min(p + 48, 240))}
-              className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-800 bg-[#0d1117] hover:bg-gray-800/40 text-gray-200 transition-colors"
-            >
-              Daha fazla göster
-            </button>
-
-            <button
-              onClick={() => {
-                setHeatLimit(48);
-                setHeatFilter("ALL");
-                setMinScore(0);
-              }}
-              className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-800 bg-[#0d1117] hover:bg-gray-800/40 text-gray-400 transition-colors"
-            >
-              Sıfırla
-            </button>
-          </div>
-        </div>
-
-        {(!signals || signals.length === 0) ? (
-          <div className="text-sm text-gray-500">Henüz veri yok.</div>
-        ) : heatRows.length === 0 ? (
-          <div className="text-sm text-gray-500">
-            Filtrelere göre sonuç yok. (MinScore/BUY-SELL filtresini düşür)
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-12 gap-3">
-            {heatRows.map((s, i) => {
-              const isBuy = s.signal === "BUY";
-              const intensity01 = clamp((Number(s.score ?? 0) || 0) / Math.max(1, scoreMax), 0, 1);
-              const style = heatStyle(isBuy, intensity01);
-
-              const title = (
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="font-bold">{symbolToPlain(s.symbol)}</div>
-                    <div className="text-[10px] text-gray-500">{s.created_at ? timeAgo(s.created_at) : ""}</div>
-                  </div>
-                  <div className="text-[11px] text-gray-300">
-                    Signal:{" "}
-                    <b className={isBuy ? "text-green-300" : "text-red-300"}>
-                      {s.signal || "—"}
-                    </b>{" "}
-                    • Score: <b>{s.score ?? "—"}</b>
-                  </div>
-                  <div className="text-[10px] text-gray-400 line-clamp-2">
-                    {(s.reasons ?? "").slice(0, 180) || "—"}
-                  </div>
-                </div>
-              );
-
-              return (
-                <HoverCard key={`${s.symbol}-${i}`} title={title}>
-                  <button
-                    onClick={() => onSelectSymbol(s.symbol)}
-                    style={style}
-                    className="aspect-square flex flex-col items-center justify-center rounded-xl transition-all hover:scale-110 active:scale-95 border"
-                    aria-label={`Open ${s.symbol}`}
-                  >
-                    <span className="text-[10px] font-bold">{symbolToPlain(s.symbol)}</span>
-                    <span className="text-[8px] opacity-70">{s.score ?? "—"}</span>
-                  </button>
-                </HoverCard>
-              );
-            })}
-          </div>
-        )}
       </div>
 
       <style jsx global>{`

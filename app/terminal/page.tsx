@@ -318,7 +318,6 @@ export default function TerminalPage() {
   }, []);
 
   // Limits + load more
-  const [heatLimit, setHeatLimit] = useState(48);
   const [signalLimit, setSignalLimit] = useState(110);
 
   // prefix resolver
@@ -392,8 +391,8 @@ export default function TerminalPage() {
   // ── Dashboard data ───────────────────────────────
   const dashSignals = useMemo(() => {
     const uniq = uniqBy(signals, (r) => symbolToPlain(r.symbol));
-    return uniq.slice(0, Math.max(heatLimit, 48));
-  }, [signals, heatLimit]);
+    return uniq.slice(0, 48);
+  }, [signals]);
 
   // ──────────────────────────────────────────────────
   // AI daily digest
@@ -956,37 +955,6 @@ export default function TerminalPage() {
 
                 <div className="px-4 md:px-8 pb-5">
                   <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <span>Isı haritası:</span>
-                    <button
-                      onClick={() => setHeatLimit(48)}
-                      className={`px-2 py-1 rounded border ${
-                        heatLimit === 48
-                          ? "border-blue-500 text-blue-300 bg-blue-900/20"
-                          : "border-gray-700 hover:bg-gray-800"
-                      }`}
-                    >
-                      48
-                    </button>
-                    <button
-                      onClick={() => setHeatLimit(96)}
-                      className={`px-2 py-1 rounded border ${
-                        heatLimit === 96
-                          ? "border-blue-500 text-blue-300 bg-blue-900/20"
-                          : "border-gray-700 hover:bg-gray-800"
-                      }`}
-                    >
-                      96
-                    </button>
-                    <button
-                      onClick={() => setHeatLimit(144)}
-                      className={`px-2 py-1 rounded border ${
-                        heatLimit === 144
-                          ? "border-blue-500 text-blue-300 bg-blue-900/20"
-                          : "border-gray-700 hover:bg-gray-800"
-                      }`}
-                    >
-                      144
-                    </button>
                     <span className="ml-auto">
                       {uiLoading ? "Yükleniyor..." : uiEmpty ? "Henüz veri yok." : `Sembol: ${dashSignals.length}`}
                     </span>
