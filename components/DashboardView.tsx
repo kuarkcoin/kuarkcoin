@@ -33,6 +33,7 @@ const BIST_SET = new Set<string>(
 const ETF_SET = new Set<string>(
   [...ASSETS.ETF, ...WATCHLISTS.NASDAQ_ETFS].map((s) => String(s).toUpperCase())
 );
+const NASDAQ_ETF_SET = new Set<string>(["QQQ", "QQQM", "TQQQ", "SQQQ", "QQQS", "ONEQ"]);
 const CRYPTO_SET = new Set<string>(ASSETS.CRYPTO.map((s) => String(s).toUpperCase()));
 
 function normalizeSymbol(sym: string) {
@@ -41,6 +42,7 @@ function normalizeSymbol(sym: string) {
   if (s.includes(":")) return s;
   if (BIST_SET.has(s)) return `BIST:${s}`;
   if (CRYPTO_SET.has(s)) return `BINANCE:${s}`;
+  if (NASDAQ_ETF_SET.has(s)) return `NASDAQ:${s}`;
   if (ETF_SET.has(s)) return `AMEX:${s}`;
   return `NASDAQ:${s}`;
 }

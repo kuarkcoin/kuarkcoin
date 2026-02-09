@@ -57,6 +57,7 @@ const NASDAQ_SET = new Set<string>((ASSETS_MAP.NASDAQ ?? []).map((s) => String(s
 const ETF_SET = new Set<string>(
   [...(ASSETS_MAP.ETF ?? []), ...WATCHLISTS.NASDAQ_ETFS].map((s) => String(s).toUpperCase())
 );
+const NASDAQ_ETF_SET = new Set<string>(["QQQ", "QQQM", "TQQQ", "SQQQ", "QQQS", "ONEQ"]);
 const CRYPTO_SET = new Set<string>((ASSETS_MAP.CRYPTO ?? []).map((s) => String(s).toUpperCase()));
 const BIST_SET = new Set<string>(
   [...((ASSETS_MAP.BIST ?? []) as string[]), ...WATCHLISTS.BIST150].map((s) => String(s).toUpperCase())
@@ -216,6 +217,7 @@ function normalizeSymbol(sym: string) {
   if (s.includes(":")) return s;
   if (BIST_SET.has(s)) return `BIST:${s}`;
   if (CRYPTO_SET.has(s)) return `BINANCE:${s}`;
+  if (NASDAQ_ETF_SET.has(s)) return `NASDAQ:${s}`;
   if (ETF_SET.has(s)) return `AMEX:${s}`;
   return `NASDAQ:${s}`;
 }
@@ -335,6 +337,7 @@ export default function TerminalPage() {
     const s = String(sym || "").toUpperCase();
     if (BIST_SET.has(s)) return "BIST";
     if (CRYPTO_SET.has(s)) return "BINANCE";
+    if (NASDAQ_ETF_SET.has(s)) return "NASDAQ";
     if (ETF_SET.has(s)) return "AMEX";
     return "NASDAQ";
   }, []);
@@ -1012,7 +1015,7 @@ export default function TerminalPage() {
                 }`}
               >
                 <div className="flex-1 relative bg-black min-w-0 min-h-[420px]">
-                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="D" theme="dark" />
                 </div>
 
                 <div className="border-t border-gray-800 bg-[#0b0f14] px-4 py-3">
