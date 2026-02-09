@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
 import { reasonsToTechSentences } from "@/lib/reasonTranslator";
-import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
+import { ASSETS, WATCHLISTS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 import DashboardView from "@/components/DashboardView";
 
 // ──────────────────────────────────────────────────
@@ -38,6 +38,7 @@ const ASSETS_MAP: AssetsMap = {
 };
 
 type AssetCategory = keyof AssetsMap;
+type WatchlistKey = keyof typeof WATCHLISTS;
 
 type NewsItem = {
   headline: string;
@@ -53,9 +54,13 @@ type NewsItem = {
 // Sets (perf + includes() TS fix)
 // ──────────────────────────────────────────────────
 const NASDAQ_SET = new Set<string>((ASSETS_MAP.NASDAQ ?? []).map((s) => String(s).toUpperCase()));
-const ETF_SET = new Set<string>((ASSETS_MAP.ETF ?? []).map((s) => String(s).toUpperCase()));
+const ETF_SET = new Set<string>(
+  [...(ASSETS_MAP.ETF ?? []), ...WATCHLISTS.NASDAQ_ETFS].map((s) => String(s).toUpperCase())
+);
 const CRYPTO_SET = new Set<string>((ASSETS_MAP.CRYPTO ?? []).map((s) => String(s).toUpperCase()));
-const BIST_SET = new Set<string>(((ASSETS_MAP.BIST ?? []) as string[]).map((s) => String(s).toUpperCase()));
+const BIST_SET = new Set<string>(
+  [...((ASSETS_MAP.BIST ?? []) as string[]), ...WATCHLISTS.BIST150].map((s) => String(s).toUpperCase())
+);
 
 // ──────────────────────────────────────────────────
 // UI Helpers
@@ -231,6 +236,7 @@ export default function TerminalPage() {
   // ── core state ───────────────────────────────────
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
   const [activeCategory, setActiveCategory] = useState<AssetCategory>("NASDAQ");
+  const [activeWatchlist, setActiveWatchlist] = useState<WatchlistKey>("NASDAQ250");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
 
@@ -329,6 +335,12 @@ export default function TerminalPage() {
     if (ETF_SET.has(s)) return "AMEX";
     return "NASDAQ";
   }, []);
+
+  const watchlistSymbols = useMemo(() => {
+    const list = WATCHLISTS[activeWatchlist] ?? [];
+    const cleaned = list.map((sym) => String(sym).trim().toUpperCase()).filter(Boolean);
+    return Array.from(new Set(cleaned));
+  }, [activeWatchlist]);
 
   // Assets filtered
   const filteredAssets = useMemo(() => {
@@ -988,11 +1000,60 @@ export default function TerminalPage() {
 
             <div className="flex-1 flex flex-col md:flex-row min-h-0">
               <div
-                className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
+                className={`flex-1 flex flex-col min-w-0 min-h-[420px] ${
                   mobileTab !== "CHART" ? "hidden md:block" : "block"
                 }`}
               >
-                <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                <div className="flex-1 relative bg-black min-w-0 min-h-[420px]">
+                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                </div>
+
+                <div className="border-t border-gray-800 bg-[#0d1117] px-4 py-3">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    {(Object.keys(WATCHLISTS) as WatchlistKey[]).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => setActiveWatchlist(key)}
+                        className={`text-[11px] px-3 py-1.5 rounded border transition-colors ${
+                          activeWatchlist === key
+                            ? "border-blue-500 bg-blue-900/20 text-blue-200"
+                            : "border-gray-700 hover:bg-gray-800 text-gray-300"
+                        }`}
+                      >
+                        {key.replace("_", " ")}
+                      </button>
+                    ))}
+                    <span className="ml-auto text-[10px] text-gray-500">
+                      İzleme listesi: {watchlistSymbols.length}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto custom-scrollbar pr-2">
+                    {watchlistSymbols.map((sym) => {
+                      const full = `${prefixForSymbol(sym)}:${sym}`;
+                      const isActive = selectedSymbol === full;
+                      return (
+                        <button
+                          key={sym}
+                          onClick={() => {
+                            setSelectedSymbol(full);
+                            setSelectedSignalId(null);
+                            setMobileTab("CHART");
+                            fetchMini(full);
+                          }}
+                          className={`text-[11px] px-2.5 py-1 rounded border transition-colors ${
+                            isActive
+                              ? "border-blue-500 text-blue-200 bg-blue-900/20"
+                              : "border-gray-700 text-gray-300 hover:bg-gray-800/60"
+                          }`}
+                          aria-label={`İzleme listesi sembolü: ${sym}`}
+                        >
+                          {sym}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               <aside
