@@ -211,9 +211,12 @@ function Sparkline({ points }: { points?: number[] | null }) {
 // Helpers
 // ──────────────────────────────────────────────────
 function normalizeSymbol(sym: string) {
-  const s = String(sym || "").trim();
+  const s = String(sym || "").trim().toUpperCase();
   if (!s) return "NASDAQ:AAPL";
   if (s.includes(":")) return s;
+  if (BIST_SET.has(s)) return `BIST:${s}`;
+  if (CRYPTO_SET.has(s)) return `BINANCE:${s}`;
+  if (ETF_SET.has(s)) return `AMEX:${s}`;
   return `NASDAQ:${s}`;
 }
 
@@ -363,6 +366,10 @@ export default function TerminalPage() {
   }, [signals]);
 
   const signaledSymbols = useMemo(() => new Set(signals.map((r) => symbolToPlain(r.symbol))), [signals]);
+  const selectedLastSignal = useMemo(() => {
+    const plain = symbolToPlain(selectedSymbol);
+    return lastSignalMap.get(plain) ?? null;
+  }, [lastSignalMap, selectedSymbol]);
 
   const visibleSignals = useMemo(() => {
     const last = signals.slice(0, signalLimit);
@@ -1006,6 +1013,38 @@ export default function TerminalPage() {
               >
                 <div className="flex-1 relative bg-black min-w-0 min-h-[420px]">
                   <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                </div>
+
+                <div className="border-t border-gray-800 bg-[#0b0f14] px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xs font-bold uppercase tracking-wide text-gray-300">
+                      Son Tetikleme
+                    </div>
+                    <div className="text-[10px] text-gray-500">
+                      {selectedLastSignal?.created_at ? timeAgo(selectedLastSignal.created_at) : "—"}
+                    </div>
+                  </div>
+
+                  {selectedLastSignal ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-300">
+                        <span className="font-semibold">{symbolToPlain(selectedLastSignal.symbol)}</span>
+                        <span className="text-gray-500">•</span>
+                        <span className={String(selectedLastSignal.signal).toUpperCase() === "BUY" ? "text-green-300" : "text-red-300"}>
+                          {String(selectedLastSignal.signal).toUpperCase()}
+                        </span>
+                        <span className="text-gray-500">Score</span>
+                        <span className="text-gray-100">{selectedLastSignal.score ?? "—"}</span>
+                      </div>
+
+                      <ReasonBadges reasons={selectedLastSignal.reasons ?? null} />
+                      <TechLine reasons={selectedLastSignal.reasons ?? null} />
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500">
+                      Seçili sembol için tetikleme bulunamadı.
+                    </div>
+                  )}
                 </div>
 
                 <div className="border-t border-gray-800 bg-[#0d1117] px-4 py-3">
