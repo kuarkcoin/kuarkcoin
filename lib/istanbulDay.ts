@@ -18,3 +18,16 @@ export function getIstanbulDay(date = new Date()): string {
 
   return `${year}-${month}-${day}`;
 }
+
+export function istanbulDayRange(date = new Date()) {
+  const day = getIstanbulDay(date);
+  const startUTC = new Date(`${day}T00:00:00+03:00`);
+  const endUTC = new Date(startUTC);
+  endUTC.setUTCDate(endUTC.getUTCDate() + 1);
+
+  return {
+    day,
+    startUTC,
+    endUTC,
+  };
+}

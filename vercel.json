@@ -2,7 +2,7 @@
   "framework": "nextjs",
   "crons": [
     {
-      "path": "/api/daily-top?secret=${CRON_SECRET}",
+      "path": "/api/daily-top?run=1&secret=${CRON_SECRET}",
       "schedule": "10 15 * * *"
     }
   ]

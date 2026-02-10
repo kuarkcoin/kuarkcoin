@@ -1,46 +1,41 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import { getIstanbulDay } from "@/lib/istanbulDay";
-import { getBusinessDayCutoff, isDayOnOrAfter } from "@/lib/businessDays";
+import { supabaseServer } from "@/lib/supabaseServer";
+import { getBusinessDayCutoff } from "@/lib/businessDays";
+import { istanbulDayRange } from "@/lib/istanbulDay";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-type SignalSide = "BUY" | "SELL";
+type Side = "BUY" | "SELL";
 
 type SignalRow = {
-  created_at: string;
   symbol: string;
-  signal: SignalSide;
-  score: number;
+  signal?: string | null;
+  type?: string | null;
+  score: number | null;
   price: number | null;
 };
 
-type DailyTopItem = {
-  symbol: string;
-  score: number;
-  close: number | null;
-  close_10bd: number | null;
-  pct_10bd: number | null;
-};
-
-type DailyTopRecord = {
-  day: string;
-  buy: DailyTopItem[];
-  sell: DailyTopItem[];
-  created_at: string;
-};
-
-const dailyTopPath = path.join(process.cwd(), "data", "daily-top.json");
-const signalsPath = path.join(process.cwd(), "data", "signals.json");
-
-let memoryDailyTopCache: DailyTopRecord[] = [];
+function noStore(json: unknown, init?: ResponseInit) {
+  return NextResponse.json(json, {
+    ...init,
+    headers: {
+      ...(init?.headers ?? {}),
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    },
+  });
+}
 
 function parseNumber(value: unknown): number | null {
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
+}
+
+function detectSide(row: SignalRow): Side | null {
+  const raw = String(row.signal ?? row.type ?? "").toUpperCase().trim();
+  if (raw === "BUY" || raw === "SELL") return raw;
+  return null;
 }
 
 function readSecretFromRequest(req: Request): string | null {
@@ -51,104 +46,144 @@ function readSecretFromRequest(req: Request): string | null {
   return url.searchParams.get("secret");
 }
 
-function parseSignalDay(createdAt: string): string | null {
-  const date = new Date(createdAt);
-  if (Number.isNaN(date.getTime())) return null;
-  return getIstanbulDay(date);
-}
-
-async function readJsonFile<T>(filePath: string, fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-async function readDailyTopRecords(): Promise<DailyTopRecord[]> {
-  const fileData = await readJsonFile<DailyTopRecord[] | null>(dailyTopPath, null);
-  if (Array.isArray(fileData)) {
-    memoryDailyTopCache = fileData;
-    return fileData;
-  }
-  return memoryDailyTopCache;
-}
-
-async function writeDailyTopRecords(records: DailyTopRecord[]) {
-  memoryDailyTopCache = records;
-  try {
-    await fs.writeFile(dailyTopPath, `${JSON.stringify(records, null, 2)}\n`, "utf-8");
-    return { persistedToFile: true };
-  } catch {
-    // NOTE: Vercel serverless'ta dosya yazımı kalıcı olmayabilir veya tamamen başarısız olabilir.
-    // Bu nedenle RAM üstünde fallback cache tutulur ve GET bu cache'i döndürür.
-    return { persistedToFile: false };
-  }
-}
-
-async function fetchCloseAnd10Bd(symbol: string): Promise<{ close: number | null; close_10bd: number | null }> {
+async function fetchCandleCloses(symbol: string, minBarsNeeded = 11): Promise<number[]> {
   const apiKey = process.env.FINNHUB_API_KEY;
-  if (!apiKey) return { close: null, close_10bd: null };
+  if (!apiKey) return [];
 
-  const now = Math.floor(Date.now() / 1000);
-  const from = now - 60 * 24 * 60 * 60;
-  const params = new URLSearchParams({
-    symbol,
-    resolution: "D",
-    from: String(from),
-    to: String(now),
-    token: apiKey,
-  });
+  const nowSec = Math.floor(Date.now() / 1000);
+  const windows = [30, 60, 120, 240];
 
-  const url = `https://finnhub.io/api/v1/stock/candle?${params.toString()}`;
+  for (const days of windows) {
+    const fromSec = nowSec - days * 24 * 60 * 60;
+    const params = new URLSearchParams({
+      symbol,
+      resolution: "D",
+      from: String(fromSec),
+      to: String(nowSec),
+      token: apiKey,
+    });
 
-  try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return { close: null, close_10bd: null };
+    try {
+      const res = await fetch(`https://finnhub.io/api/v1/stock/candle?${params.toString()}`, {
+        cache: "no-store",
+      });
 
-    const json = await res.json();
-    const closes = Array.isArray(json?.c)
-      ? (json.c as unknown[]).map(parseNumber).filter((n): n is number => n !== null)
-      : [];
+      if (!res.ok) continue;
+      const json = await res.json();
+      const closes = Array.isArray(json?.c)
+        ? (json.c as unknown[]).map(parseNumber).filter((n): n is number => n !== null)
+        : [];
 
-    if (!closes.length) return { close: null, close_10bd: null };
-
-    const close = closes[closes.length - 1] ?? null;
-    const close10Idx = closes.length - 1 - 10;
-    const close_10bd = close10Idx >= 0 ? closes[close10Idx] ?? null : null;
-
-    return { close, close_10bd };
-  } catch {
-    return { close: null, close_10bd: null };
+      if (closes.length >= minBarsNeeded) return closes;
+      if (closes.length > 0 && days === windows[windows.length - 1]) return closes;
+    } catch (error) {
+      console.error("finnhub candle fetch error", { symbol, error });
+    }
   }
+
+  return [];
 }
 
-function computePct(close: number | null, close10bd: number | null): number | null {
-  if (close == null || close10bd == null || close10bd === 0) return null;
-  return ((close / close10bd) - 1) * 100;
+async function enrichSignal(row: SignalRow) {
+  const closes = await fetchCandleCloses(row.symbol, 11);
+  const fallbackClose = closes.length ? closes[closes.length - 1] : null;
+  const closePrice = row.price ?? fallbackClose;
+  const close10bd = closes.length > 10 ? closes[closes.length - 11] : null;
+
+  return {
+    symbol: row.symbol,
+    score: row.score,
+    close_price: closePrice,
+    close_10bd: close10bd,
+    pct_10bd:
+      closePrice != null && close10bd != null && close10bd !== 0
+        ? ((closePrice / close10bd) - 1) * 100
+        : null,
+  };
 }
 
-async function mapTopItems(signals: SignalRow[]): Promise<DailyTopItem[]> {
-  return Promise.all(
-    signals.map(async (row) => {
-      const fetched = await fetchCloseAnd10Bd(row.symbol);
-      const close = row.price ?? fetched.close;
-      const close_10bd = fetched.close_10bd;
-      return {
-        symbol: row.symbol,
-        score: row.score,
-        close,
-        close_10bd,
-        pct_10bd: computePct(close, close_10bd),
-      };
-    })
-  );
+async function getTopSignalsForSide(
+  supa: ReturnType<typeof supabaseServer>,
+  side: Side,
+  startIso: string,
+  endIso: string
+): Promise<SignalRow[]> {
+  const { data, error } = await supa
+    .from("signals")
+    .select("symbol, signal, type, score, price")
+    .gte("created_at", startIso)
+    .lt("created_at", endIso)
+    .not("score", "is", null)
+    .order("score", { ascending: false })
+    .or(`signal.eq.${side},type.eq.${side}`)
+    .limit(40);
+
+  if (error) {
+    console.error("signals query error", error);
+    return [];
+  }
+
+  return (data ?? [])
+    .map((row) => ({
+      symbol: String(row.symbol ?? "").trim(),
+      signal: row.signal ? String(row.signal) : null,
+      type: row.type ? String(row.type) : null,
+      score: parseNumber(row.score),
+      price: parseNumber(row.price),
+    }))
+    .filter((row) => row.symbol && row.score !== null && detectSide(row) === side)
+    .slice(0, 10);
 }
 
-export async function GET() {
-  const records = await readDailyTopRecords();
-  return NextResponse.json(records, { headers: { "Cache-Control": "no-store" } });
+async function runDailyTopAggregation() {
+  const supa = supabaseServer();
+  const { day, startUTC, endUTC } = istanbulDayRange();
+  const startIso = startUTC.toISOString();
+  const endIso = endUTC.toISOString();
+
+  const [buySignals, sellSignals] = await Promise.all([
+    getTopSignalsForSide(supa, "BUY", startIso, endIso),
+    getTopSignalsForSide(supa, "SELL", startIso, endIso),
+  ]);
+
+  const [buyRows, sellRows] = await Promise.all([
+    Promise.all(buySignals.map(enrichSignal)),
+    Promise.all(sellSignals.map(enrichSignal)),
+  ]);
+
+  const payload = [
+    ...buyRows.map((row) => ({ day, side: "BUY" as const, ...row })),
+    ...sellRows.map((row) => ({ day, side: "SELL" as const, ...row })),
+  ];
+
+  if (payload.length) {
+    const { error: upsertError } = await supa.from("daily_top_leaderboard").upsert(payload, {
+      onConflict: "day,side,symbol",
+    });
+
+    if (upsertError) {
+      console.error("daily_top_leaderboard upsert error", upsertError);
+      return { ok: false, error: "Upsert failed", status: 500 } as const;
+    }
+  }
+
+  const cutoffDay = getBusinessDayCutoff(day, 10);
+  const { error: cleanupError } = await supa
+    .from("daily_top_leaderboard")
+    .delete()
+    .lt("day", cutoffDay);
+
+  if (cleanupError) {
+    console.error("daily_top_leaderboard cleanup error", cleanupError);
+  }
+
+  return {
+    ok: true,
+    day,
+    buyCount: buyRows.length,
+    sellCount: sellRows.length,
+    cutoffDay,
+  } as const;
 }
 
 export async function POST(req: Request) {
@@ -156,59 +191,52 @@ export async function POST(req: Request) {
   const receivedSecret = readSecretFromRequest(req);
 
   if (!cronSecret || receivedSecret !== cronSecret) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const day = getIstanbulDay();
-  const allSignals = await readJsonFile<SignalRow[]>(signalsPath, []);
+  const result = await runDailyTopAggregation();
+  if (!result.ok) {
+    return noStore(result, { status: result.status });
+  }
 
-  const todaysSignals = allSignals.filter((row) => {
-    if (!row?.created_at || !row?.symbol || !row?.signal) return false;
-    const signalDay = parseSignalDay(row.created_at);
-    const score = parseNumber(row.score);
-    if (!signalDay || score === null) return false;
-    return signalDay === day && (row.signal === "BUY" || row.signal === "SELL");
-  });
+  return noStore(result);
+}
 
-  const topBuyRaw = todaysSignals
-    .filter((row) => row.signal === "BUY")
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10)
-    .map((row) => ({ ...row, score: Number(row.score), price: parseNumber(row.price) }));
+export async function GET(req: Request) {
+  const url = new URL(req.url);
 
-  const topSellRaw = todaysSignals
-    .filter((row) => row.signal === "SELL")
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10)
-    .map((row) => ({ ...row, score: Number(row.score), price: parseNumber(row.price) }));
+  // Vercel Cron varsayılanı GET olduğu için, `?run=1&secret=...` ile aggregation tetiklemeyi de destekliyoruz.
+  if (url.searchParams.get("run") === "1") {
+    const cronSecret = process.env.CRON_SECRET;
+    const receivedSecret = readSecretFromRequest(req);
 
-  const buy = await mapTopItems(topBuyRaw);
-  const sell = await mapTopItems(topSellRaw);
+    if (!cronSecret || receivedSecret !== cronSecret) {
+      return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
 
-  const records = await readDailyTopRecords();
-  const newRecord: DailyTopRecord = {
-    day,
-    buy,
-    sell,
-    created_at: new Date().toISOString(),
-  };
+    const result = await runDailyTopAggregation();
+    if (!result.ok) {
+      return noStore(result, { status: result.status });
+    }
 
-  const merged = records.some((record) => record.day === day)
-    ? records.map((record) => (record.day === day ? newRecord : record))
-    : [...records, newRecord];
+    return noStore(result);
+  }
 
+  const supa = supabaseServer();
+  const { day } = istanbulDayRange();
   const cutoffDay = getBusinessDayCutoff(day, 10);
-  const cleaned = merged
-    .filter((record) => isDayOnOrAfter(record.day, cutoffDay))
-    .sort((a, b) => b.day.localeCompare(a.day));
 
-  const writeResult = await writeDailyTopRecords(cleaned);
+  const { data, error } = await supa
+    .from("daily_top_leaderboard")
+    .select("day, side, symbol, score, close_price, close_10bd, pct_10bd, created_at")
+    .gte("day", cutoffDay)
+    .order("day", { ascending: false })
+    .order("score", { ascending: false, nullsFirst: false });
 
-  return NextResponse.json({
-    ok: true,
-    day,
-    buyCount: buy.length,
-    sellCount: sell.length,
-    persistedToFile: writeResult.persistedToFile,
-  });
+  if (error) {
+    console.error("daily_top_leaderboard get error", error);
+    return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
+  }
+
+  return noStore({ ok: true, data: data ?? [] });
 }
