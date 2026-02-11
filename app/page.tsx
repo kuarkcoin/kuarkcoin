@@ -4,6 +4,9 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
+import { supabaseServer } from "@/lib/supabaseServer";
+import { getBusinessDayCutoff } from "@/lib/businessDays";
+import { getIstanbulDay } from "@/lib/istanbulDay";
 
 // =====================
 // TYPES
@@ -49,6 +52,24 @@ type TopMarginRow = {
   netSeries?: number[];
   qualityScore?: number;
   volatility?: number;
+};
+
+
+
+type DailyTopRow = {
+  day: string;
+  side: "BUY" | "SELL";
+  symbol: string;
+  score: number | null;
+  close_price: number | null;
+  close_10bd: number | null;
+  pct_10bd: number | null;
+};
+
+type DailyTopByDay = {
+  day: string;
+  buy: DailyTopRow[];
+  sell: DailyTopRow[];
 };
 
 type TopMarginsResp = {
@@ -350,6 +371,55 @@ async function getNewsCombined(
   }
 }
 
+
+
+async function getDailyTopByDay(limitBusinessDays = 10): Promise<DailyTopByDay[]> {
+  try {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return [];
+    }
+
+    const supa = supabaseServer();
+    const today = getIstanbulDay();
+    const cutoffDay = getBusinessDayCutoff(today, limitBusinessDays);
+
+    const { data, error } = await supa
+      .from("daily_top_leaderboard")
+      .select("day, side, symbol, score, close_price, close_10bd, pct_10bd")
+      .gte("day", cutoffDay)
+      .order("day", { ascending: false })
+      .order("score", { ascending: false, nullsFirst: false });
+
+    if (error) {
+      console.error("getDailyTopByDay error", error);
+      return [];
+    }
+
+    const grouped = new Map<string, DailyTopByDay>();
+
+    for (const row of (data ?? []) as DailyTopRow[]) {
+      const day = String(row.day);
+      if (!grouped.has(day)) {
+        grouped.set(day, { day, buy: [], sell: [] });
+      }
+
+      const block = grouped.get(day);
+      if (!block) continue;
+
+      if (row.side === "BUY") {
+        if (block.buy.length < 10) block.buy.push(row);
+      } else if (row.side === "SELL") {
+        if (block.sell.length < 10) block.sell.push(row);
+      }
+    }
+
+    return Array.from(grouped.values()).slice(0, limitBusinessDays);
+  } catch (e) {
+    console.error("getDailyTopByDay unexpected error", e);
+    return [];
+  }
+}
+
 // =====================
 // PAGE
 // =====================
@@ -374,11 +444,12 @@ export default async function HomePage({
 
   const base = getApiBaseUrl();
 
-  const [latest, kap, top, newsPack] = await Promise.all([
+  const [latest, kap, top, newsPack, dailyTop] = await Promise.all([
     getLatestSignals(base),
     universe === "BIST100" ? getKapImportant(base) : Promise.resolve([]),
     getTopMargins(base, universe),
     getNewsCombined(base, universe, minScore),
+    getDailyTopByDay(10),
   ]);
 
   let news = newsPack.items;
@@ -460,6 +531,84 @@ export default async function HomePage({
           </div>
         </div>
       </header>
+
+
+
+      {/* Daily top leaderboard */}
+      <section className="mx-auto max-w-6xl px-4 pt-6 pb-2">
+        <div className="rounded-3xl border border-gray-800 bg-[#0b0f14] p-5 md:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h2 className="text-lg md:text-xl font-black">Günlük Top 10 (Son 10 İş Günü)</h2>
+            <span className="text-xs text-gray-400">NASDAQ • ETF • BIST</span>
+          </div>
+
+          {dailyTop.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-gray-700 p-4 text-sm text-gray-400">
+              Henüz günlük liderlik verisi yok.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {dailyTop.map((block) => (
+                <div key={block.day} className="rounded-2xl border border-gray-800 p-4 bg-[#0d1117]">
+                  <div className="text-sm font-semibold text-gray-300 mb-3">{block.day}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      { side: "BUY" as const, rows: block.buy, tone: "text-green-400" },
+                      { side: "SELL" as const, rows: block.sell, tone: "text-red-400" },
+                    ].map((panel) => (
+                      <div key={`${block.day}-${panel.side}`} className="rounded-xl border border-gray-800 bg-[#0b0f14] p-3">
+                        <div className={`text-sm font-black mb-2 ${panel.tone}`}>TOP 10 {panel.side}</div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs md:text-sm">
+                            <thead>
+                              <tr className="text-left text-gray-500 border-b border-gray-800">
+                                <th className="py-2 pr-2">Symbol</th>
+                                <th className="py-2 pr-2">Score</th>
+                                <th className="py-2 pr-2">Close</th>
+                                <th className="py-2 pr-2">10 İş Günü %</th>
+                                <th className="py-2">Tarih</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {panel.rows.length ? (
+                                panel.rows.map((row) => (
+                                  <tr key={`${block.day}-${panel.side}-${row.symbol}`} className="border-b border-gray-800 last:border-none">
+                                    <td className="py-2 pr-2 font-semibold text-gray-100">{row.symbol}</td>
+                                    <td className="py-2 pr-2 text-gray-200">{row.score ?? "—"}</td>
+                                    <td className="py-2 pr-2 text-gray-200">{formatPrice(row.close_price)}</td>
+                                    <td
+                                      className={`py-2 pr-2 font-semibold ${
+                                        row.pct_10bd == null
+                                          ? "text-gray-500"
+                                          : row.pct_10bd >= 0
+                                            ? "text-green-600"
+                                            : "text-red-600"
+                                      }`}
+                                    >
+                                      {fmtPct(row.pct_10bd)}
+                                    </td>
+                                    <td className="py-2 text-gray-500">{block.day}</td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={5} className="py-3 text-gray-500">
+                                    Veri yok.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pt-12 pb-8">
