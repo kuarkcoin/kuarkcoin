@@ -207,12 +207,25 @@ function Sparkline({ points }: { points?: number[] | null }) {
 // Helpers
 // ──────────────────────────────────────────────────
 function normalizeSymbol(sym: string) {
-  const s = String(sym || "").trim();
-  if (!s) return "NASDAQ:AAPL";
-  if (s.includes(":")) return s.toUpperCase();
+  const raw = String(sym || "").trim();
+  if (!raw) return "NASDAQ:AAPL";
 
-  const plain = s.toUpperCase().replace(/\.IS$/, "");
-  if (BIST_SET.has(plain) || s.toUpperCase().endsWith(".IS")) return `BIST:${plain}`;
+  const upper = raw.toUpperCase();
+  if (upper.startsWith("BIST_DLY:")) {
+    return `BIST:${upper.split(":")[1] ?? ""}`;
+  }
+  if (upper.startsWith("IST:")) {
+    return `BIST:${upper.split(":")[1] ?? ""}`;
+  }
+  if (upper.startsWith("BIST:")) {
+    return `BIST:${upper.split(":")[1] ?? ""}`;
+  }
+  if (upper.startsWith("NASDAQ:") || upper.startsWith("AMEX:") || upper.startsWith("BINANCE:")) {
+    return upper;
+  }
+
+  const plain = upper.replace(/\.IS$/, "");
+  if (BIST_SET.has(plain) || upper.endsWith(".IS")) return `BIST:${plain}`;
   if (CRYPTO_SET.has(plain)) return `BINANCE:${plain}`;
   if (ETF_SET.has(plain)) return `AMEX:${plain}`;
   return `NASDAQ:${plain}`;
@@ -1028,7 +1041,7 @@ export default function TerminalPage() {
                   mobileTab !== "CHART" ? "hidden md:flex" : "flex"
                 }`}
               >
-                <div className="relative bg-black min-h-[420px]">
+                <div className="relative bg-black min-h-[320px] md:min-h-[420px]">
                   {selectedLatestSignal ? (
                     <div className="absolute top-3 left-3 z-10 rounded-lg border border-gray-700 bg-black/70 px-3 py-2 text-xs text-gray-200 backdrop-blur-sm">
                       <div className="font-semibold">Son Sinyal: {String(selectedLatestSignal.signal || "").toUpperCase()}</div>
@@ -1041,6 +1054,62 @@ export default function TerminalPage() {
                 </div>
 
                 <div className="bg-[#0b0f14] p-4 space-y-4 border-t border-gray-800">
+                  <div className="rounded-lg border border-gray-800 p-3 bg-[#0d1117]">
+                    <div className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+                      {selectedSymbolPlain} için Haberler
+                    </div>
+                    {newsLoadingFor === selectedSymbolPlain ? (
+                      <div className="text-xs text-gray-500">Haberler yükleniyor...</div>
+                    ) : newsErrorFor[selectedSymbolPlain] ? (
+                      <div className="text-xs text-red-400">{newsErrorFor[selectedSymbolPlain]}</div>
+                    ) : selectedSymbolNews.length === 0 ? (
+                      <div className="text-xs text-gray-500">Bu hisse için uygun haber bulunamadı.</div>
+                    ) : (
+                      <div className="space-y-2 max-h-56 overflow-y-auto custom-scrollbar">
+                        {selectedSymbolNews.slice(0, 8).map((n, i) => (
+                          <a
+                            key={`${selectedSymbolPlain}-news-${i}`}
+                            href={n.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block rounded-md border border-gray-800 p-2 hover:bg-gray-900/40"
+                          >
+                            <div className="text-xs text-gray-200 line-clamp-2">{n.headline}</div>
+                            <div className="text-[10px] text-gray-500 mt-1">
+                              {n.source || "News"} {n.datetime ? `• ${formatNewsTime(n.datetime)}` : ""}
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-lg border border-gray-800 p-3 bg-[#0d1117]">
+                    <div className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+                      Son Tetiklenen Formasyon / İndikatör
+                    </div>
+                    {selectedLatestSignal?.reasons ? (
+                      <>
+                        <div className="flex flex-wrap gap-1.5 mb-2">
+                          {parseReasons(selectedLatestSignal.reasons).map((key, i) => (
+                            <span
+                              key={`${key}-${i}`}
+                              className="text-[10px] px-2 py-1 rounded-full border border-gray-700 bg-gray-800/50 text-gray-200"
+                              title={REASON_LABEL[key] || key}
+                            >
+                              {REASON_LABEL[key] ?? key}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="text-xs text-gray-300 leading-relaxed">
+                          {reasonsToTechSentences(selectedLatestSignal.reasons) || "Detay bulunamadı."}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-xs text-gray-500">Seçilen sembol için tetiklenen detay bulunamadı.</div>
+                    )}
+                  </div>
+
                   <div className="flex flex-wrap gap-2">
                     {(["BIST", "NASDAQ", "ETF"] as ChartUniverse[]).map((u) => (
                       <button
@@ -1057,7 +1126,7 @@ export default function TerminalPage() {
                     ))}
                   </div>
 
-                  <div className="max-h-40 overflow-y-auto custom-scrollbar rounded-lg border border-gray-800 p-2">
+                  <div className="max-h-32 md:max-h-40 overflow-y-auto custom-scrollbar rounded-lg border border-gray-800 p-2">
                     <div className="flex flex-wrap gap-2">
                       {chartAssets[chartUniverse].map((sym) => (
                         <button
@@ -1078,36 +1147,6 @@ export default function TerminalPage() {
                         </button>
                       ))}
                     </div>
-                  </div>
-
-                  <div className="rounded-lg border border-gray-800 p-3">
-                    <div className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
-                      {selectedSymbolPlain} için Haberler
-                    </div>
-                    {newsLoadingFor === selectedSymbolPlain ? (
-                      <div className="text-xs text-gray-500">Haberler yükleniyor...</div>
-                    ) : newsErrorFor[selectedSymbolPlain] ? (
-                      <div className="text-xs text-red-400">{newsErrorFor[selectedSymbolPlain]}</div>
-                    ) : selectedSymbolNews.length === 0 ? (
-                      <div className="text-xs text-gray-500">Bu hisse için uygun haber bulunamadı.</div>
-                    ) : (
-                      <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-                        {selectedSymbolNews.slice(0, 6).map((n, i) => (
-                          <a
-                            key={`${selectedSymbolPlain}-news-${i}`}
-                            href={n.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="block rounded-md border border-gray-800 p-2 hover:bg-gray-900/40"
-                          >
-                            <div className="text-xs text-gray-200 line-clamp-2">{n.headline}</div>
-                            <div className="text-[10px] text-gray-500 mt-1">
-                              {n.source || "News"} {n.datetime ? `• ${formatNewsTime(n.datetime)}` : ""}
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
