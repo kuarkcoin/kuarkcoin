@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { symbolToPlain, timeAgo } from "@/constants/terminal";
+import { ASSETS, symbolToPlain, timeAgo } from "@/constants/terminal";
+
+const BIST_SET = new Set<string>(((ASSETS as any).BIST ?? []).map((x: string) => String(x).toUpperCase()));
+const CRYPTO_SET = new Set<string>(((ASSETS as any).CRYPTO ?? []).map((x: string) => String(x).toUpperCase()));
+const ETF_SET = new Set<string>(((ASSETS as any).ETF ?? []).map((x: string) => String(x).toUpperCase()));
 
 type SignalTone = "BUY" | "SELL" | string;
 
@@ -30,8 +34,15 @@ export type DashboardProps = {
 function normalizeSymbol(sym: string) {
   const s = String(sym || "").trim();
   if (!s) return "NASDAQ:AAPL";
-  if (s.includes(":")) return s;
-  return `NASDAQ:${s}`;
+  if (s.includes(":")) return s.toUpperCase();
+
+  const plain = s.toUpperCase().replace(/\.IS$/, "");
+
+  if (BIST_SET.has(plain) || s.toUpperCase().endsWith(".IS")) return `BIST:${plain}`;
+  if (CRYPTO_SET.has(plain)) return `BINANCE:${plain}`;
+  if (ETF_SET.has(plain)) return `AMEX:${plain}`;
+
+  return `NASDAQ:${plain}`;
 }
 
 function clamp(n: number, a: number, b: number) {
@@ -187,8 +198,14 @@ export default function DashboardView({
     return out;
   }, [signals]);
 
-  const topBuy0 = topBuy?.[0];
-  const topSell0 = topSell?.[0];
+  const topBuy0 = useMemo(
+    () => [...(topBuy ?? [])].sort((a, b) => (Number(b?.score ?? -999999) - Number(a?.score ?? -999999)))[0],
+    [topBuy]
+  );
+  const topSell0 = useMemo(
+    () => [...(topSell ?? [])].sort((a, b) => (Number(b?.score ?? -999999) - Number(a?.score ?? -999999)))[0],
+    [topSell]
+  );
 
   // ------------------------
   // Heatmap controls

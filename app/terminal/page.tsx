@@ -208,8 +208,13 @@ function Sparkline({ points }: { points?: number[] | null }) {
 function normalizeSymbol(sym: string) {
   const s = String(sym || "").trim();
   if (!s) return "NASDAQ:AAPL";
-  if (s.includes(":")) return s;
-  return `NASDAQ:${s}`;
+  if (s.includes(":")) return s.toUpperCase();
+
+  const plain = s.toUpperCase().replace(/\.IS$/, "");
+  if (BIST_SET.has(plain) || s.toUpperCase().endsWith(".IS")) return `BIST:${plain}`;
+  if (CRYPTO_SET.has(plain)) return `BINANCE:${plain}`;
+  if (ETF_SET.has(plain)) return `AMEX:${plain}`;
+  return `NASDAQ:${plain}`;
 }
 
 function uniqBy<T>(arr: T[], keyFn: (t: T) => string) {
@@ -351,6 +356,17 @@ export default function TerminalPage() {
   }, [signals]);
 
   const signaledSymbols = useMemo(() => new Set(signals.map((r) => symbolToPlain(r.symbol))), [signals]);
+  const selectedLatestSignal = useMemo(() => {
+    const plain = symbolToPlain(selectedSymbol);
+    const normalized = String(selectedSymbol).toUpperCase();
+
+    return (
+      signals.find((r) => String(r.symbol || "").toUpperCase() === normalized) ||
+      signals.find((r) => symbolToPlain(r.symbol) === plain) ||
+      null
+    );
+  }, [signals, selectedSymbol]);
+
 
   const visibleSignals = useMemo(() => {
     const last = signals.slice(0, signalLimit);
@@ -992,6 +1008,14 @@ export default function TerminalPage() {
                   mobileTab !== "CHART" ? "hidden md:block" : "block"
                 }`}
               >
+                {selectedLatestSignal ? (
+                  <div className="absolute top-3 left-3 z-10 rounded-lg border border-gray-700 bg-black/70 px-3 py-2 text-xs text-gray-200 backdrop-blur-sm">
+                    <div className="font-semibold">Son Sinyal: {String(selectedLatestSignal.signal || "").toUpperCase()}</div>
+                    <div className="text-gray-300">
+                      {timeAgo(selectedLatestSignal.created_at)} • Score: {selectedLatestSignal.score ?? "—"}
+                    </div>
+                  </div>
+                ) : null}
                 <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
               </div>
 
@@ -1088,10 +1112,11 @@ export default function TerminalPage() {
                           <button
                             key={r.id}
                             onClick={() => {
-                              setSelectedSymbol(r.symbol);
+                              const ns = normalizeSymbol(r.symbol);
+                              setSelectedSymbol(ns);
                               setSelectedSignalId(r.id);
                               toggleNewsForRow({ symbol: r.symbol, reasons: r.reasons });
-                              fetchMini(r.symbol);
+                              fetchMini(ns);
                             }}
                             className={`w-full text-left p-4 rounded-xl border transition-all focus:outline-none focus:ring-2 focus:ring-blue-600/40 ${
                               isActive

@@ -108,31 +108,50 @@ async function getTopSignalsForSide(
   startIso: string,
   endIso: string
 ): Promise<SignalRow[]> {
-  const { data, error } = await supa
-    .from("signals")
-    .select("symbol, signal, type, score, price")
-    .gte("created_at", startIso)
-    .lt("created_at", endIso)
-    .not("score", "is", null)
-    .order("score", { ascending: false })
-    .or(`signal.eq.${side},type.eq.${side}`)
-    .limit(40);
+  const queryByColumn = async (col: "signal" | "type") => {
+    const { data, error } = await supa
+      .from("signals")
+      .select(`symbol, ${col}, score, price`)
+      .gte("created_at", startIso)
+      .lt("created_at", endIso)
+      .not("score", "is", null)
+      .eq(col, side)
+      .order("score", { ascending: false })
+      .limit(40);
 
-  if (error) {
-    console.error("signals query error", error);
-    return [];
-  }
+    if (error) {
+      const msg = String(error.message ?? "").toLowerCase();
+      if (!msg.includes(`column signals.${col} does not exist`)) {
+        console.error("signals query error", error);
+      }
+      return [] as SignalRow[];
+    }
 
-  return (data ?? [])
-    .map((row) => ({
+    return (data ?? []).map((row: any) => ({
       symbol: String(row.symbol ?? "").trim(),
-      signal: row.signal ? String(row.signal) : null,
-      type: row.type ? String(row.type) : null,
+      signal: col === "signal" ? String(row.signal ?? "") : null,
+      type: col === "type" ? String(row.type ?? "") : null,
       score: parseNumber(row.score),
       price: parseNumber(row.price),
-    }))
+    }));
+  };
+
+  const [bySignal, byType] = await Promise.all([queryByColumn("signal"), queryByColumn("type")]);
+  const merged = [...bySignal, ...byType]
     .filter((row) => row.symbol && row.score !== null && detectSide(row) === side)
-    .slice(0, 10);
+    .sort((a, b) => (b.score ?? -999999) - (a.score ?? -999999));
+
+  const deduped: SignalRow[] = [];
+  const seen = new Set<string>();
+  for (const row of merged) {
+    const key = row.symbol.toUpperCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(row);
+    if (deduped.length >= 10) break;
+  }
+
+  return deduped;
 }
 
 async function runDailyTopAggregation() {
