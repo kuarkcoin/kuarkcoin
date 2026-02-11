@@ -38,6 +38,7 @@ const ASSETS_MAP: AssetsMap = {
 };
 
 type AssetCategory = keyof AssetsMap;
+type ChartUniverse = "BIST" | "NASDAQ" | "ETF";
 
 type NewsItem = {
   headline: string;
@@ -236,6 +237,7 @@ export default function TerminalPage() {
   // ── core state ───────────────────────────────────
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
   const [activeCategory, setActiveCategory] = useState<AssetCategory>("NASDAQ");
+  const [chartUniverse, setChartUniverse] = useState<ChartUniverse>("NASDAQ");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
 
@@ -345,6 +347,16 @@ export default function TerminalPage() {
     return list.sort((a, b) => (isFav(String(b)) ? 1 : 0) - (isFav(String(a)) ? 1 : 0));
   }, [activeCategory, debouncedSearch, isFav]);
 
+
+  const chartAssets = useMemo<Record<ChartUniverse, string[]>>(
+    () => ({
+      BIST: [...(ASSETS_MAP.BIST ?? [])].map(String).sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" })),
+      NASDAQ: [...(ASSETS_MAP.NASDAQ ?? [])].map(String).sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" })),
+      ETF: [...(ASSETS_MAP.ETF ?? [])].map(String).sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" })),
+    }),
+    []
+  );
+
   // Latest per symbol map
   const lastSignalMap = useMemo(() => {
     const m = new Map<string, SignalRow>();
@@ -366,6 +378,7 @@ export default function TerminalPage() {
       null
     );
   }, [signals, selectedSymbol]);
+
 
 
   const visibleSignals = useMemo(() => {
@@ -444,6 +457,9 @@ export default function TerminalPage() {
   const [newsCache, setNewsCache] = useState<Record<string, NewsItem[]>>({});
   const [openNewsForSymbol, setOpenNewsForSymbol] = useState<string>("");
 
+  const selectedSymbolPlain = useMemo(() => symbolToPlain(selectedSymbol), [selectedSymbol]);
+  const selectedSymbolNews = newsCache[selectedSymbolPlain] ?? [];
+
   const [smartScore, setSmartScore] = useState<Record<string, { score: number; impact: string; explanation: string }>>(
     {}
   );
@@ -519,6 +535,10 @@ export default function TerminalPage() {
     },
     [analyzeWithGemini]
   );
+
+  useEffect(() => {
+    fetchNewsForSymbol(selectedSymbol, null);
+  }, [selectedSymbol, fetchNewsForSymbol]);
 
   const toggleNewsForRow = useCallback(
     (row: { symbol: string; reasons?: string | null }) => {
@@ -1004,19 +1024,92 @@ export default function TerminalPage() {
 
             <div className="flex-1 flex flex-col md:flex-row min-h-0">
               <div
-                className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
-                  mobileTab !== "CHART" ? "hidden md:block" : "block"
+                className={`flex-1 min-w-0 flex flex-col border-b md:border-b-0 md:border-r border-gray-800 ${
+                  mobileTab !== "CHART" ? "hidden md:flex" : "flex"
                 }`}
               >
-                {selectedLatestSignal ? (
-                  <div className="absolute top-3 left-3 z-10 rounded-lg border border-gray-700 bg-black/70 px-3 py-2 text-xs text-gray-200 backdrop-blur-sm">
-                    <div className="font-semibold">Son Sinyal: {String(selectedLatestSignal.signal || "").toUpperCase()}</div>
-                    <div className="text-gray-300">
-                      {timeAgo(selectedLatestSignal.created_at)} • Score: {selectedLatestSignal.score ?? "—"}
+                <div className="relative bg-black min-h-[420px]">
+                  {selectedLatestSignal ? (
+                    <div className="absolute top-3 left-3 z-10 rounded-lg border border-gray-700 bg-black/70 px-3 py-2 text-xs text-gray-200 backdrop-blur-sm">
+                      <div className="font-semibold">Son Sinyal: {String(selectedLatestSignal.signal || "").toUpperCase()}</div>
+                      <div className="text-gray-300">
+                        {timeAgo(selectedLatestSignal.created_at)} • Score: {selectedLatestSignal.score ?? "—"}
+                      </div>
+                    </div>
+                  ) : null}
+                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="D" theme="dark" />
+                </div>
+
+                <div className="bg-[#0b0f14] p-4 space-y-4 border-t border-gray-800">
+                  <div className="flex flex-wrap gap-2">
+                    {(["BIST", "NASDAQ", "ETF"] as ChartUniverse[]).map((u) => (
+                      <button
+                        key={u}
+                        onClick={() => setChartUniverse(u)}
+                        className={`px-3 py-1.5 text-xs rounded border transition-colors ${
+                          chartUniverse === u
+                            ? "border-blue-500 text-blue-300 bg-blue-900/20"
+                            : "border-gray-700 text-gray-300 hover:bg-gray-800"
+                        }`}
+                      >
+                        {u}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="max-h-40 overflow-y-auto custom-scrollbar rounded-lg border border-gray-800 p-2">
+                    <div className="flex flex-wrap gap-2">
+                      {chartAssets[chartUniverse].map((sym) => (
+                        <button
+                          key={`${chartUniverse}-${sym}`}
+                          onClick={() => {
+                            const ns = normalizeSymbol(sym);
+                            setSelectedSymbol(ns);
+                            setActiveCategory(chartUniverse);
+                            fetchMini(ns);
+                          }}
+                          className={`px-2.5 py-1 text-xs rounded border ${
+                            symbolToPlain(selectedSymbol) === sym
+                              ? "border-blue-500 text-blue-300 bg-blue-900/20"
+                              : "border-gray-700 text-gray-300 hover:bg-gray-800"
+                          }`}
+                        >
+                          {sym}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                ) : null}
-                <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+
+                  <div className="rounded-lg border border-gray-800 p-3">
+                    <div className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+                      {selectedSymbolPlain} için Haberler
+                    </div>
+                    {newsLoadingFor === selectedSymbolPlain ? (
+                      <div className="text-xs text-gray-500">Haberler yükleniyor...</div>
+                    ) : newsErrorFor[selectedSymbolPlain] ? (
+                      <div className="text-xs text-red-400">{newsErrorFor[selectedSymbolPlain]}</div>
+                    ) : selectedSymbolNews.length === 0 ? (
+                      <div className="text-xs text-gray-500">Bu hisse için uygun haber bulunamadı.</div>
+                    ) : (
+                      <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                        {selectedSymbolNews.slice(0, 6).map((n, i) => (
+                          <a
+                            key={`${selectedSymbolPlain}-news-${i}`}
+                            href={n.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block rounded-md border border-gray-800 p-2 hover:bg-gray-900/40"
+                          >
+                            <div className="text-xs text-gray-200 line-clamp-2">{n.headline}</div>
+                            <div className="text-[10px] text-gray-500 mt-1">
+                              {n.source || "News"} {n.datetime ? `• ${formatNewsTime(n.datetime)}` : ""}
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <aside
