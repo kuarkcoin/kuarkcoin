@@ -19,27 +19,17 @@ function noStore(json: any, init?: ResponseInit) {
   });
 }
 
-function pick(obj: any, keys: string[]) {
-  const out: any = {};
-  for (const k of keys) out[k] = obj?.[k];
-  return out;
+async function readJsonBody(req: Request) {
+  const raw = await req.text();
+  let body: any = null;
+  try { body = JSON.parse(raw); } catch { body = null; }
+  return { raw, body };
 }
 
 function parseTvTime(t: any) {
   const n = Number(t);
   if (!Number.isFinite(n) || n <= 0) return new Date();
   return new Date(n < 1e12 ? n * 1000 : n);
-}
-
-async function readJsonBody(req: Request) {
-  const raw = await req.text();
-  let body: any = null;
-  try {
-    body = JSON.parse(raw);
-  } catch {
-    body = null;
-  }
-  return { raw, body };
 }
 
 function toBool(v: any) {
@@ -57,7 +47,7 @@ function toNumOrNull(v: any) {
 
 function normalizeStr(v: any) {
   if (v == null) return null;
-  const s = String(v);
+  const s = String(v).trim();
   return s.length ? s : null;
 }
 
@@ -67,19 +57,45 @@ function containsEMA50Retest(reasons: string | null) {
   return s.includes("ema50") && (s.includes("retest") || s.includes("rtest"));
 }
 
-// ✅ Secret doğrulama: ENV + opsiyonel payload secret + opsiyonel header
-function getSecretFromReq(req: Request, body: any) {
+// Secret doğrulama: ENV + body.secret + opsiyonel header
+function getIncomingSecret(req: Request, body: any) {
   const headerSecret =
     req.headers.get("x-kuark-secret") ||
     req.headers.get("x-scan-secret") ||
     req.headers.get("x-secret");
 
   const bodySecret = body?.secret;
-  return { headerSecret, bodySecret };
+  return String(headerSecret ?? bodySecret ?? "").trim();
 }
 
-function safeShort(v: any) {
-  return String(v ?? "").slice(0, 24);
+// "BINANCE:BTCUSDT" -> "BTCUSDT" (istersen)
+function plainSymbol(sym: string) {
+  const s = sym.trim();
+  const idx = s.indexOf(":");
+  return idx >= 0 ? s.slice(idx + 1) : s;
+}
+
+// Sadece var olan alanları insert et (schema mismatch patlatmasın)
+async function safeInsertSignal(supa: any, payload: any) {
+  // signals tablonun kolonlarını bilmediğimiz için:
+  // "common" alanları deniyoruz; hata verirse daha minimal dene.
+  const try1 = await supa.from("signals").insert([payload]).select("id").single();
+  if (!try1.error) return try1;
+
+  // fallback: en minimal (çoğu şemada vardır)
+  const minimal: any = {
+    symbol: payload.symbol,
+    signal: payload.signal,
+    score: payload.score ?? null,
+    reasons: payload.reasons ?? null,
+    t_tv: payload.t_tv ?? new Date().toISOString(),
+    timeframe: payload.timeframe ?? null,
+    is_premium: payload.is_premium ?? false,
+    grade: payload.grade ?? null,
+  };
+
+  const try2 = await supa.from("signals").insert([minimal]).select("id").single();
+  return try2;
 }
 
 export async function GET(req: Request) {
@@ -87,7 +103,6 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope") ?? "";
 
-  // ✅ Son 20 trade win-rate + EMA50 retest win-rate
   if (scope === "stats") {
     const window = Number(searchParams.get("window") ?? "20");
     const w = Number.isFinite(window) ? Math.max(5, Math.min(window, 200)) : 20;
@@ -103,12 +118,12 @@ export async function GET(req: Request) {
 
     const rows = trades ?? [];
     const total = rows.length;
-    const wins = rows.filter((r) => r.outcome === "WIN").length;
+    const wins = rows.filter((r: any) => r.outcome === "WIN").length;
     const winRate = total ? Math.round((wins / total) * 100) : 0;
 
-    const emaRows = rows.filter((r) => r.is_ema50_retest);
+    const emaRows = rows.filter((r: any) => r.is_ema50_retest);
     const emaTotal = emaRows.length;
-    const emaWins = emaRows.filter((r) => r.outcome === "WIN").length;
+    const emaWins = emaRows.filter((r: any) => r.outcome === "WIN").length;
     const emaWinRate = emaTotal ? Math.round((emaWins / emaTotal) * 100) : 0;
 
     return noStore({
@@ -121,7 +136,6 @@ export async function GET(req: Request) {
     });
   }
 
-  // default: son sinyaller
   const { data, error } = await supa
     .from("signals")
     .select("*")
@@ -134,53 +148,33 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const supa = supabaseServer();
-
   const { raw, body } = await readJsonBody(req);
 
-  // 🔥 DEBUG: gelen payload
-  console.log("[/api/signals] RAW:", raw.slice(0, 800));
-  console.log("[/api/signals] BODY_KEYS:", body ? Object.keys(body) : null);
-  console.log(
-    "[/api/signals] BODY_PICK:",
-    body ? pick(body, ["secret", "event", "symbol", "signal", "score", "grade", "premium", "is_premium", "t", "timeframe", "price", "entryPrice", "exitPrice", "outcome"]) : null
-  );
+  console.log("[/api/signals] RAW:", raw.slice(0, 1200));
 
-  if (!body) {
-    return noStore({ ok: false, error: "Bad JSON", raw: raw.slice(0, 400) }, { status: 400 });
-  }
+  if (!body) return noStore({ ok: false, error: "Bad JSON", raw: raw.slice(0, 400) }, { status: 400 });
 
-  // ✅ Secret check (ENV ile birebir)
-  const envSecret = process.env.SCAN_SECRET;
-  const { headerSecret, bodySecret } = getSecretFromReq(req, body);
+  // ✅ SECRET
+  const expected = String(process.env.SCAN_SECRET ?? "").trim();
+  if (!expected) return noStore({ ok: false, error: "Server misconfigured: SCAN_SECRET missing" }, { status: 500 });
 
-  const incoming = (headerSecret ?? bodySecret ?? "").toString().trim();
-  const expected = (envSecret ?? "").toString().trim();
-
-  if (!expected) {
-    console.log("[/api/signals] CONFIG ERROR: SCAN_SECRET env is missing");
-    return noStore({ ok: false, error: "Server misconfigured: SCAN_SECRET missing" }, { status: 500 });
-  }
-
+  const incoming = getIncomingSecret(req, body);
   if (!incoming || incoming !== expected) {
-    console.log(
-      "[/api/signals] UNAUTHORIZED",
-      "incoming=",
-      safeShort(incoming),
-      "expected=",
-      safeShort(expected),
-      "headerSecret=",
-      safeShort(headerSecret),
-      "bodySecret=",
-      safeShort(bodySecret)
-    );
+    console.log("[/api/signals] UNAUTHORIZED incoming=", incoming?.slice(0, 24), "expected=", expected.slice(0, 24));
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const event: EventType = String(body.event ?? "OPEN").toUpperCase() as EventType;
-  const symbol = String(body.symbol ?? "").trim();
-  const signal = String(body.signal ?? "").toUpperCase().trim(); // BUY/SELL (OPEN için)
-  const timeframe = normalizeStr(body.timeframe);
+  // ✅ normalize payload
+  const event: EventType = (String(body.event ?? "OPEN").toUpperCase() as EventType);
+  const signal = String(body.signal ?? "").toUpperCase().trim();
+  const symbolRaw = String(body.symbol ?? "").trim();
 
+  if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
+
+  // TradingView bazen tickerid yolluyor: "NASDAQ:AAPL" / "BINANCE:BTCUSDT"
+  const symbolPlain = plainSymbol(symbolRaw);
+
+  const timeframe = normalizeStr(body.timeframe);
   const score = toNumOrNull(body.score);
   const grade = normalizeStr(body.grade);
   const premium = toBool(body.premium ?? body.is_premium);
@@ -192,89 +186,100 @@ export async function POST(req: Request) {
   const entryPrice = toNumOrNull(body.entryPrice) ?? price;
   const exitPrice = toNumOrNull(body.exitPrice);
 
-  if (!symbol) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
-
-  // 1) OPEN: signals insert + open trade insert
-  if (event === "OPEN") {
-    if (signal !== "BUY" && signal !== "SELL") {
-      return noStore({ ok: false, error: "Missing/invalid signal for OPEN" }, { status: 400 });
-    }
-
-    // signals kaydı
-    const { data: sig, error: e1 } = await supa
-      .from("signals")
-      .insert([
-        {
-          symbol,
-          timeframe,
-          signal,
-          price,
-          score,
-          grade,
-          is_premium: premium,
-          reasons,
-          t_tv: t_tv.toISOString(),
-        },
-      ])
-      .select("id")
-      .single();
-
-    if (e1) {
-      console.log("[/api/signals] signals insert error:", e1);
-      return noStore({ ok: false, error: e1.message }, { status: 500 });
-    }
-
-    // aynı sembolde açık trade varsa kapat (opsiyonel güvenlik)
-    const { error: eAutoClose } = await supa
-      .from("trades")
-      .update({ exit_time: t_tv.toISOString(), exit_reason: "NewSignalAutoClose" })
-      .eq("symbol", symbol)
-      .is("exit_time", null);
-
-    if (eAutoClose) console.log("[/api/signals] trades auto-close warn:", eAutoClose);
-
-    const direction = signal === "BUY" ? "LONG" : "SHORT";
-    const isEma50 = containsEMA50Retest(reasons);
-
-    const { data: tr, error: e2 } = await supa
-      .from("trades")
-      .insert([
-        {
-          symbol,
-          timeframe,
-          direction,
-          entry_time: t_tv.toISOString(),
-          entry_price: entryPrice,
-          entry_signal_id: sig?.id ?? null,
-          is_premium: premium,
-          grade,
-          score,
-          reasons,
-          is_ema50_retest: isEma50,
-        },
-      ])
-      .select("id")
-      .single();
-
-    if (e2) {
-      console.log("[/api/signals] trades insert error:", e2);
-      return noStore({ ok: false, error: e2.message }, { status: 500 });
-    }
-
-    return noStore({ ok: true, event: "OPEN", signalId: sig?.id, tradeId: tr?.id });
+  // ✅ Eğer event OPEN ama signal yoksa: TV payload'ı bozuk demek
+  if (event === "OPEN" && signal !== "BUY" && signal !== "SELL") {
+    return noStore(
+      { ok: false, error: "Missing/invalid signal for OPEN", got: { signal, symbol: symbolRaw } },
+      { status: 400 }
+    );
   }
 
-  // 2) CLOSE: son açık trade'i bul kapat + outcome yaz
-  if (event === "CLOSE") {
-    const outcome: Outcome =
-      body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
+  // 1) OPEN
+  if (event === "OPEN") {
+    // signals insert (schema tolerant)
+    const signalPayload: any = {
+      // Sende nasıl ise: symbol alanına raw yazıyorum; plain'i ayrı saklamak istersen ekle.
+      symbol: symbolRaw,
+      timeframe,
+      signal,
+      score,
+      grade,
+      is_premium: premium,
+      reasons,
+      t_tv: t_tv.toISOString(),
 
+      // ⚠️ DB'de price kolonun yoksa try1 patlar; safeInsert fallback var.
+      price,
+      symbol_plain: symbolPlain, // DB'de yoksa sorun değil (fallback minimal deniyor)
+    };
+
+    const ins = await safeInsertSignal(supa, signalPayload);
+
+    if (ins.error) {
+      console.log("[/api/signals] signals insert error:", ins.error);
+      return noStore(
+        {
+          ok: false,
+          error: "signals insert failed",
+          detail: ins.error.message,
+          hint: "Muhtemel sebep: signals tablosu kolon uyuşmazlığı veya RLS (service role yok).",
+        },
+        { status: 500 }
+      );
+    }
+
+    const signalId = ins.data?.id ?? null;
+
+    // trades insert: tamamen opsiyonel (tablon yoksa vs. patlamasın)
+    try {
+      // açık trade varsa kapat
+      await supa
+        .from("trades")
+        .update({ exit_time: t_tv.toISOString(), exit_reason: "NewSignalAutoClose" })
+        .eq("symbol", symbolRaw)
+        .is("exit_time", null);
+
+      const direction = signal === "BUY" ? "LONG" : "SHORT";
+      const isEma50 = containsEMA50Retest(reasons);
+
+      const trIns = await supa
+        .from("trades")
+        .insert([
+          {
+            symbol: symbolRaw,
+            timeframe,
+            direction,
+            entry_time: t_tv.toISOString(),
+            entry_price: entryPrice,
+            entry_signal_id: signalId,
+            is_premium: premium,
+            grade,
+            score,
+            reasons,
+            is_ema50_retest: isEma50,
+          },
+        ])
+        .select("id")
+        .single();
+
+      if (trIns.error) console.log("[/api/signals] trades insert warn:", trIns.error.message);
+      return noStore({ ok: true, event: "OPEN", signalId, tradeId: trIns.data?.id ?? null });
+    } catch (e: any) {
+      console.log("[/api/signals] trades block warn:", e?.message ?? e);
+      // signals kaydı başarıyla girdi, trade kısmı patlasa bile OK dönelim
+      return noStore({ ok: true, event: "OPEN", signalId, tradeId: null, tradeWarn: true });
+    }
+  }
+
+  // 2) CLOSE
+  if (event === "CLOSE") {
+    const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
     const exitReason = normalizeStr(body.exitReason);
 
     const { data: openTrade, error: eFind } = await supa
       .from("trades")
       .select("id, direction, entry_price")
-      .eq("symbol", symbol)
+      .eq("symbol", symbolRaw)
       .is("exit_time", null)
       .order("created_at", { ascending: false })
       .limit(1)
@@ -283,7 +288,6 @@ export async function POST(req: Request) {
     if (eFind) return noStore({ ok: false, error: eFind.message }, { status: 500 });
     if (!openTrade) return noStore({ ok: false, error: "No open trade for symbol" }, { status: 404 });
 
-    // outcome yoksa entry/exit ile hesap
     let finalOutcome: Outcome = outcome;
     const ep = toNumOrNull(openTrade.entry_price);
     const xp = exitPrice;
@@ -306,7 +310,6 @@ export async function POST(req: Request) {
       .single();
 
     if (eClose) return noStore({ ok: false, error: eClose.message }, { status: 500 });
-
     return noStore({ ok: true, event: "CLOSE", data: closed });
   }
 
