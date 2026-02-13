@@ -16,6 +16,20 @@ type SignalRow = {
   price: number | null;
   score: number | null; // 0..100
   reasons: string | null;
+
+  // ✅ YOL B ekstra alanlar
+  grade?: string | null; // "A+", "A", "B"...
+  is_premium?: boolean | null;
+};
+
+type StatsResp = {
+  ok: boolean;
+  window: number;
+  total: number;
+  wins: number;
+  winRate: number; // 0..100
+  ema50?: { total: number; wins: number; winRate: number };
+  error?: string;
 };
 
 type KapRow = {
@@ -35,7 +49,6 @@ type NewsItem = {
   datetime: number; // unix sec
   tickers: string[];
   tags: string[];
-  // opsiyonel alanlar varsa zarar vermez
   score?: number;
 };
 
@@ -267,7 +280,6 @@ function newsImpactColor(tags: string[]) {
 }
 
 function estimateNewsImpact(n: NewsItem) {
-  // Basit “impact score” (0..100): ticker sayısı + tag ağırlığı + kaynak bonusu
   const tick = (n.tickers ?? []).length;
   const tags = (n.tags ?? []).map((x) => String(x).toUpperCase());
   let score = 10;
@@ -298,6 +310,17 @@ async function getLatestSignals(base: string): Promise<SignalRow[]> {
   } catch (e) {
     console.error("getLatestSignals error:", e);
     return [];
+  }
+}
+
+async function getSignalStats(base: string, window = 20): Promise<StatsResp | null> {
+  try {
+    const json: any = await safeFetchJson(`${base}/api/signals?scope=stats&window=${window}`);
+    if (!json || json?.__error) return null;
+    return json as StatsResp;
+  } catch (e) {
+    console.error("getSignalStats error:", e);
+    return null;
   }
 }
 
@@ -333,11 +356,9 @@ async function getNewsCombined(
   minScore: number
 ): Promise<{ items: NewsItem[]; meta?: any; debug?: any }> {
   try {
-    // Not: ilk debug için minScore'u query ile oynatacağız
     const url = `${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=30&minScore=${minScore}`;
     const json: any = await safeFetchJsonCached(url, 3600);
 
-    // hata objesi döndüyse
     if (json?.__error) {
       return { items: [], debug: json };
     }
@@ -361,34 +382,29 @@ export default async function HomePage({
   const u = String(searchParams?.u ?? "BIST100").toUpperCase();
   const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
 
-  // ticker filter
   const tickerFilter = (searchParams?.t ?? "").toString().trim().toUpperCase();
-
-  // sorting: latest | impact
   const sort = (searchParams?.sort ?? "latest").toString().toLowerCase();
 
-  // debug: minScore override (default 80)
   const minScore = Number.isFinite(Number(searchParams?.minScore))
     ? Math.max(0, Math.min(100, Number(searchParams?.minScore)))
     : 30;
 
   const base = getApiBaseUrl();
 
-  const [latest, kap, top, newsPack] = await Promise.all([
+  const [latest, kap, top, newsPack, stats] = await Promise.all([
     getLatestSignals(base),
     universe === "BIST100" ? getKapImportant(base) : Promise.resolve([]),
     getTopMargins(base, universe),
     getNewsCombined(base, universe, minScore),
+    getSignalStats(base, 20),
   ]);
 
   let news = newsPack.items;
 
-  // ticker filter applied
   if (tickerFilter) {
     news = news.filter((n) => (n.tickers ?? []).some((t) => cleanTickerLabel(t).toUpperCase() === tickerFilter));
   }
 
-  // sort
   if (sort === "impact") {
     news = [...news].sort((a, b) => estimateNewsImpact(b) - estimateNewsImpact(a));
   } else {
@@ -436,13 +452,37 @@ export default async function HomePage({
             </span>
             <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
               Haber: <span className="text-gray-200 font-semibold">{newsCount}</span>
-              {lastNewsTimeIso ? (
-                <span className="text-gray-500"> • son: {timeAgoTR(news[0].datetime)}</span>
-              ) : null}
+              {lastNewsTimeIso ? <span className="text-gray-500"> • son: {timeAgoTR(news[0].datetime)}</span> : null}
             </span>
             <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
               MinScore: <span className="text-gray-200 font-semibold">{minScore}</span>
             </span>
+
+            {/* ✅ Win-rate + EMA50 Retest */}
+            {stats?.ok ? (
+              <>
+                <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
+                  WinRate(20):{" "}
+                  <span className="text-gray-200 font-semibold">{stats.winRate}%</span>{" "}
+                  <span className="text-gray-600">
+                    ({stats.wins}/{stats.total})
+                  </span>
+                </span>
+
+                <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117]">
+                  EMA50 Retest:{" "}
+                  <span className="text-gray-200 font-semibold">{stats.ema50?.winRate ?? "—"}%</span>{" "}
+                  <span className="text-gray-600">
+                    ({stats.ema50?.wins ?? 0}/{stats.ema50?.total ?? 0})
+                  </span>
+                </span>
+              </>
+            ) : (
+              <span className="px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-500">
+                WinRate: —
+              </span>
+            )}
+
             {tickerFilter ? (
               <span className="px-2 py-1 rounded-full border border-blue-700/60 bg-blue-950/30 text-blue-200">
                 Ticker: <span className="font-black">{tickerFilter}</span>{" "}
@@ -473,6 +513,7 @@ export default async function HomePage({
               <Badge>KAP • BIST100</Badge>
               <Badge>News Catcher</Badge>
               <Badge>Top Margins</Badge>
+              <Badge>WinRate • YOL B</Badge>
             </div>
 
             <h1 className="text-3xl md:text-5xl font-black tracking-tight">
@@ -480,9 +521,9 @@ export default async function HomePage({
             </h1>
 
             <p className="text-gray-300 max-w-2xl leading-relaxed">
-              Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir: skor, nedenler, Win/Loss takibi ve
-              grafikte işaretleme. Ek olarak ana sayfada BIST100 için yükseltici KAP bildirimlerini etiketleyip özetler.
-              Yeni: Haber yakalayıcı (BIST100 / NASDAQ300 / ETF) + marj sıralamaları.
+              Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir: skor, nedenler, trade sonuçları
+              (OPEN/CLOSE), Win/Loss takibi ve grafikte işaretleme. Ek olarak ana sayfada BIST100 için yükseltici KAP
+              bildirimlerini etiketleyip özetler. Yeni: Haber yakalayıcı (BIST100 / NASDAQ300 / ETF) + marj sıralamaları.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -512,16 +553,20 @@ export default async function HomePage({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">⚡ Canlı Akış</div>
-                <div className="text-xs text-gray-500 mt-1">API’dan son sinyaller çekilir, terminalde otomatik yenilenir.</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  API’dan son sinyaller çekilir, terminalde otomatik yenilenir.
+                </div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
                 <div className="text-sm font-bold">🧠 Skor + Neden</div>
-                <div className="text-xs text-gray-500 mt-1">Golden Cross, VWAP, Divergence… skor bar + glow ile.</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Golden Cross, VWAP, Divergence… skor bar + glow ile.
+                </div>
               </div>
               <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="text-sm font-bold">🗞️ Haber Yakala</div>
+                <div className="text-sm font-bold">🏁 WinRate</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  Haber metninden tickers yakalanır: <span className="text-gray-300">{universeLabel(universe)}</span>
+                  Son 20 trade içinden Win/Loss hesaplanır (OPEN/CLOSE event’leriyle).
                 </div>
               </div>
             </div>
@@ -558,7 +603,9 @@ export default async function HomePage({
             <Link
               href={`/?u=${encodeURIComponent(universe)}&sort=latest&minScore=${minScore}${tickerFilter ? `&t=${encodeURIComponent(tickerFilter)}` : ""}`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                sort === "latest" ? "border-gray-200/30 bg-gray-900/40 text-gray-100" : "border-gray-700 hover:bg-gray-900 text-gray-200"
+                sort === "latest"
+                  ? "border-gray-200/30 bg-gray-900/40 text-gray-100"
+                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
               Sırala: Son
@@ -566,7 +613,9 @@ export default async function HomePage({
             <Link
               href={`/?u=${encodeURIComponent(universe)}&sort=impact&minScore=${minScore}${tickerFilter ? `&t=${encodeURIComponent(tickerFilter)}` : ""}`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                sort === "impact" ? "border-gray-200/30 bg-gray-900/40 text-gray-100" : "border-gray-700 hover:bg-gray-900 text-gray-200"
+                sort === "impact"
+                  ? "border-gray-200/30 bg-gray-900/40 text-gray-100"
+                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
               Sırala: Etki
@@ -579,9 +628,7 @@ export default async function HomePage({
       <section className="mx-auto max-w-6xl px-4 pb-12">
         <div className="flex items-end justify-between mb-4">
           <h2 className="text-lg font-black">🔥 Haber Akışı</h2>
-          <span className="text-xs text-gray-500">
-            Render: {formatDateTR(nowIso)} • Kaynak cache: 1 saat
-          </span>
+          <span className="text-xs text-gray-500">Render: {formatDateTR(nowIso)} • Kaynak cache: 1 saat</span>
         </div>
 
         {news.length === 0 ? (
@@ -890,6 +937,9 @@ export default async function HomePage({
               const reasons = parseReasons(r.reasons);
               const scoreNum = typeof r.score === "number" ? r.score : null;
 
+              const grade = (r as any).grade ?? null;
+              const isPremium = Boolean((r as any).is_premium);
+
               return (
                 <Link
                   key={r.id}
@@ -905,16 +955,30 @@ export default async function HomePage({
                       </div>
                     </div>
 
-                    <div
-                      className={`shrink-0 text-xs font-black px-2.5 py-1 rounded-lg border ${
-                        isBuy
-                          ? "border-green-600 text-green-300 bg-green-950/30 shadow-green-500/20 shadow-sm"
-                          : isSell
-                          ? "border-red-600 text-red-300 bg-red-950/30 shadow-red-500/20 shadow-sm"
-                          : "border-gray-700 text-gray-300 bg-gray-900/30"
-                      }`}
-                    >
-                      {sig || "—"}
+                    <div className="shrink-0 flex items-center gap-2">
+                      <div
+                        className={`text-xs font-black px-2.5 py-1 rounded-lg border ${
+                          isBuy
+                            ? "border-green-600 text-green-300 bg-green-950/30 shadow-green-500/20 shadow-sm"
+                            : isSell
+                            ? "border-red-600 text-red-300 bg-red-950/30 shadow-red-500/20 shadow-sm"
+                            : "border-gray-700 text-gray-300 bg-gray-900/30"
+                        }`}
+                      >
+                        {sig || "—"}
+                      </div>
+
+                      {grade ? (
+                        <span className="text-[11px] font-black px-2 py-1 rounded-lg border border-gray-800 bg-[#0d1117] text-gray-200">
+                          {grade}
+                        </span>
+                      ) : null}
+
+                      {isPremium ? (
+                        <span className="text-[11px] font-black px-2 py-1 rounded-lg border border-yellow-700/60 bg-yellow-950/20 text-yellow-200">
+                          PREMIUM
+                        </span>
+                      ) : null}
                     </div>
                   </div>
 
@@ -960,9 +1024,10 @@ export default async function HomePage({
               <div className="text-gray-500 mt-1">Pine Script alarmı JSON gönderir (BUY/SELL, score, reasons…).</div>
             </div>
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
-              <div className="font-bold">2) API Kaydeder</div>
+              <div className="font-bold">2) API Kaydeder (YOL B)</div>
               <div className="text-gray-500 mt-1">
-                <code className="text-gray-300">/api/signals</code> sinyali DB’ye yazar.
+                <code className="text-gray-300">/api/signals</code> OPEN/CLOSE event’leriyle sinyali + trade sonucunu DB’ye
+                yazar. Win/Loss ve EMA50 retest başarı oranı buradan hesaplanır.
               </div>
             </div>
             <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
