@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
 import { reasonsToTechSentences } from "@/lib/reasonTranslator";
-import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
+import { ASSETS, WATCHLISTS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
 import DashboardView from "@/components/DashboardView";
 
 // ──────────────────────────────────────────────────
@@ -38,6 +38,7 @@ const ASSETS_MAP: AssetsMap = {
 };
 
 type AssetCategory = keyof AssetsMap;
+type WatchlistKey = keyof typeof WATCHLISTS;
 
 type NewsItem = {
   headline: string;
@@ -53,9 +54,14 @@ type NewsItem = {
 // Sets (perf + includes() TS fix)
 // ──────────────────────────────────────────────────
 const NASDAQ_SET = new Set<string>((ASSETS_MAP.NASDAQ ?? []).map((s) => String(s).toUpperCase()));
-const ETF_SET = new Set<string>((ASSETS_MAP.ETF ?? []).map((s) => String(s).toUpperCase()));
+const ETF_SET = new Set<string>(
+  [...(ASSETS_MAP.ETF ?? []), ...WATCHLISTS.NASDAQ_ETFS].map((s) => String(s).toUpperCase())
+);
+const NASDAQ_ETF_SET = new Set<string>(["QQQ", "QQQM", "TQQQ", "SQQQ", "QQQS", "ONEQ"]);
 const CRYPTO_SET = new Set<string>((ASSETS_MAP.CRYPTO ?? []).map((s) => String(s).toUpperCase()));
-const BIST_SET = new Set<string>(((ASSETS_MAP.BIST ?? []) as string[]).map((s) => String(s).toUpperCase()));
+const BIST_SET = new Set<string>(
+  [...((ASSETS_MAP.BIST ?? []) as string[]), ...WATCHLISTS.BIST150].map((s) => String(s).toUpperCase())
+);
 
 // ──────────────────────────────────────────────────
 // UI Helpers
@@ -206,9 +212,13 @@ function Sparkline({ points }: { points?: number[] | null }) {
 // Helpers
 // ──────────────────────────────────────────────────
 function normalizeSymbol(sym: string) {
-  const s = String(sym || "").trim();
+  const s = String(sym || "").trim().toUpperCase();
   if (!s) return "NASDAQ:AAPL";
   if (s.includes(":")) return s;
+  if (BIST_SET.has(s)) return `BIST:${s}`;
+  if (CRYPTO_SET.has(s)) return `BINANCE:${s}`;
+  if (NASDAQ_ETF_SET.has(s)) return `NASDAQ:${s}`;
+  if (ETF_SET.has(s)) return `AMEX:${s}`;
   return `NASDAQ:${s}`;
 }
 
@@ -231,6 +241,7 @@ export default function TerminalPage() {
   // ── core state ───────────────────────────────────
   const [selectedSymbol, setSelectedSymbol] = useState("NASDAQ:AAPL");
   const [activeCategory, setActiveCategory] = useState<AssetCategory>("NASDAQ");
+  const [activeWatchlist, setActiveWatchlist] = useState<WatchlistKey>("NASDAQ250");
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
 
@@ -326,9 +337,16 @@ export default function TerminalPage() {
     const s = String(sym || "").toUpperCase();
     if (BIST_SET.has(s)) return "BIST";
     if (CRYPTO_SET.has(s)) return "BINANCE";
+    if (NASDAQ_ETF_SET.has(s)) return "NASDAQ";
     if (ETF_SET.has(s)) return "AMEX";
     return "NASDAQ";
   }, []);
+
+  const watchlistSymbols = useMemo(() => {
+    const list = WATCHLISTS[activeWatchlist] ?? [];
+    const cleaned = list.map((sym) => String(sym).trim().toUpperCase()).filter(Boolean);
+    return Array.from(new Set(cleaned));
+  }, [activeWatchlist]);
 
   // Assets filtered
   const filteredAssets = useMemo(() => {
@@ -351,6 +369,10 @@ export default function TerminalPage() {
   }, [signals]);
 
   const signaledSymbols = useMemo(() => new Set(signals.map((r) => symbolToPlain(r.symbol))), [signals]);
+  const selectedLastSignal = useMemo(() => {
+    const plain = symbolToPlain(selectedSymbol);
+    return lastSignalMap.get(plain) ?? null;
+  }, [lastSignalMap, selectedSymbol]);
 
   const visibleSignals = useMemo(() => {
     const last = signals.slice(0, signalLimit);
@@ -988,11 +1010,92 @@ export default function TerminalPage() {
 
             <div className="flex-1 flex flex-col md:flex-row min-h-0">
               <div
-                className={`flex-1 relative bg-black min-w-0 min-h-[420px] ${
+                className={`flex-1 flex flex-col min-w-0 min-h-[420px] ${
                   mobileTab !== "CHART" ? "hidden md:block" : "block"
                 }`}
               >
-                <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="15" theme="dark" />
+                <div className="flex-1 relative bg-black min-w-0 min-h-[420px]">
+                  <TradingViewWidget key={selectedSymbol} symbol={selectedSymbol} interval="D" theme="dark" />
+                </div>
+
+                <div className="border-t border-gray-800 bg-[#0b0f14] px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xs font-bold uppercase tracking-wide text-gray-300">
+                      Son Tetikleme
+                    </div>
+                    <div className="text-[10px] text-gray-500">
+                      {selectedLastSignal?.created_at ? timeAgo(selectedLastSignal.created_at) : "—"}
+                    </div>
+                  </div>
+
+                  {selectedLastSignal ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-300">
+                        <span className="font-semibold">{symbolToPlain(selectedLastSignal.symbol)}</span>
+                        <span className="text-gray-500">•</span>
+                        <span className={String(selectedLastSignal.signal).toUpperCase() === "BUY" ? "text-green-300" : "text-red-300"}>
+                          {String(selectedLastSignal.signal).toUpperCase()}
+                        </span>
+                        <span className="text-gray-500">Score</span>
+                        <span className="text-gray-100">{selectedLastSignal.score ?? "—"}</span>
+                      </div>
+
+                      <ReasonBadges reasons={selectedLastSignal.reasons ?? null} />
+                      <TechLine reasons={selectedLastSignal.reasons ?? null} />
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500">
+                      Seçili sembol için tetikleme bulunamadı.
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t border-gray-800 bg-[#0d1117] px-4 py-3">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    {(Object.keys(WATCHLISTS) as WatchlistKey[]).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => setActiveWatchlist(key)}
+                        className={`text-[11px] px-3 py-1.5 rounded border transition-colors ${
+                          activeWatchlist === key
+                            ? "border-blue-500 bg-blue-900/20 text-blue-200"
+                            : "border-gray-700 hover:bg-gray-800 text-gray-300"
+                        }`}
+                      >
+                        {key.replace("_", " ")}
+                      </button>
+                    ))}
+                    <span className="ml-auto text-[10px] text-gray-500">
+                      İzleme listesi: {watchlistSymbols.length}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto custom-scrollbar pr-2">
+                    {watchlistSymbols.map((sym) => {
+                      const full = `${prefixForSymbol(sym)}:${sym}`;
+                      const isActive = selectedSymbol === full;
+                      return (
+                        <button
+                          key={sym}
+                          onClick={() => {
+                            setSelectedSymbol(full);
+                            setSelectedSignalId(null);
+                            setMobileTab("CHART");
+                            fetchMini(full);
+                          }}
+                          className={`text-[11px] px-2.5 py-1 rounded border transition-colors ${
+                            isActive
+                              ? "border-blue-500 text-blue-200 bg-blue-900/20"
+                              : "border-gray-700 text-gray-300 hover:bg-gray-800/60"
+                          }`}
+                          aria-label={`İzleme listesi sembolü: ${sym}`}
+                        >
+                          {sym}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               <aside

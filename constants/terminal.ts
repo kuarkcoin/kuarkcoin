@@ -54,6 +54,48 @@ export const ASSETS = {
   ],
 } as const;
 
+export const WATCHLISTS = {
+  NASDAQ250: [
+    "AAPL","MSFT","NVDA","AMZN","GOOGL","GOOG","META","TSLA","AVGO","COST",
+    "ADBE","AMD","NFLX","CSCO","INTC","PEP","TMUS","CMCSA","TXN","AMGN",
+    "QCOM","HON","INTU","BKNG","SBUX","ISRG","GILD","MDLZ","ADI","VRTX",
+    "REGN","ADP","PANW","LRCX","MU","KLAC","SNPS","CDNS","ORLY","MAR",
+    "ASML","MRVL","ABNB","CRWD","NXPI","FTNT","TEAM","KDP","PAYX","ODFL",
+    "CSX","MNST","MELI","ROST","PCAR","CHTR","DXCM","ILMN","IDXX","BIIB",
+    "FAST","CPRT","EA","VRSK","DDOG","ZS","OKTA","DOCU","NET","MDB",
+    "SHOP","SQ","PYPL","UBER","LYFT","SNOW","PLTR","RBLX","COIN","HOOD",
+    "ARM","SMCI","ON","WBD","FANG","EXPE","CTSH","TTD","ANSS","BIDU",
+    "JD","PDD","BABA","NTES","TCOM","ZSAN","ALGN","ENPH","SEDG","MRNA",
+    "BMRN","SGEN","VEEV","SIRI","FOX","FOXA","CSGP","WDAY","XEL","AEP",
+    "LULU","ETSY","KHC","ZM","PTON","DOCS","FIVN","RIVN","LCID","NIO",
+    "XP","SE","AFRM","UPST","SOFI","PATH","U","DKNG","FSLY","TWLO",
+    "APP","GFS","TER","MCHP","MPWR","AME","BRO","WAT","POOL","JBHT",
+    "UAL","DAL","AAL","RCL","CCL","NCLH","UAL","UAL","UAL","UAL"
+  ],
+  NASDAQ_ETFS: [
+    "QQQ","QQQM","TQQQ","SQQQ","QQQS","ONEQ",
+    "SPY","VOO","IVV","VTI","DIA","IWM",
+    "SMH","SOXX","XLK","XLY","XLF","XLE","XLV","XLI","XLP","XLB","XLU","XLC",
+    "ARKK","ARKQ","ARKW","ARKG","ARKF",
+    "VUG","VTV","MGK","SCHG","IWF",
+    "GLD","SLV","USO","UNG",
+    "TLT","IEF","SHY","HYG","LQD",
+    "BITO","IBIT","GBTC","ETHE"
+  ],
+  BIST150: [
+    "AKBNK","ALARK","ARCLK","ASELS","ASTOR","AYGAZ","BIMAS","BRYAT","CCOLA","CIMSA",
+    "DOAS","EGEEN","EKGYO","ENKAI","EREGL","FROTO","GARAN","GUBRF","HEKTS","ISCTR",
+    "ISDMR","KCHOL","KONTR","KOZAA","KOZAL","MGROS","ODAS","OTKAR","PETKM","PGSUS",
+    "SAHOL","SASA","SISE","TAVHL","TCELL","THYAO","TOASO","TSKB","TUPRS","ULKER",
+    "VAKBN","YKBNK","ZOREN","ALFAS","SMRTG","GWIND","EUPWR","AKSEN","ENJSA","KRDMD",
+    "KORDS","OYAKC","AKSA","BRISA","BRSAN","CANTE","DEVA","ECILC","GENIL","INDES","OZYSR","KLYPV","KARSN","LOGO","MAVI","NETAS","SELEC","SKBNK","TKFEN","TRGYO","VESBE","YATAS",
+    "ZRGYO","AKFGY","AKMGY","ALGYO","ANSGR","ASELS","BAGFS","BIOEN","CEMTS","CLEBI",
+    "CWENE","DURDO","FMIZP","GESAN","ISGYO","KMPUR","KZBGY","MIATK","MPARK","NTHOL",
+    "ODAS","PENTA","QUAGR","RAYSG","SDTTR","SNICA","SOKM","TTRAK","ULUUN","USAK",
+    "YUNSA","ZEDUR","ARDYZ","KFEIN","GIPTA","BINHO","LINK","RTALB"
+  ],
+} as const;
+
 export type AssetCategory = keyof typeof ASSETS;
 export const ASSET_LISTS: Record<AssetCategory, readonly string[]> = ASSETS;
 
