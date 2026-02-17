@@ -73,6 +73,17 @@ type TopMarginsResp = {
   topQuality: TopMarginRow[];
 };
 
+type TopBuyBusinessDayRow = {
+  id: number;
+  day: string;
+  symbol: string;
+  score: number;
+  price: number | null;
+  created_at: string;
+  grade?: string | null;
+  is_premium?: boolean;
+};
+
 const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ300", "ETF"] as const;
 type Universe = (typeof ALLOWED_UNIVERSE)[number];
 
@@ -326,11 +337,26 @@ async function getSignalStats(base: string, window = 20): Promise<StatsResp | nu
 
 async function getKapImportant(base: string): Promise<KapRow[]> {
   try {
-    const json: any = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
-    const arr: KapRow[] = (json?.items ?? []) as KapRow[];
-    return Array.isArray(arr) ? arr.slice(0, 8) : [];
+    const strictJson: any = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
+    const strictArr: KapRow[] = (strictJson?.items ?? []) as KapRow[];
+    if (Array.isArray(strictArr) && strictArr.length) return strictArr.slice(0, 8);
+
+    const relaxedJson: any = await safeFetchJson(`${base}/api/kap/bist100-important?mode=relaxed`);
+    const relaxedArr: KapRow[] = (relaxedJson?.items ?? []) as KapRow[];
+    return Array.isArray(relaxedArr) ? relaxedArr.slice(0, 8) : [];
   } catch (e) {
     console.error("getKapImportant error:", e);
+    return [];
+  }
+}
+
+async function getTopBuyBusinessDays(base: string): Promise<TopBuyBusinessDayRow[]> {
+  try {
+    const json: any = await safeFetchJson(`${base}/api/signals?scope=top-buy-business-days&days=30`);
+    const arr: TopBuyBusinessDayRow[] = (json?.items ?? []) as TopBuyBusinessDayRow[];
+    return Array.isArray(arr) ? arr.slice(0, 10) : [];
+  } catch (e) {
+    console.error("getTopBuyBusinessDays error:", e);
     return [];
   }
 }
@@ -391,12 +417,13 @@ export default async function HomePage({
 
   const base = getApiBaseUrl();
 
-  const [latest, kap, top, newsPack, stats] = await Promise.all([
+  const [latest, kap, top, newsPack, stats, topBuyBusinessDays] = await Promise.all([
     getLatestSignals(base),
     universe === "BIST100" ? getKapImportant(base) : Promise.resolve([]),
     getTopMargins(base, universe),
     getNewsCombined(base, universe, minScore),
     getSignalStats(base, 20),
+    getTopBuyBusinessDays(base),
   ]);
 
   let news = newsPack.items;
@@ -1010,6 +1037,47 @@ export default async function HomePage({
                 </Link>
               );
             })}
+          </div>
+        )}
+      </section>
+
+      {/* Top BUY business-day log */}
+      <section className="mx-auto max-w-6xl px-4 pb-14">
+        <div className="flex items-end justify-between mb-4">
+          <h2 className="text-lg font-black">📅 En Yüksek Skorlu BUY (İş Günü Kaydı)</h2>
+          <span className="text-xs text-gray-500">Son 30 günden son 10 iş günü</span>
+        </div>
+
+        {topBuyBusinessDays.length === 0 ? (
+          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
+            İş günü BUY skor kaydı bulunamadı.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-[#0b0f14]">
+            <table className="min-w-full text-sm">
+              <thead className="bg-[#0d1117] text-gray-400 text-xs">
+                <tr>
+                  <th className="text-left px-4 py-3">Gün</th>
+                  <th className="text-left px-4 py-3">Sembol</th>
+                  <th className="text-left px-4 py-3">Skor</th>
+                  <th className="text-left px-4 py-3">Fiyat</th>
+                  <th className="text-left px-4 py-3">Saat</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topBuyBusinessDays.map((row) => (
+                  <tr key={`bizday-${row.day}-${row.id}`} className="border-t border-gray-800/80">
+                    <td className="px-4 py-3 text-gray-300">{row.day}</td>
+                    <td className="px-4 py-3 font-bold">{symbolToPlain(row.symbol)}</td>
+                    <td className="px-4 py-3">
+                      <ScoreBadge score={row.score} />
+                    </td>
+                    <td className="px-4 py-3 text-gray-300">{formatPrice(row.price)}</td>
+                    <td className="px-4 py-3 text-gray-500">{formatDateTR(row.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </section>

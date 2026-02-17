@@ -22,7 +22,22 @@ function noStore(json: any, init?: ResponseInit) {
 async function readJsonBody(req: Request) {
   const raw = await req.text();
   let body: any = null;
-  try { body = JSON.parse(raw); } catch { body = null; }
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    // TradingView bazı kurulumlarda payload'ı string olarak kaçışlayıp yollayabiliyor
+    // örn: "{\"secret\":\"...\"}" ya da "message={...}"
+    try {
+      const cleaned = raw.trim().replace(/^message=/i, "");
+      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+        body = JSON.parse(JSON.parse(cleaned));
+      } else {
+        body = JSON.parse(cleaned);
+      }
+    } catch {
+      body = null;
+    }
+  }
   return { raw, body };
 }
 
@@ -103,6 +118,68 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope") ?? "";
 
+  if (scope === "top-buy-business-days") {
+    const days = Number(searchParams.get("days") ?? "30");
+    const d = Number.isFinite(days) ? Math.max(5, Math.min(days, 120)) : 30;
+
+    const { data, error } = await supa
+      .from("signals")
+      .select("id,symbol,signal,score,price,created_at,t_tv,grade,is_premium")
+      .eq("signal", "BUY")
+      .not("score", "is", null)
+      .order("score", { ascending: false })
+      .limit(2500);
+
+    if (error) return noStore({ ok: false, items: [], error: error.message }, { status: 500 });
+
+    const now = Date.now();
+    const since = now - d * 86400000;
+    const dayMap = new Map<string, any>();
+
+    for (const row of data ?? []) {
+      const at = row.created_at ?? row.t_tv;
+      const t = new Date(at).getTime();
+      if (!Number.isFinite(t) || t < since) continue;
+
+      const dayKey = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Istanbul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date(t));
+
+      const prev = dayMap.get(dayKey);
+      const score = typeof row.score === "number" ? row.score : Number(row.score);
+      if (!Number.isFinite(score)) continue;
+
+      if (!prev || score > prev.score) {
+        dayMap.set(dayKey, {
+          id: row.id,
+          day: dayKey,
+          symbol: row.symbol,
+          score,
+          price: row.price ?? null,
+          created_at: at,
+          grade: row.grade ?? null,
+          is_premium: Boolean(row.is_premium),
+        });
+      }
+    }
+
+    const isBusinessDay = (day: string) => {
+      const dt = new Date(`${day}T12:00:00+03:00`);
+      const wd = dt.getDay();
+      return wd >= 1 && wd <= 5;
+    };
+
+    const items = Array.from(dayMap.values())
+      .filter((x) => isBusinessDay(x.day))
+      .sort((a, b) => (a.day < b.day ? 1 : -1))
+      .slice(0, d);
+
+    return noStore({ ok: true, days: d, items, total: items.length });
+  }
+
   if (scope === "stats") {
     const window = Number(searchParams.get("window") ?? "20");
     const w = Number.isFinite(window) ? Math.max(5, Math.min(window, 200)) : 20;
@@ -136,14 +213,31 @@ export async function GET(req: Request) {
     });
   }
 
-  const { data, error } = await supa
+  let { data, error } = await supa
     .from("signals")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(500);
 
+  // Bazı şemalarda created_at yerine t_tv var; fallback
+  if (error && String(error.message || "").toLowerCase().includes("created_at")) {
+    const fallback = await supa
+      .from("signals")
+      .select("*")
+      .order("t_tv", { ascending: false })
+      .limit(500);
+    data = fallback.data;
+    error = fallback.error;
+  }
+
   if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
-  return noStore({ ok: true, data: data ?? [] });
+
+  const normalized = (data ?? []).map((r: any) => ({
+    ...r,
+    created_at: r?.created_at ?? r?.t_tv ?? new Date().toISOString(),
+  }));
+
+  return noStore({ ok: true, data: normalized });
 }
 
 export async function POST(req: Request) {
@@ -155,8 +249,15 @@ export async function POST(req: Request) {
   if (!body) return noStore({ ok: false, error: "Bad JSON", raw: raw.slice(0, 400) }, { status: 400 });
 
   // ✅ SECRET
-  const expected = String(process.env.SCAN_SECRET ?? "").trim();
-  if (!expected) return noStore({ ok: false, error: "Server misconfigured: SCAN_SECRET missing" }, { status: 500 });
+  const expected = String(
+    process.env.SCAN_SECRET ?? process.env.WEBHOOK_SECRET ?? process.env.KUARK_WEBHOOK_SECRET ?? ""
+  ).trim();
+  if (!expected) {
+    return noStore(
+      { ok: false, error: "Server misconfigured: SCAN_SECRET/WEBHOOK_SECRET missing" },
+      { status: 500 }
+    );
+  }
 
   const incoming = getIncomingSecret(req, body);
   if (!incoming || incoming !== expected) {
@@ -165,9 +266,9 @@ export async function POST(req: Request) {
   }
 
   // ✅ normalize payload
-  const event: EventType = (String(body.event ?? "OPEN").toUpperCase() as EventType);
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const symbolRaw = String(body.symbol ?? "").trim();
+  const event: EventType = (String(body.event ?? body.type ?? "OPEN").toUpperCase() as EventType);
+  const signal = String(body.signal ?? body.side ?? body.action ?? "").toUpperCase().trim();
+  const symbolRaw = String(body.symbol ?? body.ticker ?? body.tickerid ?? "").trim();
 
   if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
 
