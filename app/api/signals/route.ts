@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
-
+ 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000; // UTC+3
   const local = new Date(date.getTime() + tzOffsetMs);
