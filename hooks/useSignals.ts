@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 export type SignalRow = {
   id: number;
   created_at: string;
+  t_tv?: string | null;
   symbol: string;
   signal: string; // BUY/SELL
   price: number | null;
@@ -44,6 +45,14 @@ function isTodayTR(iso: string) {
 
 function normalizeSignal(s: string | null | undefined) {
   return String(s || "").trim().toUpperCase();
+}
+
+function normalizeSignalRow(row: SignalRow): SignalRow {
+  const created = row.created_at || row.t_tv || new Date().toISOString();
+  return {
+    ...row,
+    created_at: created,
+  };
 }
 
 export function useSignals(opts: UseSignalsOpts = {}) {
@@ -92,7 +101,7 @@ export function useSignals(opts: UseSignalsOpts = {}) {
       }
 
       const json = await res.json();
-      const rows = (json.data ?? []) as SignalRow[];
+      const rows = ((json.data ?? []) as SignalRow[]).map(normalizeSignalRow);
 
       setSignals(rows);
       setError(null);

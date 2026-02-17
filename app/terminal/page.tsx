@@ -249,7 +249,7 @@ export default function TerminalPage() {
 
   // API + polling hook
   const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome } = useSignals({
-    pollMs: 300_000,
+    pollMs: 15_000,
   });
 
   // Better empty/loading/error discrimination

@@ -22,7 +22,22 @@ function noStore(json: any, init?: ResponseInit) {
 async function readJsonBody(req: Request) {
   const raw = await req.text();
   let body: any = null;
-  try { body = JSON.parse(raw); } catch { body = null; }
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    // TradingView bazı kurulumlarda payload'ı string olarak kaçışlayıp yollayabiliyor
+    // örn: "{\"secret\":\"...\"}" ya da "message={...}"
+    try {
+      const cleaned = raw.trim().replace(/^message=/i, "");
+      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+        body = JSON.parse(JSON.parse(cleaned));
+      } else {
+        body = JSON.parse(cleaned);
+      }
+    } catch {
+      body = null;
+    }
+  }
   return { raw, body };
 }
 
@@ -216,7 +231,13 @@ export async function GET(req: Request) {
   }
 
   if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
-  return noStore({ ok: true, data: data ?? [] });
+
+  const normalized = (data ?? []).map((r: any) => ({
+    ...r,
+    created_at: r?.created_at ?? r?.t_tv ?? new Date().toISOString(),
+  }));
+
+  return noStore({ ok: true, data: normalized });
 }
 
 export async function POST(req: Request) {
@@ -228,8 +249,15 @@ export async function POST(req: Request) {
   if (!body) return noStore({ ok: false, error: "Bad JSON", raw: raw.slice(0, 400) }, { status: 400 });
 
   // ✅ SECRET
-  const expected = String(process.env.SCAN_SECRET ?? "").trim();
-  if (!expected) return noStore({ ok: false, error: "Server misconfigured: SCAN_SECRET missing" }, { status: 500 });
+  const expected = String(
+    process.env.SCAN_SECRET ?? process.env.WEBHOOK_SECRET ?? process.env.KUARK_WEBHOOK_SECRET ?? ""
+  ).trim();
+  if (!expected) {
+    return noStore(
+      { ok: false, error: "Server misconfigured: SCAN_SECRET/WEBHOOK_SECRET missing" },
+      { status: 500 }
+    );
+  }
 
   const incoming = getIncomingSecret(req, body);
   if (!incoming || incoming !== expected) {
@@ -238,9 +266,9 @@ export async function POST(req: Request) {
   }
 
   // ✅ normalize payload
-  const event: EventType = (String(body.event ?? "OPEN").toUpperCase() as EventType);
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const symbolRaw = String(body.symbol ?? "").trim();
+  const event: EventType = (String(body.event ?? body.type ?? "OPEN").toUpperCase() as EventType);
+  const signal = String(body.signal ?? body.side ?? body.action ?? "").toUpperCase().trim();
+  const symbolRaw = String(body.symbol ?? body.ticker ?? body.tickerid ?? "").trim();
 
   if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
 
