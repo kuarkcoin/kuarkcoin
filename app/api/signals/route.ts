@@ -51,13 +51,12 @@ function normalizeStr(v: any) {
   return s.length ? s : null;
 }
 
-function containsEMA50Retest(reasons: string | null) {
+// V10 GÜNCELLEMESİ: Artık EMA50 Retest'leri "GOLDEN" sinyali olarak geliyor
+function isGoldenPullback(reasons: string | null) {
   if (!reasons) return false;
-  const s = reasons.toLowerCase();
-  return s.includes("ema50") && (s.includes("retest") || s.includes("rtest"));
+  return reasons.toLowerCase().includes("golden");
 }
 
-// Secret doğrulama: ENV + body.secret + opsiyonel header
 function getIncomingSecret(req: Request, body: any) {
   const headerSecret =
     req.headers.get("x-kuark-secret") ||
@@ -68,21 +67,16 @@ function getIncomingSecret(req: Request, body: any) {
   return String(headerSecret ?? bodySecret ?? "").trim();
 }
 
-// "BINANCE:BTCUSDT" -> "BTCUSDT" (istersen)
 function plainSymbol(sym: string) {
   const s = sym.trim();
   const idx = s.indexOf(":");
   return idx >= 0 ? s.slice(idx + 1) : s;
 }
 
-// Sadece var olan alanları insert et (schema mismatch patlatmasın)
 async function safeInsertSignal(supa: any, payload: any) {
-  // signals tablonun kolonlarını bilmediğimiz için:
-  // "common" alanları deniyoruz; hata verirse daha minimal dene.
   const try1 = await supa.from("signals").insert([payload]).select("id").single();
   if (!try1.error) return try1;
 
-  // fallback: en minimal (çoğu şemada vardır)
   const minimal: any = {
     symbol: payload.symbol,
     signal: payload.signal,
@@ -150,55 +144,45 @@ export async function POST(req: Request) {
   const supa = supabaseServer();
   const { raw, body } = await readJsonBody(req);
 
-  console.log("[/api/signals] RAW:", raw.slice(0, 1200));
+  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
-  if (!body) return noStore({ ok: false, error: "Bad JSON", raw: raw.slice(0, 400) }, { status: 400 });
-
-  // ✅ SECRET
   const expected = String(process.env.SCAN_SECRET ?? "").trim();
-  if (!expected) return noStore({ ok: false, error: "Server misconfigured: SCAN_SECRET missing" }, { status: 500 });
+  if (!expected) return noStore({ ok: false, error: "Server misconfigured" }, { status: 500 });
 
   const incoming = getIncomingSecret(req, body);
   if (!incoming || incoming !== expected) {
-    console.log("[/api/signals] UNAUTHORIZED incoming=", incoming?.slice(0, 24), "expected=", expected.slice(0, 24));
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  // ✅ normalize payload
   const event: EventType = (String(body.event ?? "OPEN").toUpperCase() as EventType);
   const signal = String(body.signal ?? "").toUpperCase().trim();
   const symbolRaw = String(body.symbol ?? "").trim();
 
   if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
 
-  // TradingView bazen tickerid yolluyor: "NASDAQ:AAPL" / "BINANCE:BTCUSDT"
   const symbolPlain = plainSymbol(symbolRaw);
-
   const timeframe = normalizeStr(body.timeframe);
   const score = toNumOrNull(body.score);
   const grade = normalizeStr(body.grade);
   const premium = toBool(body.premium ?? body.is_premium);
   const reasons = normalizeStr(body.reasons);
-
   const t_tv = body.t ? parseTvTime(body.t) : new Date();
 
+  // V10 GÜNCELLEMESİ: Yeni hedefleri yakalıyoruz
   const price = toNumOrNull(body.price);
   const entryPrice = toNumOrNull(body.entryPrice) ?? price;
   const exitPrice = toNumOrNull(body.exitPrice);
+  const tp1 = toNumOrNull(body.tp1);
+  const tp2 = toNumOrNull(body.tp2);
+  const sl = toNumOrNull(body.sl);
 
-  // ✅ Eğer event OPEN ama signal yoksa: TV payload'ı bozuk demek
   if (event === "OPEN" && signal !== "BUY" && signal !== "SELL") {
-    return noStore(
-      { ok: false, error: "Missing/invalid signal for OPEN", got: { signal, symbol: symbolRaw } },
-      { status: 400 }
-    );
+    return noStore({ ok: false, error: "Missing/invalid signal for OPEN" }, { status: 400 });
   }
 
   // 1) OPEN
   if (event === "OPEN") {
-    // signals insert (schema tolerant)
     const signalPayload: any = {
-      // Sende nasıl ise: symbol alanına raw yazıyorum; plain'i ayrı saklamak istersen ekle.
       symbol: symbolRaw,
       timeframe,
       signal,
@@ -207,40 +191,49 @@ export async function POST(req: Request) {
       is_premium: premium,
       reasons,
       t_tv: t_tv.toISOString(),
-
-      // ⚠️ DB'de price kolonun yoksa try1 patlar; safeInsert fallback var.
       price,
-      symbol_plain: symbolPlain, // DB'de yoksa sorun değil (fallback minimal deniyor)
+      tp1, // Yeni eklendi
+      tp2, // Yeni eklendi
+      sl,  // Yeni eklendi
+      symbol_plain: symbolPlain,
     };
 
     const ins = await safeInsertSignal(supa, signalPayload);
 
     if (ins.error) {
-      console.log("[/api/signals] signals insert error:", ins.error);
-      return noStore(
-        {
-          ok: false,
-          error: "signals insert failed",
-          detail: ins.error.message,
-          hint: "Muhtemel sebep: signals tablosu kolon uyuşmazlığı veya RLS (service role yok).",
-        },
-        { status: 500 }
-      );
+      return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
     }
 
     const signalId = ins.data?.id ?? null;
 
-    // trades insert: tamamen opsiyonel (tablon yoksa vs. patlamasın)
     try {
-      // açık trade varsa kapat
-      await supa
+      // V10 GÜNCELLEMESİ: Açık trade kapatılırken dinamik WIN/LOSS hesaplama
+      const { data: openTrade } = await supa
         .from("trades")
-        .update({ exit_time: t_tv.toISOString(), exit_reason: "NewSignalAutoClose" })
+        .select("id, direction, entry_price")
         .eq("symbol", symbolRaw)
-        .is("exit_time", null);
+        .is("exit_time", null)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (openTrade) {
+        let autoOutcome: Outcome = null;
+        if (openTrade.entry_price != null && price != null) {
+          if (openTrade.direction === "LONG") autoOutcome = price > openTrade.entry_price ? "WIN" : "LOSS";
+          if (openTrade.direction === "SHORT") autoOutcome = price < openTrade.entry_price ? "WIN" : "LOSS";
+        }
+
+        await supa.from("trades").update({
+          exit_time: t_tv.toISOString(),
+          exit_reason: "NewSignalAutoClose",
+          exit_price: price, // Anlık fiyatla kapatılıyor
+          outcome: autoOutcome // İstatistikler bozulmasın diye kar/zarar hesaplanıyor
+        }).eq("id", openTrade.id);
+      }
 
       const direction = signal === "BUY" ? "LONG" : "SHORT";
-      const isEma50 = containsEMA50Retest(reasons);
+      const isEma50 = isGoldenPullback(reasons);
 
       const trIns = await supa
         .from("trades")
@@ -257,16 +250,16 @@ export async function POST(req: Request) {
             score,
             reasons,
             is_ema50_retest: isEma50,
+            tp1, // Yeni eklendi
+            tp2, // Yeni eklendi
+            sl,  // Yeni eklendi
           },
         ])
         .select("id")
         .single();
 
-      if (trIns.error) console.log("[/api/signals] trades insert warn:", trIns.error.message);
       return noStore({ ok: true, event: "OPEN", signalId, tradeId: trIns.data?.id ?? null });
     } catch (e: any) {
-      console.log("[/api/signals] trades block warn:", e?.message ?? e);
-      // signals kaydı başarıyla girdi, trade kısmı patlasa bile OK dönelim
       return noStore({ ok: true, event: "OPEN", signalId, tradeId: null, tradeWarn: true });
     }
   }
