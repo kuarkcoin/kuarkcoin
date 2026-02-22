@@ -108,6 +108,18 @@ async function safeInsertSignal(supa: any, payload: any) {
   return try2;
 }
 
+
+
+async function insertSignalCompat(supa: any, payload: any) {
+  const withPayload = await safeInsertSignal(supa, payload);
+  if (!withPayload.error) return withPayload;
+
+  const fallbackPayload = { ...payload };
+  delete fallbackPayload.payload;
+
+  return safeInsertSignal(supa, fallbackPayload);
+}
+
 async function upsertDailyPrice(supa: any, symbolPlain: string, price: number | null) {
   if (price == null) return;
 
@@ -186,7 +198,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const supa = supabaseServer();
-  const { raw, body } = await readJsonBody(req);
+  const { body } = await readJsonBody(req);
 
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
@@ -220,11 +232,16 @@ export async function POST(req: Request) {
   const tp2 = toNumOrNull(body.tp2);
   const sl = toNumOrNull(body.sl);
 
-  await upsertDailyPrice(supa, symbolPlain, price);
+
+  if (event !== "OPEN" && event !== "CLOSE" && event !== "SIGNAL") {
+    return noStore({ ok: false, error: "Invalid event" }, { status: 400 });
+  }
 
   if (event === "OPEN" && signal !== "BUY" && signal !== "SELL") {
     return noStore({ ok: false, error: "Missing/invalid signal for OPEN" }, { status: 400 });
   }
+
+  await upsertDailyPrice(supa, symbolPlain, price);
 
   if (event === "SIGNAL") {
     const signalPayload: any = {
@@ -244,7 +261,7 @@ export async function POST(req: Request) {
       payload: body,
     };
 
-    const ins = await safeInsertSignal(supa, signalPayload);
+    const ins = await insertSignalCompat(supa, signalPayload);
     if (ins.error) return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
 
     return noStore({ ok: true, event: "SIGNAL", signalId: ins.data?.id ?? null });
@@ -269,7 +286,7 @@ export async function POST(req: Request) {
       payload: body,
     };
 
-    const ins = await safeInsertSignal(supa, signalPayload);
+    const ins = await insertSignalCompat(supa, signalPayload);
 
     if (ins.error) {
       return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
