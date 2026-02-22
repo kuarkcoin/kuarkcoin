@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
-type EventType = "OPEN" | "CLOSE";
+type EventType = "OPEN" | "CLOSE" | "SIGNAL";
 
 function noStore(json: any, init?: ResponseInit) {
   return NextResponse.json(json, {
@@ -22,7 +22,11 @@ function noStore(json: any, init?: ResponseInit) {
 async function readJsonBody(req: Request) {
   const raw = await req.text();
   let body: any = null;
-  try { body = JSON.parse(raw); } catch { body = null; }
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    body = null;
+  }
   return { raw, body };
 }
 
@@ -51,6 +55,11 @@ function normalizeStr(v: any) {
   return s.length ? s : null;
 }
 
+function clamp0to100(v: number | null) {
+  if (v == null || Number.isNaN(v)) return null;
+  return Math.max(0, Math.min(100, v));
+}
+
 // V10 GÜNCELLEMESİ: Artık EMA50 Retest'leri "GOLDEN" sinyali olarak geliyor
 function isGoldenPullback(reasons: string | null) {
   if (!reasons) return false;
@@ -59,9 +68,7 @@ function isGoldenPullback(reasons: string | null) {
 
 function getIncomingSecret(req: Request, body: any) {
   const headerSecret =
-    req.headers.get("x-kuark-secret") ||
-    req.headers.get("x-scan-secret") ||
-    req.headers.get("x-secret");
+    req.headers.get("x-kuark-secret") || req.headers.get("x-scan-secret") || req.headers.get("x-secret");
 
   const bodySecret = body?.secret;
   return String(headerSecret ?? bodySecret ?? "").trim();
@@ -71,6 +78,15 @@ function plainSymbol(sym: string) {
   const s = sym.trim();
   const idx = s.indexOf(":");
   return idx >= 0 ? s.slice(idx + 1) : s;
+}
+
+function istanbulDateYmd(now = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Istanbul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
 }
 
 async function safeInsertSignal(supa: any, payload: any) {
@@ -90,6 +106,50 @@ async function safeInsertSignal(supa: any, payload: any) {
 
   const try2 = await supa.from("signals").insert([minimal]).select("id").single();
   return try2;
+}
+
+
+
+async function insertSignalCompat(supa: any, payload: any) {
+  const withPayload = await safeInsertSignal(supa, payload);
+  if (!withPayload.error) return withPayload;
+
+  const fallbackPayload = { ...payload };
+  delete fallbackPayload.payload;
+
+  return safeInsertSignal(supa, fallbackPayload);
+}
+
+async function upsertDailyPrice(supa: any, symbolPlain: string, price: number | null) {
+  if (price == null) return;
+
+  const today = istanbulDateYmd();
+  const { data: prev } = await supa
+    .from("daily_prices")
+    .select("close,date")
+    .eq("symbol", symbolPlain)
+    .lt("date", today)
+    .order("date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const prevClose = toNumOrNull(prev?.close);
+  const changePct =
+    prevClose != null && prevClose !== 0 ? ((price - prevClose) / Math.abs(prevClose)) * 100 : null;
+
+  await supa.from("daily_prices").upsert(
+    [
+      {
+        symbol: symbolPlain,
+        date: today,
+        close: price,
+        change_pct: changePct,
+        source: "webhook",
+        updated_at: new Date().toISOString(),
+      },
+    ],
+    { onConflict: "symbol,date" },
+  );
 }
 
 export async function GET(req: Request) {
@@ -130,11 +190,7 @@ export async function GET(req: Request) {
     });
   }
 
-  const { data, error } = await supa
-    .from("signals")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const { data, error } = await supa.from("signals").select("*").order("created_at", { ascending: false }).limit(500);
 
   if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
   return noStore({ ok: true, data: data ?? [] });
@@ -142,7 +198,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const supa = supabaseServer();
-  const { raw, body } = await readJsonBody(req);
+  const { body } = await readJsonBody(req);
 
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
@@ -154,19 +210,19 @@ export async function POST(req: Request) {
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const event: EventType = (String(body.event ?? "OPEN").toUpperCase() as EventType);
+  const event: EventType = String(body.event ?? "OPEN").toUpperCase() as EventType;
   const signal = String(body.signal ?? "").toUpperCase().trim();
   const symbolRaw = String(body.symbol ?? "").trim();
 
   if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
 
   const symbolPlain = plainSymbol(symbolRaw);
-  const timeframe = normalizeStr(body.timeframe);
-  const score = toNumOrNull(body.score);
+  const timeframe = normalizeStr(body.timeframe ?? body.tf);
+  const score = clamp0to100(toNumOrNull(body.score));
   const grade = normalizeStr(body.grade);
   const premium = toBool(body.premium ?? body.is_premium);
   const reasons = normalizeStr(body.reasons);
-  const t_tv = body.t ? parseTvTime(body.t) : new Date();
+  const t_tv = body.t != null || body.ts != null ? parseTvTime(body.t ?? body.ts) : new Date();
 
   // V10 GÜNCELLEMESİ: Yeni hedefleri yakalıyoruz
   const price = toNumOrNull(body.price);
@@ -176,8 +232,39 @@ export async function POST(req: Request) {
   const tp2 = toNumOrNull(body.tp2);
   const sl = toNumOrNull(body.sl);
 
+
+  if (event !== "OPEN" && event !== "CLOSE" && event !== "SIGNAL") {
+    return noStore({ ok: false, error: "Invalid event" }, { status: 400 });
+  }
+
   if (event === "OPEN" && signal !== "BUY" && signal !== "SELL") {
     return noStore({ ok: false, error: "Missing/invalid signal for OPEN" }, { status: 400 });
+  }
+
+  await upsertDailyPrice(supa, symbolPlain, price);
+
+  if (event === "SIGNAL") {
+    const signalPayload: any = {
+      symbol: symbolRaw,
+      timeframe,
+      signal: signal || "—",
+      score,
+      grade,
+      is_premium: premium,
+      reasons,
+      t_tv: t_tv.toISOString(),
+      price,
+      tp1,
+      tp2,
+      sl,
+      symbol_plain: symbolPlain,
+      payload: body,
+    };
+
+    const ins = await insertSignalCompat(supa, signalPayload);
+    if (ins.error) return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
+
+    return noStore({ ok: true, event: "SIGNAL", signalId: ins.data?.id ?? null });
   }
 
   // 1) OPEN
@@ -192,13 +279,14 @@ export async function POST(req: Request) {
       reasons,
       t_tv: t_tv.toISOString(),
       price,
-      tp1, // Yeni eklendi
-      tp2, // Yeni eklendi
-      sl,  // Yeni eklendi
+      tp1,
+      tp2,
+      sl,
       symbol_plain: symbolPlain,
+      payload: body,
     };
 
-    const ins = await safeInsertSignal(supa, signalPayload);
+    const ins = await insertSignalCompat(supa, signalPayload);
 
     if (ins.error) {
       return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
@@ -224,12 +312,15 @@ export async function POST(req: Request) {
           if (openTrade.direction === "SHORT") autoOutcome = price < openTrade.entry_price ? "WIN" : "LOSS";
         }
 
-        await supa.from("trades").update({
-          exit_time: t_tv.toISOString(),
-          exit_reason: "NewSignalAutoClose",
-          exit_price: price, // Anlık fiyatla kapatılıyor
-          outcome: autoOutcome // İstatistikler bozulmasın diye kar/zarar hesaplanıyor
-        }).eq("id", openTrade.id);
+        await supa
+          .from("trades")
+          .update({
+            exit_time: t_tv.toISOString(),
+            exit_reason: "NewSignalAutoClose",
+            exit_price: price,
+            outcome: autoOutcome,
+          })
+          .eq("id", openTrade.id);
       }
 
       const direction = signal === "BUY" ? "LONG" : "SHORT";
@@ -250,16 +341,16 @@ export async function POST(req: Request) {
             score,
             reasons,
             is_ema50_retest: isEma50,
-            tp1, // Yeni eklendi
-            tp2, // Yeni eklendi
-            sl,  // Yeni eklendi
+            tp1,
+            tp2,
+            sl,
           },
         ])
         .select("id")
         .single();
 
       return noStore({ ok: true, event: "OPEN", signalId, tradeId: trIns.data?.id ?? null });
-    } catch (e: any) {
+    } catch {
       return noStore({ ok: true, event: "OPEN", signalId, tradeId: null, tradeWarn: true });
     }
   }
