@@ -73,6 +73,27 @@ type TopMarginsResp = {
   topQuality: TopMarginRow[];
 };
 
+
+type TopScoreItem = {
+  symbol: string;
+  price: number | null;
+  changePct: number | null;
+  techScore: number | null;
+  fundScore: number | null;
+  newsScore: number | null;
+  overallScore: number | null;
+  reasons?: string[];
+  spark?: number[];
+};
+
+type MoversResp = {
+  ok: boolean;
+  universe: Universe;
+  date: string;
+  gainers: Array<{ symbol: string; price: number | null; changePct: number | null }>;
+  losers: Array<{ symbol: string; price: number | null; changePct: number | null }>;
+};
+
 const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ300", "ETF"] as const;
 type Universe = (typeof ALLOWED_UNIVERSE)[number];
 
@@ -350,6 +371,30 @@ async function getTopMargins(base: string, universe: Universe): Promise<TopMargi
   }
 }
 
+
+
+async function getTopRank(base: string, universe: Universe): Promise<TopScoreItem[]> {
+  try {
+    const json: any = await safeFetchJson(`${base}/api/score/top?u=${encodeURIComponent(universe)}&limit=10`);
+    const arr: TopScoreItem[] = (json?.items ?? []) as TopScoreItem[];
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    console.error("getTopRank error:", e);
+    return [];
+  }
+}
+
+async function getMovers(base: string, universe: Universe): Promise<MoversResp | null> {
+  try {
+    const json: any = await safeFetchJson(`${base}/api/market/movers?u=${encodeURIComponent(universe)}&limit=10`);
+    if (!json || json?.__error) return null;
+    return json as MoversResp;
+  } catch (e) {
+    console.error("getMovers error:", e);
+    return null;
+  }
+}
+
 async function getNewsCombined(
   base: string,
   universe: Universe,
@@ -391,12 +436,14 @@ export default async function HomePage({
 
   const base = getApiBaseUrl();
 
-  const [latest, kap, top, newsPack, stats] = await Promise.all([
+  const [latest, kap, top, newsPack, stats, topRankRaw, movers] = await Promise.all([
     getLatestSignals(base),
     universe === "BIST100" ? getKapImportant(base) : Promise.resolve([]),
     getTopMargins(base, universe),
     getNewsCombined(base, universe, minScore),
     getSignalStats(base, 20),
+    getTopRank(base, universe),
+    getMovers(base, universe),
   ]);
 
   let news = newsPack.items;
@@ -410,6 +457,12 @@ export default async function HomePage({
   } else {
     news = [...news].sort((a, b) => (b.datetime ?? 0) - (a.datetime ?? 0));
   }
+
+  const topRank = tickerFilter
+    ? topRankRaw.filter((x) => String(x.symbol || "").toUpperCase() === tickerFilter)
+    : topRankRaw;
+
+  const watchlistSymbols = Array.from(new Set((latest ?? []).map((x) => symbolToPlain(x.symbol)).filter(Boolean))).slice(0, 6);
 
   const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
   const nowIso = new Date().toISOString();
@@ -620,6 +673,43 @@ export default async function HomePage({
             >
               Sırala: Etki
             </Link>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Terminal Row 1 */}
+      <section className="mx-auto max-w-6xl px-4 pb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div className="xl:col-span-2 rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
+            <h2 className="text-lg font-black">🏆 Top 10 Overall</h2>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-gray-500"><tr className="border-b border-gray-800"><th className="text-left py-2">#</th><th className="text-left py-2">Symbol</th><th className="text-left py-2">Price</th><th className="text-left py-2">%Chg</th><th className="text-left py-2">Overall</th><th className="text-left py-2">Tech/Fund</th></tr></thead>
+                <tbody>
+                  {topRank.map((it, idx) => (
+                    <tr key={`${it.symbol}-${idx}`} className="border-b border-gray-900/80 hover:bg-[#0f1620]">
+                      <td className="py-2 pr-2 text-gray-500">{idx + 1}</td>
+                      <td className="py-2 pr-2"><Link href={`/bilanco?symbol=${encodeURIComponent(it.symbol)}`} className="font-bold hover:text-blue-300">{it.symbol || "—"}</Link></td>
+                      <td className="py-2 pr-2">{formatPrice(it.price)}</td>
+                      <td className={`py-2 pr-2 ${typeof it.changePct === "number" ? (it.changePct >= 0 ? "text-green-400" : "text-red-400") : "text-gray-500"}`}>{fmtPct(it.changePct)}</td>
+                      <td className="py-2 pr-2"><ScoreBadge score={it.overallScore ?? null} /></td>
+                      <td className="py-2 pr-2"><span className="text-[11px] px-2 py-1 rounded border border-gray-700">T {it.techScore ?? "—"}</span> <span className="text-[11px] px-2 py-1 rounded border border-gray-700">F {it.fundScore ?? "—"}</span></td>
+                    </tr>
+                  ))}
+                  {!topRank.length ? <tr><td colSpan={6} className="py-4 text-gray-500">—</td></tr> : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
+            <h2 className="text-lg font-black">📈 Movers</h2>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div><div className="text-xs font-bold text-green-400">Gainers</div><div className="mt-2 space-y-1.5 text-xs">{(movers?.gainers ?? []).slice(0, 5).map((x) => <div key={`g-${x.symbol}`} className="flex justify-between"><span>{x.symbol || "—"}</span><span>{fmtPct(x.changePct)}</span></div>)}{!(movers?.gainers?.length) ? <div className="text-gray-500">—</div> : null}</div></div>
+              <div><div className="text-xs font-bold text-red-400">Losers</div><div className="mt-2 space-y-1.5 text-xs">{(movers?.losers ?? []).slice(0, 5).map((x) => <div key={`l-${x.symbol}`} className="flex justify-between"><span>{x.symbol || "—"}</span><span>{fmtPct(x.changePct)}</span></div>)}{!(movers?.losers?.length) ? <div className="text-gray-500">—</div> : null}</div></div>
+            </div>
+            <h3 className="text-sm font-black mt-5">⭐ Watchlist</h3>
+            <div className="mt-2 flex flex-wrap gap-2">{watchlistSymbols.length ? watchlistSymbols.map((s) => (<Link key={s} href={`/bilanco?symbol=${encodeURIComponent(s)}`} className="text-xs px-2 py-1 rounded border border-gray-700 hover:bg-gray-900">{s}</Link>)) : <span className="text-xs text-gray-500">—</span>}</div>
           </div>
         </div>
       </section>
