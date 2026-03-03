@@ -12,7 +12,8 @@ type WebhookPayload = {
   signal: "BUY" | "SELL";
   score: number;
   reasons?: string;
-  t?: number;
+  t?: number; // TradingView time (ms)
+  event?: "OPEN" | "CLOSE" | string;
 };
 
 type SignalInsert = {
@@ -24,21 +25,11 @@ type SignalInsert = {
   time: number | null;
 };
 
-type SignalRow = {
-  id: number;
-  created_at: string;
-  symbol: string;
-  signal: string;
-  price: number | null;
-  score: number | null;
-  reasons: string | null;
-  grade?: string | null;
-  is_premium?: boolean | null;
-};
-
 type TradeRow = {
+  id?: number;
   outcome: "WIN" | "LOSS" | null;
   is_ema50_retest: boolean | null;
+  created_at?: string;
 };
 
 type JsonObject = Record<string, unknown>;
@@ -101,6 +92,8 @@ function parseWebhookPayload(value: unknown): WebhookPayload | null {
   const score = toNumberOrNull(value.score);
   const t = toNumberOrNull(value.t);
 
+  const eventRaw = toStringOrNull(value.event)?.toUpperCase() ?? undefined;
+
   return {
     secret,
     symbol,
@@ -109,6 +102,7 @@ function parseWebhookPayload(value: unknown): WebhookPayload | null {
     score: score ?? Number.NaN,
     reasons: toStringOrNull(value.reasons) ?? undefined,
     t: t ?? undefined,
+    event: eventRaw,
   };
 }
 
@@ -166,6 +160,96 @@ async function insertSignalCompat(
   return { id: null, error: lastError };
 }
 
+// --- trades compat helpers ---
+async function insertTradeOpenCompat(supa: ReturnType<typeof supabaseServer>, p: {
+  symbol: string; side: "BUY" | "SELL"; entry: number | null; t: number | null;
+}) {
+  const tsIso = p.t != null ? new Date(p.t).toISOString() : new Date().toISOString();
+  const symbolPlain = plainSymbol(p.symbol);
+
+  const attempts: JsonObject[] = [
+    // en zengin deneme
+    {
+      symbol: p.symbol,
+      symbol_plain: symbolPlain,
+      side: p.side,
+      status: "OPEN",
+      entry_price: p.entry,
+      entry: p.entry,
+      price: p.entry,
+      opened_at: tsIso,
+      time: p.t,
+      outcome: null,
+      is_ema50_retest: null,
+    },
+    // daha minimal
+    {
+      symbol: p.symbol,
+      side: p.side,
+      entry_price: p.entry,
+      outcome: null,
+      is_ema50_retest: null,
+    },
+    // sadece required’lar (stats için outcome/is_ema50_retest/created_at zaten default olabilir)
+    {
+      symbol: p.symbol,
+      outcome: null,
+      is_ema50_retest: null,
+    },
+  ];
+
+  for (const row of attempts) {
+    const { error } = await supa.from("trades").insert([row]);
+    if (!error) return { ok: true as const };
+  }
+  return { ok: false as const };
+}
+
+async function closeLatestTradeCompat(supa: ReturnType<typeof supabaseServer>, p: {
+  symbol: string; side: "BUY" | "SELL"; exit: number | null; t: number | null;
+}) {
+  // Açık trade’i bulmayı dene (şema farklı olabilir diye çoklu deneme)
+  const symbolPlain = plainSymbol(p.symbol);
+  const tsIso = p.t != null ? new Date(p.t).toISOString() : new Date().toISOString();
+
+  const selectors = [
+    supa.from("trades").select("id,entry_price,entry,side,status,outcome,created_at").eq("symbol", p.symbol).is("outcome", null).order("created_at", { ascending: false }).limit(1),
+    supa.from("trades").select("id,entry_price,entry,side,status,outcome,created_at").eq("symbol_plain", symbolPlain).is("outcome", null).order("created_at", { ascending: false }).limit(1),
+  ];
+
+  let trade: any = null;
+  for (const q of selectors) {
+    const { data, error } = await q;
+    if (!error && Array.isArray(data) && data.length) {
+      trade = data[0];
+      break;
+    }
+  }
+  if (!trade || typeof trade.id !== "number") return { ok: false as const, reason: "no-open-trade" as const };
+
+  const entry = toNumberOrNull(trade.entry_price) ?? toNumberOrNull(trade.entry);
+  const exit = p.exit;
+
+  let outcome: "WIN" | "LOSS" | null = null;
+  if (entry != null && exit != null) {
+    if (p.side === "BUY") outcome = exit > entry ? "WIN" : "LOSS";
+    else outcome = exit < entry ? "WIN" : "LOSS";
+  }
+
+  const updateAttempts: JsonObject[] = [
+    { status: "CLOSE", exit_price: exit, exit, closed_at: tsIso, outcome },
+    { exit_price: exit, outcome },
+    { outcome },
+  ];
+
+  for (const patch of updateAttempts) {
+    const { error } = await supa.from("trades").update(patch).eq("id", trade.id);
+    if (!error) return { ok: true as const };
+  }
+
+  return { ok: false as const, reason: "update-failed" as const };
+}
+
 export async function GET(req: Request) {
   const supa = supabaseServer();
   const { searchParams } = new URL(req.url);
@@ -206,64 +290,68 @@ export async function GET(req: Request) {
     });
   }
 
-  if (scope === "top") {
-    const universe = (searchParams.get("u") ?? "").toUpperCase();
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-    let query = supa
-      .from("signals")
-      .select("id,created_at,symbol,signal,price,score,reasons,grade,is_premium")
-      .gte("created_at", since)
-      .in("signal", ["BUY", "SELL"])
-      .order("score", { ascending: false, nullsFirst: false })
-      .order("created_at", { ascending: false })
-      .limit(1000);
-
-    if (universe === "BIST100") query = query.like("symbol", "BIST:%");
-    if (universe === "NASDAQ100" || universe === "NASDAQ300") query = query.like("symbol", "NASDAQ:%");
-
-    const { data, error } = await query;
-    if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
-
-    const rows = (data ?? []) as SignalRow[];
-    const buy = rows.filter((r) => String(r.signal).toUpperCase() === "BUY").slice(0, limit);
-    const sell = rows.filter((r) => String(r.signal).toUpperCase() === "SELL").slice(0, limit);
-
-    return noStore({ ok: true, scope: "top", data: { buy, sell } });
-  }
-
+  // default: latest
   const { data, error } = await supa
     .from("signals")
     .select("id,created_at,symbol,signal,price,score,reasons,grade,is_premium")
     .order("created_at", { ascending: false })
     .limit(limit);
 
-  if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
-  return noStore({ ok: true, data: (data ?? []) as SignalRow[] });
+  if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
+  return noStore({ ok: true, data: data ?? [] });
 }
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
+  const supa = supabaseServer();
+
+  let body: unknown = null;
+  try {
+    body = await req.json();
+  } catch {
+    return noStore({ ok: false, error: "invalid json" }, { status: 400 });
+  }
+
   const payload = parseWebhookPayload(body);
+  if (!payload) return noStore({ ok: false, error: "bad payload" }, { status: 400 });
 
-  if (!payload) return noStore({ ok: false, error: "bad_request" }, { status: 400 });
+  const expected = resolveExpectedSecret();
+  if (!expected) return noStore({ ok: false, error: "server secret not set" }, { status: 500 });
+  if (payload.secret !== expected) return noStore({ ok: false, error: "unauthorized" }, { status: 401 });
 
-  const expectedSecret = resolveExpectedSecret();
-  if (!expectedSecret) return noStore({ ok: false, error: "server_misconfigured" }, { status: 500 });
-  if (payload.secret !== expectedSecret) return noStore({ ok: false, error: "unauthorized" }, { status: 401 });
+  const timeMs = payload.t != null ? payload.t : null;
 
-  const signalInsert: SignalInsert = {
+  // 1) Signals insert (always)
+  const insert: SignalInsert = {
     symbol: payload.symbol,
     signal: payload.signal,
     price: toNumberOrNull(payload.price),
     score: clamp0to100(toNumberOrNull(payload.score)),
     reasons: sanitizeReasons(payload.reasons),
-    time: payload.t && Number.isFinite(payload.t) && payload.t > 0 ? Math.round(payload.t) : null,
+    time: timeMs,
   };
 
-  const supa = supabaseServer();
-  const { id, error } = await insertSignalCompat(supa, signalInsert);
-  if (error) return noStore({ ok: false, error }, { status: 500 });
+  const sRes = await insertSignalCompat(supa, insert);
+  if (sRes.error) {
+    return noStore({ ok: false, error: sRes.error }, { status: 500 });
+  }
 
-  return noStore({ ok: true, id, inserted: true });
+  // 2) Trades (optional, based on event)
+  const ev = (payload.event ?? "").toUpperCase();
+  if (ev === "OPEN") {
+    await insertTradeOpenCompat(supa, {
+      symbol: payload.symbol,
+      side: payload.signal,
+      entry: toNumberOrNull(payload.price),
+      t: timeMs,
+    });
+  } else if (ev === "CLOSE") {
+    await closeLatestTradeCompat(supa, {
+      symbol: payload.symbol,
+      side: payload.signal,
+      exit: toNumberOrNull(payload.price),
+      t: timeMs,
+    });
+  }
+
+  return noStore({ ok: true, id: sRes.id, event: ev || null });
 }
