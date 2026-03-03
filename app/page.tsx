@@ -1027,8 +1027,8 @@ export default async function HomePage({
               const reasons = parseReasons(r.reasons);
               const scoreNum = typeof r.score === "number" ? r.score : null;
 
-              const grade = (r as any).grade ?? null;
-              const isPremium = Boolean((r as any).is_premium);
+              const grade = r.grade ?? null;
+              const isPremium = Boolean(r.is_premium);
 
               return (
                 <Link
