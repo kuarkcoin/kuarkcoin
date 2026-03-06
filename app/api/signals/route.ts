@@ -1,4 +1,3 @@
-// app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
@@ -8,6 +7,15 @@ export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
 type EventType = "OPEN" | "CLOSE";
+
+type TradingViewTextPayload = {
+  event: "OPEN";
+  signal: "BUY" | "SELL";
+  symbol: string;
+  score: number | null;
+  reasons: string;
+  t: number;
+};
 
 function noStore(json: any, init?: ResponseInit) {
   return NextResponse.json(json, {
@@ -19,11 +27,15 @@ function noStore(json: any, init?: ResponseInit) {
   });
 }
 
-async function readJsonBody(req: Request) {
-  const raw = await req.text();
-  let body: any = null;
-  try { body = JSON.parse(raw); } catch { body = null; }
-  return { raw, body };
+async function readBody(req: Request) {
+  const raw = (await req.text()).trim();
+  if (!raw) return { raw: "", body: null };
+
+  try {
+    return { raw, body: JSON.parse(raw) };
+  } catch {
+    return { raw, body: null };
+  }
 }
 
 function parseTvTime(t: any) {
@@ -51,7 +63,6 @@ function normalizeStr(v: any) {
   return s.length ? s : null;
 }
 
-// V10 GÜNCELLEMESİ: Artık EMA50 Retest'leri "GOLDEN" sinyali olarak geliyor
 function isGoldenPullback(reasons: string | null) {
   if (!reasons) return false;
   return reasons.toLowerCase().includes("golden");
@@ -59,9 +70,7 @@ function isGoldenPullback(reasons: string | null) {
 
 function getIncomingSecret(req: Request, body: any) {
   const headerSecret =
-    req.headers.get("x-kuark-secret") ||
-    req.headers.get("x-scan-secret") ||
-    req.headers.get("x-secret");
+    req.headers.get("x-kuark-secret") || req.headers.get("x-scan-secret") || req.headers.get("x-secret");
 
   const bodySecret = body?.secret;
   return String(headerSecret ?? bodySecret ?? "").trim();
@@ -71,6 +80,41 @@ function plainSymbol(sym: string) {
   const s = sym.trim();
   const idx = s.indexOf(":");
   return idx >= 0 ? s.slice(idx + 1) : s;
+}
+
+function parseSymbolFromText(raw: string) {
+  const fromSinyal = raw.match(/Sinyali:\s*([A-Z0-9:._-]+)/i)?.[1];
+  if (fromSinyal) return fromSinyal.toUpperCase();
+
+  const fromWord = raw.match(/\b(BIST|NASDAQ|BINANCE|CRYPTO):([A-Z0-9._-]+)\b/i);
+  if (fromWord) return `${fromWord[1].toUpperCase()}:${fromWord[2].toUpperCase()}`;
+
+  return null;
+}
+
+function parseTradingViewTextAlert(raw: string): TradingViewTextPayload | null {
+  if (!raw) return null;
+
+  const upper = raw.toUpperCase();
+  const isBuy = upper.includes("AL SİNYAL") || upper.includes("AL SINYAL") || upper.includes("BOĞA") || upper.includes("BOGA");
+  const isSell = upper.includes("SAT SİNYAL") || upper.includes("SAT SINYAL");
+
+  if (!isBuy && !isSell) return null;
+
+  const symbol = parseSymbolFromText(raw);
+  if (!symbol) return null;
+
+  const scoreText = raw.match(/Toplam\s+(?:AL|SAT)\s+Puan:\s*([0-9]+(?:[.,][0-9]+)?)/i)?.[1] ?? null;
+  const score = scoreText ? Number(scoreText.replace(",", ".")) : null;
+
+  return {
+    event: "OPEN",
+    signal: isSell ? "SELL" : "BUY",
+    symbol,
+    score: Number.isFinite(score ?? NaN) ? score : null,
+    reasons: raw,
+    t: Math.floor(Date.now() / 1000),
+  };
 }
 
 async function safeInsertSignal(supa: any, payload: any) {
@@ -88,8 +132,7 @@ async function safeInsertSignal(supa: any, payload: any) {
     grade: payload.grade ?? null,
   };
 
-  const try2 = await supa.from("signals").insert([minimal]).select("id").single();
-  return try2;
+  return supa.from("signals").insert([minimal]).select("id").single();
 }
 
 export async function GET(req: Request) {
@@ -130,11 +173,20 @@ export async function GET(req: Request) {
     });
   }
 
-  const { data, error } = await supa
-    .from("signals")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const symbolParam = normalizeStr(searchParams.get("symbol"));
+  const symbolUpper = symbolParam?.toUpperCase() ?? null;
+  const symbolPlainUpper = symbolUpper ? plainSymbol(symbolUpper) : null;
+
+  const limitParam = Number(searchParams.get("limit") ?? "500");
+  const limit = Number.isFinite(limitParam) ? Math.max(1, Math.min(limitParam, 1000)) : 500;
+
+  let query = supa.from("signals").select("*").order("created_at", { ascending: false }).limit(limit);
+
+  if (symbolUpper) {
+    query = query.or(`symbol.eq.${symbolUpper},symbol_plain.eq.${symbolPlainUpper}`);
+  }
+
+  const { data, error } = await query;
 
   if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
   return noStore({ ok: true, data: data ?? [] });
@@ -142,45 +194,55 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const supa = supabaseServer();
-  const { raw, body } = await readJsonBody(req);
-
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  const { raw, body } = await readBody(req);
 
   const expected = String(process.env.SCAN_SECRET ?? "").trim();
   if (!expected) return noStore({ ok: false, error: "Server misconfigured" }, { status: 500 });
+
+  const parsedTextAlert = !body ? parseTradingViewTextAlert(raw) : null;
+  const payload = body ?? parsedTextAlert;
+
+  if (!payload) {
+    return noStore(
+      {
+        ok: false,
+        error: "Bad payload",
+        hint: "Send JSON payload or TradingView alert text that includes symbol and AL/SAT signal.",
+      },
+      { status: 400 },
+    );
+  }
 
   const incoming = getIncomingSecret(req, body);
   if (!incoming || incoming !== expected) {
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const event: EventType = (String(body.event ?? "OPEN").toUpperCase() as EventType);
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const symbolRaw = String(body.symbol ?? "").trim();
+  const event: EventType = String(payload.event ?? "OPEN").toUpperCase() as EventType;
+  const signal = String(payload.signal ?? "").toUpperCase().trim();
+  const symbolRaw = String(payload.symbol ?? "").trim();
 
   if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
 
   const symbolPlain = plainSymbol(symbolRaw);
-  const timeframe = normalizeStr(body.timeframe);
-  const score = toNumOrNull(body.score);
-  const grade = normalizeStr(body.grade);
-  const premium = toBool(body.premium ?? body.is_premium);
-  const reasons = normalizeStr(body.reasons);
-  const t_tv = body.t ? parseTvTime(body.t) : new Date();
+  const timeframe = normalizeStr(payload.timeframe);
+  const score = toNumOrNull(payload.score);
+  const grade = normalizeStr(payload.grade);
+  const premium = toBool(payload.premium ?? payload.is_premium);
+  const reasons = normalizeStr(payload.reasons);
+  const t_tv = payload.t ? parseTvTime(payload.t) : new Date();
 
-  // V10 GÜNCELLEMESİ: Yeni hedefleri yakalıyoruz
-  const price = toNumOrNull(body.price);
-  const entryPrice = toNumOrNull(body.entryPrice) ?? price;
-  const exitPrice = toNumOrNull(body.exitPrice);
-  const tp1 = toNumOrNull(body.tp1);
-  const tp2 = toNumOrNull(body.tp2);
-  const sl = toNumOrNull(body.sl);
+  const price = toNumOrNull(payload.price);
+  const entryPrice = toNumOrNull(payload.entryPrice) ?? price;
+  const exitPrice = toNumOrNull(payload.exitPrice);
+  const tp1 = toNumOrNull(payload.tp1);
+  const tp2 = toNumOrNull(payload.tp2);
+  const sl = toNumOrNull(payload.sl);
 
   if (event === "OPEN" && signal !== "BUY" && signal !== "SELL") {
     return noStore({ ok: false, error: "Missing/invalid signal for OPEN" }, { status: 400 });
   }
 
-  // 1) OPEN
   if (event === "OPEN") {
     const signalPayload: any = {
       symbol: symbolRaw,
@@ -192,22 +254,18 @@ export async function POST(req: Request) {
       reasons,
       t_tv: t_tv.toISOString(),
       price,
-      tp1, // Yeni eklendi
-      tp2, // Yeni eklendi
-      sl,  // Yeni eklendi
+      tp1,
+      tp2,
+      sl,
       symbol_plain: symbolPlain,
     };
 
     const ins = await safeInsertSignal(supa, signalPayload);
-
-    if (ins.error) {
-      return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
-    }
+    if (ins.error) return noStore({ ok: false, error: "signals insert failed" }, { status: 500 });
 
     const signalId = ins.data?.id ?? null;
 
     try {
-      // V10 GÜNCELLEMESİ: Açık trade kapatılırken dinamik WIN/LOSS hesaplama
       const { data: openTrade } = await supa
         .from("trades")
         .select("id, direction, entry_price")
@@ -224,12 +282,15 @@ export async function POST(req: Request) {
           if (openTrade.direction === "SHORT") autoOutcome = price < openTrade.entry_price ? "WIN" : "LOSS";
         }
 
-        await supa.from("trades").update({
-          exit_time: t_tv.toISOString(),
-          exit_reason: "NewSignalAutoClose",
-          exit_price: price, // Anlık fiyatla kapatılıyor
-          outcome: autoOutcome // İstatistikler bozulmasın diye kar/zarar hesaplanıyor
-        }).eq("id", openTrade.id);
+        await supa
+          .from("trades")
+          .update({
+            exit_time: t_tv.toISOString(),
+            exit_reason: "NewSignalAutoClose",
+            exit_price: price,
+            outcome: autoOutcome,
+          })
+          .eq("id", openTrade.id);
       }
 
       const direction = signal === "BUY" ? "LONG" : "SHORT";
@@ -250,24 +311,23 @@ export async function POST(req: Request) {
             score,
             reasons,
             is_ema50_retest: isEma50,
-            tp1, // Yeni eklendi
-            tp2, // Yeni eklendi
-            sl,  // Yeni eklendi
+            tp1,
+            tp2,
+            sl,
           },
         ])
         .select("id")
         .single();
 
       return noStore({ ok: true, event: "OPEN", signalId, tradeId: trIns.data?.id ?? null });
-    } catch (e: any) {
+    } catch {
       return noStore({ ok: true, event: "OPEN", signalId, tradeId: null, tradeWarn: true });
     }
   }
 
-  // 2) CLOSE
   if (event === "CLOSE") {
-    const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
-    const exitReason = normalizeStr(body.exitReason);
+    const outcome: Outcome = payload.outcome === "WIN" ? "WIN" : payload.outcome === "LOSS" ? "LOSS" : null;
+    const exitReason = normalizeStr(payload.exitReason);
 
     const { data: openTrade, error: eFind } = await supa
       .from("trades")

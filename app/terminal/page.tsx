@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 import { headers } from "next/headers";
-import type { Candle, Signal } from "@/app/components/KuarkLightChart";
+import type { Candle, Signal } from "@/components/KuarkLightChart";
 
-const KuarkLightChart = dynamic(() => import("@/app/components/KuarkLightChart"), {
+const KuarkLightChart = dynamic(() => import("@/components/KuarkLightChart"), {
   ssr: false,
 });
 
