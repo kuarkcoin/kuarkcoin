@@ -17,6 +17,9 @@ type TradingViewTextPayload = {
   t: number;
 };
 
+const BUY_ALIASES = new Set(["BUY", "AL", "LONG"]);
+const SELL_ALIASES = new Set(["SELL", "SAT", "SHORT"]);
+
 function noStore(json: any, init?: ResponseInit) {
   return NextResponse.json(json, {
     ...init,
@@ -53,7 +56,7 @@ function toBool(v: any) {
 
 function toNumOrNull(v: any) {
   if (v == null) return null;
-  const n = typeof v === "number" ? v : Number(v);
+  const n = typeof v === "number" ? v : Number(String(v).replace(",", "."));
   return Number.isFinite(n) ? n : null;
 }
 
@@ -72,8 +75,45 @@ function getIncomingSecret(req: Request, body: any) {
   const headerSecret =
     req.headers.get("x-kuark-secret") || req.headers.get("x-scan-secret") || req.headers.get("x-secret");
 
-  const bodySecret = body?.secret;
+  const bodySecret = body?.secret ?? body?.token ?? body?.webhook_secret;
   return String(headerSecret ?? bodySecret ?? "").trim();
+}
+
+function normalizeSignal(raw: any): "BUY" | "SELL" | null {
+  const s = String(raw ?? "")
+    .trim()
+    .toUpperCase();
+  if (BUY_ALIASES.has(s)) return "BUY";
+  if (SELL_ALIASES.has(s)) return "SELL";
+  return null;
+}
+
+function normalizeReasons(raw: any): string | null {
+  if (raw == null) return null;
+  if (typeof raw === "string") {
+    const s = raw.trim();
+    return s.length ? s : null;
+  }
+
+  if (Array.isArray(raw)) {
+    const list = raw
+      .map((x) => normalizeStr(x))
+      .filter((x): x is string => Boolean(x));
+    return list.length ? list.join(",") : null;
+  }
+
+  try {
+    return JSON.stringify(raw);
+  } catch {
+    return null;
+  }
+}
+
+function normalizeSymbolInput(raw: any): string {
+  const symbol = String(raw ?? "")
+    .trim()
+    .toUpperCase();
+  return symbol;
 }
 
 function plainSymbol(sym: string) {
@@ -196,11 +236,22 @@ export async function POST(req: Request) {
   const supa = supabaseServer();
   const { raw, body } = await readBody(req);
 
+  const bodyFromMessage =
+    body && typeof body?.message === "string"
+      ? (() => {
+          try {
+            return JSON.parse(body.message);
+          } catch {
+            return null;
+          }
+        })()
+      : null;
+
   const expected = String(process.env.SCAN_SECRET ?? "").trim();
   if (!expected) return noStore({ ok: false, error: "Server misconfigured" }, { status: 500 });
 
   const parsedTextAlert = !body ? parseTradingViewTextAlert(raw) : null;
-  const payload = body ?? parsedTextAlert;
+  const payload = bodyFromMessage ?? body ?? parsedTextAlert;
 
   if (!payload) {
     return noStore(
@@ -213,14 +264,14 @@ export async function POST(req: Request) {
     );
   }
 
-  const incoming = getIncomingSecret(req, body);
+  const incoming = getIncomingSecret(req, payload);
   if (!incoming || incoming !== expected) {
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const event: EventType = String(payload.event ?? "OPEN").toUpperCase() as EventType;
-  const signal = String(payload.signal ?? "").toUpperCase().trim();
-  const symbolRaw = String(payload.symbol ?? "").trim();
+  const signal = normalizeSignal(payload.signal ?? payload.side ?? payload.action);
+  const symbolRaw = normalizeSymbolInput(payload.symbol ?? payload.tickerid ?? payload.ticker);
 
   if (!symbolRaw) return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
 
@@ -229,7 +280,7 @@ export async function POST(req: Request) {
   const score = toNumOrNull(payload.score);
   const grade = normalizeStr(payload.grade);
   const premium = toBool(payload.premium ?? payload.is_premium);
-  const reasons = normalizeStr(payload.reasons);
+  const reasons = normalizeReasons(payload.reasons ?? payload.reason);
   const t_tv = payload.t ? parseTvTime(payload.t) : new Date();
 
   const price = toNumOrNull(payload.price);
@@ -239,7 +290,7 @@ export async function POST(req: Request) {
   const tp2 = toNumOrNull(payload.tp2);
   const sl = toNumOrNull(payload.sl);
 
-  if (event === "OPEN" && signal !== "BUY" && signal !== "SELL") {
+  if (event === "OPEN" && !signal) {
     return noStore({ ok: false, error: "Missing/invalid signal for OPEN" }, { status: 400 });
   }
 
