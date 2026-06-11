@@ -1,6 +1,7 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { findTrackedSymbol, normalizeSymbol } from "@/data/tracked-symbols";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -97,20 +98,63 @@ export async function POST(req: Request) {
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const symbol = String(body.symbol ?? "").trim();
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
-  const reasons = body.reasons == null ? null : String(body.reasons);
-  const created_at = body.t ? parseTvTime(body.t) : new Date();
-
-  if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
-    return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
+  const symbol = normalizeSymbol(body.symbol ?? "");
+  if (!symbol) {
+    return noStore({ ok: false, error: "Missing symbol" }, { status: 400 });
   }
+
+  const signal = String(body.signal ?? "").toUpperCase().trim();
+  if (signal !== "BUY" && signal !== "SELL") {
+    return noStore({ ok: false, error: "Invalid signal" }, { status: 400 });
+  }
+
+  const parseFiniteNumber = (value: unknown) => {
+    if (value == null || value === "") return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  const parseOptionalText = (value: unknown) => {
+    if (value == null) return null;
+    const parsed = String(value).trim();
+    return parsed ? parsed : null;
+  };
+
+  const price = parseFiniteNumber(body.price);
+  const score = parseFiniteNumber(body.score);
+  const rvol = parseFiniteNumber(body.rvol);
+  const reasons = parseOptionalText(body.reasons);
+  const timeframe = parseOptionalText(body.timeframe);
+  const source = parseOptionalText(body.source);
+  const created_at = body.t ? parseTvTime(body.t) : new Date();
+  const trackedSymbol = findTrackedSymbol(symbol);
+  const symbolMeta = trackedSymbol ?? {
+    symbol,
+    name: symbol,
+    type: "unknown",
+    category: "Untracked",
+    exchange: "Unknown",
+  };
 
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([
+      {
+        symbol,
+        name: symbolMeta.name,
+        signal,
+        price,
+        score,
+        reasons,
+        rvol,
+        timeframe,
+        type: symbolMeta.type,
+        category: symbolMeta.category,
+        exchange: symbolMeta.exchange,
+        source,
+        created_at,
+      },
+    ])
     .select("*")
     .single();
 
