@@ -21,4 +21,29 @@ npm run dev
 ```
 Open http://localhost:3000
 
+## Environment Example
+```env
+ENABLE_PREMIUM=true
+DEMO_PREMIUM_USER=false
+```
+
+Vercel environment variable changes require a Production redeploy.
+
+## Premium Roadmap
+
+### Phase 1
+* Premium UI
+* Locked sections
+* Pricing page
+
+### Phase 2
+* User login
+* Watchlist
+* Email alerts
+
+### Phase 3
+* Stripe / Lemon Squeezy / Paddle subscription
+* Telegram alerts
+* Verified performance analytics
+
 © 2025 EnglishMeter
