@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
+import Disclaimer from "@/components/Disclaimer";
 
 type SearchParams = {
   asset?: string;
@@ -227,6 +228,10 @@ export default async function SignalsPage({ searchParams }: { searchParams?: Sea
             </div>
           </div>
         </header>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/80">
+          <Disclaimer />
+        </section>
 
         <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/80">
           <div className="flex flex-col gap-4">
