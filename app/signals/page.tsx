@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
+import { isDailyTimeframe, isPremiumTimeframe } from "@/lib/timeframes";
 
 type SearchParams = {
   asset?: string;
@@ -194,6 +195,31 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+
+function timeframeBadgeClasses(value: unknown) {
+  if (isPremiumTimeframe(value)) {
+    return "border-amber-400/40 bg-amber-400/10 text-amber-700 dark:text-amber-300";
+  }
+
+  if (isDailyTimeframe(value)) {
+    return "border-blue-400/40 bg-blue-400/10 text-blue-700 dark:text-blue-300";
+  }
+
+  return "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300";
+}
+
+function TimeframeBadge({ timeframe }: { timeframe: unknown }) {
+  const label = valueOrDash(timeframe);
+  const helperLabel = isPremiumTimeframe(timeframe) ? "Premium" : isDailyTimeframe(timeframe) ? "Daily" : null;
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-black ${timeframeBadgeClasses(timeframe)}`}>
+      <span>{label}</span>
+      {helperLabel ? <span className="text-[10px] uppercase tracking-wide opacity-80">{helperLabel}</span> : null}
+    </span>
+  );
+}
+
 function SignalBadge({ signal }: { signal: unknown }) {
   return <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-black ${signalClasses(signal)}`}>{valueOrDash(signal)}</span>;
 }
@@ -341,7 +367,7 @@ export default async function SignalsPage({ searchParams }: { searchParams?: Sea
                         <td className="whitespace-nowrap px-4 py-4 font-mono">{formatPrice(row.price)}</td>
                         <td className="whitespace-nowrap px-4 py-4 font-mono">{formatNumber(row.score, 2)}</td>
                         <td className="whitespace-nowrap px-4 py-4 font-mono">{formatNumber(row.rvol, 2)}</td>
-                        <td className="whitespace-nowrap px-4 py-4">{valueOrDash(row.timeframe)}</td>
+                        <td className="whitespace-nowrap px-4 py-4"><TimeframeBadge timeframe={row.timeframe} /></td>
                         <td className="whitespace-nowrap px-4 py-4">{valueOrDash(row.type)}</td>
                         <td className="px-4 py-4">{valueOrDash(row.category)}</td>
                         <td className="whitespace-nowrap px-4 py-4">{valueOrDash(row.exchange)}</td>
@@ -371,7 +397,7 @@ export default async function SignalsPage({ searchParams }: { searchParams?: Sea
                       <Field label="Price" value={<span className="font-mono">{formatPrice(row.price)}</span>} />
                       <Field label="Score" value={<span className="font-mono">{formatNumber(row.score, 2)}</span>} />
                       <Field label="RVOL" value={<span className="font-mono">{formatNumber(row.rvol, 2)}</span>} />
-                      <Field label="Timeframe" value={valueOrDash(row.timeframe)} />
+                      <Field label="Timeframe" value={<TimeframeBadge timeframe={row.timeframe} />} />
                       <Field label="Type" value={valueOrDash(row.type)} />
                       <Field label="Category" value={valueOrDash(row.category)} />
                       <Field label="Exchange" value={valueOrDash(row.exchange)} />
