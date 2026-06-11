@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { headers } from "next/headers";
+import { getPremiumStatus } from "@/lib/premium";
+import { Disclaimer, PlanBadge, PremiumGate } from "@/components/premium";
 
 type SearchParams = {
   asset?: string;
@@ -7,6 +9,8 @@ type SearchParams = {
   category?: string;
   symbol?: string;
 };
+
+type PlanStatus = Awaited<ReturnType<typeof getPremiumStatus>>;
 
 type SignalRow = {
   id?: number | string | null;
@@ -35,6 +39,9 @@ const SIGNAL_FILTERS = [
   { label: "BUY", value: "BUY" },
   { label: "SELL", value: "SELL" },
 ] as const;
+
+const PREMIUM_4H_TIMEFRAMES = new Set(["4H", "240"]);
+const FREE_DAILY_TIMEFRAMES = new Set(["1D", "D"]);
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -73,6 +80,18 @@ function normalized(value: unknown) {
 
 function upper(value: unknown) {
   return normalized(value).toUpperCase();
+}
+
+function normalizeTimeframe(value: unknown) {
+  return upper(value);
+}
+
+function isPremium4HSignal(row: SignalRow) {
+  return PREMIUM_4H_TIMEFRAMES.has(normalizeTimeframe(row.timeframe));
+}
+
+function isFreeDailySignal(row: SignalRow) {
+  return FREE_DAILY_TIMEFRAMES.has(normalizeTimeframe(row.timeframe));
 }
 
 function isEtf(row: SignalRow) {
@@ -141,11 +160,11 @@ function buildQuery(params: SearchParams, patch: Partial<SearchParams>) {
   return qs ? `/signals?${qs}` : "/signals";
 }
 
-function filterRows(rows: SignalRow[], params: SearchParams) {
-  const asset = normalized(params.asset || "all").toLowerCase();
-  const signal = upper(params.signal || "all");
-  const category = normalized(params.category);
-  const symbol = upper(params.symbol);
+function filterRows(rows: SignalRow[], params: SearchParams, allowAdvancedFilters: boolean) {
+  const asset = allowAdvancedFilters ? normalized(params.asset || "all").toLowerCase() : "all";
+  const signal = allowAdvancedFilters ? upper(params.signal || "all") : "ALL";
+  const category = allowAdvancedFilters ? normalized(params.category) : "";
+  const symbol = allowAdvancedFilters ? upper(params.symbol) : "";
 
   return rows.filter((row) => {
     if (asset === "stocks" && !isStock(row)) return false;
@@ -161,6 +180,50 @@ function uniqueCategories(rows: SignalRow[]) {
   return Array.from(new Set(rows.map((row) => normalized(row.category)).filter(Boolean))).sort((a, b) =>
     a.localeCompare(b)
   );
+}
+
+function sortNewestFirst(rows: SignalRow[]) {
+  return [...rows].sort((a, b) => {
+    const left = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const right = b.created_at ? new Date(b.created_at).getTime() : 0;
+    return (Number.isFinite(right) ? right : 0) - (Number.isFinite(left) ? left : 0);
+  });
+}
+
+function getVisibleRows(rows: SignalRow[], params: SearchParams, plan: PlanStatus) {
+  if (plan.isPremium) return filterRows(rows, params, true);
+  return sortNewestFirst(rows).filter(isFreeDailySignal).slice(0, 10);
+}
+
+function csvEscape(value: unknown) {
+  const text = normalized(value);
+  if (!/[",\n\r]/.test(text)) return text;
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+
+function buildCsv(rows: SignalRow[]) {
+  const columns: Array<[string, keyof SignalRow]> = [
+    ["Created time", "created_at"],
+    ["Symbol", "symbol"],
+    ["Name", "name"],
+    ["Signal", "signal"],
+    ["Price", "price"],
+    ["Score", "score"],
+    ["RVOL", "rvol"],
+    ["Timeframe", "timeframe"],
+    ["Type", "type"],
+    ["Category", "category"],
+    ["Exchange", "exchange"],
+    ["Source", "source"],
+  ];
+
+  const lines = [
+    columns.map(([label]) => csvEscape(label)).join(","),
+    ...rows.map((row) => columns.map(([, key]) => csvEscape(row[key])).join(",")),
+  ];
+
+  return `data:text/csv;charset=utf-8,${encodeURIComponent(lines.join("\n"))}`;
 }
 
 function signalClasses(signal: unknown) {
@@ -198,13 +261,58 @@ function SignalBadge({ signal }: { signal: unknown }) {
   return <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-black ${signalClasses(signal)}`}>{valueOrDash(signal)}</span>;
 }
 
+
+function LockedAdvancedFilters() {
+  return (
+    <PremiumGate
+      title="Premium filters are locked"
+      description="Upgrade to filter by BUY/SELL, Stock/ETF, category, and symbol across all signal timeframes."
+    >
+      <div className="grid gap-3 md:grid-cols-4">
+        {["Stock / ETF", "BUY / SELL", "Category", "Symbol"].map((label) => (
+          <label key={label} className="flex min-w-0 flex-col gap-2 text-sm font-semibold text-slate-500 dark:text-slate-500">
+            {label}
+            <input
+              disabled
+              placeholder="Premium only"
+              className="min-h-11 cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-3 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-500"
+            />
+          </label>
+        ))}
+      </div>
+    </PremiumGate>
+  );
+}
+
+function Locked4HPreview({ count }: { count: number }) {
+  if (count === 0) return null;
+
+  return (
+    <div className="rounded-3xl border border-blue-200 bg-blue-50 p-5 shadow-sm dark:border-blue-500/30 dark:bg-blue-500/10">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <PlanBadge type="4H FAST" />
+          <h2 className="mt-3 text-lg font-black text-slate-950 dark:text-white">4H fast signals are available on Premium</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-700 dark:text-slate-300">
+            {count} recent 4H signal{count === 1 ? "" : "s"} are locked. Free plans show the latest 10 Daily/1D signals only.
+          </p>
+        </div>
+        <PlanBadge type="LOCKED" />
+      </div>
+    </div>
+  );
+}
+
 export default async function SignalsPage({ searchParams }: { searchParams?: SearchParams }) {
   const params = searchParams ?? {};
-  const { rows, error } = await getRecentSignals();
+  const [plan, signalsResult] = await Promise.all([getPremiumStatus(), getRecentSignals()]);
+  const { rows, error } = signalsResult;
   const categories = uniqueCategories(rows);
-  const filteredRows = filterRows(rows, params);
+  const filteredRows = getVisibleRows(rows, params, plan);
+  const locked4HCount = plan.isPremium ? 0 : rows.filter(isPremium4HSignal).length;
   const activeAsset = normalized(params.asset || "all").toLowerCase();
   const activeSignal = upper(params.signal || "all");
+  const csvHref = plan.isPremium ? buildCsv(filteredRows) : "";
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950 dark:bg-[#0d1117] dark:text-white">
@@ -217,86 +325,106 @@ export default async function SignalsPage({ searchParams }: { searchParams?: Sea
               </Link>
               <h1 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Recent Signals</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
-                Fresh market signals from the live API. Use filters to narrow by asset class, direction, category, or symbol.
+                Fresh market signals from the live API. Premium unlocks 4H signals, advanced filters, and CSV export.
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900/70">
-              <div className="text-slate-500 dark:text-slate-400">Showing</div>
-              <div className="text-2xl font-black">{filteredRows.length}</div>
-              <div className="text-xs text-slate-500 dark:text-slate-500">of {rows.length} recent signals</div>
+            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900/70">
+              <div>
+                <div className="text-slate-500 dark:text-slate-400">Showing</div>
+                <div className="text-2xl font-black">{filteredRows.length}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-500">
+                  {plan.isPremium ? `of ${rows.length} recent signals` : "latest 10 Daily/1D signals"}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <PlanBadge type={plan.isPremium ? "PREMIUM" : "FREE"} />
+                {plan.isPremium ? (
+                  <a
+                    href={csvHref}
+                    download="signals.csv"
+                    className="inline-flex items-center rounded-full bg-blue-600 px-3 py-1.5 text-xs font-black text-white transition hover:bg-blue-500"
+                  >
+                    Export CSV
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
         </header>
 
         <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/80">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap gap-2" aria-label="Asset filters">
-              {ASSET_FILTERS.map((filter) => (
-                <FilterLink
-                  key={filter.value}
-                  href={buildQuery(params, { asset: filter.value })}
-                  active={activeAsset === filter.value || (!activeAsset && filter.value === "all")}
-                >
-                  {filter.label}
-                </FilterLink>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap gap-2" aria-label="Signal filters">
-              {SIGNAL_FILTERS.map((filter) => (
-                <FilterLink
-                  key={filter.value}
-                  href={buildQuery(params, { signal: filter.value })}
-                  active={activeSignal === upper(filter.value) || (!activeSignal && filter.value === "all")}
-                >
-                  {filter.label}
-                </FilterLink>
-              ))}
-            </div>
-
-            <form action="/signals" className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-              <input type="hidden" name="asset" value={activeAsset === "all" ? "" : activeAsset} />
-              <input type="hidden" name="signal" value={activeSignal === "ALL" ? "" : activeSignal} />
-
-              <label className="flex min-w-0 flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                Category
-                <select
-                  name="category"
-                  defaultValue={normalized(params.category)}
-                  className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
-                >
-                  <option value="">All categories</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="flex min-w-0 flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                Symbol search
-                <input
-                  name="symbol"
-                  defaultValue={normalized(params.symbol)}
-                  placeholder="Search ticker, e.g. AAPL"
-                  className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500"
-                />
-              </label>
-
-              <div className="flex items-end gap-2">
-                <button className="min-h-11 rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500" type="submit">
-                  Apply
-                </button>
-                <Link
-                  href="/signals"
-                  className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700"
-                >
-                  Reset
-                </Link>
+          {plan.isPremium ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-2" aria-label="Asset filters">
+                {ASSET_FILTERS.map((filter) => (
+                  <FilterLink
+                    key={filter.value}
+                    href={buildQuery(params, { asset: filter.value })}
+                    active={activeAsset === filter.value || (!activeAsset && filter.value === "all")}
+                  >
+                    {filter.label}
+                  </FilterLink>
+                ))}
               </div>
-            </form>
-          </div>
+
+              <div className="flex flex-wrap gap-2" aria-label="Signal filters">
+                {SIGNAL_FILTERS.map((filter) => (
+                  <FilterLink
+                    key={filter.value}
+                    href={buildQuery(params, { signal: filter.value })}
+                    active={activeSignal === upper(filter.value) || (!activeSignal && filter.value === "all")}
+                  >
+                    {filter.label}
+                  </FilterLink>
+                ))}
+              </div>
+
+              <form action="/signals" className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+                <input type="hidden" name="asset" value={activeAsset === "all" ? "" : activeAsset} />
+                <input type="hidden" name="signal" value={activeSignal === "ALL" ? "" : activeSignal} />
+
+                <label className="flex min-w-0 flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Category
+                  <select
+                    name="category"
+                    defaultValue={normalized(params.category)}
+                    className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  >
+                    <option value="">All categories</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="flex min-w-0 flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Symbol search
+                  <input
+                    name="symbol"
+                    defaultValue={normalized(params.symbol)}
+                    placeholder="Search ticker, e.g. AAPL"
+                    className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500"
+                  />
+                </label>
+
+                <div className="flex items-end gap-2">
+                  <button className="min-h-11 rounded-xl bg-blue-600 px-5 text-sm font-black text-white transition hover:bg-blue-500" type="submit">
+                    Apply
+                  </button>
+                  <Link
+                    href="/signals"
+                    className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700"
+                  >
+                    Reset
+                  </Link>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <LockedAdvancedFilters />
+          )}
         </section>
 
         {error ? (
@@ -304,6 +432,8 @@ export default async function SignalsPage({ searchParams }: { searchParams?: Sea
             Could not load recent signals: {error}
           </div>
         ) : null}
+
+        <Locked4HPreview count={locked4HCount} />
 
         <section className="rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950/80">
           {filteredRows.length === 0 ? (
@@ -383,6 +513,8 @@ export default async function SignalsPage({ searchParams }: { searchParams?: Sea
             </>
           )}
         </section>
+
+        <Disclaimer />
       </section>
     </main>
   );
