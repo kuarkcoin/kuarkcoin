@@ -56,6 +56,7 @@ const NASDAQ_SET = new Set<string>((ASSETS_MAP.NASDAQ ?? []).map((s) => String(s
 const ETF_SET = new Set<string>((ASSETS_MAP.ETF ?? []).map((s) => String(s).toUpperCase()));
 const CRYPTO_SET = new Set<string>((ASSETS_MAP.CRYPTO ?? []).map((s) => String(s).toUpperCase()));
 const BIST_SET = new Set<string>(((ASSETS_MAP.BIST ?? []) as string[]).map((s) => String(s).toUpperCase()));
+const CAN_EDIT_SIGNAL_OUTCOMES = process.env.NEXT_PUBLIC_ENABLE_OUTCOME_EDITING === "true";
 
 // ──────────────────────────────────────────────────
 // UI Helpers
@@ -1136,51 +1137,53 @@ export default function TerminalPage() {
                               onStopPropagation
                             />
 
-                            <div className="mt-4 flex gap-2">
-                              <button
-                                disabled={disableWin}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (!disableWin) setOutcome(r.id, "WIN");
-                                }}
-                                className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                  r.outcome === "WIN"
-                                    ? "border-green-600 text-green-300 bg-green-950/30"
-                                    : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                } ${disableWin ? "opacity-60 cursor-not-allowed" : ""}`}
-                              >
-                                WIN
-                              </button>
+                            {CAN_EDIT_SIGNAL_OUTCOMES ? (
+                              <div className="mt-4 flex gap-2">
+                                <button
+                                  disabled={disableWin}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!disableWin) setOutcome(r.id, "WIN");
+                                  }}
+                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                    r.outcome === "WIN"
+                                      ? "border-green-600 text-green-300 bg-green-950/30"
+                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                  } ${disableWin ? "opacity-60 cursor-not-allowed" : ""}`}
+                                >
+                                  WIN
+                                </button>
 
-                              <button
-                                disabled={disableLoss}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (!disableLoss) setOutcome(r.id, "LOSS");
-                                }}
-                                className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                  r.outcome === "LOSS"
-                                    ? "border-red-600 text-red-300 bg-red-950/30"
-                                    : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                } ${disableLoss ? "opacity-60 cursor-not-allowed" : ""}`}
-                              >
-                                LOSS
-                              </button>
+                                <button
+                                  disabled={disableLoss}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!disableLoss) setOutcome(r.id, "LOSS");
+                                  }}
+                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                    r.outcome === "LOSS"
+                                      ? "border-red-600 text-red-300 bg-red-950/30"
+                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                  } ${disableLoss ? "opacity-60 cursor-not-allowed" : ""}`}
+                                >
+                                  LOSS
+                                </button>
 
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setOutcome(r.id, null);
-                                }}
-                                className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
-                                  r.outcome === null
-                                    ? "border-gray-600 text-gray-200 bg-gray-900/40"
-                                    : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
-                                }`}
-                              >
-                                Temizle
-                              </button>
-                            </div>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOutcome(r.id, null);
+                                  }}
+                                  className={`flex-1 py-1.5 text-xs rounded border transition-colors ${
+                                    r.outcome === null
+                                      ? "border-gray-600 text-gray-200 bg-gray-900/40"
+                                      : "border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500"
+                                  }`}
+                                >
+                                  Temizle
+                                </button>
+                              </div>
+                            ) : null}
                           </button>
                         );
                       })}

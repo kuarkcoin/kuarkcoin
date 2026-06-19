@@ -1,4 +1,5 @@
 // app/api/signals/route.ts
+import { timingSafeEqual } from "crypto";
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
@@ -7,6 +8,9 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
+
+const PATCH_BODY_LIMIT_BYTES = 1024;
+const SIGNAL_SELECT_COLUMNS = "id, created_at, symbol, signal, price, score, reasons, outcome";
 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
@@ -22,6 +26,59 @@ function istanbulDayRange(date = new Date()) {
   const endUTC = new Date(endLocal.getTime() - tzOffsetMs);
 
   return { startUTC, endUTC };
+}
+
+
+function timingSafeTokenEquals(token: string, expected: string | undefined) {
+  if (!expected) return false;
+
+  const tokenBuffer = Buffer.from(token);
+  const expectedBuffer = Buffer.from(expected);
+
+  if (tokenBuffer.length !== expectedBuffer.length) return false;
+  return timingSafeEqual(tokenBuffer, expectedBuffer);
+}
+
+function getBearerToken(req: Request) {
+  const authorization = req.headers.get("authorization");
+  if (!authorization) return null;
+
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  return match?.[1]?.trim() || null;
+}
+
+async function readJsonWithLimit(req: Request, maxBytes: number) {
+  if (!req.body) return null;
+
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let received = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!value) continue;
+
+      received += value.byteLength;
+      if (received > maxBytes) {
+        await reader.cancel();
+        return { tooLarge: true, body: null };
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const text = Buffer.concat(chunks).toString("utf8");
+  if (!text.trim()) return null;
+
+  try {
+    return { tooLarge: false, body: JSON.parse(text) };
+  } catch {
+    return null;
+  }
 }
 
 function noStore(json: any, init?: ResponseInit) {
@@ -119,22 +176,40 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  const token = getBearerToken(req);
+  if (!token) return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+  if (!timingSafeTokenEquals(token, process.env.ADMIN_API_TOKEN)) {
+    return noStore({ ok: false, error: "Forbidden" }, { status: 403 });
+  }
+
+  const parsed = await readJsonWithLimit(req, PATCH_BODY_LIMIT_BYTES);
+  if (!parsed) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  if (parsed.tooLarge) return noStore({ ok: false, error: "Request body too large" }, { status: 413 });
+
+  const body = parsed.body;
+  const id = body?.id;
+  if (typeof id !== "number" || !Number.isInteger(id) || id <= 0) {
+    return noStore({ ok: false, error: "Invalid id" }, { status: 400 });
+  }
+
+  const outcome = body?.outcome;
+  if (outcome !== "WIN" && outcome !== "LOSS" && outcome !== null) {
+    return noStore({ ok: false, error: "Invalid outcome" }, { status: 400 });
+  }
+
   const supa = supabaseServer();
-
-  const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
-
-  const id = Number(body.id);
-  const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
-  if (!id) return noStore({ ok: false, error: "Missing id" }, { status: 400 });
-
   const { data, error } = await supa
     .from("signals")
-    .update({ outcome })
+    .update({ outcome: outcome as Outcome })
     .eq("id", id)
-    .select("*")
+    .select(SIGNAL_SELECT_COLUMNS)
     .single();
 
-  if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
+  if (error) {
+    console.error("Signal outcome update failed", error);
+    return noStore({ ok: false, error: "Unable to update signal" }, { status: 500 });
+  }
+
   return noStore({ ok: true, data });
 }
