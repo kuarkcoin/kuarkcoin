@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { jsonNoStore, serverError } from "@/lib/server/responses";
 import { kv } from "@vercel/kv";
 import { computeTopMargins } from "@/lib/topMarginsCompute";
 
@@ -33,12 +33,16 @@ function mustAuth(req: Request) {
 export async function GET(req: Request) {
   try {
     if (!mustAuth(req)) {
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+      return jsonNoStore({ ok: false, error: "unauthorized" }, { status: 401 });
     }
 
     const finnhubToken = process.env.FINNHUB_API_KEY;
     if (!finnhubToken) {
-      return NextResponse.json({ ok: false, error: "Missing FINNHUB_API_KEY" }, { status: 500 });
+      return serverError(
+        "cron_config_missing",
+        { route: "cron/top-margins", missing: "FINNHUB_API_KEY" },
+        new Error("Finnhub API key is not configured")
+      );
     }
 
     const [bist, nasdaq] = await Promise.all([
@@ -51,9 +55,8 @@ export async function GET(req: Request) {
     await kv.set("top_margins:NASDAQ100", nasdaq);
     await kv.set("top_margins:lastRun", new Date().toISOString());
 
-    return NextResponse.json({ ok: true, saved: ["BIST100", "NASDAQ100"], at: new Date().toISOString() });
+    return jsonNoStore({ ok: true, saved: ["BIST100", "NASDAQ100"], at: new Date().toISOString() });
   } catch (e: any) {
-    console.error("cron top-margins error:", e?.message || e);
-    return NextResponse.json({ ok: false, error: "cron_failed" }, { status: 200 });
+    return serverError("cron_failed", { route: "cron/top-margins" }, e);
   }
 }

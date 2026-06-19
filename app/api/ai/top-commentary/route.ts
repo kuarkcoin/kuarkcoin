@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { jsonNoStore } from "@/lib/server/responses";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const runtime = "nodejs";
@@ -265,7 +265,7 @@ export async function POST(req: Request) {
 
     // veri tamamen boşsa
     if (buy2.length === 0 && sell2.length === 0) {
-      return NextResponse.json({
+      return jsonNoStore({
         ok: true,
         commentary:
           "1) BUY – Aday yok.\n" +
@@ -278,7 +278,7 @@ export async function POST(req: Request) {
 
     // API key yoksa bile düzgün 5 madde üret
     if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({
+      return jsonNoStore({
         ok: true,
         commentary: deterministicFallback(buy2, sell2),
       });
@@ -337,14 +337,14 @@ Her maddede aynı cümleyi tekrar etme.
     // ✅ AI düzgün 5 madde döndüyse al, değilse deterministik
     const forced = forceFiveBullets(raw);
 
-    return NextResponse.json({
+    return jsonNoStore({
       ok: true,
       commentary: forced ?? deterministicFallback(buy2, sell2),
     });
   } catch (e) {
-    console.error("AI commentary error:", e);
+    console.error("AI commentary error:", { route: "ai/top-commentary", error: e });
     // hata olursa bile terminal bozulmasın
-    return NextResponse.json({
+    return jsonNoStore({
       ok: true,
       commentary:
         "1) BUY – Analiz üretilemedi (sunucu hatası).\n" +
