@@ -1,12 +1,11 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import type { CreateSignalBody, PatchSignalBody, SignalOutcome } from "@/lib/apiTypes";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-type Outcome = "WIN" | "LOSS" | null;
 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
@@ -24,7 +23,7 @@ function istanbulDayRange(date = new Date()) {
   return { startUTC, endUTC };
 }
 
-function noStore(json: any, init?: ResponseInit) {
+function noStore(json: unknown, init?: ResponseInit) {
   return NextResponse.json(json, {
     ...init,
     headers: {
@@ -35,7 +34,7 @@ function noStore(json: any, init?: ResponseInit) {
 }
 
 // TradingView t bazen seconds bazen ms gelebilir
-function parseTvTime(t: any) {
+function parseTvTime(t: CreateSignalBody["t"]) {
   const n = Number(t);
   if (!Number.isFinite(n) || n <= 0) return new Date();
   // 1e12 ~ 2001-09-09 in ms. bunun altı büyük ihtimal seconds
@@ -90,7 +89,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const supa = supabaseServer();
 
-  const body = await req.json().catch(() => null);
+  const body = (await req.json().catch(() => null)) as CreateSignalBody | null;
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
   if (body.secret !== process.env.SCAN_SECRET) {
@@ -121,11 +120,11 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   const supa = supabaseServer();
 
-  const body = await req.json().catch(() => null);
+  const body = (await req.json().catch(() => null)) as PatchSignalBody | null;
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
   const id = Number(body.id);
-  const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
+  const outcome: SignalOutcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
   if (!id) return noStore({ ok: false, error: "Missing id" }, { status: 400 });
 
   const { data, error } = await supa

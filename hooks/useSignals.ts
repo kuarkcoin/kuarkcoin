@@ -2,17 +2,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { SignalRow } from "@/lib/apiTypes";
 
-export type SignalRow = {
-  id: number;
-  created_at: string;
-  symbol: string;
-  signal: string; // BUY/SELL
-  price: number | null;
-  score: number | null;
-  reasons: string | null;
-  outcome: "WIN" | "LOSS" | null;
-};
+export type { SignalRow } from "@/lib/apiTypes";
 
 type UseSignalsOpts = {
   pollMs?: number; // visible tab polling
@@ -97,7 +89,7 @@ export function useSignals(opts: UseSignalsOpts = {}) {
       setSignals(rows);
       setError(null);
     } catch (e) {
-      if ((e as any)?.name === "AbortError") return;
+      if (e instanceof DOMException && e.name === "AbortError") return;
       console.error("Signals yüklenemedi:", e);
       setError(getErrorMessage(e, "Sinyaller alınamadı"));
     } finally {
@@ -133,7 +125,7 @@ export function useSignals(opts: UseSignalsOpts = {}) {
       setServerTopSell((json.topSell ?? []) as SignalRow[]);
       setError(null);
     } catch (e) {
-      if ((e as any)?.name === "AbortError") return;
+      if (e instanceof DOMException && e.name === "AbortError") return;
       console.error("Günlük Top listesi alınamadı:", e);
       // server top bozulsa bile UI çalışsın diye error basmak opsiyonel:
       setError(getErrorMessage(e, "Top listesi alınamadı"));

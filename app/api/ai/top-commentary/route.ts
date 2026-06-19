@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import type { SignalRow, TopCommentaryBody } from "@/lib/apiTypes";
 
 export const runtime = "nodejs";
 
-type TopRow = {
-  symbol: string;
-  price?: number | null;
-  score?: number | null;
-  reasons?: string | null;
-};
+type TopRow = Pick<SignalRow, "symbol" | "price" | "score" | "reasons">;
 
 // ------------------ Helpers ------------------
 function cleanReasons(input?: string | null) {
@@ -256,9 +252,9 @@ function deterministicFallback(
 // ------------------ Route ------------------
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const topBuy: TopRow[] = Array.isArray(body?.topBuy) ? body.topBuy : [];
-    const topSell: TopRow[] = Array.isArray(body?.topSell) ? body.topSell : [];
+    const body = (await req.json().catch(() => ({}))) as TopCommentaryBody;
+    const topBuy: TopRow[] = Array.isArray(body.topBuy) ? body.topBuy : [];
+    const topSell: TopRow[] = Array.isArray(body.topSell) ? body.topSell : [];
 
     const buy2 = pickTop2(topBuy);
     const sell2 = pickTop2(topSell);

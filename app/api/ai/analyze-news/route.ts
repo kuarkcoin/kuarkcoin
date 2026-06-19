@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
+import type { AnalyzeNewsBody } from "@/lib/apiTypes";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -21,7 +22,7 @@ function extractJson(text: string) {
 
 export async function POST(req: Request) {
   try {
-    const { symbol, newsItems } = await req.json();
+    const { symbol, newsItems } = (await req.json().catch(() => ({}))) as AnalyzeNewsBody;
 
     if (!symbol) {
       return NextResponse.json({ ok: false, error: "symbol required" }, { status: 400 });
@@ -44,7 +45,7 @@ Görevlerin:
 4) Aşırı iddialı çıkarım yapma; belirsizlik varsa MEDIUM/LOW seç.
 
 Haberler:
-${newsItems.map((n: any, i: number) => `${i + 1}. ${n.headline}`).join("\n")}
+${newsItems.map((n, i) => `${i + 1}. ${n.headline}`).join("\n")}
 
 SADECE şu JSON'u döndür:
 {
@@ -58,7 +59,7 @@ SADECE şu JSON'u döndür:
     const text = result.response.text();
 
     const clean = extractJson(text);
-    const analysis = JSON.parse(clean);
+    const analysis = JSON.parse(clean) as { score?: unknown; impact?: unknown; explanation?: unknown };
 
     // küçük validasyon
     const score = Number(analysis?.score ?? 0);

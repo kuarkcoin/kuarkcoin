@@ -1,3 +1,11 @@
+import type {
+  FinnhubFinancialReport,
+  FinnhubFinancialsReportedItem,
+  FinnhubFinancialsReportedResponse,
+  FinnhubFinancialStatementItem,
+  FinnhubMetricResponse,
+} from "@/lib/apiTypes";
+
 export type TopMarginRow = {
   symbol: string;
   finnhubSymbol: string;
@@ -19,7 +27,7 @@ export type TopMarginsPayload = {
   topQuality: TopMarginRow[];
 };
 
-function num(x: any): number | null {
+function num(x: unknown): number | null {
   const n = Number(x);
   return Number.isFinite(n) ? n : null;
 }
@@ -39,7 +47,7 @@ function slope(xs: number[]) {
   if (xs.length < 2) return 0;
   return xs[xs.length - 1] - xs[0];
 }
-function normalizeKey(s: any) {
+function normalizeKey(s: unknown) {
   return String(s ?? "")
     .toLowerCase()
     .replace(/[\s\-_]+/g, "")
@@ -68,31 +76,31 @@ async function fetchWithTimeout(url: string, ms = 8000) {
   }
 }
 
-async function fetchFinnhubJson(url: string, attempt = 0): Promise<any> {
+async function fetchFinnhubJson<T>(url: string, attempt = 0): Promise<T> {
   const res = await fetchWithTimeout(url, 8000);
 
   if (res.status === 429 && attempt < 1) {
     const ra = Number(res.headers.get("retry-after") || "1");
     await sleep(Math.max(ra, 1) * 1000);
-    return fetchFinnhubJson(url, attempt + 1);
+    return fetchFinnhubJson<T>(url, attempt + 1);
   }
 
   if (!res.ok) throw new Error(`Finnhub ${res.status}`);
-  return res.json();
+  return (await res.json()) as T;
 }
 
-async function finnhubMetric(symbol: string, token: string) {
+async function finnhubMetric(symbol: string, token: string): Promise<FinnhubMetricResponse> {
   const url =
     `https://finnhub.io/api/v1/stock/metric?symbol=${encodeURIComponent(symbol)}` +
     `&metric=all&token=${encodeURIComponent(token)}`;
-  return fetchFinnhubJson(url);
+  return fetchFinnhubJson<FinnhubMetricResponse>(url);
 }
 
-async function finnhubFinancialsReportedQuarterly(symbol: string, token: string) {
+async function finnhubFinancialsReportedQuarterly(symbol: string, token: string): Promise<FinnhubFinancialsReportedResponse> {
   const url =
     `https://finnhub.io/api/v1/stock/financials-reported?symbol=${encodeURIComponent(symbol)}` +
     `&freq=quarterly&token=${encodeURIComponent(token)}`;
-  return fetchFinnhubJson(url);
+  return fetchFinnhubJson<FinnhubFinancialsReportedResponse>(url);
 }
 
 // concurrency limiter
@@ -110,7 +118,7 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (t: T) => Promise<R
 }
 
 // pickVal with TR+EN aliases
-function pickVal(items: any[], aliases: string[]): number | null {
+function pickVal(items: FinnhubFinancialStatementItem[], aliases: string[]): number | null {
   if (!Array.isArray(items) || items.length === 0) return null;
   const keys = aliases.map(normalizeKey);
 
@@ -137,8 +145,8 @@ function pickVal(items: any[], aliases: string[]): number | null {
   return null;
 }
 
-function extractIncomeStatementItems(q: any): any[] {
-  const report = q?.report ?? q?.reportContent ?? q ?? {};
+function extractIncomeStatementItems(q: FinnhubFinancialsReportedItem): FinnhubFinancialStatementItem[] {
+  const report = (q.report ?? q.reportContent ?? q ?? {}) as FinnhubFinancialReport;
   const candidates = [
     report?.ic,
     report?.incomeStatement,
@@ -159,7 +167,7 @@ function extractIncomeStatementItems(q: any): any[] {
   return [];
 }
 
-function computeMarginsFromQuarterly(fin: any): { grossSeries: number[]; netSeries: number[] } | null {
+function computeMarginsFromQuarterly(fin: FinnhubFinancialsReportedResponse): { grossSeries: number[]; netSeries: number[] } | null {
   const data = fin?.data;
   if (!Array.isArray(data) || data.length === 0) return null;
 

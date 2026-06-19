@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import type { NewsInputItem, TopCommentaryBody, TopSignalInput } from "@/lib/apiTypes";
 
-type TopRow = {
-  id: number;
-  symbol: string;
-  signal: string;
-  price?: number | null;
-  score?: number | null;
-  reasons?: string | null;
-  created_at?: string;
-};
+type TopRow = TopSignalInput;
 
-async function fetchNewsServer(symbol: string, reasons: string | null) {
+function isNewsInputItem(value: unknown): value is NewsInputItem {
+  return typeof value === "object" && value !== null && typeof (value as { headline?: unknown }).headline === "string";
+}
+
+async function fetchNewsServer(symbol: string, reasons: string | null): Promise<NewsInputItem[]> {
   // server içinde /api/news’e internal call (key zaten serverda)
   const reasonKeys = (reasons ?? "")
     .split(",")
@@ -23,11 +20,11 @@ async function fetchNewsServer(symbol: string, reasons: string | null) {
     `/api/news?symbol=${encodeURIComponent(symbol)}&max=6&reasons=${encodeURIComponent(reasonKeys)}`;
 
   const r = await fetch(url, { cache: "no-store" });
-  const j = await r.json().catch(() => ({}));
-  return j?.items ?? [];
+  const j = (await r.json().catch(() => ({}))) as { items?: unknown };
+  return Array.isArray(j.items) ? j.items.filter(isNewsInputItem) : [];
 }
 
-function clean(input: any, lim = 900) {
+function clean(input: unknown, lim = 900) {
   return String(input ?? "")
     .replace(/[\r\n\t]+/g, " ")
     .replace(/[{}[\]]/g, " ")
@@ -38,9 +35,9 @@ function clean(input: any, lim = 900) {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const topBuy: TopRow[] = body?.topBuy ?? [];
-    const topSell: TopRow[] = body?.topSell ?? [];
+    const body = (await req.json().catch(() => ({}))) as TopCommentaryBody;
+    const topBuy: TopRow[] = Array.isArray(body.topBuy) ? body.topBuy : [];
+    const topSell: TopRow[] = Array.isArray(body.topSell) ? body.topSell : [];
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     if (!apiKey) return NextResponse.json({ ok: false, error: "GEMINI_API_KEY missing" }, { status: 500 });
@@ -49,7 +46,7 @@ export async function POST(req: Request) {
     const rows = [...topBuy, ...topSell].slice(0, 10);
     const uniqueSymbols = Array.from(new Set(rows.map((r) => r.symbol)));
 
-    const newsBySymbol: Record<string, any[]> = {};
+    const newsBySymbol: Record<string, NewsInputItem[]> = {};
     for (const sym of uniqueSymbols) {
       const r = rows.find((x) => x.symbol === sym);
       newsBySymbol[sym] = await fetchNewsServer(sym, r?.reasons ?? null);
@@ -75,7 +72,7 @@ ${topSell.map((r) => `- ${r.symbol} score:${r.score} price:${r.price} reasons:${
 
 News:
 ${Object.entries(newsBySymbol).map(([sym, arr]) => {
-  const items = (arr ?? []).slice(0, 3).map((n: any) => `• ${clean(n.headline, 140)} (${clean(n.source, 30)})`).join("\n");
+  const items = (arr ?? []).slice(0, 3).map((n) => `• ${clean(n.headline, 140)} (${clean(n.source, 30)})`).join("\n");
   return `# ${sym}\n${items || "• (no news)"}`;
 }).join("\n\n")}
 `;
@@ -84,7 +81,8 @@ ${Object.entries(newsBySymbol).map(([sym, arr]) => {
     const text = out?.response?.text() ?? "";
 
     return NextResponse.json({ ok: true, commentary: text });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message ?? "digest failed" }, { status: 500 });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "digest failed";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }
