@@ -1,5 +1,5 @@
-# EnglishMeter Starter
-Ready-to-run Next.js 14 + Prisma + Tailwind project for a CEFR English test (A1→C2).
+# Kuarkcoin Starter
+Ready-to-run Next.js 14 + Tailwind project for Kuarkcoin market news, financial data, and signal tracking.
 
 ## Quick Start
 1. Install deps
@@ -7,18 +7,10 @@ Ready-to-run Next.js 14 + Prisma + Tailwind project for a CEFR English test (A1�
 npm install
 ```
 2. Create `.env` from `.env.example` and set `DATABASE_URL` (Supabase/Postgres).
-3. Generate Prisma client & create tables
-```
-npx prisma migrate dev
-```
-4. Seed questions/tests
-```
-npx ts-node scripts/seed.ts
-```
-5. Run
+3. Run
 ```
 npm run dev
 ```
 Open http://localhost:3000
 
-© 2025 EnglishMeter
+© 2025 Kuarkcoin
