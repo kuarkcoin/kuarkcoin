@@ -140,6 +140,10 @@ function fail(error: string, meta?: any) {
 }
 
 export async function GET(req: Request) {
+  if (process.env.MOCK_EXTERNAL_SERVICES === "1") {
+    return ok({ ok: true, mode: DEFAULT_MODE, items: [], meta: { mocked: true } });
+  }
+
   const { searchParams } = new URL(req.url);
   const mode = (searchParams.get("mode") as Mode) || DEFAULT_MODE;
 
