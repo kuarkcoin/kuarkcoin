@@ -1,28 +1,12 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { getSignals, getTodayTopSignals, parseTvTime, type Outcome } from "@/lib/server/signals";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-type Outcome = "WIN" | "LOSS" | null;
-
-function istanbulDayRange(date = new Date()) {
-  const tzOffsetMs = 3 * 60 * 60 * 1000;
-  const local = new Date(date.getTime() + tzOffsetMs);
-
-  const startLocal = new Date(local);
-  startLocal.setHours(0, 0, 0, 0);
-
-  const endLocal = new Date(startLocal);
-  endLocal.setDate(endLocal.getDate() + 1);
-
-  const startUTC = new Date(startLocal.getTime() - tzOffsetMs);
-  const endUTC = new Date(endLocal.getTime() - tzOffsetMs);
-
-  return { startUTC, endUTC };
-}
 
 function noStore(json: any, init?: ResponseInit) {
   return NextResponse.json(json, {
@@ -34,57 +18,22 @@ function noStore(json: any, init?: ResponseInit) {
   });
 }
 
-// TradingView t bazen seconds bazen ms gelebilir
-function parseTvTime(t: any) {
-  const n = Number(t);
-  if (!Number.isFinite(n) || n <= 0) return new Date();
-  // 1e12 ~ 2001-09-09 in ms. bunun altı büyük ihtimal seconds
-  return new Date(n < 1e12 ? n * 1000 : n);
-}
-
 export async function GET(req: Request) {
-  const supa = supabaseServer();
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
 
-  if (scope === "todayTop") {
-    const { startUTC, endUTC } = istanbulDayRange();
-
-    const base = () =>
-      supa
-        .from("signals")
-        .select("*")
-        .gte("created_at", startUTC.toISOString())
-        .lt("created_at", endUTC.toISOString())
-        .not("score", "is", null);
-
-    const { data: topBuy, error: e1 } = await base()
-      .eq("signal", "BUY")
-      .order("score", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(5);
-
-    const { data: topSell, error: e2 } = await base()
-      .eq("signal", "SELL")
-      .order("score", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(5);
-
-    if (e1 || e2) {
-      return noStore({ ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message }, { status: 500 });
+  try {
+    if (scope === "todayTop") {
+      const { topBuy, topSell } = await getTodayTopSignals(5);
+      return noStore({ ok: true, topBuy, topSell });
     }
 
-    return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
+    const data = await getSignals(500);
+    return noStore({ ok: true, data });
+  } catch (e: any) {
+    const empty = scope === "todayTop" ? { topBuy: [], topSell: [] } : { data: [] };
+    return noStore({ ok: false, ...empty, error: e?.message ?? "signals error" }, { status: 500 });
   }
-
-  const { data, error } = await supa
-    .from("signals")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
-
-  if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
-  return noStore({ ok: true, data: data ?? [] });
 }
 
 export async function POST(req: Request) {
@@ -115,6 +64,7 @@ export async function POST(req: Request) {
     .single();
 
   if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
+  revalidateTag("signals");
   return noStore({ ok: true, data });
 }
 
@@ -136,5 +86,6 @@ export async function PATCH(req: Request) {
     .single();
 
   if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
+  revalidateTag("signals");
   return noStore({ ok: true, data });
 }

@@ -1,87 +1,23 @@
 // app/page.tsx
-export const dynamic = "force-dynamic";
+export const revalidate = 120;
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { headers } from "next/headers";
 import TopBuyTrackingTable from "@/components/top-buy-tracking-table";
+import { getLatestSignals, type SignalRow } from "@/lib/server/signals";
+import { getKapImportant, type KapUIItem as KapRow } from "@/lib/server/kap";
+import { getNewsCombined, type CombinedNewsItem as NewsItem } from "@/lib/server/news";
+import { getTopMargins, type TopMarginsResp } from "@/lib/server/topMargins";
 
 // =====================
 // TYPES
 // =====================
-type SignalRow = {
-  id: number;
-  created_at: string;
-  symbol: string;
-  signal: string; // BUY | SELL
-  price: number | null;
-  score: number | null;
-  reasons: string | null;
-};
-
-// ✅ KAP route'un döndürdüğü format (items -> KapUIItem)
-type KapRow = {
-  title: string;
-  url: string;
-  source: string;
-  datetime: number; // unix sec
-  company?: string;
-  tags: string[];
-  stockCodes: string[];
-};
-
-type NewsItem = {
-  headline: string;
-  url: string;
-  source: string;
-  datetime: number; // unix sec
-  tickers: string[];
-  tags: string[];
-};
-
-type TopMarginRow = {
-  symbol: string;
-  finnhubSymbol?: string;
-  grossMargin?: number | null;
-  netMargin?: number | null;
-  period?: "TTM" | "FY" | "UNKNOWN";
-  grossSeries?: number[];
-  netSeries?: number[];
-  qualityScore?: number;
-  volatility?: number;
-};
-
-type TopMarginsResp = {
-  universe: string;
-  updatedAt?: string;
-  periodHint?: string;
-  topNet: TopMarginRow[];
-  topGross: TopMarginRow[];
-  topQuality: TopMarginRow[];
-};
-
 const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ300", "ETF"] as const;
 type Universe = (typeof ALLOWED_UNIVERSE)[number];
 
 // =====================
 // HELPERS
 // =====================
-function getApiBaseUrl() {
-  const h = headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const xfProto = h.get("x-forwarded-proto");
-  const proto = xfProto ?? (host.includes("localhost") ? "http" : "https");
-  return `${proto}://${host}`;
-}
-
-async function safeFetchJson(url: string) {
-  // DB yok: sayfada "her request fetch" yerine route'lar zaten revalidate veriyor.
-  // Burada no-store kalsın; asıl cache'yi route'larda veriyoruz.
-  const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
-  if (!res.ok) return null;
-  return res.json();
-}
-
 function symbolToPlain(sym: string) {
   return sym?.includes(":") ? sym.split(":")[1] : sym;
 }
@@ -180,75 +116,33 @@ function universeLabel(u: Universe) {
 }
 
 // =====================
-// DATA FETCHERS
-// =====================
-async function getLatestSignals(base: string): Promise<SignalRow[]> {
-  try {
-    const json = await safeFetchJson(`${base}/api/signals`);
-    const arr: SignalRow[] = (json?.data ?? []) as SignalRow[];
-    return Array.isArray(arr) ? arr.slice(0, 6) : [];
-  } catch (e) {
-    console.error("getLatestSignals error:", e);
-    return [];
-  }
-}
-
-async function getKapImportant(base: string): Promise<KapRow[]> {
-  try {
-    const json = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
-    const arr: KapRow[] = (json?.items ?? []) as KapRow[];
-    return Array.isArray(arr) ? arr.slice(0, 8) : [];
-  } catch (e) {
-    console.error("getKapImportant error:", e);
-    return [];
-  }
-}
-
-async function getTopMargins(base: string, universe: Universe): Promise<TopMarginsResp | null> {
-  // ETF’de marj sıralaması anlamsız → gizleyeceğiz
-  if (universe === "ETF") return null;
-
-  try {
-    // ✅ backend endpoint'in sadece BIST100/NASDAQ100 biliyorsa:
-    // NASDAQ300 seçiliyse backend'e NASDAQ100 diye gönderiyoruz (ya da backend'i NASDAQ300'e genişletirsin)
-    const backendUniverse = universe === "NASDAQ300" ? "NASDAQ100" : universe;
-
-    const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(backendUniverse)}&limit=10`;
-    const json = await safeFetchJson(url);
-    const data = (json?.data ?? null) as TopMarginsResp | null;
-    return data && typeof data === "object" ? data : null;
-  } catch (e) {
-    console.error("getTopMargins error:", e);
-    return null;
-  }
-}
-
-async function getNewsCombined(base: string, universe: Universe): Promise<NewsItem[]> {
-  try {
-    const json = await safeFetchJson(`${base}/api/news/combined?u=${encodeURIComponent(universe)}&limit=12`);
-    const arr: NewsItem[] = (json?.items ?? []) as NewsItem[];
-    return Array.isArray(arr) ? arr : [];
-  } catch (e) {
-    console.error("getNewsCombined error:", e);
-    return [];
-  }
-}
-
-// =====================
 // PAGE
 // =====================
 export default async function HomePage({ searchParams }: { searchParams?: { u?: string } }) {
   const u = String(searchParams?.u ?? "BIST100").toUpperCase();
   const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
 
-  const base = getApiBaseUrl();
-
-  const [latest, kap, top, news] = await Promise.all([
-    getLatestSignals(base),
-    getKapImportant(base),
-    getTopMargins(base, universe),
-    getNewsCombined(base, universe),
+  const [latest, kapResult, top, newsResult] = await Promise.all([
+    getLatestSignals(6).catch((e) => {
+      console.error("getLatestSignals error:", e);
+      return [] as SignalRow[];
+    }),
+    getKapImportant({ mode: "strict" }).catch((e) => {
+      console.error("getKapImportant error:", e);
+      return { items: [] as KapRow[] };
+    }),
+    (universe === "ETF" ? Promise.resolve(null) : getTopMargins(universe === "NASDAQ300" ? "NASDAQ100" : universe)).catch((e) => {
+      console.error("getTopMargins error:", e);
+      return null;
+    }),
+    getNewsCombined({ universe, limit: 12 }).catch((e) => {
+      console.error("getNewsCombined error:", e);
+      return { items: [] as NewsItem[] };
+    }),
   ]);
+
+  const kap = Array.isArray(kapResult.items) ? kapResult.items.slice(0, 8) : [];
+  const news = Array.isArray(newsResult.items) ? newsResult.items : [];
 
   const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
   const nowIso = new Date().toISOString();
