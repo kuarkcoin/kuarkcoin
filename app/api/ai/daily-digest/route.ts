@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { jsonNoStore, serverError } from "@/lib/server/responses";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type TopRow = {
@@ -43,7 +43,13 @@ export async function POST(req: Request) {
     const topSell: TopRow[] = body?.topSell ?? [];
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-    if (!apiKey) return NextResponse.json({ ok: false, error: "GEMINI_API_KEY missing" }, { status: 500 });
+    if (!apiKey) {
+      return serverError(
+        "ai_config_missing",
+        { route: "ai/daily-digest", missing: "GEMINI_API_KEY" },
+        new Error("Gemini API key is not configured")
+      );
+    }
 
     // unique symbol list
     const rows = [...topBuy, ...topSell].slice(0, 10);
@@ -83,8 +89,8 @@ ${Object.entries(newsBySymbol).map(([sym, arr]) => {
     const out = await model.generateContent(prompt);
     const text = out?.response?.text() ?? "";
 
-    return NextResponse.json({ ok: true, commentary: text });
+    return jsonNoStore({ ok: true, commentary: text });
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message ?? "digest failed" }, { status: 500 });
+    return serverError("digest_failed", { route: "ai/daily-digest" }, e);
   }
 }

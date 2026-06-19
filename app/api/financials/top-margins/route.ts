@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { jsonNoStore, serverError } from "@/lib/server/responses";
 import { kv } from "@vercel/kv";
 
 export const runtime = "nodejs";
@@ -51,7 +51,7 @@ export async function GET(req: Request) {
         topQuality: [],
         note: "KV empty. Run cron once.",
       };
-      return NextResponse.json({ data: empty });
+      return jsonNoStore({ data: empty });
     }
 
     const data: TopMarginsResp = {
@@ -64,22 +64,8 @@ export async function GET(req: Request) {
       note: raw.note,
     };
 
-    return NextResponse.json({ data });
+    return jsonNoStore({ data });
   } catch (e: any) {
-    console.error("public top-margins error:", e?.message || e);
-    return NextResponse.json(
-      {
-        data: {
-          universe: "UNKNOWN",
-          updatedAt: null,
-          periodHint: "UNKNOWN",
-          topNet: [],
-          topGross: [],
-          topQuality: [],
-          note: "route error",
-        },
-      },
-      { status: 500 }
-    );
+    return serverError("financials_fetch_failed", { route: "financials/top-margins" }, e);
   }
 }

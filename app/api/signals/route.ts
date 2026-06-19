@@ -1,5 +1,5 @@
 // app/api/signals/route.ts
-import { NextResponse } from "next/server";
+import { jsonNoStore, serverError } from "@/lib/server/responses";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const runtime = "nodejs";
@@ -22,16 +22,6 @@ function istanbulDayRange(date = new Date()) {
   const endUTC = new Date(endLocal.getTime() - tzOffsetMs);
 
   return { startUTC, endUTC };
-}
-
-function noStore(json: any, init?: ResponseInit) {
-  return NextResponse.json(json, {
-    ...init,
-    headers: {
-      ...(init?.headers ?? {}),
-      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-    },
-  });
 }
 
 // TradingView t bazen seconds bazen ms gelebilir
@@ -71,10 +61,10 @@ export async function GET(req: Request) {
       .limit(5);
 
     if (e1 || e2) {
-      return noStore({ ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message }, { status: 500 });
+      return serverError("signals_fetch_failed", { route: "signals", scope: "todayTop" }, e1 ?? e2);
     }
 
-    return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
+    return jsonNoStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
   }
 
   const { data, error } = await supa
@@ -83,18 +73,18 @@ export async function GET(req: Request) {
     .order("created_at", { ascending: false })
     .limit(500);
 
-  if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
-  return noStore({ ok: true, data: data ?? [] });
+  if (error) return serverError("signals_fetch_failed", { route: "signals", scope: "latest" }, error);
+  return jsonNoStore({ ok: true, data: data ?? [] });
 }
 
 export async function POST(req: Request) {
   const supa = supabaseServer();
 
   const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  if (!body) return jsonNoStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
   if (body.secret !== process.env.SCAN_SECRET) {
-    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
+    return jsonNoStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const symbol = String(body.symbol ?? "").trim();
@@ -105,7 +95,7 @@ export async function POST(req: Request) {
   const created_at = body.t ? parseTvTime(body.t) : new Date();
 
   if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
-    return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
+    return jsonNoStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
   }
 
   const { data, error } = await supa
@@ -114,19 +104,19 @@ export async function POST(req: Request) {
     .select("*")
     .single();
 
-  if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
-  return noStore({ ok: true, data });
+  if (error) return serverError("signals_insert_failed", { route: "signals", method: "POST", symbol, signal }, error);
+  return jsonNoStore({ ok: true, data });
 }
 
 export async function PATCH(req: Request) {
   const supa = supabaseServer();
 
   const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  if (!body) return jsonNoStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
   const id = Number(body.id);
   const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
-  if (!id) return noStore({ ok: false, error: "Missing id" }, { status: 400 });
+  if (!id) return jsonNoStore({ ok: false, error: "Missing id" }, { status: 400 });
 
   const { data, error } = await supa
     .from("signals")
@@ -135,6 +125,6 @@ export async function PATCH(req: Request) {
     .select("*")
     .single();
 
-  if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
-  return noStore({ ok: true, data });
+  if (error) return serverError("signals_update_failed", { route: "signals", method: "PATCH", id, outcome }, error);
+  return jsonNoStore({ ok: true, data });
 }

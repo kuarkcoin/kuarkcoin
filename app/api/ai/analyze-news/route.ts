@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
+import { jsonNoStore, serverError } from "@/lib/server/responses";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -24,11 +24,11 @@ export async function POST(req: Request) {
     const { symbol, newsItems } = await req.json();
 
     if (!symbol) {
-      return NextResponse.json({ ok: false, error: "symbol required" }, { status: 400 });
+      return jsonNoStore({ ok: false, error: "symbol required" }, { status: 400 });
     }
 
     if (!newsItems || !Array.isArray(newsItems) || newsItems.length === 0) {
-      return NextResponse.json({ ok: true, score: 0, explanation: "Haber bulunamadı.", impact: "LOW" });
+      return jsonNoStore({ ok: true, score: 0, explanation: "Haber bulunamadı.", impact: "LOW" });
     }
 
     const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
@@ -65,7 +65,7 @@ SADECE şu JSON'u döndür:
     const impact = String(analysis?.impact ?? "LOW").toUpperCase();
     const explanation = String(analysis?.explanation ?? "").slice(0, 200);
 
-    return NextResponse.json({
+    return jsonNoStore({
       ok: true,
       score: isFinite(score) ? score : 0,
       impact: impact === "HIGH" || impact === "MEDIUM" || impact === "LOW" ? impact : "LOW",
@@ -73,7 +73,6 @@ SADECE şu JSON'u döndür:
       model: modelName,
     });
   } catch (error) {
-    console.error("AI News Error:", error);
-    return NextResponse.json({ ok: false, error: "Analiz başarısız." }, { status: 500 });
+    return serverError("news_analysis_failed", { route: "ai/analyze-news" }, error);
   }
 }
