@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
+import { BIST100, NASDAQ100 } from "@/constants/universe";
 import { computeTopMargins } from "@/lib/topMarginsCompute";
 
 export const runtime = "nodejs";
@@ -7,22 +8,6 @@ export const revalidate = 0;
 export const dynamic = "force-dynamic";
 // (plan izin veriyorsa) uzun hesapta faydalı
 export const maxDuration = 30;
-
-// LISTS (istersen bunları src/constants/universe.ts'e taşıyıp import et)
-const BIST100 = [
-  "AKBNK","ALARK","ARCLK","ASELS","BIMAS","BRYAT","CIMSA","DOAS","EKGYO",
-  "ENJSA","EREGL","FROTO","GARAN","GUBRF","HALKB","HEKTS","ISCTR","KCHOL",
-  "KOZAA","KOZAL","KRDMD","MGROS","PETKM","SAHOL","SISE","TCELL","THYAO",
-  "TOASO","TTKOM","TUPRS","YKBNK",
-  // ... 100'ü tamamla
-];
-
-const NASDAQ100 = [
-  "AAPL","MSFT","NVDA","AMZN","META","GOOG","GOOGL","TSLA","NFLX","ADBE",
-  "AMD","INTU","PEP","QCOM","AMGN","ADI","CSCO","TMUS","REGN","VRTX",
-  "SNPS","CDNS","PANW","CRWD","MU","LRCX","KLAC","ASML","AVGO","TXN",
-  // ... 100'ü tamamla
-];
 
 function mustAuth(req: Request) {
   const { searchParams } = new URL(req.url);
