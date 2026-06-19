@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
-import { computeTopMargins } from "@/lib/topMarginsCompute";
+import { safeCompareSecret } from "@/lib/safeCompareSecret";
+import { computeTopMargins, type TopMarginsPayload } from "@/lib/topMarginsCompute";
 
 export const runtime = "nodejs";
 export const revalidate = 0;
@@ -24,10 +25,30 @@ const NASDAQ100 = [
   // ... 100'ü tamamla
 ];
 
+type UniverseJob = {
+  universe: TopMarginsPayload["universe"];
+  symbols: string[];
+  kvKey: string;
+};
+
+const UNIVERSE_JOBS: UniverseJob[] = [
+  { universe: "BIST100", symbols: BIST100, kvKey: "top_margins:BIST100" },
+  { universe: "NASDAQ100", symbols: NASDAQ100, kvKey: "top_margins:NASDAQ100" },
+];
+
+function getBearerToken(req: Request) {
+  const authorization = req.headers.get("authorization") ?? "";
+  const [scheme, token] = authorization.split(" ");
+
+  if (scheme !== "Bearer" || !token || authorization.split(" ").length !== 2) {
+    return "";
+  }
+
+  return token;
+}
+
 function mustAuth(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const token = searchParams.get("token") || "";
-  return token && token === process.env.CRON_SECRET;
+  return safeCompareSecret(getBearerToken(req), process.env.CRON_SECRET);
 }
 
 export async function GET(req: Request) {
@@ -41,19 +62,50 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing FINNHUB_API_KEY" }, { status: 500 });
     }
 
-    const [bist, nasdaq] = await Promise.all([
-      computeTopMargins({ universe: "BIST100", symbols: BIST100, limit: 10, finnhubToken }),
-      computeTopMargins({ universe: "NASDAQ100", symbols: NASDAQ100, limit: 10, finnhubToken }),
-    ]);
+    const results = await Promise.allSettled(
+      UNIVERSE_JOBS.map(async (job) => {
+        const payload = await computeTopMargins({
+          universe: job.universe,
+          symbols: job.symbols,
+          limit: 10,
+          finnhubToken,
+        });
 
-    // KV write
-    await kv.set("top_margins:BIST100", bist);
-    await kv.set("top_margins:NASDAQ100", nasdaq);
-    await kv.set("top_margins:lastRun", new Date().toISOString());
+        await kv.set(job.kvKey, payload);
+        return job.universe;
+      }),
+    );
 
-    return NextResponse.json({ ok: true, saved: ["BIST100", "NASDAQ100"], at: new Date().toISOString() });
-  } catch (e: any) {
-    console.error("cron top-margins error:", e?.message || e);
-    return NextResponse.json({ ok: false, error: "cron_failed" }, { status: 200 });
+    const saved: TopMarginsPayload["universe"][] = [];
+    const failed: TopMarginsPayload["universe"][] = [];
+
+    results.forEach((result, index) => {
+      const universe = UNIVERSE_JOBS[index].universe;
+
+      if (result.status === "fulfilled") {
+        saved.push(result.value);
+        return;
+      }
+
+      failed.push(universe);
+      const message = result.reason instanceof Error ? result.reason.message : "unknown_error";
+      console.error("cron top-margins universe failed", { universe, message });
+    });
+
+    if (saved.length > 0) {
+      await kv.set("top_margins:lastRun", new Date().toISOString());
+    }
+
+    const at = new Date().toISOString();
+
+    if (failed.length > 0) {
+      return NextResponse.json({ ok: false, error: "cron_failed", saved, failed, at }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true, saved, at });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "unknown_error";
+    console.error("cron top-margins error", { message });
+    return NextResponse.json({ ok: false, error: "cron_failed" }, { status: 500 });
   }
 }

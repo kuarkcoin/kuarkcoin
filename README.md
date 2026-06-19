@@ -21,4 +21,16 @@ npm run dev
 ```
 Open http://localhost:3000
 
+## Vercel Cron
+
+The top margins cron is configured in `vercel.json` to call `/api/cron/top-margins` without putting the secret in the URL. Keep `CRON_SECRET` and `FINNHUB_API_KEY` configured as Vercel environment variables.
+
+Vercel Cron sends an `Authorization` header automatically when `CRON_SECRET` is present in the project environment. The cron route accepts only this header format:
+
+```
+Authorization: Bearer <CRON_SECRET>
+```
+
+Do not add `CRON_SECRET` as a query string or log it. For local/manual testing, call the endpoint with the same header-based bearer token pattern.
+
 © 2025 EnglishMeter
