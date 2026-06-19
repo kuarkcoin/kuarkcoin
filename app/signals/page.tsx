@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { headers } from "next/headers";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 type SearchParams = {
   asset?: string;
@@ -39,28 +39,20 @@ const SIGNAL_FILTERS = [
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function getApiBaseUrl() {
-  const h = headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const xfProto = h.get("x-forwarded-proto");
-  const proto = xfProto ?? (host.includes("localhost") ? "http" : "https");
-  return `${proto}://${host}`;
-}
-
 async function getRecentSignals(): Promise<{ rows: SignalRow[]; error: string | null }> {
   try {
-    const res = await fetch(`${getApiBaseUrl()}/api/signals`, {
-      cache: "no-store",
-      next: { revalidate: 0 },
-    });
+    const supa = supabaseServer();
+    const { data, error } = await supa
+      .from("signals")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(500);
 
-    if (!res.ok) {
-      return { rows: [], error: `Signals request failed (${res.status})` };
+    if (error) {
+      return { rows: [], error: error.message };
     }
 
-    const json = await res.json();
-    const rows = Array.isArray(json?.data) ? (json.data as SignalRow[]) : [];
-    return { rows, error: null };
+    return { rows: (data ?? []) as SignalRow[], error: null };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to load signals.";
     return { rows: [], error: message };
