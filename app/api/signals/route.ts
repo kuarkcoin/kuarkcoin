@@ -8,6 +8,20 @@ export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
 
+const SIGNAL_COLUMNS = "id, created_at, symbol, signal, price, score, reasons, outcome";
+const DEFAULT_SIGNALS_LIMIT = 100;
+const MAX_SIGNALS_LIMIT = 500;
+
+function parseLimit(value: string | null) {
+  const limit = Number(value);
+  if (!Number.isInteger(limit) || limit <= 0) return DEFAULT_SIGNALS_LIMIT;
+  return Math.min(limit, MAX_SIGNALS_LIMIT);
+}
+
+function isIsoTimestamp(value: string) {
+  return !Number.isNaN(Date.parse(value));
+}
+
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
   const local = new Date(date.getTime() + tzOffsetMs);
@@ -53,7 +67,7 @@ export async function GET(req: Request) {
     const base = () =>
       supa
         .from("signals")
-        .select("*")
+        .select(SIGNAL_COLUMNS)
         .gte("created_at", startUTC.toISOString())
         .lt("created_at", endUTC.toISOString())
         .not("score", "is", null);
@@ -71,19 +85,40 @@ export async function GET(req: Request) {
       .limit(5);
 
     if (e1 || e2) {
-      return noStore({ ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message }, { status: 500 });
+      console.error("signals:get failed", { error: e1 ?? e2 });
+      return noStore({ ok: false, data: [], error: "signals_fetch_failed" }, { status: 500 });
     }
 
     return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
   }
 
-  const { data, error } = await supa
-    .from("signals")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const limit = parseLimit(searchParams.get("limit"));
+  const cursor = searchParams.get("cursor")?.trim();
 
-  if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
+  let query = supa
+    .from("signals")
+    .select(SIGNAL_COLUMNS)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(limit);
+
+  if (cursor) {
+    if (isIsoTimestamp(cursor)) {
+      query = query.lt("created_at", cursor);
+    } else {
+      const cursorId = Number(cursor);
+      if (Number.isInteger(cursorId) && cursorId > 0) {
+        query = query.lt("id", cursorId);
+      }
+    }
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("signals:get failed", { error });
+    return noStore({ ok: false, data: [], error: "signals_fetch_failed" }, { status: 500 });
+  }
   return noStore({ ok: true, data: data ?? [] });
 }
 
