@@ -1,6 +1,8 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { safeCompareSecret } from "@/lib/server/security";
+import { parseSignalJson, SIGNALS_BODY_LIMIT_BYTES } from "@/lib/server/signalsValidation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +34,25 @@ function noStore(json: any, init?: ResponseInit) {
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
     },
   });
+}
+
+function buildDedupeKey({
+  symbol,
+  signal,
+  created_at,
+  price,
+  score,
+}: {
+  symbol: string;
+  signal: "BUY" | "SELL";
+  created_at: Date;
+  price: number | null;
+  score: number | null;
+}) {
+  const createdAtMinute = new Date(created_at);
+  createdAtMinute.setUTCSeconds(0, 0);
+
+  return [symbol, signal, createdAtMinute.toISOString(), price ?? "null", score ?? "null"].join("|");
 }
 
 // TradingView t bazen seconds bazen ms gelebilir
@@ -90,31 +111,43 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const supa = supabaseServer();
 
-  const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  const rawBody = await req.text();
+  if (Buffer.byteLength(rawBody, "utf8") > SIGNALS_BODY_LIMIT_BYTES) {
+    return noStore({ ok: false, error: "Payload too large" }, { status: 413 });
+  }
 
-  if (body.secret !== process.env.SCAN_SECRET) {
+  const parsed = parseSignalJson(rawBody);
+  if ("error" in parsed) return noStore({ ok: false, error: parsed.error }, { status: 400 });
+
+  if (!safeCompareSecret(parsed.data.secret, process.env.SCAN_SECRET)) {
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const symbol = String(body.symbol ?? "").trim();
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
-  const reasons = body.reasons == null ? null : String(body.reasons);
-  const created_at = body.t ? parseTvTime(body.t) : new Date();
-
-  if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
-    return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
-  }
+  const { symbol, signal, price, score, reasons, t } = parsed.data;
+  const created_at = t ? parseTvTime(t) : new Date();
+  const dedupe_key = buildDedupeKey({ symbol, signal, created_at, price, score });
 
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([{ symbol, signal, price, score, reasons, created_at, dedupe_key }])
     .select("*")
     .single();
 
-  if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
+  if (error) {
+    if (error.code === "23505") {
+      return noStore({ ok: true, duplicate: true });
+    }
+
+    console.error("Signal insert failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      dedupe_key,
+    });
+    return noStore({ ok: false, error: "Signal insert failed" }, { status: 500 });
+  }
+
   return noStore({ ok: true, data });
 }
 
