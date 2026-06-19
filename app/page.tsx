@@ -77,7 +77,7 @@ function getApiBaseUrl() {
 async function safeFetchJson(url: string) {
   // DB yok: sayfada "her request fetch" yerine route'lar zaten revalidate veriyor.
   // Burada no-store kalsın; asıl cache'yi route'larda veriyoruz.
-  const res = await fetch(url, { cache: "no-store", next: { revalidate: 0 } });
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return null;
   return res.json();
 }
@@ -240,523 +240,83 @@ async function getNewsCombined(base: string, universe: Universe): Promise<NewsIt
 export default async function HomePage({ searchParams }: { searchParams?: { u?: string } }) {
   const u = String(searchParams?.u ?? "BIST100").toUpperCase();
   const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
-
   const base = getApiBaseUrl();
-
-  const [latest, kap, top, news] = await Promise.all([
-    getLatestSignals(base),
-    getKapImportant(base),
-    getTopMargins(base, universe),
-    getNewsCombined(base, universe),
-  ]);
-
-  const defaultSym = latest?.[0]?.symbol ? symbolToPlain(latest[0].symbol) : "BIMAS";
+  const [latest, kap, top, news] = await Promise.all([getLatestSignals(base), getKapImportant(base), getTopMargins(base, universe), getNewsCombined(base, universe)]);
   const nowIso = new Date().toISOString();
+  const buyCount = latest.filter((s) => String(s.signal).toUpperCase() === "BUY").length;
+  const sellCount = latest.filter((s) => String(s.signal).toUpperCase() === "SELL").length;
+  const total = latest.length;
+  const bullRate = total ? Math.round((buyCount / total) * 100) : null;
+  const strongest = [...latest].sort((a,b)=>Number(b.score ?? 0)-Number(a.score ?? 0))[0];
+
+  const { Activity, ArrowUpRight, BarChart3, Clock3, ExternalLink, Newspaper, RefreshCw, ShieldCheck, TrendingDown, TrendingUp } = await import("lucide-react");
+  const { default: AppShell } = await import("@/components/layout/AppShell");
+  const { Badge, Card, EmptyState, LinkButton, SectionHeader, SegmentedControl } = await import("@/components/ui");
+
+  const signalCards = latest.slice(0, 6);
+  const marginRows = top?.topQuality?.slice(0, 8) ?? [];
 
   return (
-    <main className="min-h-screen bg-[#0d1117] text-white">
-      {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b border-gray-800 bg-[#0d1117]/80 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/40" />
-            <span className="font-black tracking-tight italic text-blue-500">KUARK</span>
-            <span className="text-xs text-gray-500">Market Terminal</span>
+    <AppShell>
+      <div className="space-y-6 p-4 md:p-6">
+        <section className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <div className="section-label mb-2">{universeLabel(universe)} • Son güncelleme {formatDateTR(nowIso)}</div>
+            <h1 className="text-2xl font-black tracking-tight md:text-3xl">Piyasa Genel Bakış</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-400">Seçili piyasa evrenindeki son sinyaller, haberler, KAP akışı ve finansal kalite sıralamaları.</p>
           </div>
-
-          <nav className="flex items-center gap-2">
-            <Link
-              href="/terminal"
-              className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 hover:bg-gray-900 transition-colors"
-            >
-              Terminal
-            </Link>
-            <a
-              href="#how"
-              className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 hover:bg-gray-900 transition-colors"
-            >
-              Nasıl Çalışır?
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pt-14 pb-10">
-        <div className="rounded-3xl border border-gray-800 bg-gradient-to-br from-[#111827] via-[#0d1117] to-black p-8 md:p-12 shadow-2xl">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-wrap gap-2">
-              <Badge>Live Alerts</Badge>
-              <Badge>BUY / SELL Score</Badge>
-              <Badge>NASDAQ • ETF • CRYPTO</Badge>
-              <Badge>Custom Chart</Badge>
-              <Badge>KAP • BIST100</Badge>
-              <Badge>News Catcher</Badge>
-              <Badge>Top Margins</Badge>
-            </div>
-
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight">
-              Canlı Sinyal Terminali: <span className="text-blue-500">KUARK</span>
-            </h1>
-
-            <p className="text-gray-300 max-w-2xl leading-relaxed">
-              Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir: skor, nedenler, Win/Loss takibi ve
-              grafikte işaretleme. Ek olarak ana sayfada BIST100 için yükseltici KAP bildirimlerini etiketleyip özetler.
-              Yeni: Haber yakalayıcı (BIST100 / NASDAQ300 / ETF) + marj sıralamaları.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/terminal"
-                className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors font-bold"
-              >
-                Terminale Git →
-              </Link>
-
-              <Link
-                href="/terminal"
-                className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-700 hover:bg-gray-900 transition-colors font-semibold text-gray-200"
-              >
-                Son sinyalleri gör
-              </Link>
-
-              <Link
-                href={`/bilanco?symbol=${encodeURIComponent(defaultSym)}`}
-                className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-gray-700 hover:bg-gray-900 transition-colors font-semibold text-gray-200"
-              >
-                Bilanço →
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4">
-              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="text-sm font-bold">⚡ Canlı Akış</div>
-                <div className="text-xs text-gray-500 mt-1">API’dan son sinyaller çekilir, terminalde otomatik yenilenir.</div>
-              </div>
-              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="text-sm font-bold">🧠 Skor + Neden</div>
-                <div className="text-xs text-gray-500 mt-1">“Golden Cross, VWAP, RSI Divergence…” gibi nedenler rozetlenir.</div>
-              </div>
-              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="text-sm font-bold">🗞️ Haber Yakala</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Haber metninden / related alanından tickers yakalanır: <span className="text-gray-300">{universeLabel(universe)}</span>
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <SegmentedControl value={universe} options={[{label:"BIST100",value:"BIST100",href:"/?u=BIST100"},{label:"NASDAQ100",value:"NASDAQ300",href:"/?u=NASDAQ300"},{label:"ETF",value:"ETF",href:"/?u=ETF"}]} />
+            <LinkButton href={`/?u=${universe}`}><RefreshCw className="size-4"/>Yenile</LinkButton>
+            <LinkButton href="/terminal" variant="primary"><BarChart3 className="size-4"/>Terminali Aç</LinkButton>
           </div>
-        </div>
-      </section>
-
-      {/* Universe switch */}
-      <section className="mx-auto max-w-6xl px-4 pb-6">
-        <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 flex items-center justify-between">
-          <div className="text-sm font-black">🌍 Universe</div>
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/?u=BIST100`}
-              className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "BIST100"
-                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
-                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
-              }`}
-            >
-              BIST100
-            </Link>
-            <Link
-              href={`/?u=NASDAQ300`}
-              className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "NASDAQ300"
-                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
-                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
-              }`}
-            >
-              NASDAQ300
-            </Link>
-            <Link
-              href={`/?u=ETF`}
-              className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "ETF"
-                  ? "border-blue-600 bg-blue-950/30 text-blue-200"
-                  : "border-gray-700 hover:bg-gray-900 text-gray-200"
-              }`}
-            >
-              ETF
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Top Buy Tracking */}
-      <TopBuyTrackingTable latestSignals={latest} nowIso={nowIso} />
-
-      {/* News feed */}
-      <section className="mx-auto max-w-6xl px-4 pb-12">
-        <div className="flex items-end justify-between mb-4">
-          <h2 className="text-lg font-black">🔥 Haber Akışı</h2>
-          <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
-        </div>
-
-        {news.length === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Haber yok (veya <code className="text-gray-300">/api/news/combined</code> erişilemiyor).
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {news.map((n, i) => {
-              const dateIso = n.datetime ? new Date(n.datetime * 1000).toISOString() : "";
-              const tick = (n.tickers || []).slice(0, 5);
-              const tags = (n.tags || []).slice(0, 3);
-
-              return (
-                <a key={`${n.url}-${i}`} href={n.url} target="_blank" rel="noreferrer" className="block">
-                  <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
-                    <div className="text-xs text-gray-500">
-                      {n.source} • {dateIso ? formatDateTR(dateIso) : "—"}
-                    </div>
-
-                    <div className="mt-1 font-black text-sm">{n.headline}</div>
-
-                    {tick.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {tick.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                          >
-                            {cleanTickerLabel(t)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    {tags.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                          >
-                            {tagLabel(t)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    <div className="mt-3 text-xs text-blue-400">Haberi aç →</div>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* High margin ranking (hidden for ETF) */}
-      {universe !== "ETF" ? (
-        <section className="mx-auto max-w-6xl px-4 pb-12">
-          <div className="flex items-end justify-between mb-4">
-            <h2 className="text-lg font-black">💰 Yüksek Kâr Oranı</h2>
-
-            <div className="text-xs text-gray-500">
-              Universe: <span className="text-gray-200 font-semibold">{universeLabel(universe)}</span>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 mb-3">
-            <div className="text-sm font-bold">“Yüksek kâr oranı” ne demek?</div>
-            <div className="text-xs text-gray-400 mt-1 leading-relaxed">
-              • <b>Brüt Kâr Marjı</b>: satış kârlılığı. <br />
-              • <b>Net Kâr Marjı</b>: tüm giderler + finansman + vergi sonrası gerçek kârlılık.{" "}
-              <span className="text-gray-500">(Aşırı yüksek net marj bazen tek seferlik gelirlerden şişebilir.)</span>
-            </div>
-            <div className="mt-2 text-[11px] text-gray-500">
-              Son güncelleme: {top?.updatedAt ? formatDateTR(top.updatedAt) : "—"} • Periyot: {top?.periodHint ?? "—"}
-            </div>
-          </div>
-
-          {!top || (top.topNet?.length ?? 0) === 0 ? (
-            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-              Marj sıralaması boş (veya <code className="text-gray-300">/api/financials/top-margins</code> erişilemiyor).
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {/* Net */}
-              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="font-black text-sm">🏆 Net Kâr Marjı</div>
-                <div className="mt-3 space-y-2">
-                  {top.topNet.map((r, i) => (
-                    <Link
-                      key={`net-${r.symbol}`}
-                      href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
-                      className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-xs text-gray-500">
-                          {i + 1}. {r.symbol}
-                        </div>
-                        <div className="text-sm font-black text-green-300">{fmtPct(r.netMargin)}</div>
-                      </div>
-                      <div className="text-gray-400">
-                        <Sparkline values={r.netSeries ?? []} />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Gross */}
-              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="font-black text-sm">🏆 Brüt Kâr Marjı</div>
-                <div className="mt-3 space-y-2">
-                  {top.topGross.map((r, i) => (
-                    <Link
-                      key={`gross-${r.symbol}`}
-                      href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
-                      className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-xs text-gray-500">
-                          {i + 1}. {r.symbol}
-                        </div>
-                        <div className="text-sm font-black text-blue-300">{fmtPct(r.grossMargin)}</div>
-                      </div>
-                      <div className="text-gray-400">
-                        <Sparkline values={r.grossSeries ?? []} />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quality */}
-              <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
-                <div className="font-black text-sm">💎 Kaliteli Kâr</div>
-                <div className="text-[11px] text-gray-500 mt-1">Stabil + trend bonus (dalgalanma cezası ile)</div>
-                <div className="mt-3 space-y-2">
-                  {top.topQuality.map((r, i) => (
-                    <Link
-                      key={`q-${r.symbol}`}
-                      href={`/bilanco?symbol=${encodeURIComponent(r.symbol)}`}
-                      className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#0d1117] px-3 py-2 hover:bg-[#0f1620] transition-colors"
-                    >
-                      <div className="min-w-0">
-                        <div className="text-xs text-gray-500">
-                          {i + 1}. {r.symbol}
-                        </div>
-                        <div className="text-xs text-gray-300">
-                          Net: <span className="font-bold text-green-300">{fmtPct(r.netMargin)}</span> • Brüt:{" "}
-                          <span className="font-bold text-blue-300">{fmtPct(r.grossMargin)}</span>
-                        </div>
-                        <div className="text-[11px] text-gray-500">
-                          Skor: <span className="text-gray-200 font-semibold">{r.qualityScore ?? "—"}</span>
-                          {r.volatility != null ? ` • Vol: ${Number(r.volatility).toFixed(2)}` : ""}
-                        </div>
-                      </div>
-                      <div className="text-gray-400">
-                        <Sparkline values={(r.netSeries?.length ? r.netSeries : r.grossSeries) ?? []} />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </section>
-      ) : null}
 
-      {/* KAP Important (only meaningful for BIST100) */}
-      {universe === "BIST100" ? (
-        <section className="mx-auto max-w-6xl px-4 pb-12">
-          <div className="flex items-end justify-between mb-4">
-            <h2 className="text-lg font-black">KAP • BIST100 Önemli</h2>
-            <span className="text-xs text-gray-500">Son kontrol: {formatDateTR(nowIso)}</span>
-          </div>
-
-          {kap.length === 0 ? (
-            <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-              Şu an yükseltici KAP haberi yok (veya <code className="text-gray-300">/api/kap/bist100-important</code>{" "}
-              erişilemiyor).
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {kap.map((k, i) => {
-                const href = k.url ? String(k.url) : null;
-
-                const dateIso = k.datetime ? new Date(k.datetime * 1000).toISOString() : "";
-                const codes = Array.isArray(k.stockCodes) ? k.stockCodes : [];
-                const tags = Array.isArray(k.tags) ? k.tags.slice(0, 3) : [];
-
-                const Card = (
-                  <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors">
-                    <div className="text-xs text-gray-500">
-                      {(codes.length ? codes.join(", ") : "—")} • {dateIso ? formatDateTR(dateIso) : "—"}
-                    </div>
-
-                    <div className="mt-1 font-black text-sm">{k.title ?? "KAP Bildirimi"}</div>
-
-                    {tags.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                          >
-                            {tagLabel(t)}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    {href ? <div className="mt-3 text-xs text-blue-400">KAP’ta aç →</div> : null}
-                  </div>
-                );
-
-                if (!href) return <div key={`kap-${i}`}>{Card}</div>;
-
-                return (
-                  <a key={`kap-${i}`} href={href} target="_blank" rel="noreferrer" className="block">
-                    {Card}
-                  </a>
-                );
-              })}
-            </div>
-          )}
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+          <Metric icon={<TrendingUp className="size-4"/>} label="Aktif BUY" value={String(buyCount)} tone="buy" />
+          <Metric icon={<TrendingDown className="size-4"/>} label="Aktif SELL" value={String(sellCount)} tone="sell" />
+          <Metric icon={<Activity className="size-4"/>} label="Boğa Oranı" value={bullRate == null ? "—" : `%${bullRate}`} />
+          <Metric icon={<ShieldCheck className="size-4"/>} label="En Güçlü Sinyal" value={strongest ? symbolToPlain(strongest.symbol) : "—"} detail={strongest?.score != null ? `Skor ${strongest.score}` : undefined} />
+          <Metric icon={<BarChart3 className="size-4"/>} label="Manuel Win Rate" value="—" detail="Terminal kayıtlarından" />
+          <Metric icon={<Clock3 className="size-4"/>} label="Son Tarama" value={formatDateTR(nowIso).split(" ").slice(-1)[0] ?? "—"} />
         </section>
-      ) : null}
 
-      {/* Latest signals */}
-      <section className="mx-auto max-w-6xl px-4 pb-14">
-        <div className="flex items-end justify-between mb-4">
-          <h2 className="text-lg font-black">Son Sinyaller</h2>
-          <Link href="/terminal" className="text-sm text-blue-400 hover:text-blue-300">
-            Tümünü Terminalde aç →
-          </Link>
-        </div>
+        <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="space-y-6">
+            <Card className="p-4" id="sinyaller">
+              <SectionHeader title="Sinyal Görünümü" eyebrow="Canlı veri" action={<LinkButton href="/signals" variant="ghost">Tümünü Gör<ArrowUpRight className="size-4"/></LinkButton>} />
+              {signalCards.length === 0 ? <div className="mt-4"><EmptyState title="Henüz sinyal bulunmuyor." description="Veri geldiğinde bu alan otomatik dolacaktır." /></div> :
+                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{signalCards.map(r => <SignalPreview key={r.id} row={r} />)}</div>}
+            </Card>
 
-        {latest.length === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-6 text-gray-400 text-sm">
-            Henüz sinyal yok (veya <code className="text-gray-300">/api/signals</code> erişilemiyor).
-            <div className="mt-2 text-xs text-gray-600">Son kontrol: {formatDateTR(nowIso)}</div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {latest.map((r) => {
-              const sig = String(r.signal || "").toUpperCase();
-              const isBuy = sig === "BUY";
-              const isSell = sig === "SELL";
-              const plain = symbolToPlain(r.symbol);
-              const reasons = parseReasons(r.reasons);
-              const scoreNum = typeof r.score === "number" ? r.score : null;
-
-              const scoreClass =
-                scoreNum !== null && scoreNum >= 80
-                  ? "text-green-400"
-                  : scoreNum !== null && scoreNum >= 60
-                  ? "text-blue-300"
-                  : "text-white";
-
-              return (
-                <Link
-                  key={r.id}
-                  href={`/terminal?focus=${encodeURIComponent(String(r.id))}`}
-                  className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 hover:bg-[#0f1620] transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-xs text-gray-500">Sembol</div>
-                      <div className="text-base font-black truncate">{plain}</div>
-                      <div className="text-xs text-gray-600 mt-0.5 truncate">
-                        {formatDateTR(r.created_at)} • {r.symbol}
-                      </div>
-                    </div>
-
-                    <div
-                      className={`shrink-0 text-xs font-black px-2.5 py-1 rounded-lg border ${
-                        isBuy
-                          ? "border-green-600 text-green-300 bg-green-950/30"
-                          : isSell
-                          ? "border-red-600 text-red-300 bg-red-950/30"
-                          : "border-gray-700 text-gray-300 bg-gray-900/30"
-                      }`}
-                    >
-                      {sig || "—"}
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="text-sm text-gray-200">
-                      Fiyat: <span className="font-bold text-white">{formatPrice(r.price)}</span>
-                    </div>
-                    <div className="text-sm text-gray-200">
-                      Skor: <span className={`font-black ${scoreClass}`}>{scoreNum ?? "—"}</span>
-                    </div>
-                  </div>
-
-                  {reasons.length > 0 ? (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {reasons.map((x) => (
-                        <span
-                          key={x}
-                          className="text-[11px] px-2 py-1 rounded-full border border-gray-800 bg-[#0d1117] text-gray-300"
-                        >
-                          {x}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="mt-3 text-[11px] text-gray-500">—</div>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* How it works */}
-      <section id="how" className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="rounded-3xl border border-gray-800 bg-[#0b0f14] p-8">
-          <h3 className="text-xl font-black">Nasıl Çalışır?</h3>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300">
-            <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
-              <div className="font-bold">1) TradingView Alert</div>
-              <div className="text-gray-500 mt-1">Pine Script alarmı JSON gönderir (BUY/SELL, score, reasons…).</div>
-            </div>
-            <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
-              <div className="font-bold">2) API Kaydeder</div>
-              <div className="text-gray-500 mt-1">
-                <code className="text-gray-300">/api/signals</code> sinyali DB’ye yazar.
-              </div>
-            </div>
-            <div className="rounded-2xl border border-gray-800 bg-[#0d1117] p-4">
-              <div className="font-bold">3) Haber Yakala</div>
-              <div className="text-gray-500 mt-1">
-                <code className="text-gray-300">/api/news/combined</code> haberleri çeker, tickers yakalar ve ana sayfada yayınlar.
-              </div>
-            </div>
+            <Card className="p-4">
+              <SectionHeader title="Piyasa Isı Haritası" eyebrow="Skor yoğunluğu" />
+              <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-8">{latest.map((s)=>{
+                const sig=String(s.signal).toUpperCase(); const buy=sig==="BUY"; const score=Number(s.score ?? 0); const alpha=Math.min(.42, .08 + score/140);
+                return <Link key={s.id} href={`/terminal?symbol=${encodeURIComponent(symbolToPlain(s.symbol))}`} className="focus-ring interactive-row rounded-xl border p-3 text-left" style={{backgroundColor: buy ? `rgba(52,211,153,${alpha})` : `rgba(251,113,133,${alpha})`, borderColor: buy ? "rgba(52,211,153,.25)" : "rgba(251,113,133,.25)"}}><div className="flex items-center justify-between gap-2"><span className="font-mono text-sm font-black">{symbolToPlain(s.symbol)}</span><Badge variant={buy?"buy":"sell"}>{sig}</Badge></div><div className="mt-2 text-xs text-slate-300">Skor <b>{s.score ?? "—"}</b></div></Link>
+              })}</div>
+            </Card>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/terminal"
-              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors font-bold"
-            >
-              Terminale Git →
-            </Link>
-            <div className="text-xs text-gray-500 flex items-center">Not: API’ler çalışmıyorsa kutular boş görünür.</div>
-          </div>
-        </div>
-      </section>
+          <aside className="space-y-6">
+            <Card className="p-4" id="haberler"><SectionHeader title="Önemli Haberler" eyebrow="Akış" action={<Newspaper className="size-4 text-slate-500"/>}/>{news.length===0 ? <div className="mt-4"><EmptyState title="Haberler şu anda yüklenemiyor."/></div> : <div className="mt-4 space-y-2">{news.slice(0,6).map((n,i)=><a key={`${n.url}-${i}`} href={n.url} target="_blank" rel="noreferrer" className="interactive-row block rounded-xl border border-[var(--border)] p-3"><div className="flex items-center justify-between text-xs text-slate-500"><span>{n.source}</span><ExternalLink className="size-3"/></div><div className="mt-1 text-sm font-bold leading-snug">{n.headline}</div><div className="mt-2 flex flex-wrap gap-1">{(n.tickers||[]).slice(0,3).map(t=><Badge key={t}>{cleanTickerLabel(t)}</Badge>)}</div></a>)}</div>}</Card>
+            {universe === "BIST100" && <Card className="p-4" id="kap"><SectionHeader title="KAP Bildirimleri" eyebrow="BIST100" />{kap.length===0 ? <div className="mt-4"><EmptyState title="Şu anda öne çıkan KAP bildirimi yok."/></div> : <div className="mt-4 space-y-2">{kap.slice(0,5).map((k,i)=><a key={i} href={k.url} target="_blank" rel="noreferrer" className="interactive-row block rounded-xl border border-[var(--border)] p-3"><div className="text-xs text-slate-500">{(k.stockCodes||[]).join(", ") || "KAP"} • {k.datetime ? formatDateTR(new Date(k.datetime*1000).toISOString()) : "—"}</div><div className="mt-1 text-sm font-bold">{k.title}</div></a>)}</div>}</Card>}
+          </aside>
+        </section>
 
-      <footer className="border-t border-gray-800 bg-[#0b0f14]">
-        <div className="mx-auto max-w-6xl px-4 py-8 text-xs text-gray-500 flex items-center justify-between">
-          <span>© {new Date().getFullYear()} KUARK</span>
-          <Link href="/terminal" className="text-blue-400 hover:text-blue-300">
-            Terminal
-          </Link>
-        </div>
-      </footer>
-    </main>
+        {universe !== "ETF" && <Card className="p-4" id="finansallar"><SectionHeader title="Finansal Kalite Sıralaması" eyebrow="Marjlar" />{marginRows.length===0 ? <div className="mt-4"><EmptyState title="Finansal veriler güncellenirken bir sorun oluştu." /></div> : <div className="mt-4 overflow-x-auto custom-scrollbar"><table className="min-w-full text-sm"><thead className="sticky top-0 bg-[var(--surface-elevated)] text-xs uppercase text-slate-500"><tr><th className="px-3 py-2 text-left">Sıra</th><th className="px-3 py-2 text-left">Sembol</th><th className="px-3 py-2 text-right">Brüt Marj</th><th className="px-3 py-2 text-right">Net Marj</th><th className="px-3 py-2 text-right">Kalite</th><th className="px-3 py-2 text-right">Trend</th></tr></thead><tbody>{marginRows.map((r,i)=><tr key={r.symbol} className="interactive-row border-t border-[var(--border)]"><td className="px-3 py-2 text-slate-500">{i+1}</td><td className="px-3 py-2 font-mono font-black">{r.symbol}</td><td className="px-3 py-2 text-right">{fmtPct(r.grossMargin)}</td><td className="px-3 py-2 text-right">{fmtPct(r.netMargin)}</td><td className="px-3 py-2 text-right font-bold">{r.qualityScore ?? "—"}</td><td className="px-3 py-2 text-right text-slate-400"><Sparkline values={(r.netSeries?.length ? r.netSeries : r.grossSeries) ?? []}/></td></tr>)}</tbody></table></div>}</Card>}
+
+        <TopBuyTrackingTable latestSignals={latest} nowIso={nowIso} />
+      </div>
+    </AppShell>
   );
+}
+
+function Metric({ icon, label, value, detail, tone }: { icon: ReactNode; label: string; value: string; detail?: string; tone?: "buy"|"sell" }) {
+  const color = tone === "buy" ? "text-emerald-300" : tone === "sell" ? "text-rose-300" : "text-sky-300";
+  return <div className="app-card p-4"><div className={`mb-3 ${color}`}>{icon}</div><div className="text-xs font-bold text-slate-500">{label}</div><div className="metric-value mt-1 text-2xl">{value}</div>{detail && <div className="mt-1 text-xs text-slate-500">{detail}</div>}</div>;
+}
+function SignalPreview({ row }: { row: SignalRow }) {
+  const sig=String(row.signal).toUpperCase(); const buy=sig==="BUY"; const reasons=parseReasons(row.reasons).slice(0,2);
+  return <Link href={`/terminal?focus=${encodeURIComponent(String(row.id))}`} className="interactive-row rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3"><div className="flex items-start justify-between gap-3"><div><div className="font-mono text-lg font-black">{symbolToPlain(row.symbol)}</div><div className="text-xs text-slate-500">{formatDateTR(row.created_at)}</div></div><span className={`rounded-lg border px-2 py-1 text-xs font-black ${buy?"border-emerald-500/30 bg-emerald-500/10 text-emerald-200":"border-rose-500/30 bg-rose-500/10 text-rose-200"}`}>{sig}</span></div><div className="mt-3 flex justify-between text-sm"><span>Fiyat <b>{formatPrice(row.price)}</b></span><span>Skor <b>{row.score ?? "—"}</b></span></div>{reasons.length>0 && <div className="mt-2 flex flex-wrap gap-1">{reasons.map(r=><span key={r} className="rounded-md bg-slate-700/30 px-2 py-1 text-[11px] text-slate-300">{r}</span>)}</div>}</Link>;
 }

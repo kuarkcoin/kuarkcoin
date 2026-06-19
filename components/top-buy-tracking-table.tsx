@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Info, MoveDown, MoveUp } from "lucide-react";
 
 type SignalRow = {
   symbol: string;
@@ -148,27 +149,25 @@ export default function TopBuyTrackingTable({ latestSignals, nowIso }: Props) {
   const dayLabels = useMemo(() => Array.from({ length: MAX_DAYS }, (_, i) => `${i + 1}. Gün`), []);
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-12">
-      <div className="flex items-end justify-between mb-4">
+    <section className="space-y-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-lg font-black">📈 Günlük En Yüksek BUY Takibi (10 Gün)</h2>
-          <p className="text-xs text-gray-500 mt-1">
-            Supabase olmadan yerel tarayıcı hafızasında takip edilir. 11. gün yeni hisse gelirse en eski kayıt düşer.
-          </p>
+          <div className="section-label mb-1">Performans takibi</div>
+          <h2 className="text-base font-black">BUY Sinyali Performansı</h2>
         </div>
-        <span className="text-xs text-gray-500">Son güncelleme: {new Date(nowIso).toLocaleString("tr-TR")}</span>
+        <span className="text-xs text-slate-500">Son güncelleme: {new Date(nowIso).toLocaleString("tr-TR")}</span>
       </div>
 
-      <div className="rounded-2xl border border-gray-800 bg-[#0b0f14] p-4">
+      <div className="app-card p-4">
         {rows.length === 0 ? (
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-slate-400">
             Henüz BUY sinyali bulunamadı. Yeni BUY sinyalleri geldikçe tablo otomatik oluşur.
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto custom-scrollbar" aria-label="Tablo yatay kaydırılabilir">
             <table className="min-w-[920px] w-full text-xs text-left">
-              <thead>
-                <tr className="text-gray-400">
+              <thead className="sticky top-0 bg-[var(--surface-elevated)]">
+                <tr className="text-slate-400">
                   <th className="py-2 pr-4 font-semibold">Hisse</th>
                   <th className="py-2 pr-4 font-semibold">Kapanış</th>
                   {dayLabels.map((label) => (
@@ -178,20 +177,21 @@ export default function TopBuyTrackingTable({ latestSignals, nowIso }: Props) {
                   ))}
                 </tr>
               </thead>
-              <tbody className="text-gray-200">
+              <tbody className="text-slate-200">
                 {rows.map((row) => (
-                  <tr key={row.symbol} className="border-t border-gray-800/70">
-                    <td className="py-2 pr-4 font-semibold text-white">{row.symbol}</td>
-                    <td className="py-2 pr-4 text-gray-300">{formatPrice(row.basePrice)}</td>
+                  <tr key={row.symbol} className="interactive-row border-t border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--surface-elevated)] py-2 pr-4 font-semibold text-white">{row.symbol}</td>
+                    <td className="py-2 pr-4 text-slate-300">{formatPrice(row.basePrice)}</td>
                     {row.prices.map((price, index) => {
                       const change =
                         price != null && row.basePrice
                           ? Number((((price - row.basePrice) / row.basePrice) * 100).toFixed(2))
                           : null;
-                      const tone = change != null && change >= 0 ? "text-green-300" : "text-red-300";
+                      const tone = change != null && change >= 0 ? "text-emerald-300" : "text-rose-300";
+                      const Icon = change != null && change >= 0 ? MoveUp : MoveDown;
                       return (
                         <td key={`${row.symbol}-day-${index}`} className={`py-2 pr-4 ${tone}`}>
-                          {fmtPct(change)}
+                          <span className="inline-flex items-center gap-1"><Icon className="size-3" />{fmtPct(change)}</span>
                         </td>
                       );
                     })}
@@ -201,9 +201,7 @@ export default function TopBuyTrackingTable({ latestSignals, nowIso }: Props) {
             </table>
           </div>
         )}
-        <div className="mt-3 text-[11px] text-gray-500">
-          Not: 1. gün kapanış fiyatı baz alınır. Gün içinde yeni BUY fiyatı gelirse ilgili gün yüzdesi güncellenir.
-        </div>
+        <div className="mt-3 inline-flex items-center gap-2 text-[11px] text-slate-500" title="1. gün kapanış fiyatı baz alınır. Tarayıcı hafızası teknik olarak yalnızca bu cihazda saklar."><Info className="size-3" /> Metodoloji ve yerel kayıt bilgisi</div>
       </div>
     </section>
   );
