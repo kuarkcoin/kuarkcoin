@@ -633,10 +633,17 @@ export default function TerminalPage() {
     try {
       const res = await fetch(`/api/mini?symbol=${encodeURIComponent(symbol)}&n=30`);
       const json = await res.json();
-      if (!res.ok || !json?.ok) return;
-      const pts = Array.isArray(json?.points) ? (json.points as number[]) : [];
+      if (!res.ok || !json?.ok) {
+        console.warn("Mini grafik verisi alınamadı", { symbol: plain, status: res.status });
+        setMiniCache((p) => ({ ...p, [plain]: [] }));
+        return;
+      }
+      const pts = Array.isArray(json?.points) ? (json.points as number[]).filter((p) => Number.isFinite(p)) : [];
       setMiniCache((p) => ({ ...p, [plain]: pts }));
-    } catch {}
+    } catch (error) {
+      console.warn("Mini grafik isteği başarısız", { symbol: plain, error });
+      setMiniCache((p) => ({ ...p, [plain]: [] }));
+    }
   }, []);
 
   // ──────────────────────────────────────────────────
