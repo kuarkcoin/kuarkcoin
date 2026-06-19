@@ -170,6 +170,9 @@ async function fetchKapRss(ticker: string, max: number): Promise<NewsItem[]> {
 // ──────────────────────────────────────────────────
 export async function GET(req: Request) {
   try {
+    if (process.env.MOCK_EXTERNAL_SERVICES === "1") {
+      return NextResponse.json({ ok: true, items: [] });
+    }
     const { searchParams } = new URL(req.url);
     const symbol = searchParams.get("symbol") ?? "";
     const max = Math.min(Number(searchParams.get("max") ?? 8), 20);

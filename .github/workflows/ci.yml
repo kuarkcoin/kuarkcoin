@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: https://example.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: dummy-service-role-key
+      SCAN_SECRET: dummy-scan-secret
+      ADMIN_API_TOKEN: dummy-admin-token
+      CRON_SECRET: dummy-cron-secret
+      FINNHUB_API_KEY: dummy-finnhub-key
+      GEMINI_API_KEY: dummy-gemini-key
+      GEMINI_MODEL: gemini-test-model
+      APP_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      KV_URL: https://example.com
+      KV_REST_API_URL: https://example.com
+      KV_REST_API_TOKEN: dummy-kv-token
+      KV_REST_API_READ_ONLY_TOKEN: dummy-kv-readonly-token
+      REDIS_URL: redis://localhost:6379
+      UPSTASH_REDIS_REST_URL: https://example.com
+      UPSTASH_REDIS_REST_TOKEN: dummy-upstash-token
+      MOCK_EXTERNAL_SERVICES: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:run
+      - run: npm run build

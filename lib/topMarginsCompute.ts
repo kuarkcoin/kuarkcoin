@@ -234,6 +234,17 @@ export async function computeTopMargins(params: {
   const { universe, symbols, finnhubToken } = params;
   const limit = Math.min(Math.max(params.limit ?? 10, 1), 50);
 
+  if (process.env.MOCK_EXTERNAL_SERVICES === "1") {
+    return {
+      universe,
+      updatedAt: new Date().toISOString(),
+      periodHint: "UNKNOWN",
+      topNet: [],
+      topGross: [],
+      topQuality: [],
+    };
+  }
+
   // 1) metric scan (TTM)
   const baseRows = await mapLimit(symbols, 6, async (sym) => {
     const finSym = toFinnhubSymbol(sym, universe);

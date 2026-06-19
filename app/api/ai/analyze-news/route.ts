@@ -1,8 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
 function extractJson(text: string) {
   const cleaned = text
     .replace(/```json/gi, "")
@@ -22,16 +20,21 @@ function extractJson(text: string) {
 export async function POST(req: Request) {
   try {
     const { symbol, newsItems } = await req.json();
+    const limitedNewsItems = Array.isArray(newsItems) ? newsItems.slice(0, 20) : newsItems;
 
     if (!symbol) {
       return NextResponse.json({ ok: false, error: "symbol required" }, { status: 400 });
     }
 
-    if (!newsItems || !Array.isArray(newsItems) || newsItems.length === 0) {
+    if (!limitedNewsItems || !Array.isArray(limitedNewsItems) || limitedNewsItems.length === 0) {
       return NextResponse.json({ ok: true, score: 0, explanation: "Haber bulunamadı.", impact: "LOW" });
     }
 
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    if (!apiKey) return NextResponse.json({ ok: false, error: "GEMINI_API_KEY missing" }, { status: 500 });
+
     const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+    const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: modelName });
 
     const prompt = `
@@ -44,7 +47,7 @@ Görevlerin:
 4) Aşırı iddialı çıkarım yapma; belirsizlik varsa MEDIUM/LOW seç.
 
 Haberler:
-${newsItems.map((n: any, i: number) => `${i + 1}. ${n.headline}`).join("\n")}
+${limitedNewsItems.map((n: any, i: number) => `${i + 1}. ${String(n.headline ?? "").slice(0, 180)}`).join("\n")}
 
 SADECE şu JSON'u döndür:
 {

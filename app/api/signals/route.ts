@@ -34,6 +34,17 @@ function noStore(json: any, init?: ResponseInit) {
   });
 }
 
+function isAdmin(req: Request, body?: any) {
+  const token = process.env.ADMIN_API_TOKEN;
+  const header = req.headers.get("authorization") || "";
+  const bearer = header.replace(/^Bearer\s+/i, "").trim();
+  return Boolean(token && (bearer === token || body?.adminToken === token));
+}
+
+function validSymbol(symbol: string) {
+  return /^[A-Z0-9:_\.\-]{1,24}$/.test(symbol);
+}
+
 // TradingView t bazen seconds bazen ms gelebilir
 function parseTvTime(t: any) {
   const n = Number(t);
@@ -104,8 +115,12 @@ export async function POST(req: Request) {
   const reasons = body.reasons == null ? null : String(body.reasons);
   const created_at = body.t ? parseTvTime(body.t) : new Date();
 
-  if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
+  if (!symbol || !validSymbol(symbol) || (signal !== "BUY" && signal !== "SELL")) {
     return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
+  }
+
+  if ((body.price != null && price == null) || (body.score != null && score == null)) {
+    return noStore({ ok: false, error: "Invalid numeric fields" }, { status: 400 });
   }
 
   const { data, error } = await supa
@@ -123,6 +138,10 @@ export async function PATCH(req: Request) {
 
   const body = await req.json().catch(() => null);
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+
+  if (!isAdmin(req, body)) {
+    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
 
   const id = Number(body.id);
   const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;

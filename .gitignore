@@ -13,3 +13,5 @@ ts-debug.log*
 # Vercel
 .vercel
 scripts/enrich.js
+
+tsconfig.tsbuildinfo
