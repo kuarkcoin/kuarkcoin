@@ -13,3 +13,21 @@ ts-debug.log*
 # Vercel
 .vercel
 scripts/enrich.js
+
+# Build / TypeScript cache
+*.tsbuildinfo
+
+# OS files
+desktop.ini
+
+# Tool caches
+.eslintcache
+
+# Test and coverage output
+coverage/
+test-results/
+playwright-report/
+.nyc_output/
+junit.xml
+cypress/screenshots/
+cypress/videos/
