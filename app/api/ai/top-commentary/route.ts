@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { jsonNoStore, MAX_TOP_BUY, MAX_TOP_SELL, readLimitedJson, requireAdminBearer, sanitizeTopRows } from "@/lib/server/aiSecurity";
 
 export const runtime = "nodejs";
 
@@ -256,16 +256,19 @@ function deterministicFallback(
 // ------------------ Route ------------------
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const topBuy: TopRow[] = Array.isArray(body?.topBuy) ? body.topBuy : [];
-    const topSell: TopRow[] = Array.isArray(body?.topSell) ? body.topSell : [];
+    const authError = await requireAdminBearer(req);
+    if (authError) return authError;
+
+    const body = await readLimitedJson(req);
+    const topBuy = sanitizeTopRows<TopRow>(body?.topBuy, MAX_TOP_BUY);
+    const topSell = sanitizeTopRows<TopRow>(body?.topSell, MAX_TOP_SELL);
 
     const buy2 = pickTop2(topBuy);
     const sell2 = pickTop2(topSell);
 
     // veri tamamen boşsa
     if (buy2.length === 0 && sell2.length === 0) {
-      return NextResponse.json({
+      return jsonNoStore({
         ok: true,
         commentary:
           "1) BUY – Aday yok.\n" +
@@ -278,7 +281,7 @@ export async function POST(req: Request) {
 
     // API key yoksa bile düzgün 5 madde üret
     if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({
+      return jsonNoStore({
         ok: true,
         commentary: deterministicFallback(buy2, sell2),
       });
@@ -337,14 +340,17 @@ Her maddede aynı cümleyi tekrar etme.
     // ✅ AI düzgün 5 madde döndüyse al, değilse deterministik
     const forced = forceFiveBullets(raw);
 
-    return NextResponse.json({
+    return jsonNoStore({
       ok: true,
       commentary: forced ?? deterministicFallback(buy2, sell2),
     });
-  } catch (e) {
+  } catch (e: any) {
+    if (e?.status) {
+      return jsonNoStore({ ok: false, error: e.message || "Bad request." }, { status: e.status });
+    }
     console.error("AI commentary error:", e);
     // hata olursa bile terminal bozulmasın
-    return NextResponse.json({
+    return jsonNoStore({
       ok: true,
       commentary:
         "1) BUY – Analiz üretilemedi (sunucu hatası).\n" +

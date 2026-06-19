@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
+import { jsonNoStore, readLimitedJson, requireAdminBearer, sanitizeNewsItems, validateGeminiNewsAnalysis } from "@/lib/server/aiSecurity";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -21,14 +21,19 @@ function extractJson(text: string) {
 
 export async function POST(req: Request) {
   try {
-    const { symbol, newsItems } = await req.json();
+    const authError = await requireAdminBearer(req);
+    if (authError) return authError;
+
+    const body = await readLimitedJson(req);
+    const symbol = String(body?.symbol ?? "").trim();
+    const newsItems = sanitizeNewsItems(body?.newsItems);
 
     if (!symbol) {
-      return NextResponse.json({ ok: false, error: "symbol required" }, { status: 400 });
+      return jsonNoStore({ ok: false, error: "symbol required" }, { status: 400 });
     }
 
     if (!newsItems || !Array.isArray(newsItems) || newsItems.length === 0) {
-      return NextResponse.json({ ok: true, score: 0, explanation: "Haber bulunamadı.", impact: "LOW" });
+      return jsonNoStore({ ok: true, score: 0, explanation: "Haber bulunamadı.", impact: "LOW" });
     }
 
     const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
@@ -60,20 +65,18 @@ SADECE şu JSON'u döndür:
     const clean = extractJson(text);
     const analysis = JSON.parse(clean);
 
-    // küçük validasyon
-    const score = Number(analysis?.score ?? 0);
-    const impact = String(analysis?.impact ?? "LOW").toUpperCase();
-    const explanation = String(analysis?.explanation ?? "").slice(0, 200);
+    const analysisResult = validateGeminiNewsAnalysis(analysis);
 
-    return NextResponse.json({
+    return jsonNoStore({
       ok: true,
-      score: isFinite(score) ? score : 0,
-      impact: impact === "HIGH" || impact === "MEDIUM" || impact === "LOW" ? impact : "LOW",
-      explanation: explanation || "Özet yok.",
+      ...analysisResult,
       model: modelName,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.status) {
+      return jsonNoStore({ ok: false, error: error.message || "Bad request." }, { status: error.status });
+    }
     console.error("AI News Error:", error);
-    return NextResponse.json({ ok: false, error: "Analiz başarısız." }, { status: 500 });
+    return jsonNoStore({ ok: false, error: "Analiz başarısız." }, { status: 500 });
   }
 }
