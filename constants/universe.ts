@@ -1,9 +1,6 @@
 // src/constants/universe.ts
 
-// =====================
-// NASDAQ 300 (plain tickers)
-// =====================
-export const NASDAQ300 = [
+const NASDAQ_UNIVERSE = [
   "AAPL","MSFT","NVDA","AMZN","META","GOOGL","GOOG","TSLA","AVGO","ADBE",
   "COST","PEP","CSCO","NFLX","TMUS","INTC","AMD","QCOM","AMGN","TXN",
   "HON","INTU","SBUX","BKNG","AMAT","ISRG","ADI","GILD","MU","LRCX",
@@ -46,11 +43,10 @@ export const NASDAQ300 = [
   "AMGN","REGN","VRTX","GILD","BIIB","ILMN","IDXX","ALNY","BMRN","SRPT",
   "AEP","XEL","EXC","PCAR","CSX","ODFL","FAST","VRSK","CTAS","PAYX",
   "SBUX","MNST","KDP","MDLZ","ROST","DLTR","ORLY","COST","PEP","INTU"
-].slice(0, 300); // güvenlik: yanlışlıkla 300+ olursa kırp
+] as const;
 
-// =====================
-// ETF (20 adet)
-// =====================
+export const NASDAQ100 = NASDAQ_UNIVERSE.slice(0, 100);
+
 export const ETFS = [
   "SPY","QQQ","IWM","DIA","VTI",
   "VOO","SCHD","SMH","XLK","XLF",
@@ -58,9 +54,6 @@ export const ETFS = [
   "XLB","XLU","XLC","GLD","TLT",
 ];
 
-// =====================
-// BIST 100 (100 adet)
-// =====================
 export const BIST100 = [
   "AKBNK","ALARK","ARCLK","ASELS","BIMAS","BRYAT","CIMSA","DOAS","EKGYO","ENJSA",
   "EREGL","FROTO","GARAN","GUBRF","HALKB","HEKTS","ISCTR","KCHOL","KOZAA","KOZAL",
@@ -72,4 +65,4 @@ export const BIST100 = [
   "POLTK","QUAGR","RAYSG","RTALB","SDTTR","SELEC","SMRTG","SNICA","SODSN","SUMAS",
   "TAVHL","TKFEN","TRGYO","TSKB","TTWO","TTRAK","TURGG","ULKER","USAK","VAKKO",
   "VESBE","VESTL","YATAS","ZOREN","AGHOL","AGESA","AKGRT","ALCAR","CLEBI","LINK"
-].slice(0, 100); // güvenlik: yanlışlıkla 100+ olursa kırp
+] as const;

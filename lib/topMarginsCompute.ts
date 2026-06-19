@@ -96,7 +96,7 @@ async function finnhubFinancialsReportedQuarterly(symbol: string, token: string)
 }
 
 // concurrency limiter
-async function mapLimit<T, R>(items: T[], limit: number, fn: (t: T) => Promise<R>): Promise<R[]> {
+async function mapLimit<T, R>(items: readonly T[], limit: number, fn: (t: T) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length);
   let i = 0;
   const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
@@ -227,7 +227,7 @@ function computeMarginsFromQuarterly(fin: any): { grossSeries: number[]; netSeri
 
 export async function computeTopMargins(params: {
   universe: "BIST100" | "NASDAQ100";
-  symbols: string[];
+  symbols: readonly string[];
   limit?: number;
   finnhubToken: string;
 }): Promise<TopMarginsPayload> {

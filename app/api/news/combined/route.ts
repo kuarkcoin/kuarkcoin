@@ -1,7 +1,7 @@
 // app/api/news/combined/route.ts
 import { NextResponse } from "next/server";
 import { scoreNews } from "@/lib/scoreNews";
-import { NASDAQ300, ETFS, BIST100 } from "@/constants/universe";
+import { BIST100, ETFS, NASDAQ100 } from "@/constants/universe";
 
 type CombinedNewsItem = {
   headline: string;
@@ -55,13 +55,13 @@ async function fetchExternalNews(u: string, universeSymbols: string[]): Promise<
     return rss.map((item) => ({ ...item, matched: [] }));
   }
 
-  // NASDAQ300 / ETFS → Finnhub market-news (general)
+  // NASDAQ100 / ETFS → Finnhub market-news (general)
   const finnhub = await fetchFinnhubMarketNews("general");
   return matchUniverse(finnhub, universeSymbols);
 }
 
 function pickUniverse(u: string): string[] {
-  if (u === "NASDAQ300") return (NASDAQ300 ?? []).map((s) => String(s).toUpperCase());
+  if (u === "NASDAQ100") return (NASDAQ100 ?? []).map((s) => String(s).toUpperCase());
   if (u === "ETFS") return (ETFS ?? []).map((s) => String(s).toUpperCase());
   return (BIST100 ?? []).map((s) => String(s).toUpperCase());
 }

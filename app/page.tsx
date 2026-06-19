@@ -60,7 +60,7 @@ type TopMarginsResp = {
   topQuality: TopMarginRow[];
 };
 
-const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ300", "ETF"] as const;
+const ALLOWED_UNIVERSE = ["BIST100", "NASDAQ100", "ETFS"] as const;
 type Universe = (typeof ALLOWED_UNIVERSE)[number];
 
 // =====================
@@ -174,8 +174,8 @@ function cleanTickerLabel(t: string) {
 }
 
 function universeLabel(u: Universe) {
-  if (u === "NASDAQ300") return "NASDAQ • 300";
-  if (u === "ETF") return "ETF";
+  if (u === "NASDAQ100") return "NASDAQ • 100";
+  if (u === "ETFS") return "ETFs";
   return "BIST100";
 }
 
@@ -205,15 +205,10 @@ async function getKapImportant(base: string): Promise<KapRow[]> {
 }
 
 async function getTopMargins(base: string, universe: Universe): Promise<TopMarginsResp | null> {
-  // ETF’de marj sıralaması anlamsız → gizleyeceğiz
-  if (universe === "ETF") return null;
+  if (universe === "ETFS") return null;
 
   try {
-    // ✅ backend endpoint'in sadece BIST100/NASDAQ100 biliyorsa:
-    // NASDAQ300 seçiliyse backend'e NASDAQ100 diye gönderiyoruz (ya da backend'i NASDAQ300'e genişletirsin)
-    const backendUniverse = universe === "NASDAQ300" ? "NASDAQ100" : universe;
-
-    const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(backendUniverse)}&limit=10`;
+    const url = `${base}/api/financials/top-margins?universe=${encodeURIComponent(universe)}&limit=10`;
     const json = await safeFetchJson(url);
     const data = (json?.data ?? null) as TopMarginsResp | null;
     return data && typeof data === "object" ? data : null;
@@ -302,7 +297,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
             <p className="text-gray-300 max-w-2xl leading-relaxed">
               Pine Script alarmından gelen sinyalleri toplayıp tek ekranda gösterir: skor, nedenler, Win/Loss takibi ve
               grafikte işaretleme. Ek olarak ana sayfada BIST100 için yükseltici KAP bildirimlerini etiketleyip özetler.
-              Yeni: Haber yakalayıcı (BIST100 / NASDAQ300 / ETF) + marj sıralamaları.
+              Yeni: Haber yakalayıcı (BIST100 / NASDAQ100 / ETFS) + marj sıralamaları.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -364,24 +359,24 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
               BIST100
             </Link>
             <Link
-              href={`/?u=NASDAQ300`}
+              href={`/?u=NASDAQ100`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "NASDAQ300"
+                universe === "NASDAQ100"
                   ? "border-blue-600 bg-blue-950/30 text-blue-200"
                   : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
-              NASDAQ300
+              NASDAQ100
             </Link>
             <Link
-              href={`/?u=ETF`}
+              href={`/?u=ETFS`}
               className={`text-xs font-semibold px-3 py-2 rounded-lg border ${
-                universe === "ETF"
+                universe === "ETFS"
                   ? "border-blue-600 bg-blue-950/30 text-blue-200"
                   : "border-gray-700 hover:bg-gray-900 text-gray-200"
               }`}
             >
-              ETF
+              ETFS
             </Link>
           </div>
         </div>
@@ -452,8 +447,8 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
         )}
       </section>
 
-      {/* High margin ranking (hidden for ETF) */}
-      {universe !== "ETF" ? (
+      {/* High margin ranking (hidden for ETFS) */}
+      {universe !== "ETFS" ? (
         <section className="mx-auto max-w-6xl px-4 pb-12">
           <div className="flex items-end justify-between mb-4">
             <h2 className="text-lg font-black">💰 Yüksek Kâr Oranı</h2>
