@@ -1,52 +1,26 @@
 // src/constants/universe.ts
 
 // =====================
-// NASDAQ 300 (plain tickers)
+// NASDAQ 100 (plain tickers)
+// Kaynak kapsam: NASDAQ-100 bileşen sembolleri. Birden fazla pay sınıfı
+// nedeniyle sembol sayısı 100'den fazla olabilir (örn. GOOG/GOOGL).
 // =====================
-export const NASDAQ300 = [
-  "AAPL","MSFT","NVDA","AMZN","META","GOOGL","GOOG","TSLA","AVGO","ADBE",
-  "COST","PEP","CSCO","NFLX","TMUS","INTC","AMD","QCOM","AMGN","TXN",
-  "HON","INTU","SBUX","BKNG","AMAT","ISRG","ADI","GILD","MU","LRCX",
-  "VRTX","MDLZ","REGN","PANW","SNPS","KLAC","MELI","CDNS","ASML","PDD",
-  "CRWD","ABNB","ADP","MAR","CTAS","CHTR","ORLY","PAYX","CSX","MRNA",
-  "KDP","NXPI","FTNT","WDAY","KHC","AEP","MNST","ROST","PCAR","EXC",
-  "AZN","ZS","TEAM","DDOG","MRVL","DXCM","BIIB","ILMN","IDXX","LULU",
-  "EA","ODFL","FAST","VRSK","XEL","GEHC","ANSS","CPRT","TTWO","MCHP",
-  "CTSH","FANG","WBD","BKR","DLTR","EBAY","SIRI","LCID","RIVN","ENPH",
-  "ALGN","WBA","DOCU","OKTA","NET","ROKU","COIN","SQ","PYPL","SHOP",
-  "ZM","U","PLTR","CRSP","NTES","BIDU","JD","BABA","NTDOY","TSM",
-  "SPLK","MDB","NOW","ARM","SMCI","ANET","GFS","ON","MRNA","SGEN",
-  "ADSK","VOD","ERIC","TTD","MSTR","AFRM","FIVN","TWLO","PINS","SNOW",
-  "UBER","LYFT","DASH","ABNB","BKNG","EXPE","TRIP","ZG","Z","MTCH",
-  "RGEN","INCY","SIRI","FOXA","FOX","TTWO","ATVI","EA","ROST","ULTA",
-  "KMB","KDP","MDLZ","HSIC","XRAY","WDC","STX","HPQ","DELL","LOGI",
-  "SWKS","QRVO","TER","GLW","NTAP","CDW","AKAM","CHKP","GEN","CYBR",
-  "DOCN","FSLY","ESTC","DT","GTLB","ASAN","HUBS","JBLU","SAVE","ALK",
-  "UAL","AAL","DAL","LUV","ZION","FITB","HBAN","RF","KEY","CFG",
-  "PNFP","SIVB","WAL","PACW","FULT","IBKR","SCHW","LPLA","HOOD","NDAQ",
-  "CME","ICE","MSCI","SPGI","FISV","PAYC","PYPL","INTU","ADP","WEX",
-  "FIS","GPN","TOST","BILL","RIOT","MARA","HUT","CLSK","IREN","BTBT",
-  "TSLA","NIO","XPEV","LI","F","GM","LCID","RIVN","LAZR","MVIS",
-  "PTON","NWL","HAS","MAT","CROX","DECK","NKE","UAA","UA","SKX",
-  "ETSY","CHWY","W","OSTK","AMZN","WMT","TGT","COST","BJ","KR",
-  "SFM","WOOF","CVNA","KMX","ABG","PAG","GPI","LAD","CPRT","KAR",
-  "PODD","TNDM","ALNY","BMRN","SRPT","IONS","EXAS","VCYT","FATE","BEAM",
-  "MRNA","BNTX","NVAX","VIR","REGN","VRTX","GILD","BIIB","ILMN","IDXX",
-  "SPLK","CRM","ORCL","SAP","IBM","HPE","DELL","HPQ","STNE","NU",
-  "SE","GRAB","GTLB","DOCU","BOX","DBX","ZI","FROG","PATH","S",
-  "ADBE","ADSK","INTU","SNPS","CDNS","ANSS","PTC","BSY","SSNC","MANH",
-  "ORCL","MSFT","GOOG","GOOGL","META","AMZN","NFLX","TSLA","NVDA","AMD",
-  "INTC","QCOM","AVGO","TXN","ADI","MU","LRCX","AMAT","KLAC","MCHP",
-  "NXPI","ASML","MRVL","ON","GFS","TER","SWKS","QRVO","MPWR","ENTG",
-  "PANW","CRWD","FTNT","ZS","OKTA","NET","DDOG","MDB","SNOW","TEAM",
-  "NOW","WDAY","VEEV","HUBS","SPLK","DOCN","ESTC","DT","GTLB","ASAN",
-  "ANET","CSCO","AKAM","CHKP","GEN","CYBR","S","RPD","TENB","SNYK",
-  "BKNG","ABNB","EXPE","DASH","UBER","LYFT","ROKU","SPOT","TTD","PINS",
-  "PYPL","SQ","SHOP","ZM","U","PLTR","COIN","HOOD","IBKR","SCHW",
-  "AMGN","REGN","VRTX","GILD","BIIB","ILMN","IDXX","ALNY","BMRN","SRPT",
-  "AEP","XEL","EXC","PCAR","CSX","ODFL","FAST","VRSK","CTAS","PAYX",
-  "SBUX","MNST","KDP","MDLZ","ROST","DLTR","ORLY","COST","PEP","INTU"
-].slice(0, 300); // güvenlik: yanlışlıkla 300+ olursa kırp
+export const EXPECTED_NASDAQ100_SYMBOL_COUNT = 101 as const;
+
+export const NASDAQ100 = [
+  "ADBE","AMD","ABNB","ALNY","GOOGL","GOOG","AMZN","AEP","AMGN","ADI",
+  "AAPL","AMAT","APP","ARM","ASML","ADSK","ADP","AXON","BKR","BKNG",
+  "AVGO","CDNS","CHTR","CTAS","CSCO","CCEP","CTSH","CMCSA","CEG","CPRT",
+  "COST","CRWD","CSX","DDOG","DXCM","FANG","DASH","EA","EXC","FAST",
+  "FER","FTNT","GEHC","GILD","HON","IDXX","INSM","INTC","INTU","ISRG",
+  "KDP","KLAC","KHC","LRCX","LIN","LITE","MAR","MRVL","MELI","META",
+  "MCHP","MU","MSFT","MSTR","MDLZ","MPWR","MNST","NFLX","NVDA","NXPI",
+  "ORLY","ODFL","PCAR","PLTR","PANW","PAYX","PYPL","PDD","PEP","QCOM",
+  "REGN","ROP","ROST","SNDK","STX","SHOP","SBUX","SNPS","TMUS","TTWO",
+  "TSLA","TXN","TRI","VRSK","VRTX","WMT","WBD","WDC","WDAY","XEL",
+  "ZS",
+] as const;
+
 
 // =====================
 // ETF (20 adet)
