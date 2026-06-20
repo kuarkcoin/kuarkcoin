@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { symbolToPlain, timeAgo } from "@/constants/terminal";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
+import { reasonsToTechSentences } from "@/lib/reasonTranslator";
 
 type SignalTone = "BUY" | "SELL" | string;
 
@@ -12,6 +13,13 @@ export type DashboardSignalRow = {
   created_at?: string | null;
   datetime?: number | null;
   reasons?: string | null;
+  price?: number | string | null;
+  current_price?: number | string | null;
+  company_name?: string | null;
+  name?: string | null;
+  timeframe?: string | null;
+  exchange?: string | null;
+  source?: string | null;
 };
 
 export type DashboardProps = {
@@ -58,22 +66,125 @@ function heatStyle(isBuy: boolean, intensity01: number): React.CSSProperties {
   };
 }
 
-// Basit hover-card (dependency yok)
-function HoverCard({
-  title,
-  children,
+type ActiveSignal = {
+  key: string;
+  row: HeatSignalRow;
+  rect: DOMRect;
+};
+
+type HeatSignalRow = {
+  key: string;
+  symbol: string;
+  plain: string;
+  signal: string;
+  score: number;
+  created_at: string | null;
+  reasons: string | null;
+  price: number | string | null;
+  current_price: number | string | null;
+  company_name: string | null;
+  timeframe: string | null;
+  exchange: string | null;
+  source: string | null;
+};
+
+const UNKNOWN_TEXT = "Veri gelmedi";
+
+function formatMaybe(value: unknown, fallback = UNKNOWN_TEXT) {
+  if (value === null || value === undefined || value === "") return fallback;
+  return String(value);
+}
+
+function formatExactTime(value: string | null) {
+  if (!value) return "Kesin tetiklenme zamanı yok";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return new Intl.DateTimeFormat("tr-TR", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+  }).format(d);
+}
+
+function isInteractiveKey(e: React.KeyboardEvent<HTMLButtonElement>) {
+  return e.key === "Enter" || e.key === " ";
+}
+
+function SignalDetails({
+  row,
+  onClose,
+  onOpenChart,
+  onOpenAll,
 }: {
-  title: React.ReactNode;
-  children: React.ReactNode;
+  row: HeatSignalRow;
+  onClose: () => void;
+  onOpenChart: () => void;
+  onOpenAll?: () => void;
 }) {
+  const isBuy = row.signal === "BUY";
+  const indicators = parseReasons(row.reasons);
+  const techReasons = reasonsToTechSentences(row.reasons);
+
   return (
-    <div className="relative group">
-      {children}
-      <div className="pointer-events-none absolute z-50 hidden group-hover:block -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-72">
-        <div className="rounded-xl border border-gray-800 bg-[#0b0f14] p-3 shadow-2xl">
-          <div className="text-xs text-gray-200 leading-snug">{title}</div>
+    <div className="space-y-3 text-sm text-gray-300">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-lg font-black text-white">{row.plain}</div>
+          <div className="text-xs text-gray-500">{formatMaybe(row.company_name, "Şirket adı gelmedi")}</div>
+        </div>
+        <button onClick={onClose} className="rounded-lg px-2 py-1 text-gray-500 hover:bg-gray-800 hover:text-gray-200" aria-label="Detayı kapat">
+          ✕
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <DetailItem label="Sinyal" value={formatMaybe(row.signal, "BUY/SELL gelmedi")} valueClassName={isBuy ? "text-green-300" : "text-red-300"} />
+        <DetailItem label="Skor" value={formatMaybe(row.score, "Skor gelmedi")} />
+        <DetailItem label="Tetiklenme fiyatı" value={formatMaybe(row.price, "Tetiklenme fiyatı yok")} />
+        <DetailItem label="Güncel fiyat" value={formatMaybe(row.current_price, "Güncel fiyat yok")} />
+        <DetailItem label="Kesin zaman" value={formatExactTime(row.created_at)} />
+        <DetailItem label="Geçen süre" value={row.created_at ? timeAgo(row.created_at) : "Geçen süre hesaplanamadı"} />
+        <DetailItem label="Timeframe" value={formatMaybe(row.timeframe, "Timeframe belirtilmedi")} />
+        <DetailItem label="Borsa" value={formatMaybe(row.exchange, "Borsa belirtilmedi")} />
+        <DetailItem label="Kaynak" value={formatMaybe(row.source, "Kaynak belirtilmedi")} />
+      </div>
+
+      <div>
+        <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">İndikatörler</div>
+        {indicators.length > 0 ? (
+          <div className="flex flex-wrap gap-1">
+            {indicators.map((item) => (
+              <span key={item} className="rounded-md bg-gray-800 px-2 py-1 text-[11px] text-gray-200">{item}</span>
+            ))}
+          </div>
+        ) : (
+          <div className="text-xs text-gray-500">İndikatör listesi yok</div>
+        )}
+      </div>
+
+      <div>
+        <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">Teknik neden</div>
+        <div className="rounded-xl border border-gray-800 bg-[#0d1117] p-3 text-xs leading-relaxed text-gray-300">
+          {techReasons.length > 0 ? techReasons : row.reasons || "Teknik neden belirtilmedi"}
         </div>
       </div>
+
+      <div className="flex gap-2 pt-1">
+        <button onClick={onOpenChart} className="flex-1 rounded-xl border border-blue-700 bg-blue-600/20 px-3 py-2 text-xs font-bold text-blue-200 hover:bg-blue-600/30">
+          Grafikte Aç
+        </button>
+        <button onClick={onOpenAll} className="flex-1 rounded-xl border border-gray-700 bg-gray-900/50 px-3 py-2 text-xs font-bold text-gray-200 hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50" disabled={!onOpenAll}>
+          Tüm Sinyaller
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DetailItem({ label, value, valueClassName = "text-white" }: { label: string; value: React.ReactNode; valueClassName?: string }) {
+  return (
+    <div className="rounded-xl border border-gray-800 bg-[#0d1117] p-2">
+      <div className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{label}</div>
+      <div className={`mt-1 break-words text-xs font-semibold ${valueClassName}`}>{value}</div>
     </div>
   );
 }
@@ -109,33 +220,38 @@ export default function DashboardView({
   isLoading = false,
   error = null,
 }: DashboardProps) {
-  // ------------------------
-  // Loading / Error / Empty
-  // ------------------------
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-gray-400 animate-pulse">Piyasa taranıyor...</div>
-      </div>
-    );
-  }
+  const [activeSignal, setActiveSignal] = useState<ActiveSignal | null>(null);
+  const [isMobilePopover, setIsMobilePopover] = useState(false);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
 
-  if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-red-400">{error}</div>
-      </div>
-    );
-  }
+  const closeSignalDetails = useCallback(() => setActiveSignal(null), []);
 
-  const hasAny = (signals?.length ?? 0) + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
-  if (!hasAny) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-gray-500">Henüz sinyal üretilmedi.</div>
-      </div>
-    );
-  }
+  const openSignalDetails = useCallback((row: HeatSignalRow, target: HTMLButtonElement) => {
+    setIsMobilePopover(window.matchMedia("(max-width: 767px)").matches);
+    setActiveSignal({ key: row.key, row, rect: target.getBoundingClientRect() });
+  }, []);
+
+  useEffect(() => {
+    if (!activeSignal) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (target && popoverRef.current?.contains(target)) return;
+      if (target instanceof Element && target.closest("[data-signal-card='true']")) return;
+      closeSignalDetails();
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeSignalDetails();
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeSignal, closeSignalDetails]);
 
   // ------------------------
   // Sentiment + history
@@ -207,15 +323,23 @@ export default function DashboardView({
 
   const heatRows = useMemo(() => {
     const list = (signals ?? [])
-      .map((s) => {
+      .map((s, index): HeatSignalRow => {
         const symbol = normalizeSymbol(String(s?.symbol || ""));
+        const createdAt = s?.created_at ?? (typeof s?.datetime === "number" ? new Date(s.datetime * 1000).toISOString() : null);
         return {
+          key: `${symbol}-${createdAt ?? index}`,
           symbol,
           plain: symbolToPlain(symbol),
           signal: String(s?.signal || "").toUpperCase(),
           score: Number(s?.score ?? 0),
-          created_at: s?.created_at ?? null,
+          created_at: createdAt,
           reasons: s?.reasons ?? null,
+          price: s?.price ?? null,
+          current_price: s?.current_price ?? null,
+          company_name: s?.company_name ?? s?.name ?? null,
+          timeframe: s?.timeframe ?? null,
+          exchange: s?.exchange ?? (symbol.includes(":") ? symbol.split(":")[0] : null),
+          source: s?.source ?? null,
         };
       })
       // en güçlüleri öne al
@@ -229,6 +353,43 @@ export default function DashboardView({
 
     return filtered.slice(0, heatLimit);
   }, [signals, heatFilter, minScore, heatLimit]);
+
+  // ------------------------
+  // Loading / Error / Empty
+  // ------------------------
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-gray-400 animate-pulse">Piyasa taranıyor...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-red-400">{error}</div>
+      </div>
+    );
+  }
+
+  const hasAny = (signals?.length ?? 0) + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
+  if (!hasAny) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-gray-500">Henüz sinyal üretilmedi.</div>
+      </div>
+    );
+  }
+
+  const canUseViewport = typeof window !== "undefined";
+  const popoverStyle: React.CSSProperties | undefined =
+    activeSignal && !isMobilePopover && canUseViewport
+      ? {
+          top: clamp(activeSignal.rect.top - 8, 16, window.innerHeight - 520),
+          left: clamp(activeSignal.rect.left + activeSignal.rect.width / 2 - 180, 16, window.innerWidth - 376),
+        }
+      : undefined;
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#0d1117] p-4 md:p-8 custom-scrollbar">
@@ -382,47 +543,75 @@ export default function DashboardView({
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-12 gap-3">
-            {heatRows.map((s, i) => {
+            {heatRows.map((s) => {
               const isBuy = s.signal === "BUY";
               const intensity01 = clamp((Number(s.score ?? 0) || 0) / Math.max(1, scoreMax), 0, 1);
               const style = heatStyle(isBuy, intensity01);
 
-              const title = (
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="font-bold">{symbolToPlain(s.symbol)}</div>
-                    <div className="text-[10px] text-gray-500">{s.created_at ? timeAgo(s.created_at) : ""}</div>
-                  </div>
-                  <div className="text-[11px] text-gray-300">
-                    Signal:{" "}
-                    <b className={isBuy ? "text-green-300" : "text-red-300"}>
-                      {s.signal || "—"}
-                    </b>{" "}
-                    • Score: <b>{s.score ?? "—"}</b>
-                  </div>
-                  <div className="text-[10px] text-gray-400 line-clamp-2">
-                    {(s.reasons ?? "").slice(0, 180) || "—"}
-                  </div>
-                </div>
-              );
-
               return (
-                <HoverCard key={`${s.symbol}-${i}`} title={title}>
-                  <button
-                    onClick={() => onSelectSymbol(s.symbol)}
-                    style={style}
-                    className="aspect-square flex flex-col items-center justify-center rounded-xl transition-all hover:scale-110 active:scale-95 border"
-                    aria-label={`Open ${s.symbol}`}
-                  >
-                    <span className="text-[10px] font-bold">{symbolToPlain(s.symbol)}</span>
-                    <span className="text-[8px] opacity-70">{s.score ?? "—"}</span>
-                  </button>
-                </HoverCard>
+                <button
+                  key={s.key}
+                  data-signal-card="true"
+                  onFocus={(event) => openSignalDetails(s, event.currentTarget)}
+                  onMouseEnter={(event) => openSignalDetails(s, event.currentTarget)}
+                  onClick={(event) => openSignalDetails(s, event.currentTarget)}
+                  onKeyDown={(event) => {
+                    if (!isInteractiveKey(event)) return;
+                    event.preventDefault();
+                    openSignalDetails(s, event.currentTarget);
+                  }}
+                  style={style}
+                  className={`aspect-square flex flex-col items-center justify-center rounded-xl transition-all hover:scale-110 active:scale-95 border focus:outline-none focus:ring-2 focus:ring-blue-400/60 ${
+                    activeSignal?.key === s.key ? "scale-110 ring-2 ring-blue-400/60" : ""
+                  }`}
+                  aria-haspopup="dialog"
+                  aria-expanded={activeSignal?.key === s.key}
+                  aria-label={`${s.symbol} sinyal detayını aç`}
+                >
+                  <span className="text-[10px] font-bold">{symbolToPlain(s.symbol)}</span>
+                  <span className="text-[8px] opacity-70">{s.score ?? "—"}</span>
+                </button>
               );
             })}
           </div>
         )}
       </div>
+
+      {activeSignal && (
+        isMobilePopover ? (
+          <div className="fixed inset-0 z-50 flex items-end bg-black/50 md:hidden" role="dialog" aria-modal="true">
+            <div ref={popoverRef} className="max-h-[82vh] w-full overflow-y-auto rounded-t-3xl border border-gray-800 bg-[#0b0f14] p-4 shadow-2xl">
+              <SignalDetails
+                row={activeSignal.row}
+                onClose={closeSignalDetails}
+                onOpenChart={() => {
+                  onSelectSymbol(activeSignal.row.symbol);
+                  closeSignalDetails();
+                }}
+                onOpenAll={onGoTerminal}
+              />
+            </div>
+          </div>
+        ) : (
+          <div
+            ref={popoverRef}
+            className="fixed z-50 hidden w-[360px] rounded-2xl border border-gray-800 bg-[#0b0f14] p-4 shadow-2xl md:block"
+            style={popoverStyle}
+            role="dialog"
+            aria-modal="false"
+          >
+            <SignalDetails
+              row={activeSignal.row}
+              onClose={closeSignalDetails}
+              onOpenChart={() => {
+                onSelectSymbol(activeSignal.row.symbol);
+                closeSignalDetails();
+              }}
+              onOpenAll={onGoTerminal}
+            />
+          </div>
+        )
+      )}
 
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
