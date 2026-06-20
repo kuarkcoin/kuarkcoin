@@ -1,17 +1,25 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { symbolToPlain, timeAgo } from "@/constants/terminal";
+import { mapSignalToHeatmap } from "@/lib/map-signal-to-heatmap";
 
 type SignalTone = "BUY" | "SELL" | string;
 
 export type DashboardSignalRow = {
   symbol: string;
   signal?: SignalTone | null;
-  score?: number | null;
+  score?: number | string | null;
+  price?: number | string | null;
   created_at?: string | null;
-  datetime?: number | null;
-  reasons?: string | null;
+  createdAt?: string | null;
+  datetime?: number | string | null;
+  timestamp?: number | string | null;
+  timeframe?: string | null;
+  exchange?: string | null;
+  source?: string | null;
+  reasons?: string | string[] | null;
+  indicators?: Record<string, unknown> | null;
 };
 
 export type DashboardProps = {
@@ -60,20 +68,24 @@ function heatStyle(isBuy: boolean, intensity01: number): React.CSSProperties {
 
 // Basit hover-card (dependency yok)
 function HoverCard({
+  active,
   title,
   children,
 }: {
+  active: boolean;
   title: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative group">
+    <div className="relative">
       {children}
-      <div className="pointer-events-none absolute z-50 hidden group-hover:block -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-72">
-        <div className="rounded-xl border border-gray-800 bg-[#0b0f14] p-3 shadow-2xl">
-          <div className="text-xs text-gray-200 leading-snug">{title}</div>
+      {active && (
+        <div className="pointer-events-none absolute z-50 -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-72">
+          <div className="rounded-xl border border-gray-800 bg-[#0b0f14] p-3 shadow-2xl">
+            <div className="text-xs text-gray-200 leading-snug">{title}</div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -109,6 +121,95 @@ export default function DashboardView({
   isLoading = false,
   error = null,
 }: DashboardProps) {
+  const normalizedSignals = useMemo(() => (signals ?? []).map(mapSignalToHeatmap), [signals]);
+
+  const [activeHeatKey, setActiveHeatKey] = useState<string | null>(null);
+  const [nowTick, setNowTick] = useState(() => Date.now());
+
+  useEffect(() => {
+    const id = window.setInterval(() => setNowTick(Date.now()), 60_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  // ------------------------
+  // Sentiment + history
+  // ------------------------
+  const sentimentScore = useMemo(() => {
+    if (!normalizedSignals.length) return 50;
+    const buys = normalizedSignals.filter((s) => s.signal === "BUY").length;
+    return Math.round((buys / normalizedSignals.length) * 100);
+  }, [normalizedSignals]);
+
+  // 7 günlük bull% (created_at varsa)
+  const last7 = useMemo(() => {
+    if (!normalizedSignals.length) return Array.from({ length: 7 }, () => 50);
+
+    const byDay = new Map<string, { total: number; buys: number }>();
+
+    for (const r of normalizedSignals) {
+      const dt = r.createdAt ? new Date(r.createdAt) : new Date();
+
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, "0");
+      const d = String(dt.getDate()).padStart(2, "0");
+      const key = `${y}-${m}-${d}`;
+
+      const prev = byDay.get(key) ?? { total: 0, buys: 0 };
+      prev.total += 1;
+      if (r.signal === "BUY") prev.buys += 1;
+      byDay.set(key, prev);
+    }
+
+    const out: number[] = [];
+    const today = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const key = `${y}-${m}-${dd}`;
+
+      const v = byDay.get(key);
+      if (!v || v.total === 0) out.push(50);
+      else out.push(Math.round((v.buys / v.total) * 100));
+    }
+    return out;
+  }, [normalizedSignals]);
+
+  void nowTick;
+
+  const topBuy0 = topBuy?.[0];
+  const topSell0 = topSell?.[0];
+
+  // ------------------------
+  // Heatmap controls
+  // ------------------------
+  const [heatFilter, setHeatFilter] = useState<"ALL" | "BUY" | "SELL">("ALL");
+  const [minScore, setMinScore] = useState<number>(0);
+  const [heatLimit, setHeatLimit] = useState<number>(48);
+
+  const scoreMax = useMemo(() => {
+    let mx = 0;
+    for (const s of normalizedSignals) {
+      mx = Math.max(mx, s.score);
+    }
+    return mx || 30;
+  }, [normalizedSignals]);
+
+  const heatRows = useMemo(() => {
+    const list = [...normalizedSignals].sort((a, b) => b.score - a.score);
+
+    const filtered = list.filter((x) => {
+      if (heatFilter !== "ALL" && x.signal !== heatFilter) return false;
+      if (x.score < minScore) return false;
+      return true;
+    });
+
+    return filtered.slice(0, heatLimit);
+  }, [normalizedSignals, heatFilter, minScore, heatLimit]);
+
+
   // ------------------------
   // Loading / Error / Empty
   // ------------------------
@@ -128,7 +229,7 @@ export default function DashboardView({
     );
   }
 
-  const hasAny = (signals?.length ?? 0) + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
+  const hasAny = normalizedSignals.length + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
   if (!hasAny) {
     return (
       <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
@@ -136,99 +237,6 @@ export default function DashboardView({
       </div>
     );
   }
-
-  // ------------------------
-  // Sentiment + history
-  // ------------------------
-  const sentimentScore = useMemo(() => {
-    if (!signals?.length) return 50;
-    const buys = signals.filter((s) => String(s.signal ?? "").toUpperCase() === "BUY").length;
-    return Math.round((buys / signals.length) * 100);
-  }, [signals]);
-
-  // 7 günlük bull% (created_at varsa)
-  const last7 = useMemo(() => {
-    if (!signals?.length) return Array.from({ length: 7 }, () => 50);
-
-    const byDay = new Map<string, { total: number; buys: number }>();
-
-    for (const r of signals) {
-      const dt = r.created_at
-        ? new Date(r.created_at)
-        : typeof r.datetime === "number"
-        ? new Date(r.datetime * 1000)
-        : new Date();
-
-      const y = dt.getFullYear();
-      const m = String(dt.getMonth() + 1).padStart(2, "0");
-      const d = String(dt.getDate()).padStart(2, "0");
-      const key = `${y}-${m}-${d}`;
-
-      const prev = byDay.get(key) ?? { total: 0, buys: 0 };
-      prev.total += 1;
-      if (String(r.signal ?? "").toUpperCase() === "BUY") prev.buys += 1;
-      byDay.set(key, prev);
-    }
-
-    const out: number[] = [];
-    const today = new Date();
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-      const key = `${y}-${m}-${dd}`;
-
-      const v = byDay.get(key);
-      if (!v || v.total === 0) out.push(50);
-      else out.push(Math.round((v.buys / v.total) * 100));
-    }
-    return out;
-  }, [signals]);
-
-  const topBuy0 = topBuy?.[0];
-  const topSell0 = topSell?.[0];
-
-  // ------------------------
-  // Heatmap controls
-  // ------------------------
-  const [heatFilter, setHeatFilter] = useState<"ALL" | "BUY" | "SELL">("ALL");
-  const [minScore, setMinScore] = useState<number>(0);
-  const [heatLimit, setHeatLimit] = useState<number>(48);
-
-  const scoreMax = useMemo(() => {
-    let mx = 0;
-    for (const s of signals ?? []) {
-      mx = Math.max(mx, Number(s?.score ?? 0));
-    }
-    return mx || 30;
-  }, [signals]);
-
-  const heatRows = useMemo(() => {
-    const list = (signals ?? [])
-      .map((s) => {
-        const symbol = normalizeSymbol(String(s?.symbol || ""));
-        return {
-          symbol,
-          plain: symbolToPlain(symbol),
-          signal: String(s?.signal || "").toUpperCase(),
-          score: Number(s?.score ?? 0),
-          created_at: s?.created_at ?? null,
-          reasons: s?.reasons ?? null,
-        };
-      })
-      // en güçlüleri öne al
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
-
-    const filtered = list.filter((x) => {
-      if (heatFilter !== "ALL" && x.signal !== heatFilter) return false;
-      if ((x.score ?? 0) < minScore) return false;
-      return true;
-    });
-
-    return filtered.slice(0, heatLimit);
-  }, [signals, heatFilter, minScore, heatLimit]);
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#0d1117] p-4 md:p-8 custom-scrollbar">
@@ -374,7 +382,7 @@ export default function DashboardView({
           </div>
         </div>
 
-        {(!signals || signals.length === 0) ? (
+        {normalizedSignals.length === 0 ? (
           <div className="text-sm text-gray-500">Henüz veri yok.</div>
         ) : heatRows.length === 0 ? (
           <div className="text-sm text-gray-500">
@@ -383,39 +391,45 @@ export default function DashboardView({
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-12 gap-3">
             {heatRows.map((s, i) => {
+              const heatKey = `${s.symbol}-${s.createdAt ?? i}`;
+              const isActive = activeHeatKey === heatKey;
               const isBuy = s.signal === "BUY";
-              const intensity01 = clamp((Number(s.score ?? 0) || 0) / Math.max(1, scoreMax), 0, 1);
+              const intensity01 = clamp(s.score / Math.max(1, scoreMax), 0, 1);
               const style = heatStyle(isBuy, intensity01);
 
-              const title = (
+              const title = isActive ? (
                 <div className="space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="font-bold">{symbolToPlain(s.symbol)}</div>
-                    <div className="text-[10px] text-gray-500">{s.created_at ? timeAgo(s.created_at) : ""}</div>
+                    <div className="font-bold">{s.plain}</div>
+                    <div className="text-[10px] text-gray-500">{s.createdAt ? timeAgo(s.createdAt) : ""}</div>
                   </div>
                   <div className="text-[11px] text-gray-300">
                     Signal:{" "}
                     <b className={isBuy ? "text-green-300" : "text-red-300"}>
                       {s.signal || "—"}
                     </b>{" "}
-                    • Score: <b>{s.score ?? "—"}</b>
+                    • Score: <b>{s.score}</b>
                   </div>
                   <div className="text-[10px] text-gray-400 line-clamp-2">
-                    {(s.reasons ?? "").slice(0, 180) || "—"}
+                    {s.reasons.join(", ").slice(0, 180) || "—"}
                   </div>
                 </div>
-              );
+              ) : null;
 
               return (
-                <HoverCard key={`${s.symbol}-${i}`} title={title}>
+                <HoverCard key={heatKey} active={isActive} title={title}>
                   <button
                     onClick={() => onSelectSymbol(s.symbol)}
+                    onMouseEnter={() => setActiveHeatKey(heatKey)}
+                    onMouseLeave={() => setActiveHeatKey((current) => (current === heatKey ? null : current))}
+                    onFocus={() => setActiveHeatKey(heatKey)}
+                    onBlur={() => setActiveHeatKey((current) => (current === heatKey ? null : current))}
                     style={style}
                     className="aspect-square flex flex-col items-center justify-center rounded-xl transition-all hover:scale-110 active:scale-95 border"
                     aria-label={`Open ${s.symbol}`}
                   >
-                    <span className="text-[10px] font-bold">{symbolToPlain(s.symbol)}</span>
-                    <span className="text-[8px] opacity-70">{s.score ?? "—"}</span>
+                    <span className="text-[10px] font-bold">{s.plain}</span>
+                    <span className="text-[8px] opacity-70">{s.score}</span>
                   </button>
                 </HoverCard>
               );
