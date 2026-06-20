@@ -8,6 +8,28 @@ export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
 
+const SIGNAL_SELECT = "id,symbol,signal,price,score,reasons,created_at,timeframe,exchange,source,name,type,category,rvol,outcome";
+const SIGNAL_SELECT_LEGACY = "id,symbol,signal,price,score,reasons,created_at,name,type,category,rvol,outcome";
+
+const OPTIONAL_SIGNAL_COLUMNS = ["timeframe", "exchange", "source"];
+
+function isMissingSignalColumnError(error: { message?: string; details?: string; hint?: string; code?: string } | null) {
+  if (!error) return false;
+
+  const text = [error.message, error.details, error.hint, error.code].filter(Boolean).join(" ").toLowerCase();
+  return OPTIONAL_SIGNAL_COLUMNS.some((column) => text.includes(column.toLowerCase()));
+}
+
+async function withSignalSelectFallback<T>(
+  run: (select: string) => PromiseLike<{ data: T | null; error: any }>
+): Promise<{ data: T | null; error: any }> {
+  const result = await run(SIGNAL_SELECT);
+
+  if (!isMissingSignalColumnError(result.error)) return result;
+
+  return run(SIGNAL_SELECT_LEGACY);
+}
+
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
   const local = new Date(date.getTime() + tzOffsetMs);
@@ -50,38 +72,50 @@ export async function GET(req: Request) {
   if (scope === "todayTop") {
     const { startUTC, endUTC } = istanbulDayRange();
 
-    const base = () =>
-      supa
-        .from("signals")
-        .select("*")
-        .gte("created_at", startUTC.toISOString())
-        .lt("created_at", endUTC.toISOString())
-        .not("score", "is", null);
+    const runTopQueries = async (select: string) => {
+      const base = () =>
+        supa
+          .from("signals")
+          .select(select)
+          .gte("created_at", startUTC.toISOString())
+          .lt("created_at", endUTC.toISOString())
+          .not("score", "is", null);
 
-    const { data: topBuy, error: e1 } = await base()
-      .eq("signal", "BUY")
-      .order("score", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(5);
+      const { data: topBuy, error: e1 } = await base()
+        .eq("signal", "BUY")
+        .order("score", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(5);
 
-    const { data: topSell, error: e2 } = await base()
-      .eq("signal", "SELL")
-      .order("score", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(5);
+      const { data: topSell, error: e2 } = await base()
+        .eq("signal", "SELL")
+        .order("score", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(5);
 
-    if (e1 || e2) {
-      return noStore({ ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message }, { status: 500 });
+      return { topBuy, topSell, error: e1 ?? e2 };
+    };
+
+    let { topBuy, topSell, error } = await runTopQueries(SIGNAL_SELECT);
+
+    if (isMissingSignalColumnError(error)) {
+      ({ topBuy, topSell, error } = await runTopQueries(SIGNAL_SELECT_LEGACY));
+    }
+
+    if (error) {
+      return noStore({ ok: false, topBuy: [], topSell: [], error: error.message }, { status: 500 });
     }
 
     return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
   }
 
-  const { data, error } = await supa
-    .from("signals")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const { data, error } = await withSignalSelectFallback((select) =>
+    supa
+      .from("signals")
+      .select(select)
+      .order("created_at", { ascending: false })
+      .limit(500)
+  );
 
   if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
   return noStore({ ok: true, data: data ?? [] });
@@ -108,11 +142,13 @@ export async function POST(req: Request) {
     return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
   }
 
-  const { data, error } = await supa
-    .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
-    .select("*")
-    .single();
+  const { data, error } = await withSignalSelectFallback((select) =>
+    supa
+      .from("signals")
+      .insert([{ symbol, signal, price, score, reasons, created_at }])
+      .select(select)
+      .single()
+  );
 
   if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
   return noStore({ ok: true, data });
@@ -128,12 +164,14 @@ export async function PATCH(req: Request) {
   const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
   if (!id) return noStore({ ok: false, error: "Missing id" }, { status: 400 });
 
-  const { data, error } = await supa
-    .from("signals")
-    .update({ outcome })
-    .eq("id", id)
-    .select("*")
-    .single();
+  const { data, error } = await withSignalSelectFallback((select) =>
+    supa
+      .from("signals")
+      .update({ outcome })
+      .eq("id", id)
+      .select(select)
+      .single()
+  );
 
   if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
   return noStore({ ok: true, data });
