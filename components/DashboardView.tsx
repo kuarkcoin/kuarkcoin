@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { symbolToPlain, timeAgo } from "@/constants/terminal";
 
 type SignalTone = "BUY" | "SELL" | string;
+type HeatSelectionMode = "latest" | "strongest";
 
 export type DashboardSignalRow = {
   symbol: string;
@@ -36,6 +37,12 @@ function normalizeSymbol(sym: string) {
 
 function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n));
+}
+
+function getSignalTimestamp(createdAt?: string | null) {
+  if (!createdAt) return 0;
+  const timestamp = new Date(createdAt).getTime();
+  return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
 // Heatmap intensity (score → opacity/contrast) — INLINE STYLE (Tailwind purge sorunu yok)
@@ -110,34 +117,6 @@ export default function DashboardView({
   error = null,
 }: DashboardProps) {
   // ------------------------
-  // Loading / Error / Empty
-  // ------------------------
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-gray-400 animate-pulse">Piyasa taranıyor...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-red-400">{error}</div>
-      </div>
-    );
-  }
-
-  const hasAny = (signals?.length ?? 0) + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
-  if (!hasAny) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-gray-500">Henüz sinyal üretilmedi.</div>
-      </div>
-    );
-  }
-
-  // ------------------------
   // Sentiment + history
   // ------------------------
   const sentimentScore = useMemo(() => {
@@ -196,6 +175,21 @@ export default function DashboardView({
   const [heatFilter, setHeatFilter] = useState<"ALL" | "BUY" | "SELL">("ALL");
   const [minScore, setMinScore] = useState<number>(0);
   const [heatLimit, setHeatLimit] = useState<number>(48);
+  const [heatSelectionMode, setHeatSelectionMode] = useState<HeatSelectionMode>("latest");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    const queryMode = url.searchParams.get("mode");
+    if (queryMode === "strongest" && heatSelectionMode !== "strongest") {
+      setHeatSelectionMode("strongest");
+      return;
+    }
+
+    url.searchParams.set("mode", heatSelectionMode);
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }, [heatSelectionMode]);
 
   const scoreMax = useMemo(() => {
     let mx = 0;
@@ -209,26 +203,88 @@ export default function DashboardView({
     const list = (signals ?? [])
       .map((s) => {
         const symbol = normalizeSymbol(String(s?.symbol || ""));
+        const createdAt =
+          s?.created_at ??
+          (typeof s?.datetime === "number" ? new Date(s.datetime * 1000).toISOString() : null);
+
         return {
           symbol,
           plain: symbolToPlain(symbol),
           signal: String(s?.signal || "").toUpperCase(),
           score: Number(s?.score ?? 0),
-          created_at: s?.created_at ?? null,
+          createdAt,
+          created_at: createdAt,
           reasons: s?.reasons ?? null,
         };
-      })
-      // en güçlüleri öne al
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+      });
 
-    const filtered = list.filter((x) => {
+    const bySymbol = new Map<string, (typeof list)[number]>();
+    for (const item of list) {
+      const previous = bySymbol.get(item.symbol);
+      if (!previous) {
+        bySymbol.set(item.symbol, item);
+        continue;
+      }
+
+      const itemTimestamp = getSignalTimestamp(item.createdAt);
+      const previousTimestamp = getSignalTimestamp(previous.createdAt);
+      const shouldReplace =
+        heatSelectionMode === "latest"
+          ? itemTimestamp > previousTimestamp
+          : item.score > previous.score ||
+            (item.score === previous.score && itemTimestamp > previousTimestamp);
+
+      if (shouldReplace) bySymbol.set(item.symbol, item);
+    }
+
+    const selected = Array.from(bySymbol.values()).sort((a, b) => {
+      if (heatSelectionMode === "latest") {
+        return getSignalTimestamp(b.createdAt) - getSignalTimestamp(a.createdAt);
+      }
+
+      return (
+        (b.score ?? 0) - (a.score ?? 0) ||
+        getSignalTimestamp(b.createdAt) - getSignalTimestamp(a.createdAt)
+      );
+    });
+
+    const filtered = selected.filter((x) => {
       if (heatFilter !== "ALL" && x.signal !== heatFilter) return false;
       if ((x.score ?? 0) < minScore) return false;
       return true;
     });
 
     return filtered.slice(0, heatLimit);
-  }, [signals, heatFilter, minScore, heatLimit]);
+  }, [signals, heatFilter, minScore, heatLimit, heatSelectionMode]);
+
+  const hasAny = (signals?.length ?? 0) + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
+
+  // ------------------------
+  // Loading / Error / Empty
+  // ------------------------
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-gray-400 animate-pulse">Piyasa taranıyor...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-red-400">{error}</div>
+      </div>
+    );
+  }
+
+  if (!hasAny) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-gray-500">Henüz sinyal üretilmedi.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#0d1117] p-4 md:p-8 custom-scrollbar">
@@ -327,6 +383,25 @@ export default function DashboardView({
 
           <div className="flex flex-wrap gap-2">
             <div className="flex items-center gap-1 border border-gray-800 rounded-xl p-1 bg-[#0d1117]">
+              {([
+                { key: "latest", label: "En Yeni Sinyal" },
+                { key: "strongest", label: "En Güçlü Sinyal" },
+              ] as const).map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setHeatSelectionMode(key)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                    heatSelectionMode === key
+                      ? "bg-purple-600 text-white"
+                      : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/40"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-1 border border-gray-800 rounded-xl p-1 bg-[#0d1117]">
               {(["ALL", "BUY", "SELL"] as const).map((k) => (
                 <button
                   key={k}
@@ -366,6 +441,7 @@ export default function DashboardView({
                 setHeatLimit(48);
                 setHeatFilter("ALL");
                 setMinScore(0);
+                setHeatSelectionMode("latest");
               }}
               className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-800 bg-[#0d1117] hover:bg-gray-800/40 text-gray-400 transition-colors"
             >
