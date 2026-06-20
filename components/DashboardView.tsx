@@ -1,18 +1,15 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { symbolToPlain, timeAgo } from "@/constants/terminal";
+import { symbolToPlain } from "@/constants/terminal";
+import {
+  HEATMAP_FALLBACKS,
+  type ApiSignalRecord,
+  type HeatmapSignal,
+  mapSignalToHeatmap,
+} from "@/lib/map-signal-to-heatmap";
 
-type SignalTone = "BUY" | "SELL" | string;
-
-export type DashboardSignalRow = {
-  symbol: string;
-  signal?: SignalTone | null;
-  score?: number | null;
-  created_at?: string | null;
-  datetime?: number | null;
-  reasons?: string | null;
-};
+export type DashboardSignalRow = ApiSignalRecord;
 
 export type DashboardProps = {
   signals: DashboardSignalRow[];
@@ -205,25 +202,15 @@ export default function DashboardView({
     return mx || 30;
   }, [signals]);
 
-  const heatRows = useMemo(() => {
+  const heatRows = useMemo<HeatmapSignal[]>(() => {
     const list = (signals ?? [])
-      .map((s) => {
-        const symbol = normalizeSymbol(String(s?.symbol || ""));
-        return {
-          symbol,
-          plain: symbolToPlain(symbol),
-          signal: String(s?.signal || "").toUpperCase(),
-          score: Number(s?.score ?? 0),
-          created_at: s?.created_at ?? null,
-          reasons: s?.reasons ?? null,
-        };
-      })
+      .map(mapSignalToHeatmap)
       // en güçlüleri öne al
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+      .sort((a, b) => b.score - a.score);
 
     const filtered = list.filter((x) => {
       if (heatFilter !== "ALL" && x.signal !== heatFilter) return false;
-      if ((x.score ?? 0) < minScore) return false;
+      if (x.score < minScore) return false;
       return true;
     });
 
@@ -381,27 +368,29 @@ export default function DashboardView({
             Filtrelere göre sonuç yok. (MinScore/BUY-SELL filtresini düşür)
           </div>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-12 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
             {heatRows.map((s, i) => {
               const isBuy = s.signal === "BUY";
               const intensity01 = clamp((Number(s.score ?? 0) || 0) / Math.max(1, scoreMax), 0, 1);
               const style = heatStyle(isBuy, intensity01);
+              const indicatorText =
+                s.indicators.length > 0 ? s.indicators.join(", ") : HEATMAP_FALLBACKS.indicators;
 
               const title = (
                 <div className="space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="font-bold">{symbolToPlain(s.symbol)}</div>
-                    <div className="text-[10px] text-gray-500">{s.created_at ? timeAgo(s.created_at) : ""}</div>
+                    <div className="font-bold truncate" title={s.plain}>{s.plain}</div>
+                    <div className="text-[10px] text-gray-500 truncate" title={s.shortTime}>{s.shortTime}</div>
                   </div>
                   <div className="text-[11px] text-gray-300">
                     Signal:{" "}
                     <b className={isBuy ? "text-green-300" : "text-red-300"}>
                       {s.signal || "—"}
                     </b>{" "}
-                    • Score: <b>{s.score ?? "—"}</b>
+                    • Score: <b>{s.score ?? "—"}</b> • Fiyat: <b>{s.price}</b>
                   </div>
-                  <div className="text-[10px] text-gray-400 line-clamp-2">
-                    {(s.reasons ?? "").slice(0, 180) || "—"}
+                  <div className="text-[10px] text-gray-400 line-clamp-2" title={indicatorText}>
+                    {indicatorText}
                   </div>
                 </div>
               );
@@ -411,11 +400,28 @@ export default function DashboardView({
                   <button
                     onClick={() => onSelectSymbol(s.symbol)}
                     style={style}
-                    className="aspect-square flex flex-col items-center justify-center rounded-xl transition-all hover:scale-110 active:scale-95 border"
+                    className="min-h-32 w-full rounded-xl border p-2 text-left transition-all hover:scale-105 active:scale-95"
                     aria-label={`Open ${s.symbol}`}
                   >
-                    <span className="text-[10px] font-bold">{symbolToPlain(s.symbol)}</span>
-                    <span className="text-[8px] opacity-70">{s.score ?? "—"}</span>
+                    <div className="flex items-start justify-between gap-1">
+                      <span className="min-w-0 truncate text-[11px] font-black" title={s.plain}>{s.plain}</span>
+                      <span
+                        className={`shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-black ${
+                          isBuy ? "bg-green-950/50 text-green-100" : "bg-red-950/50 text-red-100"
+                        }`}
+                      >
+                        {s.signal || "—"}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between gap-2 text-[10px] opacity-85">
+                      <span className="font-mono" title={`Score: ${s.score}`}>Skor {s.score ?? "—"}</span>
+                      <span className="truncate" title={s.shortTime}>{s.shortTime}</span>
+                    </div>
+                    <div className="mt-1 truncate text-[10px] opacity-80" title={s.timeframe}>{s.timeframe}</div>
+                    <div className="mt-1 truncate text-[10px] opacity-80" title={s.price}>{s.price}</div>
+                    <div className="mt-2 line-clamp-2 text-[9px] leading-snug opacity-75" title={indicatorText}>
+                      {indicatorText}
+                    </div>
                   </button>
                 </HoverCard>
               );
