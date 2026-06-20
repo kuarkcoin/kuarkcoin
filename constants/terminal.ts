@@ -1,4 +1,5 @@
 // src/constants/terminal.ts
+import { normalizeReasonKey as normalizeSignalReasonKey, parseSignalIndicatorKeys } from "@/lib/normalize-signal-indicators";
 
 // ── Asset listeleri ───────────────────────────────
 export const ASSETS = {
@@ -101,50 +102,10 @@ export function symbolToPlain(sym: string) {
 
 // Pine → UI reason normalize
 export function normalizeReasonKey(raw: string) {
-  // "RSI30_OK(+20)" gibi stringlerden sadece anahtar kısmını al
-  const k = raw.split("(")[0].trim();
-
-  const map: Record<string, string> = {
-    // BUY
-    BLUE_REV: "BLUE_STAR",
-    RSI_BULLDIV3: "RSI_DIV",
-    HID_BULLDIV3: "HID_DIV",
-    MULTIDIV: "MULTIDIV",
-    RSI30_OK: "RSI_30",
-    MACD_OK: "MACD_BULL",
-    "MA5/20_OK": "MA5_20_UP",
-    VWAP_UP: "VWAP_UP",
-    VOL_UP: "VOL_BOOST",
-    GC_OK: "GOLDEN_CROSS",
-    D1_CONFIRM: "D1_CONFIRM",
-    FLAG_BRK: "BULL_FLAG",
-    FLAG_BREAKOUT: "BULL_FLAG",
-    BULL_FLAG: "BULL_FLAG",
-    NEAR_SUP: "NEAR_SUP",
-    NEAR_RES: "NEAR_RES",
-
-    // SELL
-    TOP_REV: "RED_STAR",
-    RSI_BEARDIV3: "RSI_DIV",
-    HID_BEARDIV3: "HID_DIV",
-    RSI70_DN: "RSI_70_DOWN",
-    VWAP_DN: "VWAP_DOWN",
-    "MA5/20_DN": "MA5_20_DOWN",
-    BEAR_CANDLE: "SELL_CANDLE",
-    VOL_DUMP: "SELL_PRESSURE",
-  };
-
-  return map[k] ?? k;
+  return normalizeSignalReasonKey(raw);
 }
 
 // reasons parsing (dedupe + boşları at)
 export function parseReasons(reasons: string | null) {
-  const keys = (reasons || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map(normalizeReasonKey);
-
-  // aynı rozet tekrar basmasın
-  return Array.from(new Set(keys));
+  return parseSignalIndicatorKeys(reasons);
 }

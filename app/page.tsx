@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
 import TopBuyTrackingTable from "@/components/top-buy-tracking-table";
+import { parseSignalIndicatorKeys } from "@/lib/normalize-signal-indicators";
 
 // =====================
 // TYPES
@@ -95,12 +96,7 @@ function Badge({ children }: { children: ReactNode }) {
 }
 
 function parseReasons(reasons: string | null): string[] {
-  if (!reasons) return [];
-  return reasons
-    .split(/[,;|\n]+/g)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 8);
+  return parseSignalIndicatorKeys(reasons).slice(0, 8);
 }
 
 function formatPrice(n: number | null) {
