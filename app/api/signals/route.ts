@@ -1,4 +1,5 @@
 // app/api/signals/route.ts
+import { createHash } from "crypto";
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
@@ -35,6 +36,14 @@ function noStore(json: any, init?: ResponseInit) {
 }
 
 // TradingView t bazen seconds bazen ms gelebilir
+function deterministicEventId(parts: Array<string | number | null>) {
+  return createHash("sha256").update(parts.map((part) => String(part ?? "")).join(" | ")).digest("hex");
+}
+
+function duplicateResponse(error: { code?: string }) {
+  return error.code === "23505" ? noStore({ ok: true, duplicate: true, data: null }) : null;
+}
+
 function parseTvTime(t: any) {
   const n = Number(t);
   if (!Number.isFinite(n) || n <= 0) return new Date();
@@ -102,7 +111,11 @@ export async function POST(req: Request) {
   const price = body.price == null ? null : Number(body.price);
   const score = body.score == null ? null : Number(body.score);
   const reasons = body.reasons == null ? null : String(body.reasons);
-  const created_at = body.t ? parseTvTime(body.t) : new Date();
+  const timeframe = body.timeframe == null ? null : String(body.timeframe).trim();
+  const hasTime = body.t != null && String(body.t).trim() !== "";
+  const rawEventId = body.event_id == null ? null : String(body.event_id).trim();
+  const event_id = rawEventId || (hasTime ? deterministicEventId([symbol, signal, timeframe, String(body.t), price, score]) : null);
+  const created_at = hasTime ? parseTvTime(body.t) : new Date();
 
   if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
     return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
@@ -110,12 +123,18 @@ export async function POST(req: Request) {
 
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([{ symbol, signal, price, score, reasons, event_id, created_at }])
     .select("*")
     .single();
 
-  if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
-  return noStore({ ok: true, data });
+  if (error) {
+    const duplicate = duplicateResponse(error);
+    if (duplicate) return duplicate;
+
+    return noStore({ ok: false, error: error.message }, { status: 500 });
+  }
+
+  return noStore({ ok: true, duplicate: false, data });
 }
 
 export async function PATCH(req: Request) {
