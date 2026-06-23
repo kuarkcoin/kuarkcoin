@@ -1,6 +1,8 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { getSignalEntitlement } from "@/lib/subscriptions/get-entitlements";
+import { BASIC_SIGNAL_FIELDS, PREMIUM_SIGNAL_FIELDS, type SignalEntitlement } from "@/lib/subscriptions/plans";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,6 +26,30 @@ function istanbulDayRange(date = new Date()) {
   return { startUTC, endUTC };
 }
 
+function applySignalEntitlement<T extends Record<string, any>>(rows: T[], entitlement: SignalEntitlement) {
+  return rows.map((row) => {
+    if (entitlement.includePremiumFields) return row;
+
+    const safe: Record<string, any> = {};
+    for (const field of BASIC_SIGNAL_FIELDS) {
+      if (field in row) safe[field] = row[field];
+    }
+
+    // Keep legacy clients that read these keys from crashing, but never expose
+    // premium values to free/anonymous users.
+    for (const field of PREMIUM_SIGNAL_FIELDS) {
+      if (field in row) safe[field] = null;
+    }
+
+    return safe;
+  });
+}
+
+function entitlementCutoff(entitlement: SignalEntitlement) {
+  if (entitlement.realtime || entitlement.delayMinutes <= 0) return null;
+  return new Date(Date.now() - entitlement.delayMinutes * 60 * 1000).toISOString();
+}
+
 function noStore(json: any, init?: ResponseInit) {
   return NextResponse.json(json, {
     ...init,
@@ -44,19 +70,25 @@ function parseTvTime(t: any) {
 
 export async function GET(req: Request) {
   const supa = supabaseServer();
+  const entitlement = await getSignalEntitlement(req, supa);
+  const cutoff = entitlementCutoff(entitlement);
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
 
   if (scope === "todayTop") {
     const { startUTC, endUTC } = istanbulDayRange();
 
-    const base = () =>
-      supa
+    const base = () => {
+      let query = supa
         .from("signals")
         .select("*")
         .gte("created_at", startUTC.toISOString())
         .lt("created_at", endUTC.toISOString())
         .not("score", "is", null);
+
+      if (cutoff) query = query.lte("created_at", cutoff);
+      return query;
+    };
 
     const { data: topBuy, error: e1 } = await base()
       .eq("signal", "BUY")
@@ -74,17 +106,26 @@ export async function GET(req: Request) {
       return noStore({ ok: false, topBuy: [], topSell: [], error: (e1 ?? e2)?.message }, { status: 500 });
     }
 
-    return noStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
+    return noStore({
+      ok: true,
+      entitlement: entitlement.plan,
+      topBuy: applySignalEntitlement(topBuy ?? [], entitlement),
+      topSell: applySignalEntitlement(topSell ?? [], entitlement),
+    });
   }
 
-  const { data, error } = await supa
+  let query = supa
     .from("signals")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(500);
+    .limit(entitlement.historyLimit);
+
+  if (cutoff) query = query.lte("created_at", cutoff);
+
+  const { data, error } = await query;
 
   if (error) return noStore({ ok: false, data: [], error: error.message }, { status: 500 });
-  return noStore({ ok: true, data: data ?? [] });
+  return noStore({ ok: true, entitlement: entitlement.plan, data: applySignalEntitlement(data ?? [], entitlement) });
 }
 
 export async function POST(req: Request) {
