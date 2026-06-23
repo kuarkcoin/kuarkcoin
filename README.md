@@ -6,7 +6,7 @@ Ready-to-run Next.js 14 + Prisma + Tailwind project for a CEFR English test (A1â
 ```
 npm install
 ```
-2. Create `.env` from `.env.example` and set `DATABASE_URL` (Supabase/Postgres).
+2. Create `.env.local` from `.env.example` and configure the Supabase, AI, market-data, cron, and optional payment/email variables documented there. `DATABASE_URL` is legacy-only and is not used by the current Supabase JS client.
 3. Generate Prisma client & create tables
 ```
 npx prisma migrate dev
