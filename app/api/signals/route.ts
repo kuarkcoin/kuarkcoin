@@ -1,6 +1,7 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { MAX_SIGNAL_BODY_BYTES, validateSignalPayload } from "@/lib/signals/validate-signal-payload";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,14 +33,6 @@ function noStore(json: any, init?: ResponseInit) {
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
     },
   });
-}
-
-// TradingView t bazen seconds bazen ms gelebilir
-function parseTvTime(t: any) {
-  const n = Number(t);
-  if (!Number.isFinite(n) || n <= 0) return new Date();
-  // 1e12 ~ 2001-09-09 in ms. bunun altı büyük ihtimal seconds
-  return new Date(n < 1e12 ? n * 1000 : n);
 }
 
 export async function GET(req: Request) {
@@ -90,27 +83,37 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const supa = supabaseServer();
 
-  const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
-
-  if (body.secret !== process.env.SCAN_SECRET) {
-    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (contentLength > MAX_SIGNAL_BODY_BYTES) {
+    return noStore({ ok: false, error: "Payload too large" }, { status: 413 });
   }
 
-  const symbol = String(body.symbol ?? "").trim();
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
-  const reasons = body.reasons == null ? null : String(body.reasons);
-  const created_at = body.t ? parseTvTime(body.t) : new Date();
+  const rawBody = await req.text().catch(() => null);
+  if (rawBody == null) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  if (Buffer.byteLength(rawBody, "utf8") > MAX_SIGNAL_BODY_BYTES) {
+    return noStore({ ok: false, error: "Payload too large" }, { status: 413 });
+  }
 
-  if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
-    return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
+  let body: unknown;
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  }
+
+  const validation = validateSignalPayload(body);
+  if (!validation.ok) {
+    return noStore({ ok: false, error: "Validation error", errors: validation.errors }, { status: 400 });
+  }
+
+  const { secret, ...signalPayload } = validation.value;
+  if (secret !== process.env.SCAN_SECRET) {
+    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([signalPayload])
     .select("*")
     .single();
 
