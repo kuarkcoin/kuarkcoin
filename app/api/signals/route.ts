@@ -1,5 +1,6 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const runtime = "nodejs";
@@ -124,9 +125,22 @@ export async function PATCH(req: Request) {
   const body = await req.json().catch(() => null);
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
+  const admin = await requireAdmin(req, body, supa);
+  if (!admin.ok) return noStore({ ok: false, error: admin.error }, { status: admin.status });
+
   const id = Number(body.id);
   const outcome: Outcome = body.outcome === "WIN" ? "WIN" : body.outcome === "LOSS" ? "LOSS" : null;
   if (!id) return noStore({ ok: false, error: "Missing id" }, { status: 400 });
+
+  const { data: existing, error: existingError } = await supa
+    .from("signals")
+    .select("id,outcome")
+    .eq("id", id)
+    .single();
+
+  if (existingError) return noStore({ ok: false, error: existingError.message }, { status: 500 });
+
+  const oldOutcome: Outcome = existing.outcome === "WIN" ? "WIN" : existing.outcome === "LOSS" ? "LOSS" : null;
 
   const { data, error } = await supa
     .from("signals")
@@ -136,5 +150,20 @@ export async function PATCH(req: Request) {
     .single();
 
   if (error) return noStore({ ok: false, error: error.message }, { status: 500 });
+
+  if (oldOutcome !== outcome) {
+    const { error: auditError } = await supa.from("audit_logs").insert([
+      {
+        actor: admin.actor,
+        old_value: oldOutcome,
+        new_value: outcome,
+        signal_id: id,
+        created_at: new Date().toISOString(),
+      },
+    ]);
+
+    if (auditError) return noStore({ ok: false, error: auditError.message }, { status: 500 });
+  }
+
   return noStore({ ok: true, data });
 }
