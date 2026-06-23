@@ -1,6 +1,7 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { normalizeSignalIndicators } from "@/lib/normalize-signal-indicators";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -102,6 +103,7 @@ export async function POST(req: Request) {
   const price = body.price == null ? null : Number(body.price);
   const score = body.score == null ? null : Number(body.score);
   const reasons = body.reasons == null ? null : String(body.reasons);
+  const indicators = normalizeSignalIndicators(body.reasons);
   const created_at = body.t ? parseTvTime(body.t) : new Date();
 
   if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
@@ -110,7 +112,7 @@ export async function POST(req: Request) {
 
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([{ symbol, signal, price, score, reasons, indicators, created_at }])
     .select("*")
     .single();
 
