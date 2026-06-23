@@ -19,7 +19,7 @@ async function fetchNewsServer(symbol: string, reasons: string | null) {
     .filter(Boolean)
     .join(",");
 
-  const url = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}` +
+  const url = `${process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}` +
     `/api/news?symbol=${encodeURIComponent(symbol)}&max=6&reasons=${encodeURIComponent(reasonKeys)}`;
 
   const r = await fetch(url, { cache: "no-store" });
