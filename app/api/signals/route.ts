@@ -1,4 +1,5 @@
 // app/api/signals/route.ts
+import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
@@ -22,6 +23,18 @@ function istanbulDayRange(date = new Date()) {
   const endUTC = new Date(endLocal.getTime() - tzOffsetMs);
 
   return { startUTC, endUTC };
+}
+
+function safeSecretEquals(value: unknown, expected: string) {
+  const supplied = Buffer.from(String(value ?? ""));
+  const configured = Buffer.from(expected);
+
+  if (supplied.length !== configured.length) {
+    // Keep failed comparisons on a timing-safe path without comparing differently sized buffers.
+    return timingSafeEqual(configured, Buffer.from(configured.map(() => 0))) && false;
+  }
+
+  return timingSafeEqual(supplied, configured);
 }
 
 function noStore(json: any, init?: ResponseInit) {
@@ -88,12 +101,17 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const scanSecret = process.env.SCAN_SECRET;
+  if (!scanSecret) {
+    return noStore({ ok: false, error: "Webhook secret is not configured" }, { status: 503 });
+  }
+
   const supa = supabaseServer();
 
   const body = await req.json().catch(() => null);
   if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
-  if (body.secret !== process.env.SCAN_SECRET) {
+  if (!safeSecretEquals(body.secret, scanSecret)) {
     return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
