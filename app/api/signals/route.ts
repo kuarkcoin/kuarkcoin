@@ -1,6 +1,7 @@
 // app/api/signals/route.ts
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { checkScanSecret, filterSignalFields, validateSignalPayload } from "@/lib/signal-utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,14 +33,6 @@ function noStore(json: any, init?: ResponseInit) {
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
     },
   });
-}
-
-// TradingView t bazen seconds bazen ms gelebilir
-function parseTvTime(t: any) {
-  const n = Number(t);
-  if (!Number.isFinite(n) || n <= 0) return new Date();
-  // 1e12 ~ 2001-09-09 in ms. bunun altı büyük ihtimal seconds
-  return new Date(n < 1e12 ? n * 1000 : n);
 }
 
 export async function GET(req: Request) {
@@ -91,26 +84,28 @@ export async function POST(req: Request) {
   const supa = supabaseServer();
 
   const body = await req.json().catch(() => null);
-  if (!body) return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
+  if (!body || typeof body !== "object") return noStore({ ok: false, error: "Bad JSON" }, { status: 400 });
 
-  if (body.secret !== process.env.SCAN_SECRET) {
-    return noStore({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const secret = checkScanSecret((body as Record<string, unknown>).secret, process.env.SCAN_SECRET);
+  if (!secret.ok) return noStore({ ok: false, error: secret.error }, { status: secret.status });
 
-  const symbol = String(body.symbol ?? "").trim();
-  const signal = String(body.signal ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
-  const reasons = body.reasons == null ? null : String(body.reasons);
-  const created_at = body.t ? parseTvTime(body.t) : new Date();
+  const validated = validateSignalPayload(body as Record<string, unknown>);
+  if (!validated.ok) return noStore({ ok: false, error: validated.error }, { status: validated.status });
 
-  if (!symbol || (signal !== "BUY" && signal !== "SELL")) {
-    return noStore({ ok: false, error: "Missing symbol/signal" }, { status: 400 });
-  }
+  const row = filterSignalFields(validated.payload);
+
+  const duplicateQuery = await supa
+    .from("signals")
+    .select("id,event_id")
+    .eq("event_id", validated.payload.event_id)
+    .maybeSingle();
+
+  if (duplicateQuery.error) return noStore({ ok: false, error: duplicateQuery.error.message }, { status: 500 });
+  if (duplicateQuery.data) return noStore({ ok: true, duplicate: true, data: duplicateQuery.data });
 
   const { data, error } = await supa
     .from("signals")
-    .insert([{ symbol, signal, price, score, reasons, created_at }])
+    .insert([row])
     .select("*")
     .single();
 
