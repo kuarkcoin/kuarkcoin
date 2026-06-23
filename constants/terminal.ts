@@ -60,7 +60,7 @@ export const ASSET_LISTS: Record<AssetCategory, readonly string[]> = ASSETS;
 
 // ── UI Rozet Metinleri ────────────────────────────
 export const REASON_LABEL: Record<string, string> = {
-  // BUY
+  // BUY / normalized
   BLUE_STAR: "⭐ Mavi Yıldız",
   RSI_DIV: "🟤 RSI Divergence",
   HID_DIV: "🟠 Hidden Divergence",
@@ -75,14 +75,36 @@ export const REASON_LABEL: Record<string, string> = {
   BULL_FLAG: "🏁 Flama Breakout",
   NEAR_SUP: "🧱 Desteğe Yakın",
   NEAR_RES: "🧱 Dirence Yakın",
+  COMBO_CAPITULATION: "⚡ Kapitülasyon Dönüşü",
+  COMBO_SPRING_DIV: "🌱 Spring Divergence",
+  COMBO_DB_BREAKOUT: "Ⓦ İkili Dip Kırılımı",
 
-  // SELL
+  // SELL / normalized
   RED_STAR: "🔻 Kırmızı Yıldız",
   RSI_70_DOWN: "🔴 RSI 70 Altı",
   VWAP_DOWN: "🔻 VWAP Altı",
   MA5_20_DOWN: "⚠️ MA5 < MA20",
   SELL_CANDLE: "🕯️ Bear Candle",
   SELL_PRESSURE: "⚡ Satış Baskısı (Hacim)",
+
+  // Pine/raw aliases (tam uyumluluk için)
+  BLUE_REV: "⭐ Mavi Yıldız",
+  TOP_REV: "🔻 Kırmızı Yıldız",
+  RSI_BULLDIV3: "🟤 RSI Bullish Divergence",
+  RSI_BEARDIV3: "🔵 RSI Bearish Divergence",
+  HID_BULLDIV3: "🟠 Hidden Bullish Divergence",
+  HID_BEARDIV3: "🔵 Hidden Bearish Divergence",
+  FLAG_BRK: "🏁 Flama Breakout",
+  RSI30_OK: "🟣 RSI 30 Üstü",
+  RSI70_DN: "🔴 RSI 70 Altı",
+  MACD_OK: "📈 MACD Bull Cross",
+  "MA5/20_OK": "📊 MA5 > MA20",
+  "MA5/20_DN": "⚠️ MA5 < MA20",
+  VWAP_DN: "🔻 VWAP Altı",
+  VOL_UP: "📊 Hacim Artışı",
+  VOL_DUMP: "⚡ Satış Baskısı (Hacim)",
+  GC_OK: "🟡 Golden Cross",
+  BEAR_CANDLE: "🕯️ Bear Candle",
 };
 
 // ── Yardımcılar ───────────────────────────────────

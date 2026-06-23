@@ -1,5 +1,5 @@
 // src/lib/reasonTranslator.ts
-import { REASON_META, type ReasonMeta, type ReasonTone } from "./reasonMap";
+import { REASON_META, reasonTone, type ReasonMeta, type ReasonTone } from "./reasonMap";
 
 export type ParsedReason = {
   key: string;
@@ -47,10 +47,12 @@ function prio(r: ParsedReason) {
 }
 
 // --- Tone filtre (meta yoksa geçirme) ---
-function toneOk(r: ParsedReason, tone?: ReasonTone) {
+function toneOk(r: ParsedReason, tone?: ReasonTone, signal?: string | null) {
   if (!tone) return true; // filtre yok
   if (!r.meta) return false; // meta yoksa tone bilinmez
-  return r.meta.tone === tone || r.meta.tone === "NEUTRAL";
+
+  const effectiveTone = reasonTone(r.key, signal);
+  return effectiveTone === tone || effectiveTone === "NEUTRAL";
 }
 
 /**
@@ -65,6 +67,7 @@ export function reasonsToTechSentences(
     tone?: ReasonTone;
     limit?: number;
     forceKeys?: string[];
+    signal?: string | null;
   }
 ) {
   const limit = opts?.limit ?? 4;
@@ -73,7 +76,7 @@ export function reasonsToTechSentences(
   const parsed0 = parseReasonDetails(details);
 
   // 1) tone filtresi
-  const parsed = parsed0.filter((r) => toneOk(r, opts?.tone));
+  const parsed = parsed0.filter((r) => toneOk(r, opts?.tone, opts?.signal));
 
   // 2) priority sort
   parsed.sort((a, b) => prio(b) - prio(a));
@@ -110,9 +113,9 @@ export function reasonsToTechSentences(
  * UI’da chip/badge yapmak istersen:
  * label + icon + tone + priority döndürür.
  */
-export function reasonsToChips(details: string | null | undefined, tone?: ReasonTone) {
+export function reasonsToChips(details: string | null | undefined, tone?: ReasonTone, signal?: string | null) {
   const parsed0 = parseReasonDetails(details);
-  const parsed = parsed0.filter((r) => toneOk(r, tone)).sort((a, b) => prio(b) - prio(a));
+  const parsed = parsed0.filter((r) => toneOk(r, tone, signal)).sort((a, b) => prio(b) - prio(a));
 
   const uniq = new Map<string, { key: string; label: string; icon?: string; tone?: ReasonTone; priority: number }>();
 
@@ -121,7 +124,7 @@ export function reasonsToChips(details: string | null | undefined, tone?: Reason
 
     const label = r.meta?.label ?? r.key;
     const icon = r.meta?.chip?.icon;
-    const t = r.meta?.tone;
+    const t = r.meta ? reasonTone(r.key, signal) : undefined;
     const priority = r.meta?.priority ?? 0;
 
     uniq.set(r.key, { key: r.key, label, icon, tone: t, priority });
