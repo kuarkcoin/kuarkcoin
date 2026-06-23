@@ -41,6 +41,23 @@ export const REASON_META: Record<string, ReasonMeta> = {
     template: () =>
       "3 pivotlu RSI pozitif uyumsuzluk; satış baskısı zayıflıyor.",
   },
+
+  HID_BULLDIV3: {
+    tone: "BUY",
+    label: "Hidden Bull Div",
+    priority: 4,
+    chip: { icon: "🟠" },
+    template: () =>
+      "Hidden bullish divergence; trend devamı ve tepki ihtimalini destekler.",
+  },
+  MULTIDIV: {
+    tone: "NEUTRAL",
+    label: "MultiDiv",
+    priority: 4,
+    chip: { icon: "🧬" },
+    template: () =>
+      "RSI/MACD çoklu uyumsuzluk; yön sinyal tipine göre teyit edilmelidir.",
+  },
   RSI30_OK: {
     tone: "BUY",
     label: "Momentum Dönüşü",
@@ -98,6 +115,40 @@ export const REASON_META: Record<string, ReasonMeta> = {
       `Günlük zaman dilimi onayı${fmt(val)} büyük resimde trendi destekler.`,
   },
 
+
+  FLAG_BRK: {
+    tone: "BUY",
+    label: "Flama Kırılımı",
+    priority: 3,
+    chip: { icon: "🏁" },
+    template: () =>
+      "Flama kırılımı; sıkışma sonrası yukarı hareket potansiyelini artırır.",
+  },
+  NEAR_SUP: {
+    tone: "NEUTRAL",
+    label: "Desteğe Yakın",
+    priority: 2,
+    chip: { icon: "🧱" },
+    template: () =>
+      "Fiyat desteğe yakın; yön ana sinyal ve destek tepkisiyle değerlendirilmelidir.",
+  },
+  COMBO_SPRING_DIV: {
+    tone: "BUY",
+    label: "Spring Divergence",
+    priority: 5,
+    chip: { icon: "🌱" },
+    template: () =>
+      "Spring divergence kombinasyonu; destek süpürmesi sonrası dönüş ihtimalini güçlendirir.",
+  },
+  COMBO_DB_BREAKOUT: {
+    tone: "BUY",
+    label: "İkili Dip Kırılımı",
+    priority: 5,
+    chip: { icon: "Ⓦ" },
+    template: () =>
+      "İkili dip kırılımı; taban oluşumu sonrası yukarı devam ihtimalini destekler.",
+  },
+
   // =========================
   // SELL
   // =========================
@@ -116,6 +167,15 @@ export const REASON_META: Record<string, ReasonMeta> = {
     chip: { icon: "🔵" },
     template: () =>
       "RSI negatif uyumsuzluk; momentum kaybı ve tepe riski.",
+  },
+
+  HID_BEARDIV3: {
+    tone: "SELL",
+    label: "Hidden Bear Div",
+    priority: 4,
+    chip: { icon: "🔵" },
+    template: () =>
+      "Hidden bearish divergence; zayıf trend devamı ve satış riskini artırır.",
   },
   RSI70_DN: {
     tone: "SELL",
@@ -149,6 +209,23 @@ export const REASON_META: Record<string, ReasonMeta> = {
     template: () =>
       "Ayı mum formasyonu; satış baskısı artabilir.",
   },
+
+  NEAR_RES: {
+    tone: "NEUTRAL",
+    label: "Dirence Yakın",
+    priority: 2,
+    chip: { icon: "🧱" },
+    template: () =>
+      "Fiyat dirence yakın; yön ana sinyal ve direnç tepkisiyle değerlendirilmelidir.",
+  },
+  COMBO_CAPITULATION: {
+    tone: "NEUTRAL",
+    label: "Kapitülasyon Dönüşü",
+    priority: 5,
+    chip: { icon: "⚡" },
+    template: () =>
+      "Kapitülasyon dönüşü; panik satış sonrası tepki ihtimali ana sinyalle teyit edilmelidir.",
+  },
   VOL_DUMP: {
     tone: "SELL",
     label: "Hacimli Satış",
@@ -170,8 +247,14 @@ export function reasonIcon(key: string) {
   return REASON_META[key]?.chip?.icon ?? "";
 }
 
-export function reasonTone(key: string): ReasonTone {
-  return REASON_META[key]?.tone ?? "NEUTRAL";
+export function reasonTone(key: string, signal?: string | null): ReasonTone {
+  const tone = REASON_META[key]?.tone ?? "NEUTRAL";
+  if (tone !== "NEUTRAL") return tone;
+
+  const normalizedSignal = String(signal ?? "").toUpperCase();
+  if (normalizedSignal === "BUY" || normalizedSignal === "SELL") return normalizedSignal;
+
+  return "NEUTRAL";
 }
 
 export function reasonPriority(key: string) {
