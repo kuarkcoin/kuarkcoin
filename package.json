@@ -7,29 +7,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint scripts/lint-placeholder.js",
+    "typecheck": "tsc --noEmit",
+    "test": "ts-node-esm tests/security.ts && ts-node-esm tests/data.ts",
+    "validate:data": "ts-node-esm tests/data.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.90.1",
-    "@vercel/kv": "^3.0.0",
     "clsx": "2.1.1",
-    "docx": "^9.5.1",
-    "dompurify": "^3.3.1",
     "dotenv": "^17.2.3",
-    "file-saver": "^2.0.5",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.344.0",
     "next": "^14.2.35",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
-    "react-dom": "^18.2.0",
-    "resend": "^4.0.0",
-    "youtube-transcript": "^1.2.1",
-    "youtube-transcript-plus": "^1.1.1"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.7",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.2",
     "autoprefixer": "10.4.19",

@@ -1,47 +1,4 @@
-import Link from "next/link";
-import AppShell from "@/components/layout/AppShell";
-
-const sections = [
-  {
-    title: "Toplanan bilgiler",
-    body: "Kuarkcoin, hizmetin çalışması için gerekli teknik günlükler, kullanım verileri ve kullanıcı tarafından sağlanan bilgileri işleyebilir. Toplanan veriler ürün güvenliği, performans ve destek süreçleri için kullanılabilir.",
-  },
-  {
-    title: "Çerezler ve analitik",
-    body: "Platform deneyimini iyileştirmek, oturum güvenliğini sağlamak ve genel kullanım eğilimlerini anlamak için çerezler veya benzer teknolojiler kullanılabilir.",
-  },
-  {
-    title: "Üçüncü taraf kaynaklar",
-    body: "Piyasa verileri, haberler, finansal göstergeler ve benzeri içerikler üçüncü taraf servislerden alınabilir. Bu servislerin kendi gizlilik ve kullanım koşulları bulunabilir.",
-  },
-  {
-    title: "Veri güvenliği",
-    body: "Makul teknik ve idari önlemler uygulanır; ancak internet üzerinden yapılan hiçbir aktarımın tamamen risksiz olduğu garanti edilemez.",
-  },
-];
-
 export default function PrivacyPage() {
-  return (
-    <AppShell>
-      <section className="space-y-6 p-4 md:p-6">
-        <header className="app-card p-5 md:p-6">
-          <Link href="/" className="text-sm font-bold text-sky-300 hover:text-sky-200">Genel bakışa dön</Link>
-          <p className="section-label mt-5">Yasal bilgilendirme</p>
-          <h1 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">Gizlilik Politikası</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-            Bu metin Kuarkcoin’in veri işleme yaklaşımını genel hatlarıyla açıklar. Kesin hukuki uygunluk iddiası içermez ve hukuki tavsiye yerine geçmez.
-          </p>
-        </header>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {sections.map((section) => (
-            <article key={section.title} className="app-card p-5">
-              <h2 className="text-lg font-black text-slate-50">{section.title}</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">{section.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </AppShell>
-  );
+  const sections = ["Veri sorumlusu", "İşlenen veri kategorileri", "İşleme amaçları", "Hukuki sebepler", "Veri toplama yöntemi", "Üçüncü taraf hizmetler", "Yurt dışına veri aktarımı ihtimali", "Saklama süreleri", "Kullanıcı hakları", "Başvuru yöntemi", "Çerezler ve localStorage", "Güvenlik", "Politika değişiklikleri"];
+  return <main className="mx-auto max-w-4xl px-4 py-12"><h1 className="text-3xl font-black">Gizlilik Politikası / KVKK</h1><p className="mt-4 text-slate-300">Bu taslak hukuki danışmanlık yerine geçmez. Proje sahibi; ticari unvan, iletişim ve başvuru kanallarını doldurmalıdır.</p><div className="mt-8 space-y-5">{sections.map((s) => <section key={s} className="rounded-xl border border-slate-800 bg-slate-900/40 p-5"><h2 className="font-bold text-slate-100">{s}</h2><p className="mt-2 text-sm text-slate-300">[Proje sahibi tarafından doldurulacak.] Kuarkcoin; hizmetin çalışması, güvenlik, kötüye kullanımın önlenmesi ve kullanıcı deneyimi için gerekli sınırlı verileri işler. Supabase, Vercel, Upstash, Finnhub ve Google Gemini gibi üçüncü taraf hizmetler kullanılabilir.</p></section>)}</div></main>;
 }

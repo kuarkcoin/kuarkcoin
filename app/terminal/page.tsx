@@ -622,6 +622,8 @@ export default function TerminalPage() {
   // mini spark cache
   // ──────────────────────────────────────────────────
   const [miniCache, setMiniCache] = useState<Record<string, number[]>>({});
+  const [miniErrors, setMiniErrors] = useState<Record<string, boolean>>({});
+  const miniAbortRef = useRef<Record<string, AbortController>>({});
   const miniCacheRef = useRef<Record<string, number[]>>({});
   useEffect(() => {
     miniCacheRef.current = miniCache;
@@ -629,15 +631,24 @@ export default function TerminalPage() {
 
   const fetchMini = useCallback(async (symbol: string) => {
     const plain = symbolToPlain(symbol);
-    if (miniCacheRef.current[plain]) return;
+    if (miniCacheRef.current[plain] || miniErrors[plain]) return;
+    miniAbortRef.current[plain]?.abort();
+    const ac = new AbortController();
+    miniAbortRef.current[plain] = ac;
+    const timer = window.setTimeout(() => ac.abort(), 8000);
     try {
-      const res = await fetch(`/api/mini?symbol=${encodeURIComponent(symbol)}&n=30`);
-      const json = await res.json();
-      if (!res.ok || !json?.ok) return;
+      const res = await fetch(`/api/mini?symbol=${encodeURIComponent(symbol)}&n=30`, { signal: ac.signal });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json?.ok) throw new Error("mini failed");
       const pts = Array.isArray(json?.points) ? (json.points as number[]) : [];
       setMiniCache((p) => ({ ...p, [plain]: pts }));
-    } catch {}
-  }, []);
+    } catch {
+      setMiniErrors((p) => ({ ...p, [plain]: true }));
+    } finally {
+      window.clearTimeout(timer);
+      delete miniAbortRef.current[plain];
+    }
+  }, [miniErrors]);
 
   // ──────────────────────────────────────────────────
   // Sidebar
@@ -774,7 +785,7 @@ export default function TerminalPage() {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <Sparkline points={miniCache[plain]} />
+                  {miniErrors[plain] ? <span className="text-[10px] text-gray-600">Veri alınamadı</span> : <Sparkline points={miniCache[plain]} />}
 
                   {last ? (
                     <span

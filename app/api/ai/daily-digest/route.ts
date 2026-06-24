@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { readJsonLimited, withTimeout } from "@/lib/http";
+import { cleanAiText, requireAiConfigAndRateLimit } from "@/lib/ai-security";
 
 type TopRow = {
   id: number;
@@ -38,12 +40,15 @@ function clean(input: any, lim = 900) {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const topBuy: TopRow[] = body?.topBuy ?? [];
-    const topSell: TopRow[] = body?.topSell ?? [];
+    const limited = await readJsonLimited<any>(req, 32 * 1024);
+    if (!limited.ok) return NextResponse.json({ ok: false, error: limited.error }, { status: limited.status });
+    const rate = await requireAiConfigAndRateLimit(req, "daily-digest", 10, 60);
+    if (rate) return rate;
+    const body = limited.data ?? {};
+    const topBuy: TopRow[] = Array.isArray(body?.topBuy) ? body.topBuy.slice(0, 5) : [];
+    const topSell: TopRow[] = Array.isArray(body?.topSell) ? body.topSell.slice(0, 5) : [];
 
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-    if (!apiKey) return NextResponse.json({ ok: false, error: "GEMINI_API_KEY missing" }, { status: 500 });
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY!;
 
     // unique symbol list
     const rows = [...topBuy, ...topSell].slice(0, 10);
@@ -80,11 +85,13 @@ ${Object.entries(newsBySymbol).map(([sym, arr]) => {
 }).join("\n\n")}
 `;
 
-    const out = await model.generateContent(prompt);
-    const text = out?.response?.text() ?? "";
+    const timeout = withTimeout(15_000);
+    const out = await Promise.race([model.generateContent(prompt), new Promise<never>((_, rej) => timeout.signal.addEventListener("abort", () => rej(new Error("timeout"))))]);
+    timeout.done();
+    const text = cleanAiText(out?.response?.text() ?? "", 3000);
 
     return NextResponse.json({ ok: true, commentary: text });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message ?? "digest failed" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ ok: false, error: "digest failed" }, { status: 500 });
   }
 }

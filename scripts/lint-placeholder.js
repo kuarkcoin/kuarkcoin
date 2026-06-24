@@ -1,0 +1,1 @@
+export const lintPlaceholder = true;

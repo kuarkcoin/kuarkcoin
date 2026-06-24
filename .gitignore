@@ -1,15 +1,14 @@
-# Gereksiz dosyalar
 node_modules/
 .next/
+out/
 .env
-.env.local
+.env.*
+!.env.example
 .DS_Store
-
-# Loglar
+desktop.ini
+tsconfig.tsbuildinfo
+*.tsbuildinfo
 npm-debug.log*
 yarn-debug.log*
 ts-debug.log*
-
-# Vercel
-.vercel
-scripts/enrich.js
+.vercel/

@@ -1,0 +1,11 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { clampAiScore } from "../lib/ai-utils.ts";
+const auth = readFileSync("lib/server-auth.ts", "utf8");
+assert.match(auth, /Webhook is not configured/);
+assert.match(auth, /providedSecret \|\| providedSecret !== expectedSecret/);
+assert.match(auth, /Admin API is not configured/);
+assert.match(auth, /authHeader !== `Bearer \$\{cronSecret\}`/);
+assert.equal(clampAiScore(99), 10);
+assert.equal(clampAiScore(-99), -10);
+console.log("security validation ok");

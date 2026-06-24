@@ -1,38 +1,33 @@
 /** @type {import('next').NextConfig} */
+const isDev = process.env.NODE_ENV !== 'production';
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' ${isDev ? "'unsafe-eval' 'unsafe-inline'" : "'unsafe-inline'"} https://s3.tradingview.com https://www.tradingview.com`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co https://finnhub.io https://www.kap.org.tr https://*.upstash.io https://generativelanguage.googleapis.com",
+  "frame-src https://www.tradingview.com https://s.tradingview.com",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ');
+
 const nextConfig = {
   reactStrictMode: true,
-  
-  // 1. STATİK SAYFA ÜRETİM AYARLARI (Hata Çözümü)
-  // Binlerce sayfa üretilirken zaman aşımını engeller ve kaynak kullanımını kısıtlar.
-  staticPageGenerationTimeout: 1000, // Sayfa başına bekleme süresini artırır.
-  
-  experimental: {
-    // App Router Next 14'te varsayılan olduğu için appDir: true'ya artık gerek yok.
-    // Ancak build sırasında OOM (Out of Memory) hatasını engellemek için şunlar kritik:
-    workerThreads: false, 
-    cpus: 1 
+  staticPageGenerationTimeout: 1000,
+  experimental: { workerThreads: false, cpus: 1 },
+  async headers() {
+    return [{ source: '/(.*)', headers: [
+      { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
+      { key: 'Content-Security-Policy', value: csp },
+      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+    ] }];
   },
-
-  // 2. YÖNLENDİRME MANTIĞI
-  async redirects() {
-    return [
-      {
-        source: '/race/:id',
-        destination: '/race',
-        permanent: true,
-      },
-    ];
-  },
-
-  // Opsiyonel: Eğer görsel optimizasyonunda (Image component) dış kaynak kullanıyorsan ekleyebilirsin.
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-  },
+  async redirects() { return [{ source: '/race/:id', destination: '/', permanent: true }]; },
 };
-
 module.exports = nextConfig;

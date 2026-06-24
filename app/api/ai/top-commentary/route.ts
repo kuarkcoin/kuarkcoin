@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { readJsonLimited, withTimeout } from "@/lib/http";
+import { requireAiConfigAndRateLimit } from "@/lib/ai-security";
 
 export const runtime = "nodejs";
 
@@ -256,9 +258,11 @@ function deterministicFallback(
 // ------------------ Route ------------------
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const topBuy: TopRow[] = Array.isArray(body?.topBuy) ? body.topBuy : [];
-    const topSell: TopRow[] = Array.isArray(body?.topSell) ? body.topSell : [];
+    const limited = await readJsonLimited<any>(req, 32 * 1024);
+    if (!limited.ok) return NextResponse.json({ ok: false, error: limited.error }, { status: limited.status });
+    const body = limited.data ?? {};
+    const topBuy: TopRow[] = Array.isArray(body?.topBuy) ? body.topBuy.slice(0, 5) : [];
+    const topSell: TopRow[] = Array.isArray(body?.topSell) ? body.topSell.slice(0, 5) : [];
 
     const buy2 = pickTop2(topBuy);
     const sell2 = pickTop2(topSell);
@@ -276,15 +280,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // API key yoksa bile düzgün 5 madde üret
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({
-        ok: true,
-        commentary: deterministicFallback(buy2, sell2),
-      });
-    }
+    const rate = await requireAiConfigAndRateLimit(req, "top-commentary", 10, 60);
+    if (rate) return rate;
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI((process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY)!);
 
     // ✅ 2.5 flash
     const model = genAI.getGenerativeModel({
@@ -331,7 +330,9 @@ Reasons'ı aynen kopyalama; ne anlama geldiğini teknik dille yorumla.
 Her maddede aynı cümleyi tekrar etme.
 `;
 
-    const result = await model.generateContent(prompt);
+    const timeout = withTimeout(15_000);
+    const result = await Promise.race([model.generateContent(prompt), new Promise<never>((_, rej) => timeout.signal.addEventListener("abort", () => rej(new Error("timeout"))))]);
+    timeout.done();
     const raw = result.response.text()?.trim() ?? "";
 
     // ✅ AI düzgün 5 madde döndüyse al, değilse deterministik
@@ -342,7 +343,7 @@ Her maddede aynı cümleyi tekrar etme.
       commentary: forced ?? deterministicFallback(buy2, sell2),
     });
   } catch (e) {
-    console.error("AI commentary error:", e);
+    console.error("AI commentary error");
     // hata olursa bile terminal bozulmasın
     return NextResponse.json({
       ok: true,
