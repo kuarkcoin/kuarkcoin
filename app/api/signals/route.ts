@@ -52,7 +52,10 @@ export async function GET(req: Request) {
       if (e1 || e2) return jsonNoStore({ ok: false, topBuy: [], topSell: [], error: "Signals unavailable" }, { status: 500 });
       return jsonNoStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
     }
-    const { data, error } = await supa.from("signals").select("*").order("created_at", { ascending: false }).limit(500);
+    const limitParam = searchParams.get("limit");
+    const parsedLimit = limitParam == null ? Number.NaN : Number(limitParam);
+    const limit = Math.min(200, Math.max(1, Number.isFinite(parsedLimit) ? Math.trunc(parsedLimit) : 50));
+    const { data, error } = await supa.from("signals").select("*").order("created_at", { ascending: false }).limit(limit);
     if (error) return jsonNoStore({ ok: false, data: [], error: "Signals unavailable" }, { status: 500 });
     return jsonNoStore({ ok: true, data: data ?? [] });
   } catch { return jsonNoStore({ ok: false, data: [], error: "Signals unavailable" }, { status: 500 }); }
