@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { jsonNoStore, readJsonLimited } from "@/lib/http";
 import { requireAdmin, requireWebhookSecret } from "@/lib/server-auth";
-import { normalizeMarketSymbol } from "@/lib/symbols";
+import { normalizeWebhookSymbol } from "@/lib/symbols";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,7 +22,7 @@ function istanbulDayRange(date = new Date()) {
 function parseTvTime(t: unknown) { const n = Number(t); if (!Number.isFinite(n) || n <= 0) return new Date(); return new Date(n < 1e12 ? n * 1000 : n); }
 function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max); }
 function validateSignalPayload(body: SignalPayload) {
-  const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
+  const norm = normalizeWebhookSymbol(String(body.symbol ?? ""));
   const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
   const price = body.price == null ? null : Number(body.price);
   const score = body.score == null ? null : Number(body.score);

@@ -15,6 +15,38 @@ export function normalizeMarketSymbol(input: string) {
   return null;
 }
 
+export function normalizeWebhookSymbol(input: string) {
+  const raw = String(input || "").trim().toUpperCase();
+  if (!raw || raw.length > 40 || !/^[A-Z0-9._:-]+$/.test(raw)) return null;
+
+  const parts = raw.split(":");
+  if (parts.length > 2) return null;
+
+  if (parts.length === 2) {
+    const [pref, ticker] = parts;
+    if (!pref || !ticker || ticker.length > 30) return null;
+    const normalizedTicker = ticker.replace(/[^A-Z0-9.]/g, "");
+    const market = pref === "BIST" || pref === "BIST_DLY"
+      ? "BIST"
+      : pref === "BINANCE"
+        ? "CRYPTO"
+        : pref === "NASDAQ"
+          ? "NASDAQ"
+          : pref === "AMEX" || pref === "ETF"
+            ? "ETF"
+            : undefined;
+
+    return {
+      ...(market ? { market } : {}),
+      ticker: normalizedTicker || ticker,
+      providerSymbol: raw,
+    };
+  }
+
+  if (raw.length > 30) return null;
+  return normalizeMarketSymbol(raw) ?? { ticker: raw, providerSymbol: raw };
+}
+
 export function dedupeSymbols(symbols: readonly string[]) {
   const seen = new Set<string>();
   const out: string[] = [];
