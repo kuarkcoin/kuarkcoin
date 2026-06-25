@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
-import { jsonNoStore, readJsonLimited } from "@/lib/http";
+import { jsonNoStore, readBodyByContentTypeLimited, readJsonLimited } from "@/lib/http";
 import { requireAdmin, requireWebhookSecret } from "@/lib/server-auth";
 import { normalizeMarketSymbol } from "@/lib/symbols";
 
@@ -59,7 +59,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const parsed = await readJsonLimited<SignalPayload>(req, 16 * 1024);
+  const parsed = await readBodyByContentTypeLimited<SignalPayload>(req, 16 * 1024);
   if (!parsed.ok) return jsonNoStore({ ok: false, error: parsed.error }, { status: parsed.status });
   const authError = requireWebhookSecret(req, parsed.data as Record<string, unknown>);
   if (authError) return authError;
