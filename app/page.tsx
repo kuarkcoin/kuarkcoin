@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { headers } from "next/headers";
 import TopBuyTrackingTable from "@/components/top-buy-tracking-table";
 import { parseSignalIndicatorKeys } from "@/lib/normalize-signal-indicators";
+import { listSignals } from "@/lib/signalsRepository";
 
 // =====================
 // TYPES
@@ -178,11 +179,11 @@ function universeLabel(u: Universe) {
 // =====================
 // DATA FETCHERS
 // =====================
-async function getLatestSignals(base: string): Promise<SignalRow[]> {
+async function getLatestSignals(): Promise<SignalRow[]> {
   try {
-    const json = await safeFetchJson(`${base}/api/signals`);
-    const arr: SignalRow[] = (json?.data ?? []) as SignalRow[];
-    return Array.isArray(arr) ? arr.slice(0, 6) : [];
+    const { data, error } = await listSignals(6);
+    if (error) return [];
+    return data as SignalRow[];
   } catch (e) {
     console.error("getLatestSignals error:", e);
     return [];
@@ -237,7 +238,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
   const u = String(searchParams?.u ?? "BIST100").toUpperCase();
   const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
   const base = getApiBaseUrl();
-  const [latest, kap, top, news] = await Promise.all([getLatestSignals(base), getKapImportant(base), getTopMargins(base, universe), getNewsCombined(base, universe)]);
+  const [latest, kap, top, news] = await Promise.all([getLatestSignals(), getKapImportant(base), getTopMargins(base, universe), getNewsCombined(base, universe)]);
   const nowIso = new Date().toISOString();
   const buyCount = latest.filter((s) => String(s.signal).toUpperCase() === "BUY").length;
   const sellCount = latest.filter((s) => String(s.signal).toUpperCase() === "SELL").length;

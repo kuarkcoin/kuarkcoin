@@ -7,10 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint scripts/lint-placeholder.js",
+    "lint": "node scripts/lint-placeholder.js",
     "typecheck": "tsc --noEmit",
-    "test": "ts-node-esm tests/security.ts && ts-node-esm tests/data.ts",
-    "validate:data": "ts-node-esm tests/data.ts"
+    "test": "node --loader ts-node/esm --experimental-specifier-resolution=node tests/security.ts && node --loader ts-node/esm --experimental-specifier-resolution=node tests/data.ts && node --loader ts-node/esm --experimental-specifier-resolution=node tests/webhook.ts",
+    "validate:data": "node --loader ts-node/esm tests/data.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

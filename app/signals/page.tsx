@@ -1,15 +1,13 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import AppShell from "@/components/layout/AppShell";
 import { EmptyState, LinkButton, SearchInput, SectionHeader, SegmentedControl, Select } from "@/components/ui";
+import { listSignals, type SignalRow } from "@/lib/signalsRepository";
 
 type SearchParams = { asset?: string; signal?: string; category?: string; symbol?: string };
-type SignalRow = { id?: number | string | null; created_at?: string | null; symbol?: string | null; name?: string | null; signal?: string | null; price?: number | string | null; score?: number | string | null; rvol?: number | string | null; timeframe?: string | null; type?: string | null; category?: string | null; exchange?: string | null; source?: string | null; };
 const ASSET_FILTERS = [{ label: "Tümü", value: "all" }, { label: "Hisseler", value: "stocks" }, { label: "ETF", value: "etfs" }] as const;
 const SIGNAL_FILTERS = [{ label: "Tümü", value: "all" }, { label: "BUY", value: "BUY" }, { label: "SELL", value: "SELL" }] as const;
 export const dynamic = "force-dynamic"; export const revalidate = 0;
-function getApiBaseUrl() { const h = headers(); const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000"; const proto = h.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https"); return `${proto}://${host}`; }
-async function getRecentSignals(): Promise<{ rows: SignalRow[]; error: string | null }> { try { const res = await fetch(`${getApiBaseUrl()}/api/signals`, { cache: "no-store" }); if (!res.ok) return { rows: [], error: `signals ${res.status}` }; const json = await res.json(); return { rows: Array.isArray(json?.data) ? json.data as SignalRow[] : [], error: null }; } catch (error) { return { rows: [], error: error instanceof Error ? error.message : "error" }; } }
+async function getRecentSignals(): Promise<{ rows: SignalRow[]; error: string | null }> { try { const { data, error } = await listSignals(50); if (error) return { rows: [], error: "signals unavailable" }; return { rows: data, error: null }; } catch (error) { return { rows: [], error: error instanceof Error ? error.message : "error" }; } }
 function normalized(value: unknown) { return String(value ?? "").trim(); }
 function upper(value: unknown) { return normalized(value).toUpperCase(); }
 function isEtf(row: SignalRow) { return [row.type,row.category,row.source].map(upper).some((v)=>v==="ETF"||v==="ETFS"||v.includes("ETF")); }

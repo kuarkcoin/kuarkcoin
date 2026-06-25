@@ -253,8 +253,8 @@ export default function TerminalPage() {
   const [showDashboard, setShowDashboard] = useState(true);
 
   // API + polling hook
-  const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome } = useSignals({
-    pollMs: 300_000,
+  const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome, error } = useSignals({
+    pollMs: 10_000,
   });
 
   // Better empty/loading/error discrimination
@@ -1021,6 +1021,11 @@ export default function TerminalPage() {
                     <h2 className="text-sm font-bold uppercase tracking-wide">Son Sinyaller ({visibleSignals.length})</h2>
                     <div className="text-xs text-gray-400">{loadingSignals ? "Yükleniyor..." : uiEmpty ? "Boş" : "Canlı"}</div>
                   </div>
+                  {error ? (
+                    <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm font-medium text-red-200">
+                      Sinyaller yüklenemedi: {error}
+                    </div>
+                  ) : null}
 
                   <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
                     <div className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-1">Win Rate (manuel)</div>

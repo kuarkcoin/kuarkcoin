@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { jsonNoStore, readJsonLimited } from "@/lib/http";
 import { requireAdmin, requireWebhookSecret } from "@/lib/server-auth";
-import { normalizeMarketSymbol } from "@/lib/symbols";
+import { normalizeSignalPayload, type SignalPayload } from "@/lib/signals";
+import { listSignals, normalizeSignalsLimit } from "@/lib/signalsRepository";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
-type SignalPayload = { secret?: string; symbol?: unknown; signal?: unknown; type?: unknown; price?: unknown; score?: unknown; reasons?: unknown; timeframe?: unknown; timestamp?: unknown; t?: unknown };
 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
@@ -19,22 +19,19 @@ function istanbulDayRange(date = new Date()) {
   return { startUTC: new Date(startLocal.getTime() - tzOffsetMs), endUTC: new Date(endLocal.getTime() - tzOffsetMs) };
 }
 
-function parseTvTime(t: unknown) { const n = Number(t); if (!Number.isFinite(n) || n <= 0) return new Date(); return new Date(n < 1e12 ? n * 1000 : n); }
-function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max); }
-function validateSignalPayload(body: SignalPayload) {
-  const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
-  const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
-  const timeframe = cleanText(body.timeframe, 20);
-  const timeRaw = body.timestamp ?? body.t;
-  const created_at = timeRaw ? parseTvTime(timeRaw) : new Date();
-  if (!norm) return { ok: false as const, error: "Invalid symbol" };
-  if (signal !== "BUY" && signal !== "SELL") return { ok: false as const, error: "Invalid signal" };
-  if (price != null && (!Number.isFinite(price) || price < 0)) return { ok: false as const, error: "Invalid price" };
-  if (score != null && !Number.isFinite(score)) return { ok: false as const, error: "Invalid score" };
-  if (Number.isNaN(created_at.getTime())) return { ok: false as const, error: "Invalid timestamp" };
-  return { ok: true as const, data: { symbol: norm.providerSymbol, signal, price, score, reasons: cleanText(body.reasons, 1000), timeframe, created_at } };
+async function readWebhookBody(req: Request) {
+  const contentType = req.headers.get("content-type")?.toLowerCase() ?? "";
+  if (contentType.includes("application/json") || !contentType) return readJsonLimited<SignalPayload>(req, 16 * 1024);
+  const len = req.headers.get("content-length");
+  if (len && Number(len) > 16 * 1024) return { ok: false as const, status: 413, error: "Payload too large" };
+  const text = await req.text();
+  if (new TextEncoder().encode(text).length > 16 * 1024) return { ok: false as const, status: 413, error: "Payload too large" };
+  if (contentType.includes("application/x-www-form-urlencoded")) return { ok: true as const, data: Object.fromEntries(new URLSearchParams(text)) };
+  if (contentType.includes("text/plain")) {
+    try { return { ok: true as const, data: JSON.parse(text || "{}") as SignalPayload }; }
+    catch { return { ok: true as const, data: Object.fromEntries(new URLSearchParams(text)) }; }
+  }
+  return { ok: false as const, status: 415, error: "Unsupported content type" };
 }
 
 export async function GET(req: Request) {
@@ -42,6 +39,9 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
   try {
+    if (scope === "health") {
+      return jsonNoStore({ ok: true, webhookConfigured: Boolean(process.env.SCAN_SECRET), supabaseConfigured: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY && (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL)) });
+    }
     if (scope === "todayTop") {
       const { startUTC, endUTC } = istanbulDayRange();
       const base = () => supa.from("signals").select("*").gte("created_at", startUTC.toISOString()).lt("created_at", endUTC.toISOString()).not("score", "is", null);
@@ -52,18 +52,18 @@ export async function GET(req: Request) {
       if (e1 || e2) return jsonNoStore({ ok: false, topBuy: [], topSell: [], error: "Signals unavailable" }, { status: 500 });
       return jsonNoStore({ ok: true, topBuy: topBuy ?? [], topSell: topSell ?? [] });
     }
-    const { data, error } = await supa.from("signals").select("*").order("created_at", { ascending: false }).limit(500);
+    const { data, error } = await listSignals(normalizeSignalsLimit(searchParams.get("limit")));
     if (error) return jsonNoStore({ ok: false, data: [], error: "Signals unavailable" }, { status: 500 });
-    return jsonNoStore({ ok: true, data: data ?? [] });
+    return jsonNoStore({ ok: true, data });
   } catch { return jsonNoStore({ ok: false, data: [], error: "Signals unavailable" }, { status: 500 }); }
 }
 
 export async function POST(req: Request) {
-  const parsed = await readJsonLimited<SignalPayload>(req, 16 * 1024);
+  const parsed = await readWebhookBody(req);
   if (!parsed.ok) return jsonNoStore({ ok: false, error: parsed.error }, { status: parsed.status });
   const authError = requireWebhookSecret(req, parsed.data as Record<string, unknown>);
   if (authError) return authError;
-  const valid = validateSignalPayload(parsed.data);
+  const valid = normalizeSignalPayload(parsed.data);
   if (!valid.ok) return jsonNoStore({ ok: false, error: valid.error }, { status: 400 });
   try {
     const supa = supabaseServer();
