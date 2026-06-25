@@ -9,7 +9,18 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
-type SignalPayload = { secret?: string; symbol?: unknown; signal?: unknown; type?: unknown; price?: unknown; score?: unknown; reasons?: unknown; timeframe?: unknown; timestamp?: unknown; t?: unknown };
+type SignalPayload = Record<string, unknown> & { secret?: string; reasons?: unknown; timestamp?: unknown; t?: unknown };
+type PayloadKey = keyof SignalPayload | string;
+type NormalizedSignalPayload = {
+  symbol: unknown;
+  signal: unknown;
+  price: unknown;
+  score: unknown;
+  timeframe: unknown;
+  reasons: unknown;
+  timestamp: unknown;
+  t: unknown;
+};
 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
@@ -21,20 +32,42 @@ function istanbulDayRange(date = new Date()) {
 
 function parseTvTime(t: unknown) { const n = Number(t); if (!Number.isFinite(n) || n <= 0) return new Date(); return new Date(n < 1e12 ? n * 1000 : n); }
 function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max); }
+function pickFirst<T extends Record<string, unknown>>(payload: T, keys: readonly (keyof T | string)[]): unknown {
+  for (const key of keys) {
+    const value = payload[key as keyof T];
+    if (value !== undefined && value !== null && value !== "") return value;
+  }
+  return undefined;
+}
+
+function normalizeSignalPayload(body: SignalPayload): NormalizedSignalPayload {
+  return {
+    symbol: pickFirst(body, ["symbol", "ticker", "tickerid", "instrument", "market"] satisfies readonly PayloadKey[]),
+    signal: pickFirst(body, ["signal", "action", "side", "direction", "order_action", "type"] satisfies readonly PayloadKey[]),
+    price: pickFirst(body, ["price", "close", "entry_price", "fill_price", "entryPrice"] satisfies readonly PayloadKey[]),
+    score: pickFirst(body, ["score", "strength", "puan", "rating", "confidence"] satisfies readonly PayloadKey[]),
+    timeframe: pickFirst(body, ["timeframe", "interval", "tf", "period"] satisfies readonly PayloadKey[]),
+    reasons: body.reasons,
+    timestamp: body.timestamp,
+    t: body.t,
+  };
+}
+
 function validateSignalPayload(body: SignalPayload) {
-  const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
-  const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
-  const timeframe = cleanText(body.timeframe, 20);
-  const timeRaw = body.timestamp ?? body.t;
+  const normalized = normalizeSignalPayload(body);
+  const norm = normalizeMarketSymbol(String(normalized.symbol ?? ""));
+  const signal = String(normalized.signal ?? "").toUpperCase().trim();
+  const price = normalized.price == null ? null : Number(normalized.price);
+  const score = normalized.score == null ? null : Number(normalized.score);
+  const timeframe = cleanText(normalized.timeframe, 20);
+  const timeRaw = normalized.timestamp ?? normalized.t;
   const created_at = timeRaw ? parseTvTime(timeRaw) : new Date();
   if (!norm) return { ok: false as const, error: "Invalid symbol" };
   if (signal !== "BUY" && signal !== "SELL") return { ok: false as const, error: "Invalid signal" };
   if (price != null && (!Number.isFinite(price) || price < 0)) return { ok: false as const, error: "Invalid price" };
   if (score != null && !Number.isFinite(score)) return { ok: false as const, error: "Invalid score" };
   if (Number.isNaN(created_at.getTime())) return { ok: false as const, error: "Invalid timestamp" };
-  return { ok: true as const, data: { symbol: norm.providerSymbol, signal, price, score, reasons: cleanText(body.reasons, 1000), timeframe, created_at } };
+  return { ok: true as const, data: { symbol: norm.providerSymbol, signal, price, score, reasons: cleanText(normalized.reasons, 1000), timeframe, created_at } };
 }
 
 export async function GET(req: Request) {
