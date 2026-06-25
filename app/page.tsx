@@ -6,20 +6,11 @@ import type { ReactNode } from "react";
 import { headers } from "next/headers";
 import TopBuyTrackingTable from "@/components/top-buy-tracking-table";
 import { parseSignalIndicatorKeys } from "@/lib/normalize-signal-indicators";
+import { getLatestSignals, type SignalRow } from "@/lib/signals";
 
 // =====================
 // TYPES
 // =====================
-type SignalRow = {
-  id: number;
-  created_at: string;
-  symbol: string;
-  signal: string; // BUY | SELL
-  price: number | null;
-  score: number | null;
-  reasons: string | null;
-};
-
 // ✅ KAP route'un döndürdüğü format (items -> KapUIItem)
 type KapRow = {
   title: string;
@@ -178,17 +169,6 @@ function universeLabel(u: Universe) {
 // =====================
 // DATA FETCHERS
 // =====================
-async function getLatestSignals(base: string): Promise<SignalRow[]> {
-  try {
-    const json = await safeFetchJson(`${base}/api/signals`);
-    const arr: SignalRow[] = (json?.data ?? []) as SignalRow[];
-    return Array.isArray(arr) ? arr.slice(0, 6) : [];
-  } catch (e) {
-    console.error("getLatestSignals error:", e);
-    return [];
-  }
-}
-
 async function getKapImportant(base: string): Promise<KapRow[]> {
   try {
     const json = await safeFetchJson(`${base}/api/kap/bist100-important?mode=strict`);
@@ -237,7 +217,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { u?: 
   const u = String(searchParams?.u ?? "BIST100").toUpperCase();
   const universe: Universe = (ALLOWED_UNIVERSE as readonly string[]).includes(u) ? (u as Universe) : "BIST100";
   const base = getApiBaseUrl();
-  const [latest, kap, top, news] = await Promise.all([getLatestSignals(base), getKapImportant(base), getTopMargins(base, universe), getNewsCombined(base, universe)]);
+  const [latest, kap, top, news] = await Promise.all([getLatestSignals(6), getKapImportant(base), getTopMargins(base, universe), getNewsCombined(base, universe)]);
   const nowIso = new Date().toISOString();
   const buyCount = latest.filter((s) => String(s.signal).toUpperCase() === "BUY").length;
   const sellCount = latest.filter((s) => String(s.signal).toUpperCase() === "SELL").length;
