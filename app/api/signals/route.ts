@@ -11,6 +11,15 @@ export const revalidate = 0;
 type Outcome = "WIN" | "LOSS" | null;
 type SignalPayload = { secret?: string; symbol?: unknown; signal?: unknown; type?: unknown; price?: unknown; score?: unknown; reasons?: unknown; timeframe?: unknown; timestamp?: unknown; t?: unknown };
 
+function safeSupabaseError(error: { code?: string; message?: string; details?: string } | null | undefined) {
+  return { code: error?.code, message: error?.message, details: error?.details };
+}
+
+function safeUnknownError(error: unknown) {
+  if (error instanceof Error) return { name: error.name, message: error.message };
+  return { message: String(error).slice(0, 200) };
+}
+
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
   const local = new Date(date.getTime() + tzOffsetMs);
@@ -69,12 +78,21 @@ export async function POST(req: Request) {
     const supa = supabaseServer();
     const since = new Date(valid.data.created_at.getTime() - 2 * 60 * 1000).toISOString();
     const { data: existing, error: dupError } = await supa.from("signals").select("id").eq("symbol", valid.data.symbol).eq("signal", valid.data.signal).gte("created_at", since).limit(1);
-    if (dupError) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
+    if (dupError) {
+      console.error("Signal duplicate check failed", safeSupabaseError(dupError));
+      return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
+    }
     if (existing?.length) return jsonNoStore({ ok: true, duplicate: true });
-    const { data, error } = await supa.from("signals").insert([valid.data]).select("*").single();
-    if (error) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
+    const { data, error } = await supa.from("signals").insert([valid.data]).select("id,symbol,signal,created_at").single();
+    if (error) {
+      console.error("Signal insert failed", safeSupabaseError(error));
+      return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
+    }
     return jsonNoStore({ ok: true, data });
-  } catch { return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 }); }
+  } catch (error) {
+    console.error("Signal POST failed", safeUnknownError(error));
+    return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
+  }
 }
 
 export async function PATCH(req: Request) {
