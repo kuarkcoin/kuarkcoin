@@ -55,7 +55,6 @@ async function readWebhookBody(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const supa = getSignalsSupabaseClient();
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
   try {
@@ -63,6 +62,7 @@ export async function GET(req: Request) {
       return jsonNoStore({ ok: true, webhookConfigured: Boolean(process.env.SCAN_SECRET), supabaseConfigured: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY && (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL)) });
     }
     if (scope === "todayTop") {
+      const supa = getSignalsSupabaseClient();
       const { startUTC, endUTC } = istanbulDayRange();
       const base = () => supa.from("signals").select("*").gte("created_at", startUTC.toISOString()).lt("created_at", endUTC.toISOString()).not("score", "is", null);
       const [{ data: topBuy, error: e1 }, { data: topSell, error: e2 }] = await Promise.all([

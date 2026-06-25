@@ -79,7 +79,7 @@ export function useSignals(opts: UseSignalsOpts = {}) {
 
     try {
       setLoadingSignals(true);
-      const res = await fetch("/api/signals", {
+      const res = await fetch("/api/signals?limit=200", {
         cache: "no-store",
         signal: ac.signal,
       });

@@ -2,8 +2,60 @@ import assert from "node:assert/strict";
 import { normalizeSignalPayload } from "../lib/signals.ts";
 import { normalizeMarketSymbol } from "../lib/symbols.ts";
 import { requireWebhookSecret } from "../lib/server-auth.ts";
-import { POST } from "../app/api/signals/route.ts";
+import { GET, POST } from "../app/api/signals/route.ts";
 import { setSignalsSupabaseFactory, resetSignalsSupabaseFactory } from "../app/api/signals/supabaseFactory.ts";
+
+
+async function assertHealthEnv(
+  env: { scan?: string; supabaseUrl?: string; publicSupabaseUrl?: string; serviceKey?: string },
+  expected: { webhookConfigured: boolean; supabaseConfigured: boolean },
+) {
+  const previous = {
+    scan: process.env.SCAN_SECRET,
+    supabaseUrl: process.env.SUPABASE_URL,
+    publicSupabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  };
+  try {
+    if (env.scan === undefined) delete process.env.SCAN_SECRET;
+    else process.env.SCAN_SECRET = env.scan;
+    if (env.supabaseUrl === undefined) delete process.env.SUPABASE_URL;
+    else process.env.SUPABASE_URL = env.supabaseUrl;
+    if (env.publicSupabaseUrl === undefined) delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+    else process.env.NEXT_PUBLIC_SUPABASE_URL = env.publicSupabaseUrl;
+    if (env.serviceKey === undefined) delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    else process.env.SUPABASE_SERVICE_ROLE_KEY = env.serviceKey;
+
+    setSignalsSupabaseFactory(() => { throw new Error("health must not create supabase client"); });
+    const res = await GET(new Request("https://example.com/api/signals?scope=health"));
+    const json = await res.json();
+    assert.equal(res.status, 200, "health status 200");
+    assert.deepEqual(json, { ok: true, ...expected });
+  } finally {
+    resetSignalsSupabaseFactory();
+    if (previous.scan === undefined) delete process.env.SCAN_SECRET;
+    else process.env.SCAN_SECRET = previous.scan;
+    if (previous.supabaseUrl === undefined) delete process.env.SUPABASE_URL;
+    else process.env.SUPABASE_URL = previous.supabaseUrl;
+    if (previous.publicSupabaseUrl === undefined) delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+    else process.env.NEXT_PUBLIC_SUPABASE_URL = previous.publicSupabaseUrl;
+    if (previous.serviceKey === undefined) delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    else process.env.SUPABASE_SERVICE_ROLE_KEY = previous.serviceKey;
+  }
+}
+
+await assertHealthEnv(
+  { scan: "top-secret", supabaseUrl: "https://example.supabase.co", serviceKey: "service-role" },
+  { webhookConfigured: true, supabaseConfigured: true },
+);
+await assertHealthEnv(
+  { supabaseUrl: "https://example.supabase.co", serviceKey: "service-role" },
+  { webhookConfigured: false, supabaseConfigured: true },
+);
+await assertHealthEnv(
+  { scan: "top-secret" },
+  { webhookConfigured: true, supabaseConfigured: false },
+);
 
 process.env.SCAN_SECRET = "top-secret";
 
