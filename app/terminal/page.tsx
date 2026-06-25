@@ -253,13 +253,12 @@ export default function TerminalPage() {
   const [showDashboard, setShowDashboard] = useState(true);
 
   // API + polling hook
-  const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome } = useSignals({
-    pollMs: 300_000,
-  });
+  const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome, error: signalsError } = useSignals();
 
   // Better empty/loading/error discrimination
   const uiLoading = loadingSignals && (!signals || signals.length === 0);
-  const uiEmpty = !loadingSignals && (!signals || signals.length === 0);
+  const uiError = !loadingSignals && Boolean(signalsError) && (!signals || signals.length === 0);
+  const uiEmpty = !loadingSignals && !signalsError && (!signals || signals.length === 0);
 
   // Title
   useEffect(() => {
@@ -1019,7 +1018,7 @@ export default function TerminalPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="text-sm font-bold uppercase tracking-wide">Son Sinyaller ({visibleSignals.length})</h2>
-                    <div className="text-xs text-gray-400">{loadingSignals ? "Yükleniyor..." : uiEmpty ? "Boş" : "Canlı"}</div>
+                    <div className="text-xs text-gray-400">{uiLoading ? "Yükleniyor..." : signalsError ? "Hata" : uiEmpty ? "Boş" : "Canlı"}</div>
                   </div>
 
                   <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-black border border-gray-800 text-center">
@@ -1076,12 +1075,24 @@ export default function TerminalPage() {
                     </button>
                   </div>
 
-                  {loadingSignals ? (
+                  {signalsError && (
+                    <div
+                      role="alert"
+                      className="rounded-xl border border-red-800 bg-red-950/30 px-4 py-3 text-sm text-red-200"
+                    >
+                      <div className="font-semibold text-red-100">Sinyal API hatası</div>
+                      <div className="mt-1 text-xs leading-relaxed text-red-200/90">{signalsError}</div>
+                    </div>
+                  )}
+
+                  {uiLoading ? (
                     <div className="space-y-3" aria-label="Sinyaller yükleniyor">
                       {Array.from({ length: 6 }).map((_, i) => (
                         <SignalSkeleton key={i} />
                       ))}
                     </div>
+                  ) : uiError ? (
+                    <div className="p-6 text-center text-red-300 text-sm">Sinyaller şu anda alınamıyor.</div>
                   ) : visibleSignals.length === 0 ? (
                     <div className="p-6 text-center text-gray-500 text-sm">
                       {uiEmpty ? "Henüz sinyal üretilmedi." : "Filtreye göre sinyal yok."}
