@@ -68,12 +68,13 @@ export async function POST(req: Request) {
   try {
     const supa = supabaseServer();
     const since = new Date(valid.data.created_at.getTime() - 2 * 60 * 1000).toISOString();
-    const { data: existing, error: dupError } = await supa.from("signals").select("id").eq("symbol", valid.data.symbol).eq("signal", valid.data.signal).gte("created_at", since).limit(1);
+    const responseSelect = "id, symbol, signal, created_at";
+    const { data: existing, error: dupError } = await supa.from("signals").select(responseSelect).eq("symbol", valid.data.symbol).eq("signal", valid.data.signal).gte("created_at", since).limit(1);
     if (dupError) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
-    if (existing?.length) return jsonNoStore({ ok: true, duplicate: true });
-    const { data, error } = await supa.from("signals").insert([valid.data]).select("*").single();
+    if (existing?.length) return jsonNoStore({ ok: true, duplicate: true, data: existing[0] });
+    const { data, error } = await supa.from("signals").insert([valid.data]).select(responseSelect).single();
     if (error) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
-    return jsonNoStore({ ok: true, data });
+    return jsonNoStore({ ok: true, data: { id: data.id, symbol: data.symbol, signal: data.signal, created_at: data.created_at } });
   } catch { return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 }); }
 }
 
