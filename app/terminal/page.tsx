@@ -253,7 +253,7 @@ export default function TerminalPage() {
   const [showDashboard, setShowDashboard] = useState(true);
 
   // API + polling hook
-  const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome } = useSignals({
+  const { signals, loadingSignals, todayTopBuy, todayTopSell, refreshAll, setOutcome, error } = useSignals({
     pollMs: 300_000,
   });
 
@@ -1076,7 +1076,16 @@ export default function TerminalPage() {
                     </button>
                   </div>
 
-                  {loadingSignals ? (
+                  {error ? (
+                    <div
+                      className="rounded-xl border border-red-800/70 bg-red-950/30 px-4 py-3 text-sm text-red-200"
+                      role="alert"
+                    >
+                      Sinyaller yüklenemedi: {error}
+                    </div>
+                  ) : null}
+
+                  {uiLoading ? (
                     <div className="space-y-3" aria-label="Sinyaller yükleniyor">
                       {Array.from({ length: 6 }).map((_, i) => (
                         <SignalSkeleton key={i} />
