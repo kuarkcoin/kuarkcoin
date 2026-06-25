@@ -46,6 +46,22 @@ function normalizeSignal(s: string | null | undefined) {
   return String(s || "").trim().toUpperCase();
 }
 
+function dedupeSignals(rows: SignalRow[]) {
+  const seen = new Set<string>();
+
+  return rows.filter((row) => {
+    const id = (row as { id?: number | null }).id;
+    const key =
+      id != null
+        ? `id:${id}`
+        : `fallback:${row.symbol}|${row.signal}|${row.created_at}|${row.price}`;
+
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export function useSignals(opts: UseSignalsOpts = {}) {
   // visible sekmede varsayılan 10s, ama minimumu 10s bırakıyoruz
   const pollMs = Math.max(opts.pollMs ?? 10000, 10000);
@@ -94,7 +110,7 @@ export function useSignals(opts: UseSignalsOpts = {}) {
       const json = await res.json();
       const rows = (json.data ?? []) as SignalRow[];
 
-      setSignals(rows);
+      setSignals(dedupeSignals(rows));
       setError(null);
     } catch (e) {
       if ((e as any)?.name === "AbortError") return;
