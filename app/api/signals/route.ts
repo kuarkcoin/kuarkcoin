@@ -38,9 +38,17 @@ function validateSignalPayload(body: SignalPayload) {
 }
 
 export async function GET(req: Request) {
-  const supa = supabaseServer();
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
+  if (scope === "health") {
+    return jsonNoStore({
+      ok: true,
+      webhookConfigured: Boolean(process.env.SCAN_SECRET),
+      supabaseConfigured: Boolean(process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) && Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+    });
+  }
+
+  const supa = supabaseServer();
   try {
     if (scope === "todayTop") {
       const { startUTC, endUTC } = istanbulDayRange();
