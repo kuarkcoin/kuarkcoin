@@ -1132,6 +1132,9 @@ export default function TerminalPage() {
                             <div className="text-sm font-mono mb-1 text-gray-300">
                               {r.symbol} @ <span className="text-white">{r.price ?? "—"}</span>
                             </div>
+                            <div className="text-xs text-gray-500 mb-2">
+                              Timeframe: <span className="text-gray-300">{r.timeframe || "—"}</span>
+                            </div>
 
                             <div className="flex items-center justify-between gap-2">
                               <div className="text-xs text-gray-400">

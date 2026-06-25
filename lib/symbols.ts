@@ -16,6 +16,7 @@ export function normalizeMarketSymbol(input: string) {
   if (pref === "BINANCE" || CRYPTO.includes(ticker)) return { market: "CRYPTO" as const, ticker, providerSymbol: `BINANCE:${ticker}` };
   if (pref === "AMEX" || pref === "ETF" || ETFS.includes(ticker)) return { market: "ETF" as const, ticker, providerSymbol: ticker };
   if (NASDAQ300.includes(ticker) || NASDAQ100.includes(ticker)) return { market: "NASDAQ" as const, ticker, providerSymbol: ticker };
+  if (!pref) return { market: "NASDAQ" as const, ticker, providerSymbol: ticker };
   return null;
 }
 

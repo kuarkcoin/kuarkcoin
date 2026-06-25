@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "node scripts/lint-placeholder.js",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "node --loader ts-node/esm --experimental-specifier-resolution=node tests/security.ts && node --loader ts-node/esm --experimental-specifier-resolution=node tests/data.ts && node --loader ts-node/esm --experimental-specifier-resolution=node tests/webhook.ts",
     "validate:data": "node --loader ts-node/esm tests/data.ts"
@@ -32,7 +32,9 @@
     "supabase": "^2.72.8",
     "tailwindcss": "3.4.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.35"
   },
   "engines": {
     "node": ">=18.0.0"

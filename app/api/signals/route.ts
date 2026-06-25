@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabaseServer";
-import { jsonNoStore, readJsonLimited } from "@/lib/http";
-import { requireAdmin, requireWebhookSecret } from "@/lib/server-auth";
-import { normalizeSignalPayload, type SignalPayload } from "@/lib/signals";
-import { listSignals, normalizeSignalsLimit } from "@/lib/signalsRepository";
+import { jsonNoStore, readJsonLimited } from "../../../lib/http.ts";
+import { requireAdmin, requireWebhookSecret } from "../../../lib/server-auth.ts";
+import { normalizeSignalPayload, type SignalPayload } from "../../../lib/signals.ts";
+import { listSignals, normalizeSignalsLimit } from "../../../lib/signalsRepository.ts";
+import { getSignalsSupabaseClient } from "./supabaseFactory.ts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,6 +19,26 @@ function istanbulDayRange(date = new Date()) {
   return { startUTC: new Date(startLocal.getTime() - tzOffsetMs), endUTC: new Date(endLocal.getTime() - tzOffsetMs) };
 }
 
+function decodeFormValue(value: string) {
+  try { return decodeURIComponent(value.replace(/\+/g, " ")); }
+  catch { return value; }
+}
+
+function parseKeyValueText(text: string) {
+  const separator = text.includes("&") && !text.includes("\n") ? "&" : /\r?\n/;
+  const entries: [string, string][] = [];
+  for (const rawLine of text.split(separator)) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    const eq = line.indexOf("=");
+    if (eq < 0) continue;
+    const key = decodeFormValue(line.slice(0, eq).trim());
+    if (!key) continue;
+    entries.push([key, decodeFormValue(line.slice(eq + 1).trim())]);
+  }
+  return Object.fromEntries(entries) as SignalPayload;
+}
+
 async function readWebhookBody(req: Request) {
   const contentType = req.headers.get("content-type")?.toLowerCase() ?? "";
   if (contentType.includes("application/json") || !contentType) return readJsonLimited<SignalPayload>(req, 16 * 1024);
@@ -29,13 +49,13 @@ async function readWebhookBody(req: Request) {
   if (contentType.includes("application/x-www-form-urlencoded")) return { ok: true as const, data: Object.fromEntries(new URLSearchParams(text)) };
   if (contentType.includes("text/plain")) {
     try { return { ok: true as const, data: JSON.parse(text || "{}") as SignalPayload }; }
-    catch { return { ok: true as const, data: Object.fromEntries(new URLSearchParams(text)) }; }
+    catch { return { ok: true as const, data: parseKeyValueText(text) }; }
   }
   return { ok: false as const, status: 415, error: "Unsupported content type" };
 }
 
 export async function GET(req: Request) {
-  const supa = supabaseServer();
+  const supa = getSignalsSupabaseClient();
   const { searchParams } = new URL(req.url);
   const scope = searchParams.get("scope");
   try {
@@ -66,9 +86,11 @@ export async function POST(req: Request) {
   const valid = normalizeSignalPayload(parsed.data);
   if (!valid.ok) return jsonNoStore({ ok: false, error: valid.error }, { status: 400 });
   try {
-    const supa = supabaseServer();
+    const supa = getSignalsSupabaseClient();
     const since = new Date(valid.data.created_at.getTime() - 2 * 60 * 1000).toISOString();
-    const { data: existing, error: dupError } = await supa.from("signals").select("id").eq("symbol", valid.data.symbol).eq("signal", valid.data.signal).gte("created_at", since).limit(1);
+    const duplicateQuery = supa.from("signals").select("id").eq("symbol", valid.data.symbol).eq("signal", valid.data.signal);
+    const duplicateWithTimeframe = valid.data.timeframe === null ? duplicateQuery.is("timeframe", null) : duplicateQuery.eq("timeframe", valid.data.timeframe);
+    const { data: existing, error: dupError } = await duplicateWithTimeframe.gte("created_at", since).limit(1);
     if (dupError) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
     if (existing?.length) return jsonNoStore({ ok: true, duplicate: true });
     const { data, error } = await supa.from("signals").insert([valid.data]).select("*").single();
@@ -88,7 +110,7 @@ export async function PATCH(req: Request) {
   const outcome: Outcome = raw === null || raw === undefined || raw === "" ? null : raw === "WIN" ? "WIN" : raw === "LOSS" ? "LOSS" : ("INVALID" as Outcome);
   if (outcome === ("INVALID" as Outcome)) return jsonNoStore({ ok: false, error: "Invalid result" }, { status: 400 });
   try {
-    const { data, error } = await supabaseServer().from("signals").update({ outcome }).eq("id", id).select("*").maybeSingle();
+    const { data, error } = await getSignalsSupabaseClient().from("signals").update({ outcome }).eq("id", id).select("*").maybeSingle();
     if (error) return jsonNoStore({ ok: false, error: "Signal could not be updated" }, { status: 500 });
     if (!data) return jsonNoStore({ ok: false, error: "Signal not found" }, { status: 404 });
     return jsonNoStore({ ok: true, data });

@@ -11,6 +11,8 @@ export type SignalRow = {
   price: number | null;
   score: number | null;
   reasons: string | null;
+  timeframe: string | null;
+  source?: string | null;
   outcome: "WIN" | "LOSS" | null;
 };
 

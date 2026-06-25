@@ -15,7 +15,7 @@ const csp = [
 
 const nextConfig = {
   reactStrictMode: true,
-  staticPageGenerationTimeout: 1000,
+  staticPageGenerationTimeout: 120,
   experimental: { workerThreads: false, cpus: 1 },
   async headers() {
     return [{ source: '/(.*)', headers: [
