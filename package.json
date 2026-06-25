@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint scripts/lint-placeholder.js",
     "typecheck": "tsc --noEmit",
-    "test": "ts-node-esm tests/security.ts && ts-node-esm tests/data.ts",
+    "test": "ts-node-esm tests/security.ts && ts-node-esm tests/data.ts && ts-node-esm tests/signals-webhook.ts",
     "validate:data": "ts-node-esm tests/data.ts"
   },
   "dependencies": {

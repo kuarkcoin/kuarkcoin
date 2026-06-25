@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 
 function bearer(req: Request) {
   const h = req.headers.get("authorization") ?? "";

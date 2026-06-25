@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 
 export function jsonNoStore(body: unknown, init?: ResponseInit) {
   return NextResponse.json(body, { ...init, headers: { ...(init?.headers ?? {}), "Cache-Control": "no-store" } });

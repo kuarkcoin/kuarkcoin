@@ -1,15 +1,26 @@
-import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabaseServer";
-import { jsonNoStore, readJsonLimited } from "@/lib/http";
-import { requireAdmin, requireWebhookSecret } from "@/lib/server-auth";
-import { normalizeMarketSymbol } from "@/lib/symbols";
+import { NextResponse } from "next/server.js";
+import { supabaseServer } from "../../../lib/supabaseServer.ts";
+import { jsonNoStore, readJsonLimited } from "../../../lib/http.ts";
+import { requireAdmin, requireWebhookSecret } from "../../../lib/server-auth.ts";
+import { normalizeMarketSymbol } from "../../../lib/symbols.ts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
-type SignalPayload = { secret?: string; symbol?: unknown; signal?: unknown; type?: unknown; price?: unknown; score?: unknown; reasons?: unknown; timeframe?: unknown; timestamp?: unknown; t?: unknown };
+export type SignalPayload = { secret?: string; symbol?: unknown; ticker?: unknown; signal?: unknown; action?: unknown; type?: unknown; price?: unknown; close?: unknown; score?: unknown; reasons?: unknown; timeframe?: unknown; timestamp?: unknown; t?: unknown };
+export type SupabaseSignalsClient = ReturnType<typeof supabaseServer>;
+
+type NormalizedSignal = {
+  symbol: string;
+  signal: "BUY" | "SELL";
+  price: number | null;
+  score: number | null;
+  reasons: string | null;
+  timeframe: string | null;
+  created_at: Date;
+};
 
 function istanbulDayRange(date = new Date()) {
   const tzOffsetMs = 3 * 60 * 60 * 1000;
@@ -21,20 +32,67 @@ function istanbulDayRange(date = new Date()) {
 
 function parseTvTime(t: unknown) { const n = Number(t); if (!Number.isFinite(n) || n <= 0) return new Date(); return new Date(n < 1e12 ? n * 1000 : n); }
 function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max); }
-function validateSignalPayload(body: SignalPayload) {
+
+export function normalizeSignalAction(value: unknown) {
+  const action = String(value ?? "").toUpperCase().trim();
+  if (action === "BUY" || action === "AL" || action === "LONG") return "BUY" as const;
+  if (action === "SELL" || action === "SAT" || action === "SHORT") return "SELL" as const;
+  return null;
+}
+
+export function normalizeSignalPayload(body: SignalPayload): SignalPayload {
+  return {
+    ...body,
+    symbol: body.symbol ?? body.ticker,
+    signal: body.signal ?? body.action ?? body.type,
+    price: body.price ?? body.close,
+  };
+}
+
+export function validateSignalPayload(input: SignalPayload): { ok: true; data: NormalizedSignal } | { ok: false; error: string } {
+  const body = normalizeSignalPayload(input);
   const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
-  const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
+  const signal = normalizeSignalAction(body.signal);
+  const price = body.price == null || body.price === "" ? null : Number(body.price);
+  const score = body.score == null || body.score === "" ? null : Number(body.score);
   const timeframe = cleanText(body.timeframe, 20);
   const timeRaw = body.timestamp ?? body.t;
   const created_at = timeRaw ? parseTvTime(timeRaw) : new Date();
   if (!norm) return { ok: false as const, error: "Invalid symbol" };
-  if (signal !== "BUY" && signal !== "SELL") return { ok: false as const, error: "Invalid signal" };
+  if (!signal) return { ok: false as const, error: "Invalid signal" };
   if (price != null && (!Number.isFinite(price) || price < 0)) return { ok: false as const, error: "Invalid price" };
   if (score != null && !Number.isFinite(score)) return { ok: false as const, error: "Invalid score" };
   if (Number.isNaN(created_at.getTime())) return { ok: false as const, error: "Invalid timestamp" };
   return { ok: true as const, data: { symbol: norm.providerSymbol, signal, price, score, reasons: cleanText(body.reasons, 1000), timeframe, created_at } };
+}
+
+function formToPayload(params: URLSearchParams) {
+  return Object.fromEntries(params.entries()) as SignalPayload;
+}
+
+export async function readSignalPayload(req: Request, maxBytes = 16 * 1024): Promise<{ ok: true; data: SignalPayload } | { ok: false; status: number; error: string }> {
+  const contentType = req.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase() ?? "application/json";
+  if (contentType === "application/x-www-form-urlencoded") {
+    const text = await req.text();
+    if (new TextEncoder().encode(text).length > maxBytes) return { ok: false, status: 413, error: "Payload too large" };
+    return { ok: true, data: formToPayload(new URLSearchParams(text)) };
+  }
+  if (contentType === "text/plain") {
+    const text = await req.text();
+    if (new TextEncoder().encode(text).length > maxBytes) return { ok: false, status: 413, error: "Payload too large" };
+    return { ok: true, data: formToPayload(new URLSearchParams(text.replace(/\r?\n/g, "&"))) };
+  }
+  return readJsonLimited<SignalPayload>(req, maxBytes);
+}
+
+export async function insertSignal(supa: SupabaseSignalsClient, valid: NormalizedSignal) {
+  const since = new Date(valid.created_at.getTime() - 2 * 60 * 1000).toISOString();
+  const { data: existing, error: dupError } = await supa.from("signals").select("id").eq("symbol", valid.symbol).eq("signal", valid.signal).gte("created_at", since).limit(1);
+  if (dupError) return { ok: false as const };
+  if (existing?.length) return { ok: true as const, duplicate: true as const };
+  const { data, error } = await supa.from("signals").insert([valid]).select("*").single();
+  if (error) return { ok: false as const };
+  return { ok: true as const, data };
 }
 
 export async function GET(req: Request) {
@@ -58,23 +116,23 @@ export async function GET(req: Request) {
   } catch { return jsonNoStore({ ok: false, data: [], error: "Signals unavailable" }, { status: 500 }); }
 }
 
-export async function POST(req: Request) {
-  const parsed = await readJsonLimited<SignalPayload>(req, 16 * 1024);
+export async function postSignals(req: Request, createSupabase: () => SupabaseSignalsClient = supabaseServer) {
+  const parsed = await readSignalPayload(req, 16 * 1024);
   if (!parsed.ok) return jsonNoStore({ ok: false, error: parsed.error }, { status: parsed.status });
   const authError = requireWebhookSecret(req, parsed.data as Record<string, unknown>);
   if (authError) return authError;
   const valid = validateSignalPayload(parsed.data);
   if (!valid.ok) return jsonNoStore({ ok: false, error: valid.error }, { status: 400 });
   try {
-    const supa = supabaseServer();
-    const since = new Date(valid.data.created_at.getTime() - 2 * 60 * 1000).toISOString();
-    const { data: existing, error: dupError } = await supa.from("signals").select("id").eq("symbol", valid.data.symbol).eq("signal", valid.data.signal).gte("created_at", since).limit(1);
-    if (dupError) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
-    if (existing?.length) return jsonNoStore({ ok: true, duplicate: true });
-    const { data, error } = await supa.from("signals").insert([valid.data]).select("*").single();
-    if (error) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
-    return jsonNoStore({ ok: true, data });
+    const saved = await insertSignal(createSupabase(), valid.data);
+    if (!saved.ok) return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 });
+    if (saved.duplicate) return jsonNoStore({ ok: true, duplicate: true });
+    return jsonNoStore({ ok: true, data: saved.data });
   } catch { return jsonNoStore({ ok: false, error: "Signal could not be saved" }, { status: 500 }); }
+}
+
+export async function POST(req: Request) {
+  return postSignals(req);
 }
 
 export async function PATCH(req: Request) {

@@ -1,4 +1,4 @@
-import { BIST100, ETFS, NASDAQ100, NASDAQ300 } from "@/constants/universe";
+import { BIST100, ETFS, NASDAQ100, NASDAQ300 } from "../constants/universe.ts";
 
 export type Market = "BIST" | "NASDAQ" | "ETF" | "CRYPTO";
 const CRYPTO = ["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","ADAUSDT","AVAXUSDT","DOGEUSDT","DOTUSDT","LINKUSDT","MATICUSDT","LTCUSDT","UNIUSDT","SHIBUSDT"];
