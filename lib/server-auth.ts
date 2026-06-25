@@ -9,9 +9,16 @@ export function getBearerToken(req: Request) { return bearer(req); }
 
 export function requireWebhookSecret(req: Request, body?: Record<string, unknown>) {
   const expectedSecret = process.env.SCAN_SECRET;
-  if (!expectedSecret) return NextResponse.json({ error: "Webhook is not configured" }, { status: 503 });
-  const providedSecret = bearer(req) || (typeof body?.secret === "string" ? body.secret : "");
-  if (!providedSecret || providedSecret !== expectedSecret) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const providedSecret =
+    bearer(req) ||
+    req.headers.get("x-webhook-secret")?.trim() ||
+    new URL(req.url).searchParams.get("secret")?.trim() ||
+    (typeof body?.secret === "string" ? body.secret.trim() : "");
+
+  if (!expectedSecret || !providedSecret || providedSecret !== expectedSecret) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   return null;
 }
 
