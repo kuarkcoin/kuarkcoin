@@ -5,7 +5,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import { useSignals, type SignalRow } from "@/hooks/useSignals";
 import { reasonsToTechSentences } from "@/lib/reasonTranslator";
-import { ASSETS, REASON_LABEL, parseReasons, symbolToPlain, timeAgo } from "@/constants/terminal";
+import {
+  ASSETS,
+  EMPTY_VALUE,
+  REASON_LABEL,
+  formatIstanbulDateTime,
+  parseReasons,
+  symbolToPlain,
+  timeAgo,
+} from "@/constants/terminal";
 import DashboardView from "@/components/DashboardView";
 
 // ──────────────────────────────────────────────────
@@ -62,7 +70,13 @@ const BIST_SET = new Set<string>(((ASSETS_MAP.BIST ?? []) as string[]).map((s) =
 // ──────────────────────────────────────────────────
 function scoreBadge(signal: string | null | undefined, score: number | null | undefined) {
   const s = String(signal ?? "").toUpperCase();
-  const sc = Number(score ?? 0);
+  if (score == null || Number.isNaN(Number(score))) {
+    if (s === "BUY") return `BUY • ${EMPTY_VALUE}`;
+    if (s === "SELL") return `SELL • ${EMPTY_VALUE}`;
+    return EMPTY_VALUE;
+  }
+
+  const sc = Number(score);
 
   const strength = sc >= 25 ? "ÇOK GÜÇLÜ" : sc >= 18 ? "GÜÇLÜ" : sc >= 12 ? "ORTA" : "ZAYIF";
   if (s === "BUY") return `BUY • ${strength}`;
@@ -92,7 +106,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
   );
 }
 
-function ReasonBadges({ reasons }: { reasons: string | null }) {
+function ReasonBadges({ reasons }: { reasons?: string | null }) {
   const list = parseReasons(reasons);
   if (!list.length) return null;
 
@@ -111,10 +125,38 @@ function ReasonBadges({ reasons }: { reasons: string | null }) {
   );
 }
 
-function TechLine({ reasons }: { reasons: string | null }) {
+function TechLine({ reasons }: { reasons?: string | null }) {
   const tech = reasonsToTechSentences(reasons);
   if (!tech) return null;
   return <div className="mt-2 text-[11px] leading-relaxed text-gray-300">{tech}</div>;
+}
+
+function truncateReasonText(text: string, max = 160) {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return EMPTY_VALUE;
+  return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
+}
+
+function reasonText(reasons: string | null | undefined) {
+  const raw = String(reasons ?? "").trim();
+  const normalized = parseReasons(reasons)
+    .map((key) => REASON_LABEL[key] ?? key)
+    .join(", ");
+
+  return {
+    display: truncateReasonText(normalized || raw),
+    title: raw || normalized || EMPTY_VALUE,
+  };
+}
+
+function ReasonText({ reasons }: { reasons?: string | null }) {
+  const text = reasonText(reasons);
+
+  return (
+    <div className="mt-2 text-[11px] leading-relaxed text-gray-400" title={text.title}>
+      Neden: <span className="text-gray-200 break-words">{text.display}</span>
+    </div>
+  );
 }
 
 function ScoreChip({ signal, score }: { signal: string | null | undefined; score: number | null | undefined }) {
@@ -794,9 +836,9 @@ export default function TerminalPage() {
                           ? "border-green-700 text-green-200 bg-green-950/30"
                           : "border-red-700 text-red-200 bg-red-950/30"
                       }`}
-                      title={`${String(last.signal).toUpperCase()} • ${last.score ?? "—"} • ${timeAgo(last.created_at)}`}
+                      title={`${String(last.signal).toUpperCase()} • ${last.score ?? EMPTY_VALUE} • ${timeAgo(last.created_at)} • ${formatIstanbulDateTime(last.created_at)}`}
                     >
-                      {String(last.signal).toUpperCase()} {last.score ?? "—"}
+                      {String(last.signal).toUpperCase()} {last.score ?? EMPTY_VALUE}
                     </span>
                   ) : null}
 
@@ -1089,10 +1131,13 @@ export default function TerminalPage() {
                   ) : (
                     <div className="space-y-3">
                       {visibleSignals.map((r: SignalRow) => {
-                        const sig = String(r.signal || "").toUpperCase();
+                        const sig = String(r.signal || EMPTY_VALUE).toUpperCase();
                         const isBuy = sig === "BUY";
                         const isSell = sig === "SELL";
                         const isActive = selectedSignalId === r.id;
+                        const createdAtAgo = timeAgo(r.created_at);
+                        const createdAtTR = formatIstanbulDateTime(r.created_at);
+                        const timeframe = r.timeframe?.trim() || EMPTY_VALUE;
 
                         const plain = symbolToPlain(r.symbol);
                         const open = openNewsForSymbol === plain;
@@ -1121,21 +1166,30 @@ export default function TerminalPage() {
                               <div className={`font-bold text-lg ${isBuy ? "text-green-400" : isSell ? "text-red-400" : "text-gray-200"}`}>
                                 {sig}
                               </div>
-                              <div className="text-xs text-gray-500">{timeAgo(r.created_at)}</div>
+                              <div className="text-right text-xs text-gray-500">
+                                <div>{createdAtTR}</div>
+                                <div className="text-[10px]">{createdAtAgo}</div>
+                              </div>
                             </div>
 
                             <div className="text-sm font-mono mb-1 text-gray-300">
-                              {r.symbol} @ <span className="text-white">{r.price ?? "—"}</span>
+                              {r.symbol} @ <span className="text-white">{r.price ?? EMPTY_VALUE}</span>
                             </div>
 
                             <div className="flex items-center justify-between gap-2">
                               <div className="text-xs text-gray-400">
-                                Score: <span className="text-white">{r.score ?? "—"}</span>
+                                Score: <span className="text-white">{r.score ?? EMPTY_VALUE}</span>
                               </div>
-                              <ScoreChip signal={r.signal} score={r.score} />
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] px-2 py-1 rounded border border-gray-700 text-gray-300 bg-gray-900/30">
+                                  TF: {timeframe}
+                                </span>
+                                <ScoreChip signal={r.signal} score={r.score} />
+                              </div>
                             </div>
 
                             <ReasonBadges reasons={r.reasons} />
+                            <ReasonText reasons={r.reasons} />
                             <TechLine reasons={r.reasons} />
 
                             <NewsBlock

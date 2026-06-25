@@ -86,8 +86,26 @@ export const REASON_LABEL: Record<string, string> = {
 };
 
 // ── Yardımcılar ───────────────────────────────────
-export function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
+export const EMPTY_VALUE = "—";
+
+export function formatIstanbulDateTime(iso: string | null | undefined) {
+  if (!iso) return EMPTY_VALUE;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return EMPTY_VALUE;
+
+  return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    dateStyle: "short",
+    timeStyle: "medium",
+  }).format(d);
+}
+
+export function timeAgo(iso: string | null | undefined) {
+  if (!iso) return EMPTY_VALUE;
+  const time = new Date(iso).getTime();
+  if (Number.isNaN(time)) return EMPTY_VALUE;
+
+  const diff = Date.now() - time;
   const m = Math.floor(diff / 60000);
   if (m < 1) return "şimdi";
   if (m < 60) return `${m}dk`;
@@ -106,6 +124,6 @@ export function normalizeReasonKey(raw: string) {
 }
 
 // reasons parsing (dedupe + boşları at)
-export function parseReasons(reasons: string | null) {
+export function parseReasons(reasons: string | null | undefined) {
   return parseSignalIndicatorKeys(reasons);
 }

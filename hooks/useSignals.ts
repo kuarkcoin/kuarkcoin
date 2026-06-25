@@ -5,12 +5,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export type SignalRow = {
   id: number;
-  created_at: string;
+  created_at?: string | null;
   symbol: string;
   signal: string; // BUY/SELL
-  price: number | null;
-  score: number | null;
-  reasons: string | null;
+  price?: number | null;
+  score?: number | null;
+  reasons?: string | null;
+  timeframe?: string | null;
   outcome: "WIN" | "LOSS" | null;
 };
 
@@ -27,7 +28,8 @@ function getErrorMessage(e: unknown, fallback: string) {
 }
 
 // ✅ TR gün hesabı (UTC buglarını bitirir)
-function isTodayTR(iso: string) {
+function isTodayTR(iso: string | null | undefined) {
+  if (!iso) return false;
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return false;
 
