@@ -21,18 +21,23 @@ function istanbulDayRange(date = new Date()) {
 
 function parseTvTime(t: unknown) { const n = Number(t); if (!Number.isFinite(n) || n <= 0) return new Date(); return new Date(n < 1e12 ? n * 1000 : n); }
 function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max); }
+function normalizeScore(v: unknown) {
+  const raw = v == null ? 50 : Number(v);
+  if (!Number.isFinite(raw)) return null;
+  return Math.max(0, Math.min(100, Math.round(raw)));
+}
 function validateSignalPayload(body: SignalPayload) {
   const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
   const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
   const price = body.price == null ? null : Number(body.price);
-  const score = body.score == null ? null : Number(body.score);
+  const score = normalizeScore(body.score);
   const timeframe = cleanText(body.timeframe, 20);
   const timeRaw = body.timestamp ?? body.t;
   const created_at = timeRaw ? parseTvTime(timeRaw) : new Date();
   if (!norm) return { ok: false as const, error: "Invalid symbol" };
   if (signal !== "BUY" && signal !== "SELL") return { ok: false as const, error: "Invalid signal" };
   if (price != null && (!Number.isFinite(price) || price < 0)) return { ok: false as const, error: "Invalid price" };
-  if (score != null && !Number.isFinite(score)) return { ok: false as const, error: "Invalid score" };
+  if (score == null) return { ok: false as const, error: "Invalid score" };
   if (Number.isNaN(created_at.getTime())) return { ok: false as const, error: "Invalid timestamp" };
   return { ok: true as const, data: { symbol: norm.providerSymbol, signal, price, score, reasons: cleanText(body.reasons, 1000), timeframe, created_at } };
 }
