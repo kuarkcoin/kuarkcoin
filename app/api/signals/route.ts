@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type Outcome = "WIN" | "LOSS" | null;
+type NormalizedSignal = "BUY" | "SELL" | null;
 type SignalPayload = { secret?: string; symbol?: unknown; signal?: unknown; type?: unknown; price?: unknown; score?: unknown; reasons?: unknown; timeframe?: unknown; timestamp?: unknown; t?: unknown };
 
 function istanbulDayRange(date = new Date()) {
@@ -20,17 +21,23 @@ function istanbulDayRange(date = new Date()) {
 }
 
 function parseTvTime(t: unknown) { const n = Number(t); if (!Number.isFinite(n) || n <= 0) return new Date(); return new Date(n < 1e12 ? n * 1000 : n); }
+export function normalizeSignalValue(raw: unknown): NormalizedSignal {
+  const normalized = String(raw).trim().toUpperCase();
+  if (["BUY", "AL", "LONG", "STRONG_BUY", "BULLISH"].includes(normalized)) return "BUY";
+  if (["SELL", "SAT", "SHORT", "STRONG_SELL", "BEARISH"].includes(normalized)) return "SELL";
+  return null;
+}
 function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v).replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max); }
 function validateSignalPayload(body: SignalPayload) {
   const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
-  const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
+  const signal = normalizeSignalValue(body.signal ?? body.type);
   const price = body.price == null ? null : Number(body.price);
   const score = body.score == null ? null : Number(body.score);
   const timeframe = cleanText(body.timeframe, 20);
   const timeRaw = body.timestamp ?? body.t;
   const created_at = timeRaw ? parseTvTime(timeRaw) : new Date();
   if (!norm) return { ok: false as const, error: "Invalid symbol" };
-  if (signal !== "BUY" && signal !== "SELL") return { ok: false as const, error: "Invalid signal" };
+  if (!signal) return { ok: false as const, error: "Invalid signal" };
   if (price != null && (!Number.isFinite(price) || price < 0)) return { ok: false as const, error: "Invalid price" };
   if (score != null && !Number.isFinite(score)) return { ok: false as const, error: "Invalid score" };
   if (Number.isNaN(created_at.getTime())) return { ok: false as const, error: "Invalid timestamp" };
