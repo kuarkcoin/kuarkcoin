@@ -24,14 +24,16 @@ function cleanText(v: unknown, max = 1000) { return v == null ? null : String(v)
 function validateSignalPayload(body: SignalPayload) {
   const norm = normalizeMarketSymbol(String(body.symbol ?? ""));
   const signal = String(body.signal ?? body.type ?? "").toUpperCase().trim();
-  const price = body.price == null ? null : Number(body.price);
+  const rawPrice = body.price;
+  const price = Number(rawPrice);
   const score = body.score == null ? null : Number(body.score);
   const timeframe = cleanText(body.timeframe, 20);
   const timeRaw = body.timestamp ?? body.t;
   const created_at = timeRaw ? parseTvTime(timeRaw) : new Date();
   if (!norm) return { ok: false as const, error: "Invalid symbol" };
   if (signal !== "BUY" && signal !== "SELL") return { ok: false as const, error: "Invalid signal" };
-  if (price != null && (!Number.isFinite(price) || price < 0)) return { ok: false as const, error: "Invalid price" };
+  if (rawPrice == null || !Number.isFinite(price)) return { ok: false as const, error: "Invalid price" };
+  if (price <= 0) return { ok: false as const, error: "price must be a positive number" };
   if (score != null && !Number.isFinite(score)) return { ok: false as const, error: "Invalid score" };
   if (Number.isNaN(created_at.getTime())) return { ok: false as const, error: "Invalid timestamp" };
   return { ok: true as const, data: { symbol: norm.providerSymbol, signal, price, score, reasons: cleanText(body.reasons, 1000), timeframe, created_at } };
