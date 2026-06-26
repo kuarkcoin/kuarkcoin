@@ -30,13 +30,14 @@ export default function TradingViewWidget({
   }, [symbol]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    containerRef.current.innerHTML = "";
+    container.innerHTML = "";
     const widgetId = `tv-${Math.random().toString(36).slice(2)}`;
 
     const mount = () => {
-      if (!window.TradingView || !containerRef.current) return;
+      if (!window.TradingView) return;
 
       new window.TradingView.widget({
         autosize: true,
@@ -55,7 +56,7 @@ export default function TradingViewWidget({
       });
     };
 
-    containerRef.current.innerHTML = `<div id="${widgetId}" style="height:${typeof height === "number" ? `${height}px` : height}; width:100%"></div>`;
+    container.innerHTML = `<div id="${widgetId}" style="height:${typeof height === "number" ? `${height}px` : height}; width:100%"></div>`;
 
     // ✅ tv.js zaten yüklenmişse tekrar script basma
     if (window.TradingView) {
@@ -68,10 +69,10 @@ export default function TradingViewWidget({
     script.async = true;
     script.onload = mount;
 
-    containerRef.current.appendChild(script);
+    container.appendChild(script);
 
     return () => {
-      if (containerRef.current) containerRef.current.innerHTML = "";
+      container.innerHTML = "";
     };
   }, [tvSymbol, interval, theme, height]);
 

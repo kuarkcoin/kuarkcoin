@@ -109,33 +109,7 @@ export default function DashboardView({
   isLoading = false,
   error = null,
 }: DashboardProps) {
-  // ------------------------
-  // Loading / Error / Empty
-  // ------------------------
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-gray-400 animate-pulse">Piyasa taranıyor...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-red-400">{error}</div>
-      </div>
-    );
-  }
-
   const hasAny = (signals?.length ?? 0) + (topBuy?.length ?? 0) + (topSell?.length ?? 0) > 0;
-  if (!hasAny) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
-        <div className="text-gray-500">Henüz sinyal üretilmedi.</div>
-      </div>
-    );
-  }
 
   // ------------------------
   // Sentiment + history
@@ -229,6 +203,33 @@ export default function DashboardView({
 
     return filtered.slice(0, heatLimit);
   }, [signals, heatFilter, minScore, heatLimit]);
+
+  // ------------------------
+  // Loading / Error / Empty
+  // ------------------------
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-gray-400 animate-pulse">Piyasa taranıyor...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-red-400">{error}</div>
+      </div>
+    );
+  }
+
+  if (!hasAny) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0d1117] p-8">
+        <div className="text-gray-500">Henüz sinyal üretilmedi.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#0d1117] p-4 md:p-8 custom-scrollbar">
