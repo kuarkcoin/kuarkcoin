@@ -16,7 +16,6 @@ const csp = [
 const nextConfig = {
   reactStrictMode: true,
   staticPageGenerationTimeout: 120,
-  experimental: { workerThreads: false, cpus: 1 },
   async headers() {
     return [{ source: '/(.*)', headers: [
       { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
